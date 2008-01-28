@@ -1,0 +1,7 @@
+Console
+{
+	type 		truetype
+	source 		console.ttf
+	size 		32
+	resolution 	55
+}
