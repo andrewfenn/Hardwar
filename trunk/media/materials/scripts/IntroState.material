@@ -1,0 +1,16 @@
+material IntroState
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+            lighting off
+
+            texture_unit
+            {
+                texture IntroState.jpg
+            }
+        }
+    }
+}

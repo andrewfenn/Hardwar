@@ -1,0 +1,16 @@
+material PauseState
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+            lighting off
+
+            texture_unit
+            {
+                texture PauseState.jpg
+            }
+        }
+    }
+}
