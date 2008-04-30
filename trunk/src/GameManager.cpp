@@ -1,7 +1,10 @@
 #include "GameState.h"
+
 #include "PlayState.h"
 #include "IntroState.h"
 #include "PauseState.h"
+#include "EditorState.h"
+
 #include "GameManager.h"
 
 using namespace Ogre;
@@ -54,10 +57,12 @@ void GameManager::startGame( GameState *gameState ) {
     mRoot = new Root();
 
     // Setup states
-    mIntroState = IntroState::getSingletonPtr();
-    mPlayState  = PlayState::getSingletonPtr();
+/*    mIntroState = IntroState::getSingletonPtr();
+  	 mPlayState  = PlayState::getSingletonPtr();
     mPauseState = PauseState::getSingletonPtr();
-
+   */ 
+	 mEditorState = EditorState::getSingletonPtr();
+	 
     // Setup and configure game
     this->setupResources();
     if( !this->configureGame() ) {
@@ -115,13 +120,13 @@ bool GameManager::configureGame( void ) {
     }
 
     // Initialise and create a default rendering window
-    mRenderWindow = mRoot->initialise( true, "Example" );
+    mRenderWindow = mRoot->initialise( true, "Hardwar" );
 
     // Initialise resources
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     // Create needed scenemanagers
-    mRoot->createSceneManager( ST_GENERIC, "ST_GENERIC" );
+   // mRoot->createSceneManager( ST_GENERIC, "ST_GENERIC" );
 
     return true;
 }

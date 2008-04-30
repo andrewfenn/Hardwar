@@ -1,0 +1,10 @@
+material TestTerrainMaterial
+{
+    technique
+    {
+        pass
+        {
+								
+        }
+    }
+}

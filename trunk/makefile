@@ -1,5 +1,8 @@
 APP=./bin/hardwar
-SF= ./src/InputManager.o ./src/GameManager.o ./src/GameState.o ./src/IntroState.o ./src/PauseState.o ./src/PlayState.o ./src/Main.o \
+SF= ./src/InputManager.o ./src/GameManager.o ./src/GameState.o \
+	 ./src/TerrainManager.o	\
+	 ./src/EditorState.o \
+	 ./src/Main.o \
 
 CC=g++
 LINKER=gcc

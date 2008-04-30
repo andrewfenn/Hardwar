@@ -47,6 +47,8 @@ private:
     GameState          *mIntroState;
     GameState          *mPlayState;
     GameState          *mPauseState;
+    GameState			  *mEditorState;
+    
 
     bool bShutdown;
     std::vector<GameState*> mStates;

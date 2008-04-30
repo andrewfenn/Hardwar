@@ -1,0 +1,16 @@
+material EditorMenuBar
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+            lighting off
+
+            texture_unit
+            {
+                texture EditorMenu.jpg
+            }
+        }
+    }
+}

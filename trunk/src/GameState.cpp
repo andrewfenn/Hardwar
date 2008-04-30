@@ -17,3 +17,4 @@ void GameState::popState( void ) {
 void GameState::requestShutdown( void ) {
     GameManager::getSingletonPtr()->requestShutdown();
 }
+
