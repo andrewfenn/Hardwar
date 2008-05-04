@@ -10,6 +10,7 @@
 #include <OgreWindowEventUtilities.h>
 
 #include "InputManager.h"
+#include "GUIManager.h"
 
 class GameState;
 
@@ -43,12 +44,14 @@ private:
     Ogre::Root         *mRoot;
     Ogre::RenderWindow *mRenderWindow;
     InputManager       *mInputMgr;
-
+	 GUIManager			  *mGUIMgr;
+	 
     GameState          *mIntroState;
     GameState          *mPlayState;
     GameState          *mPauseState;
     GameState			  *mEditorState;
     
+
 
     bool bShutdown;
     std::vector<GameState*> mStates;

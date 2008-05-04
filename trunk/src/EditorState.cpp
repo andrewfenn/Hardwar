@@ -6,58 +6,95 @@ EditorState* EditorState::mEditorState;
 
 void EditorState::enter( void ) {
 
-	mRoot         = Root::getSingletonPtr();
-	mRoot->createSceneManager(ST_EXTERIOR_CLOSE, "EditorSceneMgr" );
+	mRoot         = Ogre::Root::getSingletonPtr();
+	mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "EditorSceneMgr" );
 	
-	mOverlayMgr   = OverlayManager::getSingletonPtr();
+	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
 	mSceneMgr     = mRoot->getSceneManager( "EditorSceneMgr" );
 	mCamera       = mSceneMgr->createCamera( "EditCamera" );
 	mViewport     = mRoot->getAutoCreatedWindow()->addViewport( mCamera );
+	mGUIMgr		  = GUIManager::getSingletonPtr();
 
-	mMouseOverlay     = mOverlayMgr->getByName( "Overlay/MousePointer" );
+	/*mMouseOverlay     = mOverlayMgr->getByName( "Overlay/MousePointer" );
 	mMousePointer     = mOverlayMgr->getOverlayElement( "MousePointer/Pointer" );
-	mMouseOverlay->show();
+	mMouseOverlay->show();*/
 	
-	mEditorOverlay = mOverlayMgr->getByName( "Overlay/EditorState" );
-	mEditorOverlay->show();
+	// Initialise CEGUI for user interface stuff
+	mGUIMgr->initialise(mSceneMgr, mRoot->getAutoCreatedWindow());
+	setupEditorUI();
+
+
+	// setup some light
+	Ogre::Light *light = mSceneMgr->createLight("Light1");
+   light->setType(Ogre::Light::LT_POINT);
+   light->setPosition(Ogre::Vector3(1000, 10000, 1000));
+   light->setDiffuseColour(Ogre::ColourValue::White);
+   light->setSpecularColour(Ogre::ColourValue::White);
+   
+   // Setup our camera position in the world
+   mCamera->setPosition(Ogre::Vector3(25275, 59670, 25255));		
+	mCamera->pitch((Ogre::Degree)-90);
+	mCamera->roll((Ogre::Degree)180);
+   
+   // Start the world manager and load up a world
+   mWorldMgr = new WorldManager;
+   mWorldMgr->loadWorld("SomeSavedWorld.dat", mSceneMgr); // rubbish data in input, placeholder for later on
+   
+   mSelectedObject = 0;
+   mMouseY = mMouseX = mMouseRotX = mMouseRotY = 0;
+   mMouseDownButton2 = zoomin = zoomout = false;
+   CamRotatePos = CamLookAtPos = 0;
+   mScreenshots = 0;
+}
+
+void EditorState::setupEditorUI() {
+
+	// setup the skin and font to use
+	CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"TaharezLookSkin.scheme");	
+  	mGUIMgr->mSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+   mGUIMgr->mSystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-10");
+
+	// setup the CEGUI sheet
+	CEGUI::Window* sheet= CEGUI::WindowManager::getSingleton().loadWindowLayout("Editor.layout");
+   mGUIMgr->mSystem->setGUISheet(sheet);
+   
+   // setup the quit button
+	CEGUI::WindowManager *wmgr = CEGUI::WindowManager::getSingletonPtr();
+   CEGUI::Window *quit1 = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/QuitButton");
+   quit1->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUIHandleShutdown, this));
+
+	// start popular mesh combo box list
+	CEGUI::Combobox* meshList = (CEGUI::Combobox*)CEGUI::WindowManager::getSingleton().getWindow("Root//NewTab/MeshList");
+	CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem((CEGUI::utf8*)"null", 0);
+	// Grab all the mesh names and push them to our combo box	
+	boost::filesystem::path hanger_path( "../media/models/hangers" );
+	int i = 0;
+	if (boost::filesystem::is_directory(hanger_path)) {
+		for (boost::filesystem::directory_iterator itr(hanger_path); itr!=boost::filesystem::directory_iterator(); ++itr) {
+			std::string temp = (std::string)itr->path().leaf();
+			temp = temp.substr(temp.length()-4, 4);
+			if (temp.compare("mesh") == 0) {
+				item = new CEGUI::ListboxTextItem((std::string)itr->path().leaf(), i);
+				meshList->addItem(item); // attach to the combo box
+				i++;
+			}
+		}
+	}
 	
-	loadTerrain();
-   
-   // setup some light
-	Light *light = mSceneMgr->createLight("Light1");
-   light->setType(Light::LT_POINT);
-   light->setPosition(Vector3(1000, 10000, 1000));
-   light->setDiffuseColour(ColourValue::White);
-   light->setSpecularColour(ColourValue::White);
-   
-   mCamera->setPosition(Vector3(0, 2000,0));		
-	mCamera->lookAt(Vector3(0.0, -90.0, 200.0));
-   
-   
-   mObjectsNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-   mBuildingsNode = mObjectsNode->createChildSceneNode();
+	// Added our items, now select an item so the box isn't empty
+	
+	meshList->setReadOnly(true);
+	if (i > 0) 
+		meshList->setItemSelectState(item, true);
+
+
+
 }
 
 void EditorState::exit( void ) {
-    mEditorOverlay->hide();
-    
     mSceneMgr->clearScene();
     mSceneMgr->destroyAllCameras();
     mRoot->getAutoCreatedWindow()->removeAllViewports();
-}
-
-// ----------------------
-// Setup the alpha crater and place objects down
-// ----------------------
-void EditorState::loadTerrain( void ) {
-	// Load level and display terrain
-	mTerrainMgr = new TerrainManager;
-   mTerrainMgr->loadFile("Alpha");
-   
-   mSceneMgr->setWorldGeometry("craters/alpha.cfg");
-   mSceneMgr->getSuggestedViewpoint(false);
-   
-   
 }
 
 // No pausing or resume in the editor so leave it
@@ -65,36 +102,53 @@ void EditorState::pause( void ) { }
 void EditorState::resume( void ) { }
 
 
-void EditorState::update( unsigned long lTimeElapsed ) {
+void EditorState::updateCamera() {
+  	Ogre::Vector3 pos = mCamera->getPosition();
 
-	// Do mouse movement
-  	Vector3 pos = mCamera->getPosition();
-
-   if (mMouseY < 10)
-    	pos.z++;
-   if (mMouseY > mViewport->getActualHeight()-10)
-    	pos.z--;
-   if (mMouseX < 10)
-    	pos.x++;
-   if (mMouseX > mViewport->getActualWidth()-10)
-    	pos.x--;
-   if (zoomin)
-   	pos.y-= 10;
-   if (zoomout)
-   	pos.y+= 10;
-	mCamera->setPosition(pos);
-	
 	// Do mouse rotation
 	if (mMouseDownButton2) {
 		int diffx=mMouseX-mMouseRotX;
 		int diffy=mMouseY-mMouseRotY;
-		std::cout << diffy << " "<< mMouseRotY << std::endl;
-		CamRotatePos.x += 0.000005f * diffx;
-		CamRotatePos.z += 0.000005f * diffy;
+		CamRotatePos.x += 0.00005f * diffx;
+		CamRotatePos.y += 0.00005f * diffy;
 		
-		mCamera->setDirection(CamRotatePos);
+		mCamera->lookAt(CamLookAtPos); // that'll do for now
+
+	//	mCamera->setDirection(CamRotatePos);
+	/*	mCamera->yaw((Ogre::Degree)CamRotatePos.x);
+		mCamera->pitch((Ogre::Degree)CamRotatePos.y);*/
+
+	} else {
+	   if (mMouseY < 10)
+		 	pos.z+=35;
+		if (mMouseY > mViewport->getActualHeight()-10)
+		 	pos.z-=35;
+		if (mMouseX < 10)
+		 	pos.x+=35;
+		if (mMouseX > mViewport->getActualWidth()-10)
+		 	pos.x-=35;
+		if (zoomin)
+			pos.y-= 30;
+		if (zoomout)
+			pos.y+= 30;
+		mCamera->setPosition(pos);
 	}
 }
+
+
+
+// ------------------------------------
+//  Render loop update
+// ------------------------------------
+void EditorState::update( unsigned long lTimeElapsed ) {
+
+	updateCamera();	// Do mouse movement
+
+}
+
+
+
+
 
 void EditorState::keyPressed( const OIS::KeyEvent &e ) {
 	 if( e.key == OIS::KC_DOWN ) {
@@ -124,51 +178,116 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 	// scale terrain up and down
 	
 	if(e.key == OIS::KC_1) {
-		SceneNode* terrainNode = mSceneMgr->getSceneNode("Terrain");
-		Vector3 scale = terrainNode->getScale();
-		scale += 1; 
-		terrainNode->setScale(scale);
+		Ogre::SceneNode* terrainNode = mSceneMgr->getSceneNode("Crater_Alpha");
+		terrainNode->showBoundingBox(true);
 	}
 	if(e.key == OIS::KC_2) {
-		SceneNode* terrainNode = mSceneMgr->getSceneNode("Terrain");
-		Vector3 scale = terrainNode->getScale();
-		scale -= 1; 
-		terrainNode->setScale(scale);
+		Ogre::Vector3 pos = mCamera->getPosition();
+		std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	}
 	
 	if(e.key == OIS::KC_A) {
-		
-		Ogre::Entity *ent = mSceneMgr->createEntity("SilverY", "silvery.mesh" );
-		mBuildingsNode->attachObject(ent);
-		mBuildingsNode->scale( 0.1, .1, .1 );
-	   mBuildingsNode->setPosition( Vector3( 0, 100, 0) );
+		addBuilding();
 	}
 	
-	
+	if (e.key == OIS::KC_SYSRQ) {
+		char filename[30] ;
+	   std::sprintf(filename, "./screenshots/screenshot_%d.png", ++mScreenshots);
+	   mRoot->getAutoCreatedWindow()->writeContentsToFile(filename);
+	}
+}
+
+bool EditorState::addBuilding() {
+
+	// Shoot out a ray from the mouse cursor
+   Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mMouseX/float(mViewport->getActualWidth()), mMouseY/float(mViewport->getActualHeight()));
+   	
+	// Cast a ray at the polygon level
+	Ogre::Vector3 result;
+	// Use the result to place our building
+	if (RaycastFromPoint(mouseRay, result)) {
+		// Get which building type is to be placed
+		CEGUI::Combobox* meshList = (CEGUI::Combobox*)CEGUI::WindowManager::getSingleton().getWindow("Root//NewTab/MeshList");
+		CEGUI::ListboxItem* item = meshList->getSelectedItem();
+		CEGUI::String name = item->getText();
+		mWorldMgr->addBuilding(result, name.c_str());
+		return true;
+	}
+	return false;
 }
 
 void EditorState::mouseMoved( const OIS::MouseEvent &e ) {
     const OIS::MouseState &mouseState = e.state;
-    mMousePointer->setTop(mouseState.Y.abs);
-    mMousePointer->setLeft(mouseState.X.abs);
+    /*mMousePointer->setTop(mouseState.Y.abs);
+    mMousePointer->setLeft(mouseState.X.abs);*/
     mMouseX = mouseState.X.abs;
     mMouseY = mouseState.Y.abs;
+    CEGUI::System::getSingleton().injectMousePosition(mouseState.X.abs, mouseState.Y.abs);
+
 }
 
 void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
+	
+	
+	if (id==0)
+		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)0);
+	if (id==1)
+		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)1);
+
+
+
+	
+	
+	
+	Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mMouseX/float(mViewport->getActualWidth()), mMouseY/float(mViewport->getActualHeight()));
+
 	if (id == 1) { // right mouse button click, rotate camera
 		const OIS::MouseState &mouseState = e.state;
 		mMouseDownButton2 = true;
 		mMouseRotX = mouseState.X.abs;
 		mMouseRotY = mouseState.Y.abs;
 		CamRotatePos = mCamera->getDirection();
+		RaycastFromPoint(mouseRay, CamLookAtPos);
 	}
+	if (id == 0) { // left mouse button click, select
+		Ogre::RaySceneQuery* mRaySceneQuery = 0;
+		mSelectedObject = 0;
+		
+		
+		// Shoot out a ray from the mouse cursor
+      mRaySceneQuery = mSceneMgr->createRayQuery(mouseRay, Ogre::SceneManager::ENTITY_TYPE_MASK);
+		mRaySceneQuery->setSortByDistance(true);
+		
+      // Execute query
+      Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+      Ogre::RaySceneQueryResult::iterator itr;
+
+	
+		
+      // Get results, create a node/entity on the position
+      for (itr = result.begin(); itr != result.end(); itr++) {
+			if (itr->movable) {
+				mSelectedObject = itr->movable;
+				break;
+			}
+      } // end for
+
+      mSceneMgr->destroyQuery(mRaySceneQuery);
+
+   }
 }
 
 void EditorState::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
+ 
+ 	if (id==0)
+		CEGUI::System::getSingleton().injectMouseButtonUp((CEGUI::MouseButton)0);
+	if (id==1)
+		CEGUI::System::getSingleton().injectMouseButtonUp((CEGUI::MouseButton)1);
+		
     //this->changeState( PlayState::getSingletonPtr() );
     if (id == 1) {
     	mMouseDownButton2 = false;
+    	CamLookAtPos = 0;
     }
 }
 
@@ -176,6 +295,254 @@ EditorState* EditorState::getSingletonPtr( void ) {
     if( !mEditorState ) {
         mEditorState = new EditorState();
     }
-
     return mEditorState;
 }
+
+
+// Ray casting on the polygon level
+// Code found in Wiki: www.ogre3d.org/wiki/index.php/Raycasting_to_the_polygon_level
+bool EditorState::RaycastFromPoint(const Ogre::Ray ray, Ogre::Vector3 &result) {
+	 // create a query object
+    Ogre::RaySceneQuery* m_pray_scene_query = mSceneMgr->createRayQuery(ray, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+     // execute the query, returns a vector of hits
+    if (m_pray_scene_query->execute().size() == 0)
+    {
+      // raycast did not hit an objects bounding box
+      mSceneMgr->destroyQuery(m_pray_scene_query);
+		return (false);
+    }
+
+    // at this point we have raycast to a series of different objects bounding boxes.
+    // we need to test these different objects to see which is the first polygon hit.
+    // there are some minor optimizations (distance based) that mean we wont have to
+    // check all of the objects most of the time, but the worst case scenario is that
+    // we need to test every triangle of every object.
+    Ogre::Real closest_distance = -1.0f;
+    Ogre::Vector3 closest_result = Ogre::Vector3(0,0,0);
+    Ogre::RaySceneQueryResult &query_result = m_pray_scene_query->getLastResults();
+	
+	 Ogre::Entity *pentity = 0;
+	
+    for (size_t qr_idx = 0; qr_idx < query_result.size(); qr_idx++)
+    {
+
+        // stop checking if we have found a raycast hit that is closer
+        // than all remaining entities
+        if ((closest_distance >= 0.0f) &&
+            (closest_distance < query_result[qr_idx].distance))
+        {
+             break;
+        }
+       
+        if ((query_result[qr_idx].worldFragment != NULL)) {
+	        // if it's a world fragment just return the result
+	        result = query_result[qr_idx].worldFragment->singleIntersection;
+	        mSceneMgr->destroyQuery(m_pray_scene_query);
+        	  return (true);
+        }
+        
+        // only check this result if its a hit against an entity
+        if ((query_result[qr_idx].movable != NULL) &&
+            (query_result[qr_idx].movable->getMovableType().compare("Entity") == 0))
+        {
+            // get the entity to check
+            pentity = static_cast<Ogre::Entity*>(query_result[qr_idx].movable);
+        }
+
+        if (pentity != NULL) {
+
+            // mesh data to retrieve         
+            size_t vertex_count;
+            size_t index_count;
+            Ogre::Vector3 *vertices;
+            unsigned long *indices;
+
+            // get the mesh information
+         	getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
+                              pentity->getParentNode()->getWorldPosition(),
+                              pentity->getParentNode()->getWorldOrientation(),
+                              pentity->getParentNode()->getScale());
+
+    
+            // test for hitting individual triangles on the mesh
+            bool new_closest_found = false;
+            for (int i = 0; i < static_cast<int>(index_count); i += 3)
+            {
+                // check for a hit against this triangle
+                std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
+                    vertices[indices[i+1]], vertices[indices[i+2]], true, false);
+
+                // if it was a hit check if its the closest
+                if (hit.first)
+                {
+                    if ((closest_distance < 0.0f) ||
+                        (hit.second < closest_distance))
+                    {
+                        // this is the closest so far, save it off
+                        closest_distance = hit.second;
+                        new_closest_found = true;
+                    }
+                }
+            }
+
+         // free the verticies and indicies memory
+            delete[] vertices;
+            delete[] indices;
+
+            // if we found a new closest raycast for this object, update the
+            // closest_result before moving on to the next object.
+            if (new_closest_found)
+            {
+                closest_result = ray.getPoint(closest_distance);               
+            }
+        }   // */   
+    }
+    
+    mSceneMgr->destroyQuery(m_pray_scene_query);
+    
+    // return the result
+    if (closest_distance >= 0.0f)
+    {
+        // raycast success
+        result = closest_result;
+        return (true);
+    }
+    else
+    {
+        // raycast failed
+        std::cout << "ERROR: Raycast failed" << std::endl;
+        return (false);
+    } 
+}
+
+// Get the mesh information for the given mesh.
+// Code found in Wiki: www.ogre3d.org/wiki/index.php/RetrieveVertexData
+void EditorState::getMeshInformation(const Ogre::MeshPtr mesh,
+                                size_t &vertex_count,
+                                Ogre::Vector3* &vertices,
+                                size_t &index_count,
+                                unsigned long* &indices,
+                                const Ogre::Vector3 &position,
+                                const Ogre::Quaternion &orient,
+                                const Ogre::Vector3 &scale)
+{
+    bool added_shared = false;
+    size_t current_offset = 0;
+    size_t shared_offset = 0;
+    size_t next_offset = 0;
+    size_t index_offset = 0;
+
+    vertex_count = index_count = 0;
+
+    // Calculate how many vertices and indices we're going to need
+    for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
+    {
+        Ogre::SubMesh* submesh = mesh->getSubMesh( i );
+
+        // We only need to add the shared vertices once
+        if(submesh->useSharedVertices)
+        {
+            if( !added_shared )
+            {
+                vertex_count += mesh->sharedVertexData->vertexCount;
+                added_shared = true;
+            }
+        }
+        else
+        {
+            vertex_count += submesh->vertexData->vertexCount;
+        }
+
+        // Add the indices
+        index_count += submesh->indexData->indexCount;
+    }
+
+
+    // Allocate space for the vertices and indices
+    vertices = new Ogre::Vector3[vertex_count];
+    indices = new unsigned long[index_count];
+
+    added_shared = false;
+
+    // Run through the submeshes again, adding the data into the arrays
+    for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
+    {
+        Ogre::SubMesh* submesh = mesh->getSubMesh(i);
+
+        Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+
+        if((!submesh->useSharedVertices)||(submesh->useSharedVertices && !added_shared))
+        {
+            if(submesh->useSharedVertices)
+            {
+                added_shared = true;
+                shared_offset = current_offset;
+            }
+
+            const Ogre::VertexElement* posElem =
+                vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
+
+            Ogre::HardwareVertexBufferSharedPtr vbuf =
+                vertex_data->vertexBufferBinding->getBuffer(posElem->getSource());
+
+            unsigned char* vertex =
+                static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+
+            // There is _no_ baseVertexPointerToElement() which takes an Ogre::Real or a double
+            //  as second argument. So make it float, to avoid trouble when Ogre::Real will
+            //  be comiled/typedefed as double:
+            //      Ogre::Real* pReal;
+            float* pReal;
+
+            for( size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
+            {
+                posElem->baseVertexPointerToElement(vertex, &pReal);
+
+                Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
+
+                vertices[current_offset + j] = (orient * (pt * scale)) + position;
+            }
+
+            vbuf->unlock();
+            next_offset += vertex_data->vertexCount;
+        }
+
+
+        Ogre::IndexData* index_data = submesh->indexData;
+        size_t numTris = index_data->indexCount / 3;
+        Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
+
+        bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
+
+        unsigned long*  pLong = static_cast<unsigned long*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+        unsigned short* pShort = reinterpret_cast<unsigned short*>(pLong);
+
+
+        size_t offset = (submesh->useSharedVertices)? shared_offset : current_offset;
+
+        if ( use32bitindexes )
+        {
+            for ( size_t k = 0; k < numTris*3; ++k)
+            {
+                indices[index_offset++] = pLong[k] + static_cast<unsigned long>(offset);
+            }
+        }
+        else
+        {
+            for ( size_t k = 0; k < numTris*3; ++k)
+            {
+                indices[index_offset++] = static_cast<unsigned long>(pShort[k]) +
+                    static_cast<unsigned long>(offset);
+            }
+        }
+
+        ibuf->unlock();
+        current_offset = next_offset;
+    }
+}
+
+
+bool EditorState::GUIHandleShutdown(const CEGUI::EventArgs& e) {
+	this->requestShutdown();
+}
+ 

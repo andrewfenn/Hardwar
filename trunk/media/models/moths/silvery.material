@@ -1,0 +1,20 @@
+material 07-Default
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588235 0.588235 0.588235 
+			diffuse 0.588235 0.588235 0.588235 
+			specular 0 0 0 10
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture silvery.tga
+			}
+		}
+	}
+}
+
+

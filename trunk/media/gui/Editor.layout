@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="Root" >
+        <Property Name="InheritsAlpha" Value="False" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="TaharezLook/TabControl" Name="Root/EditPane" >
+            <Property Name="Font" Value="BlueHighway-12" />
+            <Property Name="TabHeight" Value="{0,28.3638}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="TabPanePosition" Value="Top" />
+            <Property Name="UnifiedAreaRect" Value="{{0.003937,0},{0.742397,0},{0.253937,0},{0.992397,0}}" />
+            <Window Type="DefaultWindow" Name="Root//NewTab" >
+                <Property Name="Font" Value="BlueHighway-10" />
+                <Property Name="Text" Value="New" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+                <Window Type="TaharezLook/Combobox" Name="Root//NewTab/MeshList" >
+				      <Property Name="Font" Value="BlueHighway-10" />
+				      <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+				      <Property Name="UnifiedAreaRect" Value="{{0.0188977,0},{0.212674,0},{0.555512,0},{0.950691,0}}" />
+				      <Property Name="MaxEditTextLength" Value="1073741823" />
+				   </Window>
+                <Window Type="TaharezLook/Button" Name="Root//NewTab/AddButton" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="Text" Value="Add" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.718899,0},{0.797695,0},{0.937403,0},{0.923271,0}}" />
+                </Window>
+            </Window>
+            <Window Type="DefaultWindow" Name="Root//EditTab" >
+                <Property Name="Font" Value="BlueHighway-12" />
+                <Property Name="Text" Value="Properties" />
+                <Property Name="Visible" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+                <Window Type="TaharezLook/Editbox" Name="Root//EditTab/EditXPos" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.131496,0},{0.346083,0},{0.241339,0},{0.467052,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="Root//EditTab/EditYPos" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.248819,0},{0.346083,0},{0.357087,0},{0.46567,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="Root//EditTab/EditZPos" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.361812,0},{0.346083,0},{0.473228,0},{0.469588,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="Root//EditTab/PosText" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="Text" Value="Position" />
+                    <Property Name="FrameEnabled" Value="False" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.061417,0},{0.223041,0},{0.585431,0},{0.325575,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="Root//EditTab/EditXRot" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.131102,0},{0.598847,0},{0.240945,0},{0.719816,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="Root//EditTab/EditYRot" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.248819,0},{0.599539,0},{0.357087,0},{0.723734,0}}" />
+                </Window>
+                <Window Type="TaharezLook/Editbox" Name="Root//EditTab/EditZRot" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="MaxTextLength" Value="1073741823" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.361812,0},{0.599539,0},{0.473228,0},{0.723043,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="Root//EditTab/RotText" >
+                    <Property Name="Font" Value="BlueHighway-10" />
+                    <Property Name="Text" Value="Rotate" />
+                    <Property Name="FrameEnabled" Value="False" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.061417,0},{0.504147,0},{0.35236,0},{0.588248,0}}" />
+                </Window>
+            </Window>
+            <Window Type="DefaultWindow" Name="Root//SystemTab" >
+                <Property Name="Font" Value="BlueHighway-10" />
+                <Property Name="Text" Value="System" />
+                <Property Name="Visible" Value="False" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+                <Window Type="TaharezLook/SystemButton" Name="Root//SystemTab/QuitButton" >
+                    <Property Name="Font" Value="BlueHighway-12" />
+                    <Property Name="Text" Value="Quit" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.051181,0},{0.788479,0},{0.338977,0},{0.932487,0}}" />
+                </Window>
+                <Window Type="TaharezLook/SystemButton" Name="Root//SystemTab/SaveButton" >
+                    <Property Name="Font" Value="BlueHighway-12" />
+                    <Property Name="Text" Value="Save" />
+                    <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.056693,0},{0.575115,0},{0.341338,0},{0.728341,0}}" />
+                </Window>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

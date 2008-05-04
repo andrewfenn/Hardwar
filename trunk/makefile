@@ -1,19 +1,21 @@
 APP=./bin/hardwar
-SF= ./src/InputManager.o ./src/GameManager.o ./src/GameState.o \
-	 ./src/TerrainManager.o	\
+SF= ./src/GUIManager.o ./src/InputManager.o ./src/GameManager.o ./src/GameState.o \
+	 ./src/WorldManager.o	\
 	 ./src/EditorState.o \
 	 ./src/Main.o \
 
 CC=g++
 LINKER=gcc
 WFLAGS=-Wall -Wuninitialized -Wwrite-strings -Wcast-qual  -Wcomment -Wcast-align -Wno-deprecated
-OGRE_CFLAGS = -DOGRE_GUI_GLX -DOGRE_CONFIG_LITTLE_ENDIAN -I/usr/local/include -I/usr/local/include/OGRE  
-OGRE_LIBS = -L/usr/local/lib -lOgreMain  
-OIS_CFLAGS = -I/usr//include/OIS -I/usr//include  
-OIS_LIBS = -L/usr//lib -lOIS  
-LIBS = -lalut -lopenal -lopenal -lalut  -logg -lvorbis -lvorbisfile -lvorbisenc
-COPTS=$(WFLAGS) -g -march=i686 -O -pthread -pipe -DFX -D_GNU_SOURCE -DINVERSEXY $(OGRE_CFLAGS) $(OIS_CFLAGS)  -I./include
-LINKOPTS=-rdynamic -L. -lstdc++ -lm -lz -ldl $(OIS_LIBS) $(OGRE_LIBS) $(LIBS)
+OGRE_CFLAGS = `pkg-config OGRE --cflags` `pkg-config CEGUI-OGRE --cflags`
+OGRE_LIBS = `pkg-config OGRE --libs` `pkg-config CEGUI-OGRE --libs`
+CEGUI_CFLAGS = `pkg-config CEGUI --cflags`
+CEGUI_LIBS = `pkg-config CEGUI --libs` 
+OIS_CFLAGS = `pkg-config OIS --cflags`
+OIS_LIBS = `pkg-config OIS --libs`
+LIBS = -lalut -lopenal -lopenal -lalut  -logg -lvorbis -lvorbisfile -lvorbisenc -lboost_filesystem
+COPTS=$(WFLAGS) -g -march=i686 -O -pthread -pipe -DFX -D_GNU_SOURCE -DINVERSEXY $(OGRE_CFLAGS) $(CEGUI_CFLAGS) $(OIS_CFLAGS)  -I./include -I./usr/include/boost/
+LINKOPTS=-rdynamic -L. -lstdc++ -lm -lz -ldl $(OIS_LIBS) $(CEGUI_LIBS) $(OGRE_LIBS) $(LIBS)
 all: $(APP)
 
 $(APP): $(SF)

@@ -1,0 +1,25 @@
+material NoMaterial
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.7 0.7 0.7 
+			diffuse 0.7 0.7 0.7 
+		}
+	}
+}
+
+material Selected
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.7 0.7 0.7 
+			diffuse 0.7 0.0 0.0 
+		}
+	}
+}
+
+

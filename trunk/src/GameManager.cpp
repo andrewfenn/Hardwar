@@ -32,21 +32,25 @@ GameManager::~GameManager( void ) {
         mInputMgr = 0;
     }
 
+    if( mGUIMgr ) {
+        delete mGUIMgr;
+        mGUIMgr = 0;
+    }
+
     if( mIntroState ) {
         delete mIntroState;
         mIntroState = 0;
-    }
-
+    }	
     if( mPlayState ) {
         delete mPlayState;
         mPlayState  = 0;
     }
-
+	
     if( mPauseState ) {
         delete mPauseState;
         mPauseState = 0;
     }
-
+	
     if( mRoot ) {
         delete mRoot;
         mRoot = 0;
@@ -79,6 +83,8 @@ void GameManager::startGame( GameState *gameState ) {
     mInputMgr->addKeyListener( this, "GameManager" );
     mInputMgr->addMouseListener( this, "GameManager" );
     mInputMgr->getJoystick( 1 );
+
+    mGUIMgr = 0;
 
     // Change to first state
     this->changeState( gameState );
@@ -127,6 +133,8 @@ bool GameManager::configureGame( void ) {
 
     // Create needed scenemanagers
    // mRoot->createSceneManager( ST_GENERIC, "ST_GENERIC" );
+   
+
 
     return true;
 }
