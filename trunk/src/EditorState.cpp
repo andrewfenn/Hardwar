@@ -56,15 +56,22 @@ void EditorState::enter( void ) {
    
    // Start the world manager and load up a world
    mWorldMgr = new WorldManager;
-   mWorldMgr->loadWorld("SomeSavedWorld.dat", mSceneMgr); // rubbish data in input, placeholder for later on
+   // load up our SQLite world database
+   if (!mWorldMgr->loadWorldData("world/default.db", mSceneMgr))
+   	this->requestShutdown();
+   	
    
    mSelectedObject = 0;
    mMouseY = mMouseX = mMouseRotX = mMouseRotY = 0;
    mMouseDownButton2 = zoomin = zoomout = false;
    CamRotatePos = CamLookAtPos = 0;
    mScreenshots = 0;
+   mOnCEGUI = false;
 }
 
+// ------------------------------------
+//  Setup the editors UI
+// ------------------------------------
 void EditorState::setupEditorUI() {
 
 	// setup the skin and font to use
@@ -99,11 +106,22 @@ void EditorState::setupEditorUI() {
 		}
 	}
 	
-	// Added our items, now select an item so the box isn't empty
-	
 	meshList->setReadOnly(true);
 	if (i > 0) 
 		meshList->setItemSelectState(item, true);
+		
+	CEGUI::Window* rootwindow = (CEGUI::Window*)CEGUI::WindowManager::getSingleton().getWindow("Root");	
+	rootwindow->subscribeEvent(CEGUI::Window::EventActivated, CEGUI::Event::Subscriber(&EditorState::CEGUIActivated, this));
+	rootwindow->subscribeEvent(CEGUI::Window::EventDeactivated, CEGUI::Event::Subscriber(&EditorState::CEGUIDeactivated, this));
+	
+	// Setup the position edit boxes
+	CEGUI::Editbox* EditXPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXPos");
+	EditXPos->setValidationString("[0-9.]*");
+//   EditXPos->subscribeEvent(CEGUI::Editbox::EventInvalidEntryAttempted, CEGUI::Event::Subscriber(&EditorState::CEGUIDeactivated, this));
+	EditXPos->subscribeEvent(CEGUI::Window::EventActivated, CEGUI::Event::Subscriber(&EditorState::CEGUIActivated, this));
+//	EditXPos->subscribeEvent(CEGUI::Window::EventDeactivated, CEGUI::Event::Subscriber(&EditorState::CEGUIDeactivated, this));
+//	EditXPos->subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&EditorState::CEGUIDeactivated, this));
+	
 
 
 
@@ -120,6 +138,9 @@ void EditorState::pause( void ) { }
 void EditorState::resume( void ) { }
 
 
+// ------------------------------------
+//  Update Camera Position
+// ------------------------------------
 void EditorState::updateCamera() {
   	Ogre::Vector3 pos = mCamera->getPosition();
 
@@ -165,25 +186,64 @@ void EditorState::update( unsigned long lTimeElapsed ) {
 }
 
 
+// ------------------------------------
+// Clicked on to a CEGUI field
+// ------------------------------------
+bool EditorState::CEGUIActivated(const CEGUI::EventArgs& evt) {
 
+	// give the keyboard only to CEGUI
+	mOnCEGUI = true;
+	
+	
+}
+
+// ------------------------------------
+// Clicked off a CEGUI field 
+// ONLY EDITBOXS subscibed to this function
+// ------------------------------------
+bool EditorState::CEGUIDeactivated(const CEGUI::EventArgs& evt) {
+  const CEGUI::WindowEventArgs& we = static_cast<const CEGUI::WindowEventArgs&>(evt);
+  CEGUI::String senderID = we.window->getName();
+
+	CEGUI::Editbox* editBox = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow(senderID);
+	// if the editbox still has input focus do not apply changes
+	changeSelectedObject();
+	// give the keyboard back to everyone
+	mOnCEGUI = false;
+}
 
 
 void EditorState::keyPressed( const OIS::KeyEvent &e ) {
-	 if( e.key == OIS::KC_DOWN ) {
-	 		zoomout = true;
-	 }
-	 if( e.key == OIS::KC_UP ) {
-	 		zoomin = true;
-	 }	 
+
+	if (mOnCEGUI) {
+			 CEGUI::System::getSingleton().injectKeyDown(e.key);
+		    CEGUI::System::getSingleton().injectChar(e.text);
+			return;
+	}
+
+	if( e.key == OIS::KC_DOWN ) {
+		zoomout = true;
+	}
+	if( e.key == OIS::KC_UP ) {
+		zoomin = true;
+	}	 
 }
 
 void EditorState::keyReleased( const OIS::KeyEvent &e ) {
-    if( e.key == OIS::KC_ESCAPE ) {
-        this->requestShutdown();
-    } else {
-       // this->changeState( PlayState::getSingletonPtr() );
-    }
+	 
+	if( e.key == OIS::KC_ESCAPE ) {
+		this->requestShutdown();
+	} else {
+		// this->changeState( PlayState::getSingletonPtr() );
+	}
+
     
+	if (mOnCEGUI) {
+		CEGUI::System::getSingleton().injectKeyUp(e.key);
+		return;
+	}
+
+
    // camera controls
    
 	if( e.key == OIS::KC_DOWN )
@@ -196,8 +256,7 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 	// scale terrain up and down
 	
 	if(e.key == OIS::KC_1) {
-		Ogre::SceneNode* terrainNode = mSceneMgr->getSceneNode("Crater_Alpha");
-		terrainNode->showBoundingBox(true);
+
 	}
 	if(e.key == OIS::KC_2) {
 		Ogre::Vector3 pos = mCamera->getPosition();
@@ -215,6 +274,10 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 	}
 }
 
+
+// ------------------------------------
+//  Add a building to the terrain
+// ------------------------------------
 bool EditorState::addBuilding() {
 
 	// Shoot out a ray from the mouse cursor
@@ -234,6 +297,10 @@ bool EditorState::addBuilding() {
 	return false;
 }
 
+void EditorState::changeSelectedObject() {
+	
+}
+
 void EditorState::mouseMoved( const OIS::MouseEvent &e ) {
     const OIS::MouseState &mouseState = e.state;
     /*mMousePointer->setTop(mouseState.Y.abs);
@@ -245,17 +312,14 @@ void EditorState::mouseMoved( const OIS::MouseEvent &e ) {
 }
 
 void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
-	
-	
+		
 	if (id==0)
 		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)0);
 	if (id==1)
 		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)1);
 
-
-
-	
-	
+	if (mOnCEGUI)
+		return;
 	
 	Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mMouseX/float(mViewport->getActualWidth()), mMouseY/float(mViewport->getActualHeight()));
 
@@ -301,6 +365,9 @@ void EditorState::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id
 		CEGUI::System::getSingleton().injectMouseButtonUp((CEGUI::MouseButton)0);
 	if (id==1)
 		CEGUI::System::getSingleton().injectMouseButtonUp((CEGUI::MouseButton)1);
+		
+	if (mOnCEGUI)
+		return;
 		
     //this->changeState( PlayState::getSingletonPtr() );
     if (id == 1) {

@@ -24,17 +24,26 @@
 #include <OgreSceneQuery.h>
 #include <OgreEntity.h>
 #include <OgreStringConverter.h>
+#include <sqlite3.h>
+#include "hwstructs.h"
+
+
+
 
 class WorldManager {
 public:
 	WorldManager( void );
 	~WorldManager( void );
-	void loadWorld(Ogre::String, Ogre::SceneManager*);
+	bool loadWorldData(std::string, Ogre::SceneManager*);
+	bool saveWorldData();
 	bool addBuilding(Ogre::Vector3, const char*);
 	Ogre::SceneManager   *mSceneMgr;	
 private:
+	Building* mBuildings;
 	int mBuildCount;
 	Ogre::SceneNode *mWorldNode; // attach all ground objects to this SceneNode
+	sqlite3 *mWorldDatabase;
+
 };
 #endif
 

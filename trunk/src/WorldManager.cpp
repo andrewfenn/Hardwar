@@ -23,12 +23,14 @@ WorldManager::WorldManager() {
 }
 
 WorldManager::~WorldManager() { 
-
+	if(mWorldDatabase) {
+		sqlite3_close(mWorldDatabase);
+	}
 }
 
 
 // Used for loading up the locations of objects
-void WorldManager::loadWorld(Ogre::String filename, Ogre::SceneManager* mSceneMgr) {
+bool WorldManager::loadWorldData(std::string filename, Ogre::SceneManager* mSceneMgr) {
 
 	// Assign a pointer to the scene manager and create our scene node to attach buildings to
 	this->mSceneMgr = mSceneMgr;
@@ -40,17 +42,52 @@ void WorldManager::loadWorld(Ogre::String filename, Ogre::SceneManager* mSceneMg
 	terrainNode->setScale(10.0f, 10.0f, 10.0f);
 
 	mSceneMgr->getSuggestedViewpoint(false);*/
+	
+	
+	// load the world database
+	int result;
+	result = sqlite3_open(filename.c_str(), &mWorldDatabase);
+	if(result) {
+		// couldn't load the file
+		std::cerr << "ERROR: \"" << filename << "\" could not be opened" << std::endl << sqlite3_errmsg(mWorldDatabase) << std::endl;
+		sqlite3_close(mWorldDatabase);
+
+		return false;
+	}
+	
+	return true;
 }
 
-bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
+bool WorldManager::saveWorldData() {
+	
+	return true;
+}
 
+
+bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
+   // Increase the list
+   Building* templist = new Building[mBuildCount+1];
+   mBuildings = templist;
+
+	// Add new building data
+	Building newbuilding;
+	newbuilding.position = position;
+	newbuilding.rotation = Ogre::Vector3::ZERO;
+	newbuilding.crater = 0; // alpha crater
+	newbuilding.airlocks = new Airlock; // TODO: unimplemented
+	
+	// add to the list
+	mBuildings[mBuildCount] = newbuilding;
+
+	// draw building
 	Ogre::Entity *ent = mSceneMgr->createEntity("Building["+Ogre::StringConverter::toString(mBuildCount)+"]",
 	 "models/hangers/"+(std::string)meshName);
-//	ent->setMaterialName("DefaultBuilding");
+	//	ent->setMaterialName("DefaultBuilding");
 	Ogre::SceneNode* mBuildingNode = mWorldNode->createChildSceneNode();
 	mBuildingNode->attachObject(ent);
 	mBuildingNode->scale(15, 15, 15);
-	position.y += 500;
    mBuildingNode->setPosition(position);
+   
+   // increase the build count
    mBuildCount++;
 }

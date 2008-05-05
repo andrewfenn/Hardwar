@@ -79,6 +79,7 @@ private:
 
     void updateCamera(); // Update the editor camera
     bool addBuilding(); // Gets position of terrain and adds a building at that position
+    void changeSelectedObject(); // changes position and rotate of the current selected object
     
     // Helper functions pinched from the Ogre Wiki for raycasting on polygons
     // See the cpp file for more details
@@ -93,8 +94,11 @@ private:
                                 const Ogre::Vector3 &scale);
                                 
 	 // GUI functions
+	 bool mOnCEGUI; // if true don't process any key presses for our non-CEGUI functions
 	 void setupEditorUI();
 	 bool GUIHandleShutdown(const CEGUI::EventArgs&);
+ 	 bool CEGUIActivated(const CEGUI::EventArgs&);
+	 bool CEGUIDeactivated(const CEGUI::EventArgs&);
 };
 #endif
 
