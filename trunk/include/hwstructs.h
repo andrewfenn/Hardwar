@@ -98,6 +98,7 @@ typedef struct {
 	unsigned int id;								// id of the row in our database
 	unsigned int crater; 						//	which crater the building is located in
 	Airlock* airlocks;							// number of airlocks on the building
+	std::string mesh;							   // mesh type
 	Ogre::Vector3 position;
 	Ogre::Vector3 rotation;
 } Building;

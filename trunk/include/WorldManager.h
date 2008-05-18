@@ -36,14 +36,15 @@ public:
 	~WorldManager( void );
 	bool loadWorldData(std::string, Ogre::SceneManager*);
 	bool saveWorldData();
+	bool loadBuildings(int);
 	bool addBuilding(Ogre::Vector3, const char*);
 	Ogre::SceneManager   *mSceneMgr;	
 private:
-	Building* mBuildings;
-	int mBuildCount;
+	std::vector<Building> mBuildings;
+	unsigned int mBuildCount;
 	Ogre::SceneNode *mWorldNode; // attach all ground objects to this SceneNode
 	sqlite3 *mWorldDatabase;
-
+	bool drawBuildings();
 };
 #endif
 

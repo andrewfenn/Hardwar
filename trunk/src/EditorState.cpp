@@ -82,11 +82,17 @@ void EditorState::setupEditorUI() {
 	// setup the CEGUI sheet
 	CEGUI::Window* sheet= CEGUI::WindowManager::getSingleton().loadWindowLayout("Editor.layout");
    mGUIMgr->mSystem->setGUISheet(sheet);
-   
-   // setup the quit button
+
+	// Grab the window manager   
 	CEGUI::WindowManager *wmgr = CEGUI::WindowManager::getSingletonPtr();
+	
+   // setup the quit button
    CEGUI::Window *quit1 = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/QuitButton");
    quit1->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUIHandleShutdown, this));
+
+   // setup the save world button
+   CEGUI::Window *savebutton = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/SaveButton");
+   savebutton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUISaveWorld, this));
 
 	// start popular mesh combo box list
 	CEGUI::Combobox* meshList = (CEGUI::Combobox*)CEGUI::WindowManager::getSingleton().getWindow("Root//NewTab/MeshList");
@@ -315,8 +321,10 @@ void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id 
 		
 	if (id==0)
 		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)0);
-	if (id==1)
+	if (id==1) {
 		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)1);
+		mOnCEGUI = false;
+	}
 
 	if (mOnCEGUI)
 		return;
@@ -630,4 +638,10 @@ void EditorState::getMeshInformation(const Ogre::MeshPtr mesh,
 bool EditorState::GUIHandleShutdown(const CEGUI::EventArgs& e) {
 	this->requestShutdown();
 }
- 
+
+bool EditorState::GUISaveWorld(const CEGUI::EventArgs& e) {
+	if (!mWorldMgr->saveWorldData()) {
+		// error when saving
+		std::cerr << " ERROR: There was a problem saving the world data." << std::endl;
+	}
+} 

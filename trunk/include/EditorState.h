@@ -97,6 +97,7 @@ private:
 	 bool mOnCEGUI; // if true don't process any key presses for our non-CEGUI functions
 	 void setupEditorUI();
 	 bool GUIHandleShutdown(const CEGUI::EventArgs&);
+	 bool GUISaveWorld(const CEGUI::EventArgs&);
  	 bool CEGUIActivated(const CEGUI::EventArgs&);
 	 bool CEGUIDeactivated(const CEGUI::EventArgs&);
 };
