@@ -133,6 +133,18 @@ bool WorldManager::loadBuildings(int crater = -1) {
 	return noError;
 }
 
+bool WorldManager::deleteBuilding(std::string name) {
+	// convert the buildng[number] to number
+	unsigned int id = atoi(name.substr(9, name.length()-10).c_str());
+	unsigned int size = mBuildings.size();
+	mBuildings.erase(mBuildings.begin()+id);
+	if (size > mBuildings.size()) {
+		mBuildCount--;
+		return true;
+	}
+	return false; // building not found
+}
+
 bool WorldManager::saveWorldData() {
 	int result;
 	bool noError = true;
@@ -140,8 +152,7 @@ bool WorldManager::saveWorldData() {
 	const char* errorMsg = 0;
 	
 	std::string sql = "REPLACE INTO buildings ( id, crater, mesh, position_x, position_y, position_z, rotation_x, rotation_y, rotation_z) values(:id, :crater, :mesh, :position_x, :position_y, :position_z, :rotation_x, :rotation_y, :rotation_z);";
-	
-	
+
 	// Save building data
 	for (unsigned int i=0; i < mBuildCount; i++) {
 	
@@ -176,23 +187,31 @@ bool WorldManager::saveWorldData() {
 		std::cerr << "SQL error: " << errorMsg << " in file WorldManager.cpp, saveWorldData()" << std::endl; // FIXME: Add this to ogre log
 		noError = false;
 	}
+
+	// delete any leftover buildings. 
+	// Note: I am doing it this way rather then flushing the whole table incase something messes up with the inserts
+	sql = "DELETE FROM buildings WHERE id > :id;";
+	sqlite3_prepare_v2(mWorldDatabase, sql.c_str(), sql.size(), &statement, NULL);
+	sqlite3_bind_int (statement, 1, mBuildCount);
+	result = sqlite3_step(statement);
+	if( result!=SQLITE_DONE ){
+			errorMsg = sqlite3_errmsg(mWorldDatabase);
+			std::cerr << "SQL error: " << errorMsg << " in file WorldManager.cpp, saveWorldData()" << std::endl; // FIXME: Add this to ogre log
+			noError = false;
+	}
+	result = sqlite3_finalize(statement);
+	if( result!=SQLITE_OK ) {
+		errorMsg = sqlite3_errmsg(mWorldDatabase);
+		std::cerr << "SQL error: " << errorMsg << " in file WorldManager.cpp, saveWorldData()" << std::endl; // FIXME: Add this to ogre log
+		noError = false;
+	}
 	return noError;
 }
 
 
 // Adding a building Via the editor
 bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
-	// Add new building data
-	Building newbuilding;
-	newbuilding.position = position;
-	newbuilding.rotation = Ogre::Vector3::ZERO;
-	newbuilding.crater = 0; // alpha crater
-	newbuilding.airlocks = new Airlock; // TODO: unimplemented
-	newbuilding.mesh = (std::string)meshName;
-	// add to the list
-	//mBuildings[mBuildCount] = newbuilding;
-	mBuildings.push_back(newbuilding);
-	
+
 	// draw building
 	Ogre::Entity *ent = mSceneMgr->createEntity("Building["+Ogre::StringConverter::toString(mBuildCount)+"]",
 	 "models/hangers/"+(std::string)meshName);
@@ -210,4 +229,14 @@ bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
    
    // increase the build count
    mBuildCount++;
+   
+   // Add the building data to worldManager
+	Building newbuilding;
+	newbuilding.position = position;
+	newbuilding.rotation = Ogre::Vector3::ZERO; // FIXME: Change this to a Quad
+	newbuilding.crater = 0; // alpha crater TODO: Add code to figure out what crater we're editing
+	newbuilding.airlocks = new Airlock; // TODO: unimplemented
+	newbuilding.mesh = (std::string)meshName;
+
+	mBuildings.push_back(newbuilding);
 }

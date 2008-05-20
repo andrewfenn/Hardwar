@@ -129,6 +129,7 @@ void EditorState::setupEditorUI() {
 //	EditXPos->subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&EditorState::CEGUIDeactivated, this));
 	
 
+	resetGUIEditPos(); // clear the edit boxes and disable them when starting the editor
 
 
 }
@@ -218,50 +219,80 @@ bool EditorState::CEGUIDeactivated(const CEGUI::EventArgs& evt) {
 	mOnCEGUI = false;
 }
 
-void EditorState::updateGUIEditPos() {
-		// put position and rotation coords into the edit boxes
-		Ogre::Entity *pentity = 0;
-		pentity = static_cast<Ogre::Entity*>(mSelectedObject);
-		CEGUI::Editbox* EditBoxPos;
-		Ogre::Vector3 vect;
-		bool enabled = false;
-		
-		if (mSelectedObject) enabled = true;
-		
-		// grab the position and fill the text boxes
-		vect = pentity->getParentNode()->getPosition();
-			
-		// Insert X position
-		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXPos");
-		EditBoxPos->setText(StringConverter::toString(vect.x));
-		EditBoxPos->setEnabled(enabled);
-		// Insert Y position
-		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYPos");
-		EditBoxPos->setText(StringConverter::toString(vect.y));
-		EditBoxPos->setEnabled(enabled);
-		// Insert Z position
-		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZPos");
-		EditBoxPos->setText(StringConverter::toString(vect.z));
-		EditBoxPos->setEnabled(enabled);
+void EditorState::resetGUIEditPos() {
+	CEGUI::Editbox* EditBoxPos;
+	// Reset X position
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXPos");
+	EditBoxPos->setText("");
+	EditBoxPos->setEnabled(false);
+	// Reset Y position
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYPos");
+	EditBoxPos->setText("");
+	EditBoxPos->setEnabled(false);
+	// Reset Z position
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZPos");
+	EditBoxPos->setText("");
+	EditBoxPos->setEnabled(false);
 
-		Ogre::Degree deg;
-		// Insert X rotation
-		deg = pentity->getParentNode()->getOrientation().getYaw();
-		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXRot");
-		EditBoxPos->setText(StringConverter::toString(deg));
-		EditBoxPos->setEnabled(enabled);
-		// Insert Y rotation
-		deg = pentity->getParentNode()->getOrientation().getPitch();
-		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYRot");
-		EditBoxPos->setText(StringConverter::toString(deg));
-		EditBoxPos->setEnabled(enabled);
-		// Insert Z rotation
-		deg = pentity->getParentNode()->getOrientation().getRoll();
-		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZRot");
-		EditBoxPos->setText(StringConverter::toString(deg));
-		EditBoxPos->setEnabled(enabled);
+	// Reset X rotation
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXRot");
+	EditBoxPos->setText("");
+	EditBoxPos->setEnabled(false);
+	// Reset Y rotation
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYRot");
+	EditBoxPos->setText("");
+	EditBoxPos->setEnabled(false);
+	// Reset Z rotation
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZRot");
+	EditBoxPos->setText("");
+	EditBoxPos->setEnabled(false);
 }
 
+void EditorState::updateGUIEditPos() {
+	// put position and rotation coords into the edit boxes
+	bool enabled = false;
+	Ogre::Entity *pentity = 0;
+	CEGUI::Editbox* EditBoxPos;
+			
+	if (mSelectedObject) {
+			pentity = static_cast<Ogre::Entity*>(mSelectedObject);
+			enabled = true;
+	}
+	
+	Ogre::Vector3 vect;
+	// grab the position and fill the text boxes
+	vect = pentity->getParentNode()->getPosition();
+		
+	// Insert X position
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXPos");
+	EditBoxPos->setText(StringConverter::toString(vect.x));
+	EditBoxPos->setEnabled(enabled);
+	// Insert Y position
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYPos");
+	EditBoxPos->setText(StringConverter::toString(vect.y));
+	EditBoxPos->setEnabled(enabled);
+	// Insert Z position
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZPos");
+	EditBoxPos->setText(StringConverter::toString(vect.z));
+	EditBoxPos->setEnabled(enabled);
+
+	Ogre::Degree deg;
+	// Insert X rotation
+	deg = pentity->getParentNode()->getOrientation().getYaw();
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXRot");
+	EditBoxPos->setText(StringConverter::toString(deg));
+	EditBoxPos->setEnabled(enabled);
+	// Insert Y rotation
+	deg = pentity->getParentNode()->getOrientation().getPitch();
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYRot");
+	EditBoxPos->setText(StringConverter::toString(deg));
+	EditBoxPos->setEnabled(enabled);
+	// Insert Z rotation
+	deg = pentity->getParentNode()->getOrientation().getRoll();
+	EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZRot");
+	EditBoxPos->setText(StringConverter::toString(deg));
+	EditBoxPos->setEnabled(enabled);
+}
 
 
 void EditorState::keyPressed( const OIS::KeyEvent &e ) {
@@ -281,10 +312,30 @@ void EditorState::keyPressed( const OIS::KeyEvent &e ) {
 }
 
 void EditorState::keyReleased( const OIS::KeyEvent &e ) {
+		
+	if (e.key == OIS::KC_SYSRQ) { // screenshot
+		char filename[30] ;
+	   std::sprintf(filename, "./screenshots/screenshot_%d.png", ++mScreenshots);
+	   mRoot->getAutoCreatedWindow()->writeContentsToFile(filename);
+	}    
+	
+	
 	    
 	if (mOnCEGUI) {
+		// CEGUI is active
+		
 		if( e.key == OIS::KC_ESCAPE ) {
 			mOnCEGUI = false;
+		}
+		
+		if (e.key == OIS::KC_DELETE) {
+			if (mWorldMgr->deleteBuilding(mSelectedObject->getName())) {
+				// object was deleted in the worldmanager, delete the object from ogre too
+				mSelectedObject->_getManager()->destroyMovableObject(mSelectedObject);
+				// update editboxes
+				mSelectedObject = 0;
+				resetGUIEditPos();
+			}
 		}
 	
 		CEGUI::System::getSingleton().injectKeyUp(e.key);
@@ -293,7 +344,7 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 
 
 	if( e.key == OIS::KC_ESCAPE ) {
-		this->requestShutdown();
+	//	this->requestShutdown();
 	} else {
 		// this->changeState( PlayState::getSingletonPtr() );
 	}
@@ -324,12 +375,7 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 	if(e.key == OIS::KC_B) {
 		mSceneMgr->showBoundingBoxes(true);
 	}
-	
-	if (e.key == OIS::KC_SYSRQ) {
-		char filename[30] ;
-	   std::sprintf(filename, "./screenshots/screenshot_%d.png", ++mScreenshots);
-	   mRoot->getAutoCreatedWindow()->writeContentsToFile(filename);
-	}
+
 }
 
 
@@ -396,6 +442,7 @@ void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id 
 		// turn off the bounding box before we get rid of the pointer
 		if (mSelectedObject)
 			mSelectedObject->getParentSceneNode()->showBoundingBox(false);
+		resetGUIEditPos(); // clear the edit box of anything before clicking around
 		mSelectedObject = 0;
 		
 		
@@ -407,7 +454,6 @@ void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id 
       Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
       Ogre::RaySceneQueryResult::iterator itr;
 
-	
 		
       // Get results, create a node/entity on the position
       for (itr = result.begin(); itr != result.end(); itr++) {
@@ -419,7 +465,6 @@ void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id 
 				updateGUIEditPos();
 				mSelectedObject->getParentSceneNode()->showBoundingBox(true);
 				mOnCEGUI = true;
-
 				break;
 			}
       } // end for

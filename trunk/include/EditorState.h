@@ -96,7 +96,8 @@ private:
 	 // GUI functions
 	 bool mOnCEGUI; // if true don't process any key presses for our non-CEGUI functions
 	 void setupEditorUI();
-	 void updateGUIEditPos();
+	 void updateGUIEditPos(); // adds new coords to the edit position boxes and enables them
+	 void resetGUIEditPos(); // clears the edit position boxes and disables them
 	 bool GUIHandleShutdown(const CEGUI::EventArgs&);
 	 bool GUISaveWorld(const CEGUI::EventArgs&);
  	 bool CEGUIActivated(const CEGUI::EventArgs&);

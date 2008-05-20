@@ -37,6 +37,7 @@ public:
 	bool loadWorldData(std::string, Ogre::SceneManager*);
 	bool saveWorldData();
 	bool loadBuildings(int);
+	bool deleteBuilding(std::string); 
 	bool addBuilding(Ogre::Vector3, const char*);
 	Ogre::SceneManager   *mSceneMgr;	
 private:
