@@ -73,6 +73,8 @@ bool WorldManager::drawBuildings() {
 		mBuildingNode->setPosition(mBuildings[i].position);
 //		mBuildingNode->setRotation(mBuildings[i].rotation);
 	}
+	
+	return true;
 }
 
 // Loads all the building data in the SQL file
@@ -238,5 +240,10 @@ bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
 	newbuilding.airlocks = new Airlock; // TODO: unimplemented
 	newbuilding.mesh = (std::string)meshName;
 
+	// check the building was added
+	int numBuildings = mBuildings.size();
 	mBuildings.push_back(newbuilding);
+	if (mBuildings.size() > numBuildings)	
+		return true;
+	return false;
 }

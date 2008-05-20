@@ -74,7 +74,7 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
         // Create inputsystem
         mInputSystem = OIS::InputManager::createInputSystem( paramList );
         // If possible create a buffered keyboard
-        if( mInputSystem->numKeyBoards() > 0 ) {
+        if( mInputSystem->numKeyboards() > 0 ) {
             mKeyboard = static_cast<OIS::Keyboard*>(mInputSystem->createInputObject(OIS::OISKeyboard, true));
             mKeyboard->setEventCallback(this);
         }
@@ -95,7 +95,7 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
 
         // If possible create all joysticks in buffered mode
         if( mInputSystem->numJoysticks() > 0 ) {
-            mJoysticks.resize( mInputSystem->numJoysticks() );
+            mJoysticks.resize( mInputSystem->numJoyStick() );
 
             itJoystick    = mJoysticks.begin();
             itJoystickEnd = mJoysticks.end();

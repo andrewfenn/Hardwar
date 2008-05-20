@@ -201,7 +201,7 @@ bool EditorState::CEGUIActivated(const CEGUI::EventArgs& evt) {
 	// give the keyboard only to CEGUI
 	mOnCEGUI = true;
 	
-	
+	return true;
 }
 
 // ------------------------------------
@@ -217,6 +217,8 @@ bool EditorState::CEGUIDeactivated(const CEGUI::EventArgs& evt) {
 	changeSelectedObject();
 	// give the keyboard back to everyone
 	mOnCEGUI = false;
+	
+	return true;
 }
 
 void EditorState::resetGUIEditPos() {
