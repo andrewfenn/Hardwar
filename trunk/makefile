@@ -6,7 +6,7 @@ SF= ./src/GUIManager.o ./src/InputManager.o ./src/GameManager.o ./src/GameState.
 
 CC=g++
 LINKER=gcc
-WFLAGS=-Wall -Wuninitialized -Wwrite-strings -Wcast-qual  -Wcomment -Wcast-align -Wno-deprecated
+WFLAGS=-Wall -Wuninitialized -Wwrite-strings -Wcast-qual  -Wcomment -Wcast-align -Wno-deprecated -fvisibility=hidden -fvisibility-inlines-hidden
 OGRE_CFLAGS = `pkg-config OGRE --cflags` `pkg-config CEGUI-OGRE --cflags`
 OGRE_LIBS = `pkg-config OGRE --libs` `pkg-config CEGUI-OGRE --libs`
 CEGUI_CFLAGS = `pkg-config CEGUI --cflags`

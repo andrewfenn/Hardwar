@@ -182,7 +182,6 @@ bool WorldManager::saveWorldData() {
 
 // Adding a building Via the editor
 bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
-	
 	// Add new building data
 	Building newbuilding;
 	newbuilding.position = position;
@@ -199,8 +198,14 @@ bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
 	 "models/hangers/"+(std::string)meshName);
 	//	ent->setMaterialName("DefaultBuilding");
 	Ogre::SceneNode* mBuildingNode = mWorldNode->createChildSceneNode();
+	Ogre::AxisAlignedBox box = ent->getBoundingBox();
 	mBuildingNode->attachObject(ent);
 	mBuildingNode->scale(15, 15, 15);
+
+	// push the building up out of the ground
+	box.scale(Ogre::Vector3(15,15,15));
+   Ogre::Vector3 size = box.getSize();
+   position.y=+size.y;
    mBuildingNode->setPosition(position);
    
    // increase the build count

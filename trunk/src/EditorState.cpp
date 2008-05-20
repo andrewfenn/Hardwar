@@ -218,6 +218,51 @@ bool EditorState::CEGUIDeactivated(const CEGUI::EventArgs& evt) {
 	mOnCEGUI = false;
 }
 
+void EditorState::updateGUIEditPos() {
+		// put position and rotation coords into the edit boxes
+		Ogre::Entity *pentity = 0;
+		pentity = static_cast<Ogre::Entity*>(mSelectedObject);
+		CEGUI::Editbox* EditBoxPos;
+		Ogre::Vector3 vect;
+		bool enabled = false;
+		
+		if (mSelectedObject) enabled = true;
+		
+		// grab the position and fill the text boxes
+		vect = pentity->getParentNode()->getPosition();
+			
+		// Insert X position
+		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXPos");
+		EditBoxPos->setText(StringConverter::toString(vect.x));
+		EditBoxPos->setEnabled(enabled);
+		// Insert Y position
+		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYPos");
+		EditBoxPos->setText(StringConverter::toString(vect.y));
+		EditBoxPos->setEnabled(enabled);
+		// Insert Z position
+		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZPos");
+		EditBoxPos->setText(StringConverter::toString(vect.z));
+		EditBoxPos->setEnabled(enabled);
+
+		Ogre::Degree deg;
+		// Insert X rotation
+		deg = pentity->getParentNode()->getOrientation().getYaw();
+		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditXRot");
+		EditBoxPos->setText(StringConverter::toString(deg));
+		EditBoxPos->setEnabled(enabled);
+		// Insert Y rotation
+		deg = pentity->getParentNode()->getOrientation().getPitch();
+		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditYRot");
+		EditBoxPos->setText(StringConverter::toString(deg));
+		EditBoxPos->setEnabled(enabled);
+		// Insert Z rotation
+		deg = pentity->getParentNode()->getOrientation().getRoll();
+		EditBoxPos = (CEGUI::Editbox*)CEGUI::WindowManager::getSingleton().getWindow("Root//EditTab/EditZRot");
+		EditBoxPos->setText(StringConverter::toString(deg));
+		EditBoxPos->setEnabled(enabled);
+}
+
+
 
 void EditorState::keyPressed( const OIS::KeyEvent &e ) {
 
@@ -236,19 +281,22 @@ void EditorState::keyPressed( const OIS::KeyEvent &e ) {
 }
 
 void EditorState::keyReleased( const OIS::KeyEvent &e ) {
-	 
+	    
+	if (mOnCEGUI) {
+		if( e.key == OIS::KC_ESCAPE ) {
+			mOnCEGUI = false;
+		}
+	
+		CEGUI::System::getSingleton().injectKeyUp(e.key);
+		return;
+	}
+
+
 	if( e.key == OIS::KC_ESCAPE ) {
 		this->requestShutdown();
 	} else {
 		// this->changeState( PlayState::getSingletonPtr() );
 	}
-
-    
-	if (mOnCEGUI) {
-		CEGUI::System::getSingleton().injectKeyUp(e.key);
-		return;
-	}
-
 
    // camera controls
    
@@ -271,6 +319,10 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 	
 	if(e.key == OIS::KC_A) {
 		addBuilding();
+	}
+	
+	if(e.key == OIS::KC_B) {
+		mSceneMgr->showBoundingBoxes(true);
 	}
 	
 	if (e.key == OIS::KC_SYSRQ) {
@@ -323,7 +375,6 @@ void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id 
 		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)0);
 	if (id==1) {
 		CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)1);
-		mOnCEGUI = false;
 	}
 
 	if (mOnCEGUI)
@@ -341,6 +392,10 @@ void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id 
 	}
 	if (id == 0) { // left mouse button click, select
 		Ogre::RaySceneQuery* mRaySceneQuery = 0;
+		
+		// turn off the bounding box before we get rid of the pointer
+		if (mSelectedObject)
+			mSelectedObject->getParentSceneNode()->showBoundingBox(false);
 		mSelectedObject = 0;
 		
 		
@@ -356,8 +411,15 @@ void EditorState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id 
 		
       // Get results, create a node/entity on the position
       for (itr = result.begin(); itr != result.end(); itr++) {
-			if (itr->movable) {
+      	// check that the object isn't the terrain
+			if (itr->movable && itr->movable->getMovableType() != "TerrainMipMap") {
+				
+				// select the object, draw the bounding box and enable cegui lock				
 				mSelectedObject = itr->movable;
+				updateGUIEditPos();
+				mSelectedObject->getParentSceneNode()->showBoundingBox(true);
+				mOnCEGUI = true;
+
 				break;
 			}
       } // end for
@@ -637,11 +699,14 @@ void EditorState::getMeshInformation(const Ogre::MeshPtr mesh,
 
 bool EditorState::GUIHandleShutdown(const CEGUI::EventArgs& e) {
 	this->requestShutdown();
+	return true;
 }
 
 bool EditorState::GUISaveWorld(const CEGUI::EventArgs& e) {
 	if (!mWorldMgr->saveWorldData()) {
 		// error when saving
 		std::cerr << " ERROR: There was a problem saving the world data." << std::endl;
+		return false;
 	}
+	return true;
 } 
