@@ -24,75 +24,70 @@ using namespace Ogre;
 PlayState* PlayState::mPlayState;
 
 void PlayState::enter( void ) {
-    mRoot             = Root::getSingletonPtr();
-    mOverlayMgr       = OverlayManager::getSingletonPtr();
-    mInputDevice      = InputManager::getSingletonPtr()->getKeyboard();
-    mSceneMgr         = mRoot->getSceneManager( "ST_GENERIC" );
-    mCamera           = mSceneMgr->createCamera( "PlayCamera" );
-    mViewport         = mRoot->getAutoCreatedWindow()->addViewport( mCamera );
+    mRoot         = Ogre::Root::getSingletonPtr();
+	mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "EditorSceneMgr" );
+	
+	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
+	mSceneMgr     = mRoot->getSceneManager( "EditorSceneMgr" );
+	mCamera       = mSceneMgr->createCamera( "EditCamera" );
+	mViewport     = mRoot->getAutoCreatedWindow()->addViewport( mCamera );
+	mGUIMgr		  = GUIManager::getSingletonPtr();
 
-    mInfoOverlay      = mOverlayMgr->getByName( "Overlay/Info" );
-    mPlayOverlay      = mOverlayMgr->getByName( "Overlay/PlayState" );
-    mMouseOverlay     = mOverlayMgr->getByName( "Overlay/MousePointer" );
+	/*mMouseOverlay     = mOverlayMgr->getByName( "Overlay/MousePointer" );
+	mMousePointer     = mOverlayMgr->getOverlayElement( "MousePointer/Pointer" );
+	mMouseOverlay->show();*/
+	
+	// Initialise CEGUI for user interface stuff
+	mGUIMgr->initialise(mSceneMgr, mRoot->getAutoCreatedWindow());
 
-    mInfoInstruction  = mOverlayMgr->getOverlayElement( "Info/Instruction" );
-    mInfoNotification = mOverlayMgr->getOverlayElement( "Info/Notification" );
-    mMousePointer     = mOverlayMgr->getOverlayElement( "MousePointer/Pointer" );
 
-    mInfoOverlay->show();
-    mPlayOverlay->show();
-    mMouseOverlay->show();
-
-    mInfoInstruction->setCaption( "Press space for pause" );
+	// setup some light
+	Ogre::Light *light = mSceneMgr->createLight("Light1");
+   light->setType(Ogre::Light::LT_POINT);
+   light->setPosition(Ogre::Vector3(1000, 10000, 1000));
+   light->setDiffuseColour(Ogre::ColourValue::White);
+   light->setSpecularColour(Ogre::ColourValue::White);
+   
+   // Setup our camera position in the world
+   mCamera->setPosition(Ogre::Vector3(25275, 59670, 25255));		
+	mCamera->pitch((Ogre::Degree)-90);
+	mCamera->roll((Ogre::Degree)180);   	
+   
+   mMouseY = mMouseX = mMouseRotX = mMouseRotY = 0;
 }
 
 void PlayState::exit( void ) {
-    mInfoOverlay->hide();
-    mPlayOverlay->hide();
-    mMouseOverlay->hide();
-
     mSceneMgr->clearScene();
     mSceneMgr->destroyAllCameras();
     mRoot->getAutoCreatedWindow()->removeAllViewports();
 }
 
-void PlayState::pause( void ) {
-    mInfoOverlay->hide();
-    mPlayOverlay->hide();
-    mMouseOverlay->hide();
-}
+void PlayState::pause( void ) { }
 
-void PlayState::resume( void ) {
-    mInfoOverlay->show();
-    mPlayOverlay->show();
-    mMouseOverlay->show();
-
-    mInfoInstruction->setCaption( "Press space for pause" );
-}
+void PlayState::resume( void ) { }
 
 void PlayState::update( unsigned long lTimeElapsed ) {
-    // Update wat je moet updaten
+
 }
 
 void PlayState::keyPressed( const OIS::KeyEvent &e ) {
 }
 
 void PlayState::keyReleased( const OIS::KeyEvent &e ) {
-    if( e.key == OIS::KC_SPACE ) {
-        this->pushState( PauseState::getSingletonPtr() );
-    }
-    else if( e.key == OIS::KC_ESCAPE ) {
+    if( e.key == OIS::KC_ESCAPE ) {
         this->requestShutdown();
     }
 }
 
 void PlayState::mouseMoved( const OIS::MouseEvent &e ) {
     const OIS::MouseState &mouseState = e.state;
-    mMousePointer->setTop(mouseState.Y.abs);
-    mMousePointer->setLeft(mouseState.X.abs);
+    mMouseX = mouseState.X.abs;
+    mMouseY = mouseState.Y.abs;
+    CEGUI::System::getSingleton().injectMousePosition(mouseState.X.abs, mouseState.Y.abs);
 }
 
 void PlayState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
+ 	 CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)id);
 }
 
 void PlayState::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {

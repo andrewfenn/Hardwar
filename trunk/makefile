@@ -1,7 +1,8 @@
 APP=./bin/hardwar
 SF= ./src/GUIManager.o ./src/InputManager.o ./src/GameManager.o ./src/GameState.o \
-	 ./src/WorldManager.o	\
-	 ./src/EditorState.o \
+	 ./src/WorldManager.o \
+    ./src/Server.o \
+	 ./src/EditorState.o ./src/PlayState.o \
 	 ./src/Main.o \
 
 CC=g++
@@ -15,6 +16,8 @@ OIS_CFLAGS = `pkg-config OIS --cflags`
 OIS_LIBS = `pkg-config OIS --libs`
 SQLITE3_CFLAGS = -I/usr/include
 SQLITE3_LIBS = `pkg-config sqlite3 --libs`
+ENET_CFLAGS = -I/usr/local/include/enet
+ENET_LIBS = -L/usr/local/lib/libenet.a
 LIBS = -lalut -lopenal -lopenal -lalut  -logg -lvorbis -lvorbisfile -lvorbisenc -lboost_filesystem
 COPTS=$(WFLAGS) -g -march=i686 -O -pthread -pipe -DFX -D_GNU_SOURCE -DINVERSEXY $(OGRE_CFLAGS) $(CEGUI_CFLAGS) $(OIS_CFLAGS) $(SQLITE_CFLAGS) -I./include -I./usr/include/boost/
 LINKOPTS=-rdynamic -L. -lstdc++ -lm -lz -ldl $(OIS_LIBS) $(CEGUI_LIBS) $(OGRE_LIBS) $(LIBS) $(SQLITE3_LIBS)

@@ -19,7 +19,7 @@
 #include <OgreException.h>
 
 #include "GameManager.h"
-#include "EditorState.h"
+#include "PlayState.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -32,7 +32,7 @@ int main( int argc, char **argv ) {
 
     try {
         // Initialise the game and switch to the first state
-        gameManager->startGame( EditorState::getSingletonPtr() );
+        gameManager->startGame( PlayState::getSingletonPtr() );
     }
     catch ( Ogre::Exception& ex ) {
         #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
