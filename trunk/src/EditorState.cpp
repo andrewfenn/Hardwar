@@ -560,11 +560,11 @@ bool EditorState::RaycastFromPoint(const Ogre::Ray ray, Ogre::Vector3 &result) {
             unsigned long *indices;
 
             // get the mesh information
-         	getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
+         	/*getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
                               pentity->getParentNode()->getWorldPosition(),
                               pentity->getParentNode()->getWorldOrientation(),
                               pentity->getParentNode()->getScale());
-
+*/
     
             // test for hitting individual triangles on the mesh
             bool new_closest_found = false;

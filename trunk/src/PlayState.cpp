@@ -24,12 +24,13 @@ using namespace Ogre;
 PlayState* PlayState::mPlayState;
 
 void PlayState::enter( void ) {
-    mRoot         = Ogre::Root::getSingletonPtr();
-	mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "EditorSceneMgr" );
+
+   mRoot         = Ogre::Root::getSingletonPtr();
+	mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "PlaySceneMgr" );
 	
 	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
-	mSceneMgr     = mRoot->getSceneManager( "EditorSceneMgr" );
-	mCamera       = mSceneMgr->createCamera( "EditCamera" );
+	mSceneMgr     = mRoot->getSceneManager( "PlaySceneMgr" );
+	mCamera       = mSceneMgr->createCamera( "PlayerCamera" );
 	mViewport     = mRoot->getAutoCreatedWindow()->addViewport( mCamera );
 	mGUIMgr		  = GUIManager::getSingletonPtr();
 
@@ -53,6 +54,14 @@ void PlayState::enter( void ) {
 	mCamera->pitch((Ogre::Degree)-90);
 	mCamera->roll((Ogre::Degree)180);   	
    
+   mWorldNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+   
+   // setup world mesh
+   
+   Ogre::Entity *ent = mSceneMgr->createEntity("world", "hardwar/world.mesh");
+	//ent->setMaterialName("DefaultBuilding");
+	mWorldNode->attachObject(ent);
+	   
    mMouseY = mMouseX = mMouseRotX = mMouseRotY = 0;
 }
 
@@ -66,12 +75,9 @@ void PlayState::pause( void ) { }
 
 void PlayState::resume( void ) { }
 
-void PlayState::update( unsigned long lTimeElapsed ) {
+void PlayState::update( unsigned long lTimeElapsed ) { }
 
-}
-
-void PlayState::keyPressed( const OIS::KeyEvent &e ) {
-}
+void PlayState::keyPressed( const OIS::KeyEvent &e ) { }
 
 void PlayState::keyReleased( const OIS::KeyEvent &e ) {
     if( e.key == OIS::KC_ESCAPE ) {
@@ -83,11 +89,11 @@ void PlayState::mouseMoved( const OIS::MouseEvent &e ) {
     const OIS::MouseState &mouseState = e.state;
     mMouseX = mouseState.X.abs;
     mMouseY = mouseState.Y.abs;
-    CEGUI::System::getSingleton().injectMousePosition(mouseState.X.abs, mouseState.Y.abs);
+  //  CEGUI::System::getSingleton().injectMousePosition(mouseState.X.abs, mouseState.Y.abs);
 }
 
 void PlayState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
- 	 CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)id);
+ 	// CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)id);
 }
 
 void PlayState::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {

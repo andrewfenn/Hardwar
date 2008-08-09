@@ -21,6 +21,9 @@
 #include "GameManager.h"
 #include "PlayState.h"
 
+#include "Server.h"
+#include "Client.h"
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
@@ -28,20 +31,40 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT ) {
 #else
 int main( int argc, char **argv ) {
 #endif
-    GameManager *gameManager = GameManager::getSingletonPtr();
+   
+   bool serverStarted = false;
+   /*for (int i=1; i < argc; i++) {
+        if (std::string(argv[i]).compare("--dedicated") == 0) {
+          // start a server
+          serverStarted = true; 
+          Server server;
+        }
+        if (std::string(argv[i]).compare("--clienttest") == 0) {
+          // start a server
+          serverStarted = true; 
+          Client client;
+        }
+   }*/
+   
+   if (!serverStarted) {
+       // If a dedicated server hasn't started then load up the client
+          
+       GameManager *gameManager = GameManager::getSingletonPtr();
 
-    try {
-        // Initialise the game and switch to the first state
-        gameManager->startGame( PlayState::getSingletonPtr() );
-    }
-    catch ( Ogre::Exception& ex ) {
-        #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-                MessageBox( NULL, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL );
-        #else
-                std::cerr << "An exception has occured: " << ex.getFullDescription();
-        #endif
-    }
+       try {
+           // Initialise the game and switch to the first state
+           gameManager->startGame( PlayState::getSingletonPtr() );
+       }
+       catch ( Ogre::Exception& ex ) {
+           #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+                   MessageBox( NULL, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL );
+           #else
+                   std::cerr << "An exception has occured: " << ex.getFullDescription();
+           #endif
+       }
 
-    delete gameManager;
+      delete gameManager;
+   }
+    
     return 0;
 }

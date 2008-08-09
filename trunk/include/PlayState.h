@@ -63,13 +63,13 @@ private:
 
    OIS::Keyboard        *mInputDevice;
 
+   Ogre::SceneNode *mWorldNode;
+
    static PlayState *mPlayState;
 
    int mMouseX, mMouseY, mMouseRotX, mMouseRotY; // up, down, last up, last down
    Ogre::Vector3 CamRotatePos, // last rotate position while mouse is down
     					CamLookAtPos; // direction to be looking at
-
-   Server mServer;
 };
 #endif
 

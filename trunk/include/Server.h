@@ -20,10 +20,7 @@
 #define Server_H
 
 #include "WorldManager.h"
-/*extern "C"
-{
-   #include "enet/enet.h"
-}*/
+#include <enet/enet.h>
 
 class Server {
    public:
@@ -32,6 +29,10 @@ class Server {
       
    private:
       WorldManager *mWorldMgr;// World manager, manages the craters build placement, etc
+      void setupServer();
+      void serverLoop();
+      ENetHost * server;
+      ENetAddress address;
 };
 #endif
 
