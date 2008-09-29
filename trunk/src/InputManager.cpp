@@ -17,6 +17,7 @@
 */
 
 #include "InputManager.h"
+#include "config.h"
 
 InputManager *InputManager::mInputManager;
 
@@ -74,13 +75,21 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
         // Create inputsystem
         mInputSystem = OIS::InputManager::createInputSystem( paramList );
         // If possible create a buffered keyboard
+        #ifdef OIS_NEW_API
+        if( mInputSystem->getNumberOfDevices(OIS::OISKeyboard) > 0 ) {
+        #else
         if( mInputSystem->numKeyBoards() > 0 ) {
+        #endif
             mKeyboard = static_cast<OIS::Keyboard*>(mInputSystem->createInputObject(OIS::OISKeyboard, true));
             mKeyboard->setEventCallback(this);
         }
         		
         // If possible create a buffered mouse
+        #ifdef OIS_NEW_API
+        if( mInputSystem->getNumberOfDevices(OIS::OISMouse) > 0 ) {
+        #else
         if( mInputSystem->numMice() > 0 ) {
+        #endif
             mMouse = static_cast<OIS::Mouse*>(mInputSystem->createInputObject(OIS::OISMouse, true));
             mMouse->setEventCallback(this);
 
@@ -94,8 +103,13 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
         }
 
         // If possible create all joysticks in buffered mode
+        #ifdef OIS_NEW_API
+        if( mInputSystem->getNumberOfDevices(OIS::OISJoyStick) > 0 ) {
+            mJoysticks.resize( mInputSystem->getNumberOfDevices(OIS::OISJoyStick) );
+        #else
         if( mInputSystem->numJoysticks() > 0 ) {
             mJoysticks.resize( mInputSystem->numJoysticks() );
+        #endif
 
             itJoystick    = mJoysticks.begin();
             itJoystickEnd = mJoysticks.end();

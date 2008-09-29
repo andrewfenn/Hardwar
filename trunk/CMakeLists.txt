@@ -35,7 +35,7 @@ FILE(GLOB folder_source ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 SOURCE_GROUP("Source Files" FILES ${folder_source})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
   
-ADD_DEFINITIONS( "-Wall -fvisibility=hidden -fvisibility-inlines-hidden -g -O2 -fPIC -DPIC" )
+ADD_DEFINITIONS( "-Wall" )
   
 # create the project
 ADD_EXECUTABLE(hardwar ${folder_source})
@@ -56,5 +56,12 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
+# Check OIS libarary version because the API changed after 1.2.0
+SET(OIS_NEW_API "")
+IF(OIS_VERSION EQUAL "1.2.0")
+   SET(OIS_NEW_API "#define OIS_NEW_API 1")
+ENDIF(OIS_VERSION EQUAL "1.2.0")
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
+
+TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
