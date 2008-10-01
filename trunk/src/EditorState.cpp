@@ -17,6 +17,7 @@
 */
 
 #include "EditorState.h"
+#include <OgreLogManager.h>
 
 using namespace Ogre;
 
@@ -25,14 +26,14 @@ EditorState* EditorState::mEditorState;
 void EditorState::enter( void ) {
 
 	mRoot         = Ogre::Root::getSingletonPtr();
-	mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "EditorSceneMgr" );
+	mRoot->createSceneManager(Ogre::ST_GENERIC, "EditorSceneMgr" );
 	
 	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
 	mSceneMgr     = mRoot->getSceneManager( "EditorSceneMgr" );
 	mCamera       = mSceneMgr->createCamera( "EditCamera" );
 	mViewport     = mRoot->getAutoCreatedWindow()->addViewport( mCamera );
 	mGUIMgr		  = GUIManager::getSingletonPtr();
-
+    mLogMgr       = Ogre::LogManager::getSingletonPtr();
 	/*mMouseOverlay     = mOverlayMgr->getByName( "Overlay/MousePointer" );
 	mMousePointer     = mOverlayMgr->getOverlayElement( "MousePointer/Pointer" );
 	mMouseOverlay->show();*/
@@ -50,16 +51,15 @@ void EditorState::enter( void ) {
    light->setSpecularColour(Ogre::ColourValue::White);
    
    // Setup our camera position in the world
-   mCamera->setPosition(Ogre::Vector3(25275, 59670, 25255));		
-	mCamera->pitch((Ogre::Degree)-90);
-	mCamera->roll((Ogre::Degree)180);
-   
+   mCamera->setPosition(Ogre::Vector3(82775, 2160, -56665));		
+   mCamera->pitch((Ogre::Degree)-90);
+   mCamera->roll((Ogre::Degree)0);
+
    // Start the world manager and load up a world
    mWorldMgr = new WorldManager;
    // load up our SQLite world database
    if (!mWorldMgr->loadWorldData("world/default.db", mSceneMgr))
-   	this->requestShutdown();
-   	
+   	this->requestShutdown();	
    
    mSelectedObject = 0;
    mMouseY = mMouseX = mMouseRotX = mMouseRotY = 0;
@@ -94,7 +94,7 @@ void EditorState::setupEditorUI() {
    CEGUI::Window *savebutton = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/SaveButton");
    savebutton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUISaveWorld, this));
 
-	// start popular mesh combo box list
+	// start to populate mesh combo box list
 	CEGUI::Combobox* meshList = (CEGUI::Combobox*)CEGUI::WindowManager::getSingleton().getWindow("Root//NewTab/MeshList");
 	CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem((CEGUI::utf8*)"null", 0);
 	// Grab all the mesh names and push them to our combo box	
@@ -166,17 +166,17 @@ void EditorState::updateCamera() {
 
 	} else {
 	   if (mMouseY < 10)
-		 	pos.z+=35;
+		 	pos.z+=15;
 		if (mMouseY > mViewport->getActualHeight()-10)
-		 	pos.z-=35;
+		 	pos.z-=15;
 		if (mMouseX < 10)
-		 	pos.x+=35;
+		 	pos.x+=15;
 		if (mMouseX > mViewport->getActualWidth()-10)
-		 	pos.x-=35;
+		 	pos.x-=15;
 		if (zoomin)
-			pos.y-= 30;
+			pos.y-= 10;
 		if (zoomout)
-			pos.y+= 30;
+			pos.y+= 10;
 		mCamera->setPosition(pos);
 	}
 }
@@ -317,6 +317,9 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 		
 	if (e.key == OIS::KC_SYSRQ) { // screenshot
 		char filename[30] ;
+
+       
+       mLogMgr->logMessage("Taking Screenshot.\n");
 	   std::sprintf(filename, "./screenshots/screenshot_%d.png", ++mScreenshots);
 	   mRoot->getAutoCreatedWindow()->writeContentsToFile(filename);
 	}    
@@ -387,7 +390,7 @@ void EditorState::keyReleased( const OIS::KeyEvent &e ) {
 bool EditorState::addBuilding() {
 
 	// Shoot out a ray from the mouse cursor
-   Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mMouseX/float(mViewport->getActualWidth()), mMouseY/float(mViewport->getActualHeight()));
+    Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mMouseX/float(mViewport->getActualWidth()), mMouseY/float(mViewport->getActualHeight()));
    	
 	// Cast a ray at the polygon level
 	Ogre::Vector3 result;
@@ -503,15 +506,16 @@ EditorState* EditorState::getSingletonPtr( void ) {
 
 // Ray casting on the polygon level
 // Code found in Wiki: www.ogre3d.org/wiki/index.php/Raycasting_to_the_polygon_level
-bool EditorState::RaycastFromPoint(const Ogre::Ray ray, Ogre::Vector3 &result) {
+bool EditorState::RaycastFromPoint(const Ogre::Ray ray, Ogre::Vector3 &pResult) {
 	 // create a query object
     Ogre::RaySceneQuery* m_pray_scene_query = mSceneMgr->createRayQuery(ray, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
      // execute the query, returns a vector of hits
     if (m_pray_scene_query->execute().size() == 0)
     {
       // raycast did not hit an objects bounding box
-      mSceneMgr->destroyQuery(m_pray_scene_query);
-		return (false);
+       mSceneMgr->destroyQuery(m_pray_scene_query);
+       std::cout << "Line 517: Raycast failed" << std::endl;
+	   return (false);
     }
 
     // at this point we have raycast to a series of different objects bounding boxes.
@@ -538,9 +542,9 @@ bool EditorState::RaycastFromPoint(const Ogre::Ray ray, Ogre::Vector3 &result) {
        
         if ((query_result[qr_idx].worldFragment != NULL)) {
 	        // if it's a world fragment just return the result
-	        result = query_result[qr_idx].worldFragment->singleIntersection;
+	        pResult = query_result[qr_idx].worldFragment->singleIntersection;
 	        mSceneMgr->destroyQuery(m_pray_scene_query);
-        	  return (true);
+        	return (true);
         }
         
         // only check this result if its a hit against an entity
@@ -560,11 +564,11 @@ bool EditorState::RaycastFromPoint(const Ogre::Ray ray, Ogre::Vector3 &result) {
             unsigned long *indices;
 
             // get the mesh information
-         	/*getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
-                              pentity->getParentNode()->getWorldPosition(),
-                              pentity->getParentNode()->getWorldOrientation(),
-                              pentity->getParentNode()->getScale());
-*/
+         	getMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
+                              pentity->getParentNode()->_getDerivedPosition(),
+                              pentity->getParentNode()->_getDerivedOrientation(),
+                              pentity->getParentNode()->_getDerivedScale());
+
     
             // test for hitting individual triangles on the mesh
             bool new_closest_found = false;
@@ -606,7 +610,7 @@ bool EditorState::RaycastFromPoint(const Ogre::Ray ray, Ogre::Vector3 &result) {
     if (closest_distance >= 0.0f)
     {
         // raycast success
-        result = closest_result;
+        pResult = closest_result;
         return (true);
     }
     else

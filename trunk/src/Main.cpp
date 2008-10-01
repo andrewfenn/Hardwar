@@ -19,7 +19,7 @@
 #include <OgreException.h>
 
 #include "GameManager.h"
-#include "PlayState.h"
+#include "EditorState.h"
 
 #include "Server.h"
 #include "Client.h"
@@ -33,7 +33,7 @@ int main( int argc, char **argv ) {
 #endif
    
    bool serverStarted = false;
-   /*for (int i=1; i < argc; i++) {
+   for (int i=1; i < argc; i++) {
         if (std::string(argv[i]).compare("--dedicated") == 0) {
           // start a server
           serverStarted = true; 
@@ -44,7 +44,7 @@ int main( int argc, char **argv ) {
           serverStarted = true; 
           Client client;
         }
-   }*/
+   }
    
    if (!serverStarted) {
        // If a dedicated server hasn't started then load up the client
@@ -53,7 +53,7 @@ int main( int argc, char **argv ) {
 
        try {
            // Initialise the game and switch to the first state
-           gameManager->startGame( PlayState::getSingletonPtr() );
+           gameManager->startGame( EditorState::getSingletonPtr() );
        }
        catch ( Ogre::Exception& ex ) {
            #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

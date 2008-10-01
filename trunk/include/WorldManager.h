@@ -24,6 +24,7 @@
 #include <OgreSceneQuery.h>
 #include <OgreEntity.h>
 #include <OgreStringConverter.h>
+#include <OgreRoot.h>
 #include <sqlite3.h>
 #include "hwstructs.h"
 
@@ -46,6 +47,7 @@ private:
 	Ogre::SceneNode *mWorldNode; // attach all ground objects to this SceneNode
 	sqlite3 *mWorldDatabase;
 	bool drawBuildings();
+    Ogre::Root           *mRoot;
 };
 #endif
 

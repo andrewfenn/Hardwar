@@ -62,6 +62,7 @@ private:
     Ogre::OverlayManager *mOverlayMgr;
     Ogre::Overlay        *mMouseOverlay;
     Ogre::OverlayElement *mMousePointer;
+    Ogre::LogManager     *mLogMgr;
 	 GUIManager			  *mGUIMgr;
     static EditorState    *mEditorState;
      

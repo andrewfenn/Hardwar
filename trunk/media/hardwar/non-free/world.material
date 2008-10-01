@@ -1,0 +1,652 @@
+material water
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.372549 0.419608 0.45098 
+			diffuse 0.372549 0.419608 0.45098 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture WATER.BMP
+			}
+		}
+	}
+}
+
+material AIRLOCKDOOR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.545098 0.482353 0.435294 
+			diffuse 0.545098 0.482353 0.435294 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOCK_OUT.BMP
+			}
+		}
+	}
+}
+
+
+material AIRLOCKFLOOR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture HANGFLOO.BMP
+			}
+		}
+	}
+}
+
+
+material AIRLOCKROOF
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture HANGROOF.BMP
+			}
+		}
+	}
+}
+
+
+material AIRLOCKWALL
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture HANGWALL.BMP
+			}
+		}
+	}
+}
+
+
+material ALOCKINDOOR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.309804 0.372549 0.45098 
+			diffuse 0.309804 0.372549 0.45098 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOCK_IN.BMP
+			}
+		}
+	}
+}
+
+
+material CRATERCENTRE
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.560784 0.419608 0.294118 
+			diffuse 0.560784 0.419608 0.294118 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture CRATER_C.BMP
+			}
+		}
+	}
+}
+
+
+material CRATERFLOOR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.560784 0.419608 0.294118 
+			diffuse 0.560784 0.419608 0.294118 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture CRATER_F.BMP
+			}
+		}
+	}
+}
+
+
+material CRATERTOP
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture CRATER_T.BMP
+			}
+		}
+	}
+}
+
+
+material CRATERWALL
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.560784 0.419608 0.294118 
+			diffuse 0.560784 0.419608 0.294118 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture CRATER_W.BMP
+			}
+		}
+	}
+}
+
+
+material DAMTOP00
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture DAMTOP.BMP
+			}
+		}
+	}
+}
+
+
+material DAMWALL1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture DAMWALL1.BMP
+			}
+		}
+	}
+}
+
+
+material DAMWALL2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture DAMWALL2.BMP
+			}
+		}
+	}
+}
+
+
+material DOWNTEXA0
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.482353 0.419608 0.372549 
+			diffuse 0.482353 0.419608 0.372549 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture DOWNTEXA.BMP
+			}
+		}
+	}
+}
+
+
+material DOWNTEXE0
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.419608 0.356863 0.309804 
+			diffuse 0.419608 0.356863 0.309804 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture DOWNTEXE.BMP
+			}
+		}
+	}
+}
+
+
+material DOWNTEXF0
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.545098 0.482353 0.435294 
+			diffuse 0.545098 0.482353 0.435294 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture DOWNTEXF.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_ALPHA
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGALPHA.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_DTOWN
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGDOWN.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_GAMMA
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGGAMMA.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_HIGHRISE
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGHIGH.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_MINES
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGMINES.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_PORT
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGPORT.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_RESVOIR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGRESER.BMP
+			}
+		}
+	}
+}
+
+
+material LOGO_RIVERDE
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture LOGRIVER.BMP
+			}
+		}
+	}
+}
+
+
+material MASSDRIVER
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0.898039 0.898039 0.898039 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture MASSDRIV.BMP
+			}
+		}
+	}
+}
+
+
+material NoMaterial
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.7 0.7 0.7 
+			diffuse 0.7 0.7 0.7 
+		}
+	}
+}
+
+
+material RESERVOIR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.372549 0.419608 0.45098 
+			diffuse 0.372549 0.419608 0.45098 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture WATER.BMP
+			}
+		}
+	}
+}
+
+
+material RIVWALL1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture RIVWALL1.BMP
+			}
+		}
+	}
+}
+
+
+material RIVWALL2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture RIVWALL2.BMP
+			}
+		}
+	}
+}
+
+
+material TUNENT00
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 
+			diffuse 0 0 0 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture TUNENT.BMP
+			}
+		}
+	}
+}
+
+
+material TUNFLOOR
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.780392 0.623529 0.403922 
+			diffuse 0.780392 0.623529 0.403922 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture TUNFLOOR.BMP
+			}
+		}
+	}
+}
+
+
+material TUNROOF
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.403922 0.341176 0.294118 
+			diffuse 0.403922 0.341176 0.294118 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture TUNROOF.BMP
+			}
+		}
+	}
+}
+
+
+material TUNWALL
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.529412 0.466667 0.419608 
+			diffuse 0.529412 0.466667 0.419608 
+			specular 0 0 0 50
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture TUNWALL.BMP
+			}
+		}
+	}
+}
+
+

@@ -30,20 +30,18 @@ WorldManager::~WorldManager() {
 
 
 // Used for loading up the locations of objects
-bool WorldManager::loadWorldData(std::string filename, Ogre::SceneManager* mSceneMgr) {
+bool WorldManager::loadWorldData(std::string filename, Ogre::SceneManager* SceneMgr) {
 
-	// Assign a pointer to the scene manager and create our scene node to attach buildings to
-	this->mSceneMgr = mSceneMgr;
-   mWorldNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-   
-   // Load up our craters
-	mSceneMgr->setWorldGeometry("craters/alpha.cfg");
-/*	Ogre::SceneNode* terrainNode = mSceneMgr->getSceneNode("Terrain");
-	terrainNode->setScale(10.0f, 10.0f, 10.0f);
+    // Assign a pointer to the scene manager and create our scene node to attach buildings to
+    this->mSceneMgr = SceneMgr;
+    mRoot = Ogre::Root::getSingletonPtr();
+    mWorldNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 
-	mSceneMgr->getSuggestedViewpoint(false);*/
-	
-	
+    // Load up our crater
+    Ogre::Entity *ent = mSceneMgr->createEntity("world", "hardwar/non-free/world.mesh");
+    mWorldNode->attachObject(ent);
+	mWorldNode->scale(200, 200, 200);
+
 	// load the world database
 	int result;
 	result = sqlite3_open(filename.c_str(), &mWorldDatabase);
@@ -221,18 +219,18 @@ bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName) {
 	Ogre::SceneNode* mBuildingNode = mWorldNode->createChildSceneNode();
 	Ogre::AxisAlignedBox box = ent->getBoundingBox();
 	mBuildingNode->attachObject(ent);
-	mBuildingNode->scale(15, 15, 15);
+	mBuildingNode->scale(100, 100, 100);
 
 	// push the building up out of the ground
-	box.scale(Ogre::Vector3(15,15,15));
-   Ogre::Vector3 size = box.getSize();
-   position.y=+size.y;
-   mBuildingNode->setPosition(position);
+	box.scale(Ogre::Vector3(100,100,100));
+    Ogre::Vector3 size = box.getSize();
+    position.y=+size.y;
+    mBuildingNode->setPosition(position);
    
-   // increase the build count
-   mBuildCount++;
+    // increase the build count
+    mBuildCount++;
    
-   // Add the building data to worldManager
+    // Add the building data to worldManager
 	Building newbuilding;
 	newbuilding.position = position;
 	newbuilding.rotation = Ogre::Vector3::ZERO; // FIXME: Change this to a Quad

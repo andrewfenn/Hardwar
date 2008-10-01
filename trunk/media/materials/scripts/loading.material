@@ -1,4 +1,4 @@
-material LoadingMessage
+material Loading
 {
     technique
     {
@@ -9,7 +9,7 @@ material LoadingMessage
 
             texture_unit
             {
-                texture loading.jpg
+                texture Loading.jpg
             }
         }
     }

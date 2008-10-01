@@ -30,11 +30,13 @@ SET(Required_Packages
 
 # searches for all .cpp and .h files in the current directory and add them 
 # to the current project
+
 FILE(GLOB folder_source ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
   
 SOURCE_GROUP("Source Files" FILES ${folder_source})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
-  
+
+
 ADD_DEFINITIONS( "-Wall" )
   
 # create the project

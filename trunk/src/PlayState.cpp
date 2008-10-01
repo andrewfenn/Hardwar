@@ -25,8 +25,8 @@ PlayState* PlayState::mPlayState;
 
 void PlayState::enter( void ) {
 
-   mRoot         = Ogre::Root::getSingletonPtr();
-	mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE, "PlaySceneMgr" );
+    mRoot         = Ogre::Root::getSingletonPtr();
+	mRoot->createSceneManager(Ogre::ST_GENERIC, "PlaySceneMgr" );
 	
 	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
 	mSceneMgr     = mRoot->getSceneManager( "PlaySceneMgr" );
@@ -58,7 +58,7 @@ void PlayState::enter( void ) {
    
    // setup world mesh
    
-   Ogre::Entity *ent = mSceneMgr->createEntity("world", "hardwar/world.mesh");
+   Ogre::Entity *ent = mSceneMgr->createEntity("world", "hardwar/non-free/world.scene");
 	//ent->setMaterialName("DefaultBuilding");
 	mWorldNode->attachObject(ent);
 	   
