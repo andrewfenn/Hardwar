@@ -58,12 +58,6 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-# Check OIS libarary version because the API changed after 1.2.0
-SET(OIS_NEW_API "")
-IF(OIS_VERSION EQUAL "1.2.0")
-   SET(OIS_NEW_API "#define OIS_NEW_API 1")
-ENDIF(OIS_VERSION EQUAL "1.2.0")
-
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
 
 TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
