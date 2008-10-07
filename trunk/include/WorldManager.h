@@ -40,14 +40,14 @@ public:
 	bool loadBuildings(int);
 	bool deleteBuilding(std::string); 
 	bool addBuilding(Ogre::Vector3, const char*);
-	Ogre::SceneManager   *mSceneMgr;	
+	Ogre::SceneManager      *mSceneMgr;	
 private:
-	std::vector<Building> mBuildings;
-	unsigned int mBuildCount;
-	Ogre::SceneNode *mWorldNode; // attach all ground objects to this SceneNode
-	sqlite3 *mWorldDatabase;
+	std::vector<Building>   mBuildings;
+	unsigned int            mBuildCount;
+	Ogre::SceneNode         *mWorldNode; // attach all ground objects to this SceneNode
+    Ogre::Root              *mRoot;
+	sqlite3                 *mWorldDatabase;
 	bool drawBuildings();
-    Ogre::Root           *mRoot;
 };
 #endif
 

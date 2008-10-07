@@ -1,7 +1,7 @@
 Console
 {
 	type 		truetype
-	source 		console.ttf
+	source 		Fixedsys500c.ttf
 	size 		32
 	resolution 	55
 }

@@ -29,6 +29,7 @@
 #include <OgreRay.h>
 #include <OgreMeshManager.h>
 #include <OgreRenderable.h>
+#include "Console.h"
 
 class PlayState : public GameState {
 public:
@@ -59,7 +60,8 @@ private:
    Ogre::SceneManager   *mSceneMgr;
    Ogre::Viewport       *mViewport;
    Ogre::OverlayManager *mOverlayMgr;
-   GUIManager			  *mGUIMgr;
+   GUIManager			*mGUIMgr;
+   GUIConsole           *mConsole;
 
    OIS::Keyboard        *mInputDevice;
 
@@ -67,9 +69,9 @@ private:
 
    static PlayState *mPlayState;
 
-   int mMouseX, mMouseY, mMouseRotX, mMouseRotY; // up, down, last up, last down
-   Ogre::Vector3 CamRotatePos, // last rotate position while mouse is down
-    					CamLookAtPos; // direction to be looking at
+   Ogre::Degree mMouseRotX, mMouseRotY;
+   int mKeydownUp, mKeydownDown, mKeydownRight, mKeydownLeft;
+   Real fpstimer;
 };
 #endif
 

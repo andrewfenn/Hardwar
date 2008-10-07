@@ -66,7 +66,7 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
         size_t windowHnd = 0;
         std::ostringstream windowHndStr;
 
-        // Get window handle		  renderWindow->getCustomAttribute( "WINDOW", &windowHnd );
+        // Get window handle		renderWindow->getCustomAttribute( "WINDOW", &windowHnd );
 		  
         // Fill parameter list
         windowHndStr << (unsigned int) windowHnd;

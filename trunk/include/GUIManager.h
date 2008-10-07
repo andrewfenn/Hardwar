@@ -57,5 +57,5 @@ private:
     
     static GUIManager *mGUIManager;
 };
-#endif
+#endif // GUIManager_H
 
