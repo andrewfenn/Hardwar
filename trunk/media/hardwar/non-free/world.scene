@@ -1,4 +1,4 @@
-<scene formatVersion="1.0" upAxis="y" unitsPerMeter="1" minOgreVersion="1.4" author="OgreMax Scene Exporter by Derek Nedelman (www.ogremax.com)">
+<scene formatVersion="1.0" upAxis="z" unitsPerMeter="1" minOgreVersion="1.4" author="OgreMax Scene Exporter by Derek Nedelman (www.ogremax.com)">
     <environment>
         <colourAmbient r="0" g="0" b="0" />
         <colourBackground r="0" g="0" b="0" />
@@ -46,7 +46,7 @@
         </node>
         <node name="__WATER">
             <scale x="1.19671" y="1" z="1" />
-            <position x="37865.4" y="369" z="-29778.5" />
+            <position x="37865.4" y="29778.5" z="369" />
             <rotation qx="0" qy="0" qz="0" qw="1" />
             <entity name="__WATER" id="9" meshFile="__WATER.mesh" castShadows="true" receiveShadows="true">
                 <subentities>

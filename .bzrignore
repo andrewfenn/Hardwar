@@ -9,3 +9,4 @@ cmake_install.cmake
 Makefile
 hardwar
 include/config.h
+trunk/include/config.h

@@ -66,9 +66,10 @@ private:
    Ogre::SceneManager    *mSceneMgr;
    Ogre::Viewport        *mViewport;
    Ogre::OverlayManager  *mOverlayMgr;
+   Ogre::RenderWindow    *mWindow;
    GUIManager			 *mGUIMgr;
    GUIConsole            *mConsole;
-   const OgreMax::OgreMaxScene* mOgreMax; 
+   OgreMax::OgreMaxScene* mOgreMax; 
 
    OIS::Keyboard         *mInputDevice;
 

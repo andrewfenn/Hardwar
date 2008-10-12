@@ -30,29 +30,34 @@ void PlayState::enter( void ) {
 	mRoot->createSceneManager(Ogre::ST_GENERIC, "PlaySceneMgr" );
 	
 	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
+    mWindow       = mRoot->getAutoCreatedWindow();
 	mSceneMgr     = mRoot->getSceneManager( "PlaySceneMgr" );
 	mCamera       = mSceneMgr->createCamera( "PlayerCamera" );
-	mViewport     = mRoot->getAutoCreatedWindow()->addViewport( mCamera, 0 );
+	mViewport     = mWindow->addViewport( mCamera, 0 );
 	mGUIMgr		  = GUIManager::getSingletonPtr();
     mConsole      = new GUIConsole;
     mOgreMax      = new OgreMax::OgreMaxScene;
 
 	// Initialise CEGUI for user interface stuff
-	mGUIMgr->initialise(mSceneMgr, mRoot->getAutoCreatedWindow());
+	mGUIMgr->initialise(mSceneMgr, mWindow);
 
     // Initialise the console
     mConsole->init(mRoot);
     mConsole->addCommand("addBuilding", PlayState::switchToEditor);
 
+    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
+
 	// setup some light
 	Ogre::Light *light = mSceneMgr->createLight("Light1");
-    light->setType(Ogre::Light::LT_POINT);
-    light->setPosition(Ogre::Vector3(1000, 10000, 1000));
+    light->setType(Ogre::Light::LT_DIRECTIONAL);
+    light->setPosition(Ogre::Vector3(40000, 100000, -30000));
+    light->setAttenuation(1000000,1000,100,100);
     light->setDiffuseColour(Ogre::ColourValue::White);
     light->setSpecularColour(Ogre::ColourValue::White);
 
     // Setup our camera position in the world
     mCamera->setPosition(Ogre::Vector3(2386.45, 81939, -61075));
+ //   mCamera->setPosition(Ogre::Vector3(0, 0, 0));
     mCamera->setNearClipDistance(5);
 
     mWorldNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("world");
@@ -64,41 +69,8 @@ void PlayState::enter( void ) {
     const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
     OgreMax::OgreMaxSceneCallback* callback;
 
-
     // setup world
-   /* mOgreMax->Load(filename, 
-                    mRoot->getAutoCreatedWindow(),
-                    0,
-                    mSceneMgr,
-                    mWorldNode,
-                    callback,
-                    Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-*/
-/*    boost::filesystem::path world_path( "../media/hardwar/non-free/" );
-	int i = 0;
-    Ogre::Entity *ent;
-	if (boost::filesystem::is_directory(world_path)) {
-		for (boost::filesystem::directory_iterator itr(world_path); itr!=boost::filesystem::directory_iterator(); ++itr) {
-			std::string temp = (std::string)itr->path().leaf();
-			temp = temp.substr(temp.length()-4, 4);
-			if (temp.compare("mesh") == 0) {
-                temp = (std::string)itr->path().leaf();
-                ent = mSceneMgr->createEntity("world"+i, "hardwar/non-free/"+temp);
-                if (temp.compare("__WATER.mesh") == 0) {
-                    mWaterNode->attachObject(ent);
-                } else {
-                    mWorldNode->attachObject(ent);
-                }
-                i++;
-			}
-		}
-	}
-
-    mWaterNode->scale(.001, .001, .001);
-   	mWorldNode->scale(200, 200, 200);
-*/
-    
+    mOgreMax->Load(filename, mWindow, 0, mSceneMgr, mWorldNode);
 
     mMouseRotX = mMouseRotY = 0;
     mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
@@ -213,6 +185,10 @@ void PlayState::keyPressed( const OIS::KeyEvent &e ) {
         if (e.key == OIS::KC_D) {
             mKeydownRight = 1;
         }
+
+        if(e.key == OIS::KC_B) {
+    		mSceneMgr->showBoundingBoxes(true);
+    	}
 
     }
 }

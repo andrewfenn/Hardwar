@@ -9,15 +9,9 @@ SET( ${PROJECT_NAME}_PATCH_LEVEL 4 )
 SET( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
-
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-
-
 #Declare any external dependencies that your project may have here.
-#examples include: ITK, VTK, JPEG, PNG, OpenGL, ZLIB, Perl, Java
-#If you're not sure what name to use, look in the Modules directory of your
-#cmake install and check that a file named Find(Package).cmake exists
 SET(Required_Packages
    Boost
    OIS
@@ -38,8 +32,9 @@ SOURCE_GROUP("Hardwar" FILES ${folder_source})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
+# Add compiler warnings
 ADD_DEFINITIONS( "-Wall" )
-  
+
 # create the project
 ADD_EXECUTABLE(hardwar ${folder_source})
 
@@ -59,14 +54,8 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-FILE(GLOB TinyXML_source ${TinyXML_INCLUDE_DIR}/*.cpp)
-ADD_LIBRARY(TinyXML ${TinyXML_source})
-
-FILE(GLOB OgreMax_source ${OgreMax_INCLUDE_DIR}/*.cpp)
-ADD_LIBRARY(OgreMax ${OgreMax_source})
+# TinyXML string, used to get OgreMax working correctly
+SET(TIXML_USE_STL 1)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
 TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
-TARGET_LINK_LIBRARIES(hardwar TinyXML)
-TARGET_LINK_LIBRARIES(hardwar OgreMax)
-
