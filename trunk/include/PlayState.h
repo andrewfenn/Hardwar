@@ -30,6 +30,9 @@
 #include <OgreMeshManager.h>
 #include <OgreRenderable.h>
 #include "Console.h"
+#include "OgreMaxScene.hpp"
+
+
 
 class PlayState : public GameState {
 public:
@@ -49,23 +52,28 @@ public:
    void mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
    void mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
 
+   // console cmds
+   static void switchToEditor(vector<String>& Params);
+
    static PlayState* getSingletonPtr( void );
 private:
    PlayState( void ) { }
    PlayState( const PlayState& ) { }
    PlayState & operator = ( const PlayState& );
 
-   Ogre::Root           *mRoot;
-   Ogre::Camera         *mCamera;
-   Ogre::SceneManager   *mSceneMgr;
-   Ogre::Viewport       *mViewport;
-   Ogre::OverlayManager *mOverlayMgr;
-   GUIManager			*mGUIMgr;
-   GUIConsole           *mConsole;
+   Ogre::Root            *mRoot;
+   Ogre::Camera          *mCamera;
+   Ogre::SceneManager    *mSceneMgr;
+   Ogre::Viewport        *mViewport;
+   Ogre::OverlayManager  *mOverlayMgr;
+   GUIManager			 *mGUIMgr;
+   GUIConsole            *mConsole;
+   const OgreMax::OgreMaxScene* mOgreMax; 
 
-   OIS::Keyboard        *mInputDevice;
+   OIS::Keyboard         *mInputDevice;
 
-   Ogre::SceneNode *mWorldNode;
+   Ogre::SceneNode       *mWorldNode;
+   Ogre::SceneNode       *mWaterNode;
 
    static PlayState *mPlayState;
 
@@ -73,5 +81,5 @@ private:
    int mKeydownUp, mKeydownDown, mKeydownRight, mKeydownLeft;
    Real fpstimer;
 };
-#endif
+#endif /* Playstate_H */
 

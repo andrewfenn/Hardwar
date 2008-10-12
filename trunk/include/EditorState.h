@@ -64,6 +64,7 @@ private:
     Ogre::OverlayElement *mMousePointer;
     Ogre::LogManager     *mLogMgr;
 	 GUIManager			  *mGUIMgr;
+    Ogre::SceneNode *mWorldNode;
     static EditorState    *mEditorState;
      
     unsigned int mScreenshots; // keeps tabs on what number to call your screenshot file

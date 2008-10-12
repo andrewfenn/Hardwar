@@ -26,16 +26,17 @@ SET(Required_Packages
    CEGUIOGRE
    SQLITE
    ENET
+   TinyXML
+   OgreMax
 )
 
 # searches for all .cpp and .h files in the current directory and add them 
 # to the current project
 
 FILE(GLOB folder_source ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-  
-SOURCE_GROUP("Source Files" FILES ${folder_source})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
+SOURCE_GROUP("Hardwar" FILES ${folder_source})
 
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 ADD_DEFINITIONS( "-Wall" )
   
@@ -58,6 +59,14 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
+FILE(GLOB TinyXML_source ${TinyXML_INCLUDE_DIR}/*.cpp)
+ADD_LIBRARY(TinyXML ${TinyXML_source})
 
+FILE(GLOB OgreMax_source ${OgreMax_INCLUDE_DIR}/*.cpp)
+ADD_LIBRARY(OgreMax ${OgreMax_source})
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
 TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
+TARGET_LINK_LIBRARIES(hardwar TinyXML)
+TARGET_LINK_LIBRARIES(hardwar OgreMax)
+

@@ -8,3 +8,4 @@ CMakeCache.txt
 cmake_install.cmake
 Makefile
 hardwar
+include/config.h

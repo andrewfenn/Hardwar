@@ -1,0 +1,58 @@
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="1" minOgreVersion="1.4" author="OgreMax Scene Exporter by Derek Nedelman (www.ogremax.com)">
+    <environment>
+        <colourAmbient r="0" g="0" b="0" />
+        <colourBackground r="0" g="0" b="0" />
+    </environment>
+    <nodes>
+        <node name="HardWar SH">
+            <scale x="100" y="100" z="100" />
+            <position x="0" y="0" z="0" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="HardWar SH" id="1" meshFile="HardWar SH.mesh" castShadows="true" receiveShadows="true">
+                <subentities>
+                    <subentity index="0" materialName="CRATERWALL" />
+                    <subentity index="1" materialName="CRATERFLOOR" />
+                    <subentity index="2" materialName="CRATERTOP" />
+                    <subentity index="3" materialName="TUNENT00" />
+                    <subentity index="4" materialName="TUNFLOOR" />
+                    <subentity index="5" materialName="CRATERCENTRE" />
+                    <subentity index="6" materialName="TUNROOF" />
+                    <subentity index="7" materialName="TUNWALL" />
+                    <subentity index="8" materialName="RESERVOIR" />
+                    <subentity index="9" materialName="LOGO_PORT" />
+                    <subentity index="10" materialName="DOWNTEXA0" />
+                    <subentity index="11" materialName="LOGO_ALPHA" />
+                    <subentity index="12" materialName="RIVWALL2" />
+                    <subentity index="13" materialName="LOGO_MINES" />
+                    <subentity index="14" materialName="DOWNTEXE0" />
+                    <subentity index="15" materialName="MASSDRIVER" />
+                    <subentity index="16" materialName="AIRLOCKDOOR" />
+                    <subentity index="17" materialName="ALOCKINDOOR" />
+                    <subentity index="18" materialName="AIRLOCKWALL" />
+                    <subentity index="19" materialName="AIRLOCKROOF" />
+                    <subentity index="20" materialName="AIRLOCKFLOOR" />
+                    <subentity index="21" materialName="LOGO_GAMMA" />
+                    <subentity index="22" materialName="LOGO_DTOWN" />
+                    <subentity index="23" materialName="LOGO_HIGHRISE" />
+                    <subentity index="24" materialName="LOGO_RESVOIR" />
+                    <subentity index="25" materialName="LOGO_RIVERDE" />
+                    <subentity index="26" materialName="DAMWALL1" />
+                    <subentity index="27" materialName="DAMTOP00" />
+                    <subentity index="28" materialName="DAMWALL2" />
+                    <subentity index="29" materialName="RIVWALL1" />
+                    <subentity index="30" materialName="DOWNTEXF0" />
+                </subentities>
+            </entity>
+        </node>
+        <node name="__WATER">
+            <scale x="1.19671" y="1" z="1" />
+            <position x="37865.4" y="369" z="-29778.5" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="__WATER" id="9" meshFile="__WATER.mesh" castShadows="true" receiveShadows="true">
+                <subentities>
+                    <subentity index="0" materialName="NoMaterial" />
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>

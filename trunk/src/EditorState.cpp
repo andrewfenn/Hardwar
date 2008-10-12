@@ -26,41 +26,27 @@ EditorState* EditorState::mEditorState;
 void EditorState::enter( void ) {
 
 	mRoot         = Ogre::Root::getSingletonPtr();
-	mRoot->createSceneManager(Ogre::ST_GENERIC, "EditorSceneMgr" );
 	
 	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
-	mSceneMgr     = mRoot->getSceneManager( "EditorSceneMgr" );
-	mCamera       = mSceneMgr->createCamera( "EditCamera" );
-	mViewport     = mRoot->getAutoCreatedWindow()->addViewport( mCamera );
+	mSceneMgr     = mRoot->getSceneManager( "PlaySceneMgr" );
+//    mWorldNode    = mSceneMgr->getRootSceneNode()->getSceneNode("world");
+//	mCamera       = static_cast<Ogre::Camera*>(mWorldNode->getAttachedObject( "PlayerCamera" ));
+
+	mViewport     = mRoot->getAutoCreatedWindow()->addViewport( mCamera, 1 );
 	mGUIMgr		  = GUIManager::getSingletonPtr();
     mLogMgr       = Ogre::LogManager::getSingletonPtr();
-	/*mMouseOverlay     = mOverlayMgr->getByName( "Overlay/MousePointer" );
-	mMousePointer     = mOverlayMgr->getOverlayElement( "MousePointer/Pointer" );
-	mMouseOverlay->show();*/
-	
+		
+
 	// Initialise CEGUI for user interface stuff
-	mGUIMgr->initialise(mSceneMgr, mRoot->getAutoCreatedWindow());
-	setupEditorUI();
-
-
-	// setup some light
-	Ogre::Light *light = mSceneMgr->createLight("Light1");
-   light->setType(Ogre::Light::LT_POINT);
-   light->setPosition(Ogre::Vector3(1000, 10000, 1000));
-   light->setDiffuseColour(Ogre::ColourValue::White);
-   light->setSpecularColour(Ogre::ColourValue::White);
-   
-   // Setup our camera position in the world
-   mCamera->setPosition(Ogre::Vector3(82775, 2160, -56665));		
-   mCamera->pitch((Ogre::Degree)-90);
-   mCamera->roll((Ogre::Degree)0);
+	//mGUIMgr->initialise(mSceneMgr, mRoot->getAutoCreatedWindow());
+	//setupEditorUI();
 
    // Start the world manager and load up a world
    mWorldMgr = new WorldManager;
    // load up our SQLite world database
-   if (!mWorldMgr->loadWorldData("world/default.db", mSceneMgr))
+/*   if (!mWorldMgr->loadWorldData("world/default.db", mSceneMgr))
    	this->requestShutdown();	
-   
+  */ 
    mSelectedObject = 0;
    mMouseY = mMouseX = mMouseRotX = mMouseRotY = 0;
    mMouseDownButton2 = zoomin = zoomout = false;
@@ -74,25 +60,25 @@ void EditorState::enter( void ) {
 // ------------------------------------
 void EditorState::setupEditorUI() {
 
-	// setup the skin and font to use
+    // setup the skin and font to use
 	CEGUI::SchemeManager::getSingleton().loadScheme((CEGUI::utf8*)"TaharezLookSkin.scheme");	
   	mGUIMgr->mSystem->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
-   mGUIMgr->mSystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-10");
+    mGUIMgr->mSystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-10");
 
 	// setup the CEGUI sheet
 	CEGUI::Window* sheet= CEGUI::WindowManager::getSingleton().loadWindowLayout("Editor.layout");
-   mGUIMgr->mSystem->setGUISheet(sheet);
+    mGUIMgr->mSystem->setGUISheet(sheet);
 
 	// Grab the window manager   
 	CEGUI::WindowManager *wmgr = CEGUI::WindowManager::getSingletonPtr();
 	
-   // setup the quit button
-   CEGUI::Window *quit1 = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/QuitButton");
-   quit1->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUIHandleShutdown, this));
+    // setup the quit button
+    CEGUI::Window *quit1 = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/QuitButton");
+    quit1->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUIHandleShutdown, this));
 
-   // setup the save world button
-   CEGUI::Window *savebutton = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/SaveButton");
-   savebutton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUISaveWorld, this));
+    // setup the save world button
+    CEGUI::Window *savebutton = wmgr->getWindow((CEGUI::utf8*)"Root//SystemTab/SaveButton");
+    savebutton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EditorState::GUISaveWorld, this));
 
 	// start to populate mesh combo box list
 	CEGUI::Combobox* meshList = (CEGUI::Combobox*)CEGUI::WindowManager::getSingleton().getWindow("Root//NewTab/MeshList");
@@ -127,11 +113,8 @@ void EditorState::setupEditorUI() {
 	EditXPos->subscribeEvent(CEGUI::Window::EventActivated, CEGUI::Event::Subscriber(&EditorState::CEGUIActivated, this));
 //	EditXPos->subscribeEvent(CEGUI::Window::EventDeactivated, CEGUI::Event::Subscriber(&EditorState::CEGUIDeactivated, this));
 //	EditXPos->subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&EditorState::CEGUIDeactivated, this));
-	
 
 	resetGUIEditPos(); // clear the edit boxes and disable them when starting the editor
-
-
 }
 
 void EditorState::exit( void ) {

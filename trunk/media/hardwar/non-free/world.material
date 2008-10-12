@@ -1,22 +1,3 @@
-material water
-{
-	technique
-	{
-		pass
-		{
-			ambient 0.372549 0.419608 0.45098 
-			diffuse 0.372549 0.419608 0.45098 
-			specular 0 0 0 50
-			emissive 0 0 0 
-
-			texture_unit 
-			{
-				texture WATER.BMP
-			}
-		}
-	}
-}
-
 material AIRLOCKDOOR
 {
 	technique

@@ -1,0 +1,31 @@
+SET( TinyXML_DEFINITIONS "" )
+ 
+##
+# Includes
+##
+SET( TinyXML_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML )
+ 
+IF( EXISTS ${TinyXML_INCLUDE_DIR} )
+    SET( TinyXML_FOUND TRUE )
+ENDIF( EXISTS ${TinyXML_INCLUDE_DIR} )
+ 
+IF( NOT TinyXML_FOUND)
+    IF( NOT TinyXML_INCLUDE_DIR )
+        IF (CEGUIOGRE_FIND_REQUIRED)
+	    	MESSAGE(FATAL_ERROR "Could not find TinyXML")
+    	ENDIF (CEGUIOGRE_FIND_REQUIRED)
+    ENDIF( NOT TinyXML_INCLUDE_DIR )
+ELSE ( NOT TinyXML_FOUND)
+    INCLUDE(${TinyXML_INCLUDE_DIR})
+ENDIF( NOT TinyXML_FOUND)
+ 
+ 
+# Finally, display informations if not in quiet mode
+IF( NOT TinyXML_FIND_QUIETLY )
+  MESSAGE( STATUS "TinyXML found " )
+  MESSAGE( STATUS " includes : ${TinyXML_INCLUDE_DIR}" )
+ENDIF( NOT TinyXML_FIND_QUIETLY )
+ 
+MARK_AS_ADVANCED(
+  TinyXML_INCLUDE_DIR
+)
