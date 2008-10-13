@@ -23,7 +23,6 @@
 #include <OgreCEGUIRenderer.h>
 #include <OgreCEGUIResourceProvider.h>
 #include <OgreCEGUITexture.h>
-#include <OgreMemoryMacros.h>
 
 class GUIManager {
 public:
