@@ -25,9 +25,25 @@
 #include "Client.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+
+char **GetArgvCommandLine(int *argc)
+{
+#ifdef UNICODE
+    return GetCommandLineW(argc);
+#else
+    *argc = __argc;
+    return  __argv;
+#endif
+}
+
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT ) {
+INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
+	char  **argv;
+    int    argc;
+
+    // obtain command-line arguments in argv[] style array
+    argv = GetArgvCommandLine(&argc);
 #else
 int main( int argc, char **argv ) {
 #endif

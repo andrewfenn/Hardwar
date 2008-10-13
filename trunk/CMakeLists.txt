@@ -1,3 +1,5 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+
 #Change PROJECT_NAME to the name of your project
 PROJECT(Hardwar)
 
@@ -24,6 +26,7 @@ SET(Required_Packages
    OgreMax
 )
 
+
 # searches for all .cpp and .h files in the current directory and add them 
 # to the current project
 
@@ -34,6 +37,26 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 # Add compiler warnings
 ADD_DEFINITIONS( "-Wall" )
+
+IF (MSVC_IDE)
+	IF (EXISTS $ENV{OGRE_HOME})
+		SET(OGRESDK $ENV{OGRE_HOME})
+		STRING(REGEX REPLACE "[\\]" "/" OGRESDK "${OGRESDK}")
+		MESSAGE(STATUS "Adding Additional Link Directories")
+		LINK_DIRECTORIES(${OGRESDK}/lib)
+	ENDIF(EXISTS $ENV{OGRE_HOME})
+
+	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_34_0/lib)
+	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_35_0/lib)
+	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_36_0/lib)
+
+	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"WINDOWS\" /D \"TIXML_USE_STL\" /Gm /RTC1 /RTCsu /Gy /fp:fast /Wp64 /ZI")
+	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Od /Gm /RTC1 /RTCsu /Gy /fp:fast /Wp64 /ZI")
+	SET(CMAKE_CXX_FLAGS "${PLATFORM_C_FLAGS}")
+	SET(CMAKE_CXX_FLAGS_RELEASE "${PLATFORM_C_FLAGS}")
+	SET(CMAKE_CXX_FLAGS_DEBUG "${PLATFORM_C_FLAGS_DEBUG}")
+ENDIF (MSVC_IDE)
+
 
 # create the project
 ADD_EXECUTABLE(hardwar ${folder_source})
