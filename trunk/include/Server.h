@@ -16,10 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef Server_H
-#define Server_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #include "WorldManager.h"
+
 extern "C" {
 	#include <enet/enet.h>
 }
@@ -30,11 +31,12 @@ class Server {
       ~Server();
       
    private:
-      WorldManager *mWorldMgr;// World manager, manages the craters build placement, etc
+      /* World manager, manages the craters build placement, etc */
+      WorldManager *mWorldMgr;
       void setupServer();
       void serverLoop();
       ENetHost * server;
       ENetAddress address;
 };
-#endif
+#endif /* SERVER_H */
 

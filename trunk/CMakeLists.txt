@@ -35,8 +35,10 @@ SOURCE_GROUP("Hardwar" FILES ${folder_source})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
-# Add compiler warnings
-#ADD_DEFINITIONS( "-Wall" )
+IF (NOT WIN32) # Unix
+    # Add compiler warnings
+    ADD_DEFINITIONS( "-Wall -Wextra -Wunused -ansi" )
+ENDIF (NOT WIN32)
 
 IF (MSVC_IDE)
 	IF (EXISTS $ENV{OGRE_HOME})

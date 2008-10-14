@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef Client_H
-#define Client_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
 #include "WorldManager.h"
 
@@ -29,9 +29,7 @@ class Client {
    public:
       Client();
       ~Client();
-      
    private:
-   
 };
-#endif
+#endif /* CLIENT_H */
 
