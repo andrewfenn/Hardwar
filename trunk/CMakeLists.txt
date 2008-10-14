@@ -36,7 +36,7 @@ SOURCE_GROUP("Hardwar" FILES ${folder_source})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 # Add compiler warnings
-ADD_DEFINITIONS( "-Wall" )
+#ADD_DEFINITIONS( "-Wall" )
 
 IF (MSVC_IDE)
 	IF (EXISTS $ENV{OGRE_HOME})
@@ -50,8 +50,9 @@ IF (MSVC_IDE)
 	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_35_0/lib)
 	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_36_0/lib)
 
-	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"WINDOWS\" /D \"TIXML_USE_STL\" /Gm /RTC1 /RTCsu /Gy /fp:fast /Wp64 /ZI")
-	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Od /Gm /RTC1 /RTCsu /Gy /fp:fast /Wp64 /ZI")
+	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /ZI /EHsc")
+	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Od /Gm /Gy /fp:fast /ZI")
+
 	SET(CMAKE_CXX_FLAGS "${PLATFORM_C_FLAGS}")
 	SET(CMAKE_CXX_FLAGS_RELEASE "${PLATFORM_C_FLAGS}")
 	SET(CMAKE_CXX_FLAGS_DEBUG "${PLATFORM_C_FLAGS_DEBUG}")
@@ -77,8 +78,9 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-# TinyXML string, used to get OgreMax working correctly
-SET(TIXML_USE_STL 1)
-
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
-TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
+IF (MSVC_IDE)
+	TARGET_LINK_LIBRARIES(hardwar boost_filesystem-*)
+ELSE (MSVC_IDE) # UNIX
+	TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
+ENDIF (MSVC_IDE)

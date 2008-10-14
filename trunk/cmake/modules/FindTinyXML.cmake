@@ -1,4 +1,4 @@
-SET( TinyXML_DEFINITIONS "-TIXML_USE_STL")
+SET( TinyXML_DEFINITIONS "")
  
 ##
 # You're going to have to edit this file if you intend to use it for your own project
@@ -9,7 +9,6 @@ IF( EXISTS ${TinyXML_INCLUDE_DIR} )
     SET( TinyXML_FOUND TRUE )
     FILE(GLOB TinyXML_source ${TinyXML_INCLUDE_DIR}/*.cpp)
     ADD_LIBRARY(TinyXML ${TinyXML_source})
-
     SET( TinyXML_LIBRARIES TinyXML)    
 ENDIF( EXISTS ${TinyXML_INCLUDE_DIR} )
  

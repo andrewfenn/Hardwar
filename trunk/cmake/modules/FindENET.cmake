@@ -1,56 +1,40 @@
-IF (ENET_INCLUDE_DIR AND ENET_LIBRARY)
-   SET(ENET_FIND_QUIETLY TRUE)
-ENDIF (ENET_INCLUDE_DIR AND ENET_LIBRARY)
+SET( ENET_DEFINITIONS "")
 
-FIND_PATH(ENet_INCLUDE_DIR enet/enet.h
-    /usr/include
-    /usr/local/include
-    /usr/pack/enet-2007-sd/include
-    ../libs/enet-1.1/include
-    C:/enet-1.2/include/
-    C:/enet/include/
-    )
-
-FIND_LIBRARY(ENet_LIBRARY
-    NAMES enet enet.lib
-    PATHS /usr/lib /usr/local/lib /usr/pack/enet-2007-sd/i686-debian-linux3.1/lib/
-    ../libs/enet-1.1
-    C:/WINDOWS/System32/
-    C:/enet-1.2/Debug
-    C:/enet-1.2/Release
-    C:/enet/Debug
-    C:/enet/Release
-    )
-
-IF(WIN32)
-  SET(WINDOWS_ENET_DEPENDENCIES "ws2_32;winmm;")
-  SET(ENet_LIBRARY ${WINDOWS_ENET_DEPENDENCIES})
-ENDIF(WIN32)
-
-IF (ENet_INCLUDE_DIR AND ENet_LIBRARY)
-    SET(ENET_FOUND TRUE)
-    SET(ENET_INCLUDE_DIR ${ENet_INCLUDE_DIR})
-    SET(ENET_LIBRARIES ${ENet_LIBRARY})
-ELSE (ENet_INCLUDE_DIR AND ENet_LIBRARY)
-    SET(ENET_FOUND FALSE)
-ENDIF (ENet_INCLUDE_DIR AND ENet_LIBRARY)
-
-IF (ENET_FOUND)
-    IF (NOT ENET_FIND_QUIETLY)
-        MESSAGE( STATUS "Found enet:")
-	  MESSAGE( STATUS " libraries : ${ENET_LIBRARIES}" )
-	  MESSAGE( STATUS " includes : ${ENET_INCLUDE_DIR}" )
-    ENDIF (NOT ENET_FIND_QUIETLY)
-ELSE (ENET_FOUND)
-    IF (ENET_FIND_REQUIRED)
-        MESSAGE(FATAL_ERROR "Could NOT find enet.")
-	  IF(WIN32)
-		MESSAGE(FATAL_ERROR "Did you put enet in C:/enet/ and build it?")
-	  ENDIF(WIN32)
-    ENDIF (ENET_FIND_REQUIRED)
-ENDIF (ENET_FOUND)
-
+##
+# You're going to have to edit this file if you intend to use it for your own project
+##
+SET( ENET_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet )
+ 
+IF( EXISTS ${ENET_INCLUDE_DIR} )
+    SET( ENET_FOUND TRUE )
+    FILE(GLOB ENET_source ${ENET_INCLUDE_DIR}/*.c)
+    ADD_LIBRARY(Enet ${ENET_source})
+    SET(ENET_LIBRARIES Enet)
+    IF (MSVC_IDE)
+	TARGET_LINK_LIBRARIES(Enet "ws2_32.lib")
+    ENDIF (MSVC_IDE)
+ENDIF( EXISTS ${ENET_INCLUDE_DIR} )
+ 
+IF( NOT ENET_FOUND)
+    IF( NOT ENET_INCLUDE_DIR )
+        IF (ENET_FIND_REQUIRED)
+	    	MESSAGE(FATAL_ERROR "Could not find Enet")
+    	ENDIF (ENET_FIND_REQUIRED)
+    ENDIF( NOT ENET_INCLUDE_DIR )
+ELSE ( NOT ENET_FOUND)
+    INCLUDE_DIRECTORIES("${ENET_INCLUDE_DIR}/include")
+ENDIF( NOT ENET_FOUND)
+ 
+ 
+# Finally, display informations if not in quiet mode
+IF( NOT ENET_FIND_QUIETLY )
+  MESSAGE( STATUS "Enet found " )
+  MESSAGE( STATUS " libraries : ${ENET_LIBRARIES}" )
+  MESSAGE( STATUS " includes : ${ENET_INCLUDE_DIR}" )
+ENDIF( NOT ENET_FIND_QUIETLY )
+ 
 MARK_AS_ADVANCED(
-	ENET_INCLUDE_DIR 
-	ENET_LIBRARIES
+  ENET_INCLUDE_DIR
+  ENET_LIBRARIES
 )
+

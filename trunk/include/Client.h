@@ -20,7 +20,10 @@
 #define Client_H
 
 #include "WorldManager.h"
-#include <enet/enet.h>
+
+extern "C" {
+	#include <enet/enet.h>
+}
 
 class Client {
    public:
