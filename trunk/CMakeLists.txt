@@ -50,7 +50,7 @@ IF (MSVC_IDE)
 	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_35_0/lib)
 	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_36_0/lib)
 
-	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /ZI /EHsc")
+	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /ZI /EHsc /SUBSYSTEM:WINDOWS /ENTRY:\"main\"")
 	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Od /Gm /Gy /fp:fast /ZI")
 
 	SET(CMAKE_CXX_FLAGS "${PLATFORM_C_FLAGS}")

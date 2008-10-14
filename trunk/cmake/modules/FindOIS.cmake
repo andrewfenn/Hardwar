@@ -18,16 +18,6 @@ ENDIF (OIS_LIBRARIES AND OIS_INCLUDE_DIR)
 IF (WIN32) #Windows
 	MESSAGE(STATUS "Looking for OIS")
 	
-	FIND_PATH(OIS_include_dir OIS.h
-		C:/ois/includes
-	)
-	
-	FIND_LIBRARY(OIS_lib_dir
-		NAMES ois.lib ois_d.lib OIS_static_d.lib OIS_static.lib
-		PATHS C:/ois/lib C:/WINDOWS/System32
-	)
-
-	IF (NOT OIS_include_dir AND NOT OIS_lib_dir)
 	SET(OGRESDK $ENV{OGRE_HOME})
 	SET(OGRESOURCE $ENV{OGRE_SRC})
 	IF (OGRESDK)
@@ -44,12 +34,6 @@ IF (WIN32) #Windows
 		SET(OIS_LIB_DIR C:/ogre/Dependencies/lib/Release C:/ogre/Dependencies/lib/Debug)
 		SET(OIS_LIBRARIES debug OIS_d optimized OIS)
 	ENDIF (OGRESOURCE)
-	ELSE (NOT OIS_include_dir AND NOT OIS_lib_dir)
-		MESSAGE(STATUS "Using OIS in source code")
-		SET(OIS_INCLUDE_DIR ${OIS_include_dir})
-		#SET(OIS_LIB_DIR ${OIS_lib_dir})
-		SET(OIS_LIBRARIES ${OIS_lib_dir} optimized OIS)
-	ENDIF (NOT OIS_include_dir AND NOT OIS_lib_dir)
 ELSE (WIN32) #Unix
 	CMAKE_MINIMUM_REQUIRED(VERSION 2.4.7 FATAL_ERROR)
 	FIND_PACKAGE(PkgConfig REQUIRED)
