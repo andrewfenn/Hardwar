@@ -60,7 +60,7 @@ ENDIF (MSVC_IDE)
 
 
 # create the project
-ADD_EXECUTABLE(hardwar ${folder_source})
+ADD_EXECUTABLE(hardwar WIN32 ${folder_source})
 
 #this foreach loads all of the packages that you specified as required.
 #It shouldn't need to be modified.
