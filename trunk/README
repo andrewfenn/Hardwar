@@ -1,5 +1,101 @@
 
 
-To compile type:
+NOTE: You need the following versions or higher
+
+- Ogre3D - 1.6.0 or later
+- CEGUI - 0.6.0 or later
+- OIS - 1.2 or later
+
+
+######################################################################################################
+            How to build on unix
+######################################################################################################
+
+You're going to the following dependencies.
+
+Ogre3d - 1.6.0 - http://www.ogre3d.org/
+CEGUI - 0.6.0 - http://www.cegui.org.uk/
+OIS - 1.2.0 - http://sourceforge.net/projects/wgois
+Boost Filesystem - http://www.boost.org/doc/libs/1_36_0/libs/filesystem/doc/ind ex.htm
+
+You can not use Ogre3d in Ubuntu or Debian, it's too old. You're only option is to compile from source Ogre3d, CEGUI and OIS.
+
+To compile:
+cd trunk/
 cmake .
 make
+
+
+######################################################################################################
+            How to build on windows
+######################################################################################################
+
+
+1 ) Install Visual Studio, You must have version 8 (2005) or later. I used version 9 for this guide so I assume 2005 works.
+
+2 ) Download DirectX SDK - http://www.microsoft.com/downloads/ -> DirectX -> DirectX SDK - (August 2008) or later
+
+3 ) Download Ogre3D - http://www.ogre3d.org -> Download a prebuilt SDK -> Get the SDK for whatever version of Visual studio you have.
+
+4 ) Install both DirectX and Ogre3D and try compiling one of the example programs in Ogre3D if it works then you know that Ogre is installed correctly and runs.
+
+If you get an Ogre Exception which complains about being unable to load a dynamic plugin then go to C:\OgreSDK\bin\debug\Plugins.cfg and take out the following lines..
+
+Plugin=Plugin_PCZSceneManager_d.dll
+Plugin=Plugin_OctreeZone_d.dll
+
+By now you should have a demo from Ogre running.
+
+5 ) Download Boost - http://www.boostpro.com/products/free -> Select the package relevant to the version of Visual Studio you have. A note with the installer I ticked only the compiler version I had, plus I ticked everything else in the list on the right.
+
+So now you have all the dependencies for Hardwar installed you can finally get on with downloading the programs we need to download the source and generate our project files.
+
+6 ) First download Cmake - http://www.cmake.org/cmake/resources/software.html -> Download the windows binary
+installer - The installer asks if you want to add cmake to the system path. If you are going to use cmake from the cmd then click yes.
+
+7 ) Download Bzr -
+https://launchpad.net/bzr/+download -> Look for the latest version with the description as "Windows standalone installer" and remember that RC2 is better then RC1. At the time of making this I picked bzr-setup-1.7rc2-1.exe
+
+8 ) Setup Bazaar so it knows who you are. Click on start->run, type: cmd and click ok.
+
+In the command prompt type: bzr whoami
+
+This will return the name of who you are, this is important when you send me patches to the game because it means I know who to contact so please make sure the information is accurate.
+
+To change the information type: bzr whoami "Your Name <your@email.com>"
+
+Note the double quotes ("") not single quotes ('') on Linux you can use single quotes but Windows needs you to use double quotes when setting your name and email.
+
+Optional: If you have a launchpad.net login you can also type: bzr launchpad-login yourlogin
+
+This will assosiate your launchpad account with Bzr, this is very useful if you want to help out programming on the game as it will let you upload your code to your own area in launchpad and then your can propose to merge your code into other projects.
+
+Ok, you have everything installed and configured. Now all you need to do is download the code, compile and run.
+
+Select a place where you want to compile hardwar from. For this example I'll use the Desktop, but it could be anywhere you want, C:\programming for example.
+
+9 ) Right click on the desktop (or folder you're in) and click "Bazaar Checkout/Branch". A window will pop up.
+
+10 ) In the top of the window there is a box called "Branch source (enter a url or select a local..." in this box type "lp:hardwar" (without quotes) and then click ok. Wait for the code to finish downloading.
+
+The first time you download it always takes a long time because you're downloading everything, when you update it's very quick.
+
+NOTE: The window stops at 99% but the download may have already finished downloading, if you see the "close" button at the bottom of the window it's probably finished.
+
+You have now downloaded the code, but now you have to set everything up so we can compile it in Visual Studio. To do this automatically we use cmake.
+
+11 ) Go to start->all programs->cmake->cmake
+
+12 ) A gui window will pop up, click browse on the box which wants the source code and find the directory where you downloaded the code.
+
+Mine was: C:\Documents and Settings\Admin\Desktop\hardwar\trunk
+
+Make sure you select the trunk directory, not the hardwar directory.
+
+For the box that asks where to build the binary make sure it is the bin directory. This will be the same as above.
+
+Mine was: C:\Documents and Settings\Admin\Desktop\hardwar\trunk
+
+13 ) Click configure, select your compiler, then configure again and click ok.
+
+

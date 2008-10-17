@@ -174,6 +174,10 @@ typedef enum
    ENET_PEER_STATE_ZOMBIE                      = 9 
 } ENetPeerState;
 
+#ifdef MSG_MAXIOVLEN
+#define ENET_BUFFER_MAXIMUM MSG_MAXIOVLEN
+#endif
+
 #ifndef ENET_BUFFER_MAXIMUM
 #define ENET_BUFFER_MAXIMUM (1 + 2 * ENET_PROTOCOL_MAXIMUM_PACKET_COMMANDS)
 #endif

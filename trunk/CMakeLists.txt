@@ -37,7 +37,8 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 IF (NOT WIN32) # Unix
     # Add compiler warnings
-    ADD_DEFINITIONS( "-Wall -Wextra -Wunused -ansi" )
+    #ADD_DEFINITIONS( "-Wall -Wextra -Wunused -ansi -Wshadow" )
+    ADD_DEFINITIONS( "-Wall -Wunused -ansi" )
 ENDIF (NOT WIN32)
 
 IF (MSVC_IDE)
