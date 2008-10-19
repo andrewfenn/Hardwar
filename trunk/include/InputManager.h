@@ -19,12 +19,54 @@
 #ifndef InputManager_H
 #define InputManager_H
 
-#include <OISMouse.h>
-#include <OISKeyboard.h>
-#include <OISJoyStick.h>
-#include <OISInputManager.h>
+#include "OISInputManager.h"
+#include "OISException.h"
+#include "OISKeyboard.h"
+#include "OISMouse.h"
+#include "OISJoyStick.h"
+#include "OISEvents.h"
+
 
 #include <OgreRenderWindow.h>
+
+////////////////////////////////////Needed Windows Headers////////////
+#if defined OIS_WIN32_PLATFORM
+#  define WIN32_LEAN_AND_MEAN
+#  include "windows.h"
+#  ifdef min
+#    undef min
+#  endif
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by CommandLine.rc
+//
+#define IDD_DIALOG1                     101
+#define IDC_BUTTON1                     1001
+
+// Next default values for new objects
+// 
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NEXT_RESOURCE_VALUE        102
+#define _APS_NEXT_COMMAND_VALUE         40001
+#define _APS_NEXT_CONTROL_VALUE         1002
+#define _APS_NEXT_SYMED_VALUE           101
+#endif
+#endif
+
+   LRESULT DlgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+//////////////////////////////////////////////////////////////////////
+////////////////////////////////////Needed Linux Headers//////////////
+#elif defined OIS_LINUX_PLATFORM
+#  include <X11/Xlib.h>
+   void checkX11Events();
+//////////////////////////////////////////////////////////////////////
+////////////////////////////////////Needed Mac Headers//////////////
+#elif defined OIS_APPLE_PLATFORM
+#  include <Carbon/Carbon.h>
+   void checkMacEvents();
+#endif
+//////////////////////////////////////////////////////////////////////
 
 class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener {
 public:

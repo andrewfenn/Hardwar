@@ -48,15 +48,15 @@ void PlayState::enter( void ) {
     mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
 	// setup some light
-	Ogre::Light *light = mSceneMgr->createLight("Light1");
+	/*Ogre::Light *light = mSceneMgr->createLight("Light1");
     light->setType(Ogre::Light::LT_DIRECTIONAL);
-    light->setPosition(Ogre::Vector3(40000, 100000, -30000));
+    light->setPosition(Ogre::Vector3(1414.33, 43027.3, -30462.4));
     light->setAttenuation(1000000,1000,100,100);
     light->setDiffuseColour(Ogre::ColourValue::White);
     light->setSpecularColour(Ogre::ColourValue::White);
-
+*/
     // Setup our camera position in the world
-    mCamera->setPosition(Ogre::Vector3(2386.45, 81939, -61075));
+    mCamera->setPosition(Ogre::Vector3(43027.3, 1414.33, -30462.4));
  //   mCamera->setPosition(Ogre::Vector3(0, 0, 0));
     mCamera->setNearClipDistance(5);
 
@@ -100,8 +100,8 @@ void PlayState::update( unsigned long lTimeElapsed ) {
 
         static Ogre::String currFps = "Current FPS: ";
         static Ogre::String avgFps = "Average FPS: ";
-        static Ogre::String bestFps = "X: ";
-        static Ogre::String worstFps = "Y: ";
+        static Ogre::String worstFps = "X: ";
+        static Ogre::String bestFps = "Y: ";
         static Ogre::String tris = "Z: ";
 
         // update stats when necessary
@@ -109,8 +109,8 @@ void PlayState::update( unsigned long lTimeElapsed ) {
 
         Ogre::OverlayElement* guiAvg = OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
         Ogre::OverlayElement* guiCurr = OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
-        Ogre::OverlayElement* guiBest = OverlayManager::getSingleton().getOverlayElement("Core/BestFps");
-        Ogre::OverlayElement* guiWorst = OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
+        Ogre::OverlayElement* guiBest = OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
+        Ogre::OverlayElement* guiWorst = OverlayManager::getSingleton().getOverlayElement("Core/BestFps");
         Ogre::OverlayElement* guiTris = OverlayManager::getSingleton().getOverlayElement("Core/NumTris");
         Ogre::OverlayElement* guiBatch = OverlayManager::getSingleton().getOverlayElement("Core/NumBatches");
         Ogre::OverlayElement* guiImage = OverlayManager::getSingleton().getOverlayElement("Core/LogoPanel");
@@ -118,8 +118,8 @@ void PlayState::update( unsigned long lTimeElapsed ) {
 
         guiAvg->setCaption(avgFps + StringConverter::toString(rw->getAverageFPS()));
         guiCurr->setCaption(currFps + StringConverter::toString(rw->getLastFPS()));
-        guiBest->setCaption(bestFps + StringConverter::toString(mCamera->getPosition().x));
-        guiWorst->setCaption(worstFps + StringConverter::toString(mCamera->getPosition().y));
+        guiBest->setCaption(bestFps + StringConverter::toString(mCamera->getPosition().y));
+        guiWorst->setCaption(worstFps + StringConverter::toString(mCamera->getPosition().x));
         guiTris->setCaption(tris + StringConverter::toString(mCamera->getPosition().z));
         guiBatch->setCaption("Nothing to see here");
         Ogre::Overlay* o = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
@@ -132,7 +132,7 @@ void PlayState::update( unsigned long lTimeElapsed ) {
     }
     Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
 
-    float scale = 10.0f;
+    float scale = 5.0f;
     if (mKeydownUp == 1)
         translateVector.z -= scale;
 
