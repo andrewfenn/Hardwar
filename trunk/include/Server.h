@@ -20,23 +20,26 @@
 #define SERVER_H
 
 #include "WorldManager.h"
+#include <string>
 
 extern "C" {
-	#include <enet/enet.h>
+	#include "enet/enet.h"
 }
 
 class Server {
    public:
       Server();
+      Server(int, std::string);
       ~Server();
       
    private:
       /* World manager, manages the craters build placement, etc */
       WorldManager *mWorldMgr;
-      void setupServer();
+      int setupServer(int, std::string);
       void serverLoop();
-      ENetHost * server;
-      ENetAddress address;
+      ENetHost * mServer;
+      ENetAddress mAddress;
+      ENetEvent mEvent;
 };
 #endif /* SERVER_H */
 

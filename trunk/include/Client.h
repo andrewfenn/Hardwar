@@ -21,15 +21,26 @@
 
 #include "WorldManager.h"
 
-extern "C" {
-	#include <enet/enet.h>
+#include <string>
+
+extern "C"
+{
+	#include "enet/enet.h"
 }
 
-class Client {
-   public:
-      Client();
-      ~Client();
-   private:
+class Client
+{
+    public:
+        Client();
+        Client(int, std::string);
+        ~Client();
+        int connect(int, std::string);
+        void clientLoop();
+        ENetHost * mNetHost;
+    private:
+        ENetAddress mAddress;
+        ENetEvent mEvent;
+        ENetPeer *mPeer;
 };
 #endif /* CLIENT_H */
 

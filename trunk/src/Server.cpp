@@ -19,88 +19,90 @@
 #include "Server.h"
 
 
-Server::Server() {
-   // Start the world manager and load up a world
-   mWorldMgr = new WorldManager;
-   // load up our SQLite world database
-//   if (!mWorldMgr->loadWorldData("world/default.db", mSceneMgr))
-  //    exit(1);
-   setupServer();
+Server::Server()
+{
+    Server(26500, std::string("127.0.0.1"));
 }
 
-Server::~Server() {
+Server::Server(int port=26500, std::string address = std::string("127.0.0.1"))
+{
+    if (setupServer(port, address) == 1)
+    {
+        serverLoop();
+    }
+}
+
+Server::~Server()
+{
+    enet_host_destroy(mServer);
     enet_deinitialize();
 }
 
-void Server::setupServer() {
-    std::cout << "Starting a dedicated server." << std::endl;
-    
+int Server::setupServer(int port, std::string address)
+{
+    mWorldMgr = new WorldManager;
+    mServer=NULL;
+
     if (enet_initialize() != 0)
     {
-        std::cerr << "An error occurred while initializing ENet." << std::endl;
+        printf("Unable to initialize the network library.\n");
+        return 0;
     }
 
-    /* Bind the server to the default localhost.     */
-    /* A specific host address can be specified by   */
-    /* enet_address_set_host (& address, "x.x.x.x"); */
+    mAddress.host = ENET_HOST_ANY;
+    mAddress.port = port;
 
-    address.host = ENET_HOST_ANY;
-    /* Bind the server to port 1234. */
-    address.port = 7000;
-
-    server = enet_host_create (& address /* the address to bind the server host to */, 
+    std::cout << "Starting server on port: " << port << std::endl;
+    mServer = enet_host_create (&mAddress /* the address to bind the server host to */, 
                                  32      /* allow up to 32 clients and/or outgoing connections */,
                                   0      /* assume any amount of incoming bandwidth */,
                                   0      /* assume any amount of outgoing bandwidth */);
-    if (server == NULL) {
-        std::cerr << "An error occurred while trying to create an ENet server host." << std::endl;
-        exit (EXIT_FAILURE);
+    if (mServer == NULL)
+    {
+        printf("An error occurred while trying to create an ENet server host.\n");
+        enet_deinitialize();
+        return 0;
     }
 
-    serverLoop();
-
-    enet_host_destroy(server);
+    return 1;
 }
 
-void Server::serverLoop() {
-   bool serverRunning = true;
-   ENetEvent event;
-   
-   while (serverRunning) {
-    
-    /* Wait up to 1000 milliseconds for an event. */
-    while (enet_host_service (server, & event, 1000) > 0) {
-        switch (event.type) {
-           case ENET_EVENT_TYPE_CONNECT:
-               printf ("A new client connected from %x:%u.\n", 
-                       event.peer->address.host,
-                       event.peer->address.port);
+void Server::serverLoop()
+{
+    bool serverRunning = true;
+    std::cout << "Server running.." << std::endl;
+    while (serverRunning)
+    {
+        /* Wait up to 1000 milliseconds for an event. */
+        while (enet_host_service(mServer, &mEvent, 1000) > 0)
+        {
+            switch (mEvent.type)
+            {
+                case ENET_EVENT_TYPE_CONNECT:
+                    printf ("A new client connected from %x:%u.\n", 
+                        mEvent.peer->address.host,
+                        mEvent.peer->address.port);
 
-               /* Store any relevant client information here. */
-               //event.peer->data = "Client information";
+                    /* Store any relevant client information here. */
+                    //mEvent.peer->data = "Client information";
+                break;
+                case ENET_EVENT_TYPE_RECEIVE:
+                    printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
+                        mEvent.packet -> dataLength,
+                        mEvent.packet -> data,
+                        mEvent.peer -> data,
+                        mEvent.channelID);
 
-               break;
+                    /* Clean up the packet now that we're done using it. */
+                    enet_packet_destroy (mEvent.packet);
+                break;
+                case ENET_EVENT_TYPE_DISCONNECT:
+                    printf ("%s disconected.\n", mEvent.peer->data);
 
-           case ENET_EVENT_TYPE_RECEIVE:
-               printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                       event.packet -> dataLength,
-                       event.packet -> data,
-                       event.peer -> data,
-                       event.channelID);
-
-               /* Clean up the packet now that we're done using it. */
-               enet_packet_destroy (event.packet);
-               
-               break;
-              
-           case ENET_EVENT_TYPE_DISCONNECT:
-               printf ("%s disconected.\n", event.peer -> data);
-
-               /* Reset the peer's client information. */
-
-               event.peer -> data = NULL;
+                    /* Reset the peer's client information. */
+                    mEvent.peer->data = NULL;
+                break;
+            }
         }
-      }
-   }
-   std::cout << "Server Stopped" << std::endl;
+    }
 }

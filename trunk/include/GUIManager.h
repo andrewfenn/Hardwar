@@ -27,14 +27,12 @@
 class GUIManager {
 public:
     virtual ~GUIManager( void );
-
     void initialise(Ogre::SceneManager*, Ogre::RenderWindow*);
-
     static GUIManager* getSingletonPtr( void );
 
-    // User interface
+    /* User interface */
     CEGUI::System *mSystem;
-	 CEGUI::OgreCEGUIRenderer *mRenderer;
+    CEGUI::OgreCEGUIRenderer *mRenderer;
 private:
     GUIManager( void );
     GUIManager( const GUIManager& ) { }
