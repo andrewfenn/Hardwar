@@ -88,16 +88,16 @@ void Server::serverLoop()
                 break;
                 case ENET_EVENT_TYPE_RECEIVE:
                     printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                        mEvent.packet -> dataLength,
-                        mEvent.packet -> data,
-                        mEvent.peer -> data,
+                        mEvent.packet->dataLength,
+                        mEvent.packet->data,
+                        mEvent.peer->data,
                         mEvent.channelID);
 
                     /* Clean up the packet now that we're done using it. */
-                    enet_packet_destroy (mEvent.packet);
+                    enet_packet_destroy(mEvent.packet);
                 break;
                 case ENET_EVENT_TYPE_DISCONNECT:
-                    printf ("%s disconected.\n", mEvent.peer->data);
+                    printf ("%d disconected.\n", mEvent.peer->data);
 
                     /* Reset the peer's client information. */
                     mEvent.peer->data = NULL;

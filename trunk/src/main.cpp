@@ -20,7 +20,6 @@
 #include "GameManager.h"
 #include "PlayState.h"
 #include "Server.h"
-#include "Client.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 char **GetArgvCommandLine(int *argc)
@@ -47,8 +46,8 @@ int main( int argc, char **argv ) {
     std::string cmdvar;
     int cmd = 0;
 
-    std::string address;
-    int port = 0;
+    std::string address = "127.0.0.1";
+    int port = 26500;
 
     for (int i=1; i < argc; i++)
     {
@@ -113,12 +112,14 @@ int main( int argc, char **argv ) {
     {
         case 1: /* connect */
         {
-            Client client = Client(port, address);
-           /* GameManager *gameManager = GameManager::getSingletonPtr();
+            GameManager *gameManager = GameManager::getSingletonPtr();
+            gameManager->mPort = port;
+            gameManager->mAddress = address;
+            gameManager->mSinglePlayer = false;
 
             try
             {                /* Initialise the game and switch to the first state */
-           /*     gameManager->startGame(PlayState::getSingletonPtr());
+                gameManager->startGame(PlayState::getSingletonPtr());
             }
             catch ( Ogre::Exception& ex )
             {
@@ -126,7 +127,7 @@ int main( int argc, char **argv ) {
                     MessageBox( NULL, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL );
                 #else
                     std::cerr << "An exception has occured: " << ex.getFullDescription();
-                #endif            }            delete gameManager;*/
+                #endif            }            delete gameManager;
         }
         break;
         case 2: /* server */

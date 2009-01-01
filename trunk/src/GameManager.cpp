@@ -30,52 +30,55 @@ using namespace Ogre;
 GameManager* GameManager::mGameManager;
 
 GameManager::GameManager( void ) :
-    mRoot( 0 ),
-    mInputMgr( 0 ),
-    mIntroState( 0 ),
-    mPlayState( 0 ),
-    mPauseState( 0 ),
-    bShutdown( false ) {
+                            mRoot( 0 ), mInputMgr( 0 ), mIntroState( 0 ), 
+                            mPlayState( 0 ), mPauseState( 0 ), bShutdown( false )
+{
+    mSinglePlayer = false;
+    mPort = 26500;
+    mAddress = std::string("127.0.0.1");
 }
 
 GameManager::~GameManager( void ) {
     // Clean up all the states
-    while( !mStates.empty() ) {
+    while(!mStates.empty())
+    {
         mStates.back()->exit();
         mStates.pop_back();
     }
-
-    if( mInputMgr ) {
+    if(mInputMgr)
+    {
         delete mInputMgr;
         mInputMgr = 0;
     }
-
-    if( mGUIMgr ) {
+    if(mGUIMgr)
+    {
         delete mGUIMgr;
         mGUIMgr = 0;
     }
-
-    if( mIntroState ) {
+    if(mIntroState)
+    {
         delete mIntroState;
         mIntroState = 0;
-    }	
-    if( mPlayState ) {
+    }	
+    if(mPlayState)
+    {
         delete mPlayState;
         mPlayState  = 0;
     }
-	
-    if( mPauseState ) {
+    if(mPauseState)
+    {
         delete mPauseState;
         mPauseState = 0;
     }
-	
-    if( mRoot ) {
+    if(mRoot)
+    {
         delete mRoot;
         mRoot = 0;
     }
 }
 
-void GameManager::startGame( GameState *gameState ) {
+void GameManager::startGame( GameState *gameState )
+{
     mRoot = new Root();
 
     // Setup states
@@ -151,9 +154,6 @@ bool GameManager::configureGame( void ) {
 
     // Create needed scenemanagers
    // mRoot->createSceneManager( ST_GENERIC, "ST_GENERIC" );
-   
-
-
     return true;
 }
 

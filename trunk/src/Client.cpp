@@ -20,22 +20,13 @@
 
 Client::Client()
 {
-    Client(26500, std::string("127.0.0.1"));
 }
 
-Client::Client(int port=26500, std::string address = std::string("127.0.0.1"))
-{
-    if (this->connect(port, address) == 1)
-    {
-        clientLoop();
-    }
-}
-
-int Client::connect(int port, std::string address)
+bool Client::connect(int port, std::string address)
 {
     if (enet_initialize() != 0) {
         std::cerr << "An error occurred while initializing ENet." << std::endl;
-        return 0;
+        return false;
     }
 
     mNetHost = enet_host_create (NULL /* create a client host */,
@@ -48,7 +39,7 @@ int Client::connect(int port, std::string address)
         fprintf (stderr, 
                  "An error occurred while trying to create an ENet client host.\n");
         enet_deinitialize();
-        return 0;
+        return false;
     }
 
     std::cout << "Connecting to " << address << ":" << port << std::endl;
@@ -56,7 +47,7 @@ int Client::connect(int port, std::string address)
     if (enet_address_set_host(&mAddress, address.c_str()) < 0)
     {
         printf("enet_address_set_host() failed.\n");
-        return 0;
+        return false;
     }
     mAddress.port = port;
 
@@ -66,14 +57,14 @@ int Client::connect(int port, std::string address)
     if (!mPeer) {
        fprintf (stderr, "No available peers for initiating an ENet connection.\n");
        enet_deinitialize();
-       return 0;
+       return false;
     }
     
     /* Wait up to 5 seconds for the connection attempt to succeed. */
     if (enet_host_service (mNetHost, & mEvent, 5000) > 0 && mEvent.type == ENET_EVENT_TYPE_CONNECT)
     {
         std::cout << "Connection to " << address << ":" << port << " succeeded" << std::endl;
-        return 1;
+        return true;
     }
     else
     {
@@ -85,7 +76,7 @@ int Client::connect(int port, std::string address)
         std::cout << "Connection to " << address << ":" << port << " failed" << std::endl;
     }
 
-    return 0;
+    return false;
 }
 
 void Client::clientLoop()
@@ -97,14 +88,6 @@ void Client::clientLoop()
         {
             switch (mEvent.type)
             {
-                case ENET_EVENT_TYPE_CONNECT:
-                    printf ("A new client connected from %x:%u.\n", 
-                        mEvent.peer->address.host,
-                        mEvent.peer->address.port);
-
-                    /* Store any relevant client information here. */
-                    //mEvent.peer->data = "Client information";
-                break;
                 case ENET_EVENT_TYPE_RECEIVE:
                     printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
                         mEvent.packet->dataLength,
@@ -115,18 +98,33 @@ void Client::clientLoop()
                     /* Clean up the packet now that we're done using it. */
                     enet_packet_destroy (mEvent.packet);
                 break;
-                case ENET_EVENT_TYPE_DISCONNECT:
-                    printf ("%s disconected.\n", mEvent.peer->data);
-                    /* Reset the peer's client information. */
-                    mEvent.peer->data = NULL;
-                break;
             }
         }
     }
-
     enet_host_destroy(mNetHost);
 }
 
-Client::~Client() {
+bool Client::sendMessage(const void* msg, size_t size, int channel, enet_uint32 priority)
+{
+    /* Create a reliable packet of size 7 containing "packet\0" */
+    ENetPacket * packet = enet_packet_create (msg, 
+                                              size, 
+                                              priority);
+
+    /* Extend the packet so and append the string "foo", so it now */
+    /* contains "packetfoo\0"                                      */
+/*    enet_packet_resize(packet, strlen("packetfoo")+1);
+    strcpy(&packet->data[strlen("packet")],"foo");
+  */  
+    /* Send the packet to the peer over channel id 0. */
+    /* One could also broadcast the packet by         */
+    /* enet_host_broadcast (host, 0, packet);         */
+    enet_peer_send (mPeer, channel, packet);
+
+    return 0;
+}
+
+Client::~Client()
+{
     enet_deinitialize();
 }

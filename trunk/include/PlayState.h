@@ -22,7 +22,7 @@
 #include <OgreCamera.h>
 
 #include "GameState.h"
-#include "Server.h"
+#include "Client.h"
 #include <OgreEntity.h>
 #include <OgreSceneQuery.h>
 #include <OgreSubMesh.h>
@@ -32,55 +32,57 @@
 #include "Console.h"
 #include "OgreMaxScene.hpp"
 
-
-
-class PlayState : public GameState {
+class PlayState : public GameState
+{
 public:
-   ~PlayState( void );
+   ~PlayState(void);
 
-   void enter( void );
-   void exit( void );
+   void enter(void);
+   void exit(void);
 
-   void pause( void );
-   void resume( void );
-   void update( unsigned long lTimeElapsed );
+   void pause(void);
+   void resume(void);
+   void update(unsigned long lTimeElapsed);
 
-   void keyPressed( const OIS::KeyEvent &e );
-   void keyReleased( const OIS::KeyEvent &e );
+   void keyPressed(const OIS::KeyEvent &e);
+   void keyReleased(const OIS::KeyEvent &e);
 
-   void mouseMoved( const OIS::MouseEvent &e );
-   void mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
-   void mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+   void mouseMoved(const OIS::MouseEvent &e);
+   void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+   void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-   // console cmds
+   static PlayState* getSingletonPtr(void);
+
+   /* console cmds */
    static void switchToEditor(vector<String>& Params);
-
-   static PlayState* getSingletonPtr( void );
 private:
-   PlayState( void ) { }
-   PlayState( const PlayState& ) { }
-   PlayState & operator = ( const PlayState& );
+    Ogre::Root              *mRoot;
+    Ogre::Camera            *mCamera;
+    Ogre::SceneManager      *mSceneMgr;
+    Ogre::Viewport          *mViewport;
+    Ogre::OverlayManager    *mOverlayMgr;
+    Ogre::RenderWindow      *mWindow;
 
-   Ogre::Root            *mRoot;
-   Ogre::Camera          *mCamera;
-   Ogre::SceneManager    *mSceneMgr;
-   Ogre::Viewport        *mViewport;
-   Ogre::OverlayManager  *mOverlayMgr;
-   Ogre::RenderWindow    *mWindow;
-   GUIManager			 *mGUIMgr;
-   GUIConsole            *mConsole;
-   OgreMax::OgreMaxScene* mOgreMax; 
+    GUIManager			    *mGUIMgr;
+    GUIConsole              *mConsole;
+    OgreMax::OgreMaxScene   *mOgreMax;
+    OIS::Keyboard           *mInputDevice;
 
-   OIS::Keyboard         *mInputDevice;
+    Ogre::SceneNode         *mWorldNode;
+    Ogre::SceneNode         *mWaterNode;
 
-   Ogre::SceneNode       *mWorldNode;
-   Ogre::SceneNode       *mWaterNode;
+    Client                  *mNetwork;
 
-   static PlayState *mPlayState;
+    static PlayState        *mPlayState;
 
-   Ogre::Degree mMouseRotX, mMouseRotY;
-   int mKeydownUp, mKeydownDown, mKeydownRight, mKeydownLeft;
-   Real fpstimer;
+    Ogre::Degree    mMouseRotX, mMouseRotY;
+    int             mKeydownUp, mKeydownDown, mKeydownRight, mKeydownLeft;
+    Real            fpstimer;
+
+    PlayState(void) { }
+    PlayState(const PlayState&) { }
+    PlayState & operator = (const PlayState&);
+    bool setupNetwork(void);
 };
 #endif /* Playstate_H */
 

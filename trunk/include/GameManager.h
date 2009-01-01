@@ -30,14 +30,18 @@
 #include "InputManager.h"
 #include "GUIManager.h"
 
+#include <string>
+
 class GameState;
 
 class GameManager : public OIS::KeyListener, OIS::MouseListener {
 public:
+    int mPort;
+    std::string mAddress;
+    bool mSinglePlayer;
+
     ~GameManager( void );
-
     void startGame( GameState *gameState );
-
     void changeState( GameState *gameState );
     void pushState( GameState *gameState );
     void popState( void );
@@ -59,15 +63,15 @@ private:
     bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
     bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
 
-    Ogre::Root         *mRoot;
-    Ogre::RenderWindow *mRenderWindow;
-    InputManager       *mInputMgr;
-	 GUIManager			  *mGUIMgr;
-	 
-    GameState          *mIntroState;
-    GameState          *mPlayState;
-    GameState          *mPauseState;
-    GameState			  *mEditorState;
+    Ogre::Root          *mRoot;
+    Ogre::RenderWindow  *mRenderWindow;
+    InputManager        *mInputMgr;
+    GUIManager			*mGUIMgr;
+
+    GameState           *mIntroState;
+    GameState           *mPlayState;
+    GameState           *mPauseState;
+    GameState			*mEditorState;
     
 
 

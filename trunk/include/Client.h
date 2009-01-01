@@ -32,10 +32,10 @@ class Client
 {
     public:
         Client();
-        Client(int, std::string);
         ~Client();
-        int connect(int, std::string);
+        bool connect(int, std::string);
         void clientLoop();
+        bool sendMessage(const void*, size_t, int, enet_uint32);
         ENetHost * mNetHost;
     private:
         ENetAddress mAddress;
