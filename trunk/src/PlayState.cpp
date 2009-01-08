@@ -70,7 +70,7 @@ void PlayState::enter( void ) {
     const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
 /*    OgreMax::OgreMaxSceneCallback* callback;*/
 
-    // setup world
+    /* load world */
     mOgreMax->Load(filename, mWindow, 0, mSceneMgr, mWorldNode);
 
     mMouseRotX = mMouseRotY = 0;
@@ -90,8 +90,10 @@ bool PlayState::setupNetwork()
     }
     else
     {
-        if (mNetwork->connect(gameManager->mPort, gameManager->mAddress) == 1)
+        if (mNetwork->connect(gameManager->mPort, gameManager->mAddress))
         {
+            /* request a position */
+            mNetwork->message("packet", strlen("packet")+1, 0, ENET_PACKET_FLAG_RELIABLE);
             return true;
         }
     }

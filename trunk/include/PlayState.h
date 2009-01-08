@@ -23,6 +23,10 @@
 
 #include "GameState.h"
 #include "Client.h"
+extern "C"
+{
+	#include "enet/enet.h"
+}
 #include <OgreEntity.h>
 #include <OgreSceneQuery.h>
 #include <OgreSubMesh.h>

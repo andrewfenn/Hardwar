@@ -52,7 +52,7 @@ int Server::setupServer(int port, std::string address)
     mAddress.host = ENET_HOST_ANY;
     mAddress.port = port;
 
-    std::cout << "Starting server on port: " << port << std::endl;
+    printf("Starting server on port: %d\n", port);
     mServer = enet_host_create (&mAddress /* the address to bind the server host to */, 
                                  32      /* allow up to 32 clients and/or outgoing connections */,
                                   0      /* assume any amount of incoming bandwidth */,

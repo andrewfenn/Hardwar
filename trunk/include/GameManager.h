@@ -40,28 +40,28 @@ public:
     std::string mAddress;
     bool mSinglePlayer;
 
-    ~GameManager( void );
-    void startGame( GameState *gameState );
-    void changeState( GameState *gameState );
-    void pushState( GameState *gameState );
-    void popState( void );
-    void requestShutdown( void );
+    ~GameManager(void);
+    void startGame(GameState *gameState);
+    void changeState(GameState *gameState);
+    void pushState(GameState *gameState);
+    void popState(void);
+    void requestShutdown(void);
 
-    static GameManager* getSingletonPtr( void );
+    static GameManager* getSingletonPtr(void);
 private:
-    GameManager( void );
-    GameManager( const GameManager& ) { }
-    GameManager & operator = ( const GameManager& );
+    GameManager(void);
+    GameManager(const GameManager&) { }
+    GameManager & operator = (const GameManager&);
 
-    bool configureGame( void );
-    void setupResources( void );
+    bool configureGame(void);
+    void setupResources(void);
 
-    bool keyPressed( const OIS::KeyEvent &e );
-    bool keyReleased( const OIS::KeyEvent &e );
+    bool keyPressed(const OIS::KeyEvent &e);
+    bool keyReleased(const OIS::KeyEvent &e);
 
-    bool mouseMoved( const OIS::MouseEvent &e );
-    bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
-    bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+    bool mouseMoved(const OIS::MouseEvent &e);
+    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
     Ogre::Root          *mRoot;
     Ogre::RenderWindow  *mRenderWindow;

@@ -35,7 +35,7 @@ class Client
         ~Client();
         bool connect(int, std::string);
         void clientLoop();
-        bool sendMessage(const void*, size_t, int, enet_uint32);
+        bool message(const void*, size_t, enet_uint8, enet_uint32);
         ENetHost * mNetHost;
     private:
         ENetAddress mAddress;

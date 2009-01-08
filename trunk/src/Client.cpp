@@ -104,12 +104,11 @@ void Client::clientLoop()
     enet_host_destroy(mNetHost);
 }
 
-bool Client::sendMessage(const void* msg, size_t size, int channel, enet_uint32 priority)
+bool Client::message(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority)
 {
+    printf("Sending message\n");
     /* Create a reliable packet of size 7 containing "packet\0" */
-    ENetPacket * packet = enet_packet_create (msg, 
-                                              size, 
-                                              priority);
+    ENetPacket * packet = enet_packet_create (msg, size, priority);
 
     /* Extend the packet so and append the string "foo", so it now */
     /* contains "packetfoo\0"                                      */
@@ -119,9 +118,7 @@ bool Client::sendMessage(const void* msg, size_t size, int channel, enet_uint32 
     /* Send the packet to the peer over channel id 0. */
     /* One could also broadcast the packet by         */
     /* enet_host_broadcast (host, 0, packet);         */
-    enet_peer_send (mPeer, channel, packet);
-
-    return 0;
+    return enet_peer_send(mPeer, channel, packet);
 }
 
 Client::~Client()
