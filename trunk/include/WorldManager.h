@@ -20,11 +20,8 @@
 #define __HW_WORLD_MANAGER_H_
 
 #include <OgreString.h>
-#include <OgreSceneManager.h>
-#include <OgreSceneQuery.h>
 #include <OgreEntity.h>
 #include <OgreStringConverter.h>
-#include <OgreRoot.h>
 #include <sqlite3.h>
 #include "hwstructs.h"
 
@@ -35,10 +32,10 @@ class WorldManager {
 public:
 	WorldManager( void );
 	~WorldManager( void );
-	bool loadWorldData(std::string, Ogre::SceneManager*);
+	bool loadWorldData(Ogre::String);
 	bool saveWorldData();
-	bool loadBuildings(int);
-	bool deleteBuilding(std::string); 
+	bool loadBuildings();
+	bool deleteBuilding(Ogre::String); 
 	bool addBuilding(Ogre::Vector3, const char*);
 	Ogre::SceneManager      *mSceneMgr;	
 private:
@@ -46,7 +43,7 @@ private:
 	unsigned int            mBuildCount;
 	Ogre::SceneNode         *mWorldNode; // attach all ground objects to this SceneNode
     Ogre::Root              *mRoot;
-	sqlite3                 *mWorldDatabase;
+	sqlite3                 *mSQLdb;
 	bool drawBuildings();
 };
 #endif

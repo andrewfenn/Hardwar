@@ -21,25 +21,30 @@
 
 #include "WorldManager.h"
 #include <string>
+#include "enet/enet.h"
 
-extern "C" {
-	#include "enet/enet.h"
-}
+#include <OgreString.h>
+#include <OgreRoot.h>
+#include <OgreRenderable.h>
+#include <OgreRenderWindow.h>
 
-class Server {
-   public:
-      Server();
-      Server(int, std::string);
-      ~Server();
-      
-   private:
-      /* World manager, manages the craters build placement, etc */
-      WorldManager *mWorldMgr;
-      int setupServer(int, std::string);
-      void serverLoop();
-      ENetHost * mServer;
-      ENetAddress mAddress;
-      ENetEvent mEvent;
+class Server
+{
+    public:
+        Server();
+        Server(int, std::string);
+        ~Server();
+    private:
+        /* World manager, manages the craters build placement, etc */
+        WorldManager *mWorldMgr;
+        bool setupServer(int, std::string);
+        bool setupGame();
+        void serverLoop();
+        ENetHost * mServer;
+        ENetAddress mAddress;
+        ENetEvent mEvent;
+        Ogre::SceneManager* mSceneMgr;
+        Ogre::Root* mRoot;
 };
 #endif /* SERVER_H */
 

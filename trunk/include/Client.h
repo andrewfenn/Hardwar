@@ -19,14 +19,10 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "WorldManager.h"
-
 #include <string>
 
-extern "C"
-{
-	#include "enet/enet.h"
-}
+#include "WorldManager.h"
+#include "enet/enet.h"
 
 class Client
 {

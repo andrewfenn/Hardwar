@@ -27,12 +27,12 @@ PlayState* PlayState::mPlayState;
 void PlayState::enter( void ) {
 
     mRoot         = Ogre::Root::getSingletonPtr();
-	mRoot->createSceneManager(Ogre::ST_GENERIC, "PlaySceneMgr" );
+	mRoot->createSceneManager(Ogre::ST_GENERIC,"PlaySceneMgr");
 	
 	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
     mWindow       = mRoot->getAutoCreatedWindow();
-	mSceneMgr     = mRoot->getSceneManager( "PlaySceneMgr" );
-	mCamera       = mSceneMgr->createCamera( "PlayerCamera" );
+	mSceneMgr     = mRoot->getSceneManager("PlaySceneMgr");
+	mCamera       = mSceneMgr->createCamera("PlayerCamera");
 	mViewport     = mWindow->addViewport( mCamera, 0 );
 	mGUIMgr		  = GUIManager::getSingletonPtr();
     mConsole      = new GUIConsole;

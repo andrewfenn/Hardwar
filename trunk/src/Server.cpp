@@ -38,15 +38,14 @@ Server::~Server()
     enet_deinitialize();
 }
 
-int Server::setupServer(int port, std::string address)
+bool Server::setupServer(int port, std::string address)
 {
-    mWorldMgr = new WorldManager;
     mServer=NULL;
 
     if (enet_initialize() != 0)
     {
         printf("Unable to initialize the network library.\n");
-        return 0;
+        return false;
     }
 
     mAddress.host = ENET_HOST_ANY;
@@ -61,16 +60,29 @@ int Server::setupServer(int port, std::string address)
     {
         printf("An error occurred while trying to create an ENet server host.\n");
         enet_deinitialize();
-        return 0;
+        return false;
     }
 
-    return 1;
+    setupGame();
+    
+    return true;
+}
+
+bool Server::setupGame()
+{
+    mWorldMgr = new WorldManager;
+    if (mWorldMgr->loadWorldData(Ogre::String("world/default.db")))
+    {
+        return true;
+    }
+    return false;
 }
 
 void Server::serverLoop()
 {
     bool serverRunning = true;
     std::cout << "Server running.." << std::endl;
+
     while (serverRunning)
     {
         /* Wait up to 1000 milliseconds for an event. */
@@ -84,7 +96,7 @@ void Server::serverLoop()
                         mEvent.peer->address.port);
 
                     /* Store any relevant client information here. */
-                    //mEvent.peer->data = "Client information";
+                    mClients.push(new Client(mEvent.peer->address.port));
                 break;
                 case ENET_EVENT_TYPE_RECEIVE:
                     printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
@@ -97,7 +109,7 @@ void Server::serverLoop()
                     enet_packet_destroy(mEvent.packet);
                 break;
                 case ENET_EVENT_TYPE_DISCONNECT:
-                    printf ("%d disconected.\n", mEvent.peer->data);
+                    printf ("%s disconected.\n", mEvent.peer->data);
 
                     /* Reset the peer's client information. */
                     mEvent.peer->data = NULL;

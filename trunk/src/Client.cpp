@@ -118,7 +118,10 @@ bool Client::message(const void* msg, size_t size, enet_uint8 channel, enet_uint
     /* Send the packet to the peer over channel id 0. */
     /* One could also broadcast the packet by         */
     /* enet_host_broadcast (host, 0, packet);         */
-    return enet_peer_send(mPeer, channel, packet);
+    enet_peer_send(mPeer, channel, packet);
+
+    enet_host_flush(mNetHost);
+    return true;
 }
 
 Client::~Client()
