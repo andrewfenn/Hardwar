@@ -10,3 +10,4 @@ Makefile
 hardwar
 include/config.h
 trunk/include/config.h
+./bin/ogre.cfg

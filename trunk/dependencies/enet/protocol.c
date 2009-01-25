@@ -67,6 +67,8 @@ enet_protocol_dispatch_incoming_commands (ENetHost * host, ENetEvent * event)
            host -> lastServicedPeer = currentPeer;
 
            return 1;
+       default:
+       break;
        }
 
        if (currentPeer -> state != ENET_PEER_STATE_CONNECTED)
@@ -727,6 +729,9 @@ enet_protocol_handle_acknowledge (ENetHost * host, ENetEvent * event, ENetPeer *
            enet_list_empty (& peer -> outgoingUnreliableCommands) &&   
            enet_list_empty (& peer -> sentReliableCommands))
          enet_peer_disconnect (peer, peer -> disconnectData);
+       break;
+
+    default:
        break;
     }
    
