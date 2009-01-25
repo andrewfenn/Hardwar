@@ -61,6 +61,7 @@ void LoadState::enter( void )
 
 void LoadState::exit( void )
 {
+    /* Destory everything we created when entering */
     Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/LoadOverlay");
     o->hide();
     mSceneMgr->destroyCamera(mCamera);

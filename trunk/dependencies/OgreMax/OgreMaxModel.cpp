@@ -56,7 +56,7 @@ void OgreMaxModel::LoadNode(const TiXmlElement* objectElement, NodeParameters& n
     //Iterate over all the node children
     size_t childNodeIndex = 0;
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -122,7 +122,7 @@ EntityParameters* OgreMaxModel::LoadEntity(const TiXmlElement* objectElement)
     //Parse child elements
     const TiXmlElement* boneAttachmentsElement = 0;
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -162,7 +162,7 @@ void OgreMaxModel::LoadBoneAttachments(const TiXmlElement* objectElement, Entity
     entity.boneAttachments.resize(OgreMaxUtilities::GetChildElementCount(objectElement, "boneAttachment"));
 
     size_t index = 0;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         LoadBoneAttachment(childElement, entity.boneAttachments[index++]);
@@ -176,7 +176,7 @@ void OgreMaxModel::LoadBoneAttachment(const TiXmlElement* objectElement, EntityP
     boneAttachment.boneName = OgreMaxUtilities::GetStringAttribute(objectElement, "bone");
 
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -221,7 +221,7 @@ LightParameters* OgreMaxModel::LoadLight(const TiXmlElement* objectElement)
         
     //Parse child elements
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -273,7 +273,7 @@ CameraParameters* OgreMaxModel::LoadCamera(const TiXmlElement* objectElement)
         
     //Parse child elements
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -322,7 +322,7 @@ ParticleSystemParameters* OgreMaxModel::LoadParticleSystem(const TiXmlElement* o
 
     //Parse child elements
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -386,7 +386,7 @@ BillboardSetParameters* OgreMaxModel::LoadBillboardSet(const TiXmlElement* objec
 
     size_t billboardIndex = 0;
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -448,7 +448,7 @@ PlaneParameters* OgreMaxModel::LoadPlane(const TiXmlElement* objectElement)
 
     //Parse child elements
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -487,7 +487,7 @@ void OgreMaxModel::LoadBillboard(const TiXmlElement* objectElement, BillboardSet
 
     //Parse child elements
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -557,7 +557,7 @@ void OgreMaxModel::LoadNodeAnimations(const TiXmlElement* objectElement, NodePar
     //Parse child elements
     int animationIndex = 0;
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -596,7 +596,7 @@ void OgreMaxModel::LoadNodeAnimation(const TiXmlElement* objectElement, NodeAnim
 
     int keyframeIndex = 0;
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
@@ -615,7 +615,7 @@ void OgreMaxModel::LoadNodeAnimationKeyFrame(const TiXmlElement* objectElement, 
 
     //Parse child elements
     String elementName;
-    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement);
+    const TiXmlElement* childElement = OgreMaxUtilities::IterateChildElements(objectElement, 0);
     while (childElement != 0)
     {
         elementName = childElement->Value();
