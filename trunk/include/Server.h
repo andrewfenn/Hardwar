@@ -16,17 +16,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef __SERVER_H_
+#define __SERVER_H_
 
+#include "hwstructs.h"
 #include "WorldManager.h"
-#include <string>
-#include "enet/enet.h"
+#include "FileManager.h"
+#include "srvstructs.h"
 
+#include "enet/enet.h"
 #include <OgreString.h>
-#include <OgreRoot.h>
-#include <OgreRenderable.h>
-#include <OgreRenderWindow.h>
+#include <string>
 
 class Server
 {
@@ -35,16 +35,20 @@ class Server
         Server(int, std::string);
         ~Server();
     private:
-        /* World manager, manages the craters build placement, etc */
-        WorldManager *mWorldMgr;
-        bool setupServer(int, std::string);
-        bool setupGame();
-        void serverLoop();
-        ENetHost * mServer;
+        ENetHost *mServer;
         ENetAddress mAddress;
         ENetEvent mEvent;
-        Ogre::SceneManager* mSceneMgr;
-        Ogre::Root* mRoot;
+
+        Player mClients[64];
+        int mPlayerCount;
+        /* World manager, manages the craters build placement, etc */
+        WorldManager *mWorldMgr;
+        FileManager *mFileMgr;
+
+        bool  setupServer(int, std::string);
+        bool  setupGame();
+        void  serverLoop();
+        enet_uint8 getIdFromPeer(ENetPeer*);
 };
-#endif /* SERVER_H */
+#endif /* __SERVER_H_ */
 

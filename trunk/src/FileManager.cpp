@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,26 +16,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CLIENT_H_
-#define __CLIENT_H_
+#include "FileManager.h"
 
-#include <string>
-
-#include "WorldManager.h"
-#include "enet/enet.h"
-
-class Client
+FileManager::FileManager()
 {
-    public:
-        Client();
-        ~Client();
-        bool connect(unsigned int, std::string);
-        void pollMessages();
-        bool message(const void*, size_t, enet_uint8, enet_uint32);
-        ENetHost * mNetHost;
-    private:
-        ENetEvent mEvent;
-        ENetPeer *mPeer;
-};
-#endif /* __CLIENT_H_ */
+	
+}
 
+FileManager::~FileManager()
+{
+	
+}
+
+bool FileManager::scanFiles(void)
+{
+    /*
+     * Used by the server.
+     * Make a list of all the current files being used in the game.
+     */
+
+    /* TODO: This isn't important... yet. */
+    return true;    
+}

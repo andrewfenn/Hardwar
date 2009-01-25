@@ -38,14 +38,6 @@ void PlayState::enter( void ) {
     mConsole      = new GUIConsole;
     mOgreMax      = new OgreMax::OgreMaxScene;
 
-    mNetwork      = new Client;
-
-    if (!setupNetwork())
-    {
-        /* Networking connection has failed, shut down */
-        std::cerr << "Error Connecting to server" << std::endl;
-    }
-
 	/* Initialise CEGUI for user interface stuff */
 	mGUIMgr->initialise(mSceneMgr, mWindow);
 
@@ -77,29 +69,6 @@ void PlayState::enter( void ) {
     mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
 }
 
-bool PlayState::setupNetwork()
-{
-    /* get arguements parsed at commandline from gamemanager */
-    GameManager *gameManager = GameManager::getSingletonPtr();
-    
-    /* If single player game then start a server and connect to it */
-    if (gameManager->mSinglePlayer)
-    {
-        std::cout << "Starting Singleplayer server" << std::endl;
-        return true;
-    }
-    else
-    {
-        if (mNetwork->connect(gameManager->mPort, gameManager->mAddress))
-        {
-            /* request a position */
-            mNetwork->message("packet", strlen("packet")+1, 0, ENET_PACKET_FLAG_RELIABLE);
-            return true;
-        }
-    }
-    return false;
-}
-
 void PlayState::exit( void )
 {
     mSceneMgr->clearScene();
@@ -124,6 +93,7 @@ void PlayState::resume( void )
 
 void PlayState::update( unsigned long lTimeElapsed )
 {
+/*    mNetwork->pollMessages();*/
     fpstimer += lTimeElapsed;
     if (fpstimer > 0.5)
     {
@@ -156,7 +126,7 @@ void PlayState::update( unsigned long lTimeElapsed )
 
         if (!o)
         {
-            OGRE_EXCEPT( Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "showDebugOverlay" );
+            OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "showDebugOverlay" );
         }
         else
         {

@@ -20,17 +20,17 @@
 
 Client::Client()
 {
-}
-
-bool Client::connect(int port, std::string address)
-{
     if (enet_initialize() != 0) {
         std::cerr << "An error occurred while initializing ENet." << std::endl;
-        return false;
     }
+}
+
+bool Client::connect(unsigned int port, std::string address)
+{
+    ENetAddress mAddress;
 
     mNetHost = enet_host_create (NULL /* create a client host */,
-                1 /* only allow 1 outgoing connection */,
+               1 /* only allow 1 outgoing connection */,
                 57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
                 14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
 
@@ -38,7 +38,6 @@ bool Client::connect(int port, std::string address)
     {
         fprintf (stderr, 
                  "An error occurred while trying to create an ENet client host.\n");
-        enet_deinitialize();
         return false;
     }
 
@@ -55,8 +54,7 @@ bool Client::connect(int port, std::string address)
     mPeer = enet_host_connect (mNetHost, &mAddress, 2);
 
     if (!mPeer) {
-       fprintf (stderr, "No available peers for initiating an ENet connection.\n");
-       enet_deinitialize();
+       fprintf(stderr, "No available peers for initiating an ENet connection.\n");
        return false;
     }
     
@@ -72,36 +70,36 @@ bool Client::connect(int port, std::string address)
         /* received. Reset the peer in the event the 5 seconds   */
         /* had run out without any significant event.            */
         enet_peer_reset (mPeer);
-        enet_deinitialize();
         std::cout << "Connection to " << address << ":" << port << " failed" << std::endl;
     }
 
     return false;
 }
 
-void Client::clientLoop()
+void Client::pollMessages()
 {
-    while (true)
+    /* Wait up to 1000 milliseconds for an event. */
+    while (enet_host_service(mNetHost, &mEvent, 0) > 0)
     {
-        /* Wait up to 1000 milliseconds for an event. */
-        while (enet_host_service(mNetHost, &mEvent, 1000) > 0)
+        switch (mEvent.type)
         {
-            switch (mEvent.type)
+            case ENET_EVENT_TYPE_RECEIVE:
             {
-                case ENET_EVENT_TYPE_RECEIVE:
-                    printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                        mEvent.packet->dataLength,
-                        mEvent.packet->data,
-                        mEvent.peer->data,
-                        mEvent.channelID);
+                printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
+                    mEvent.packet->dataLength,
+                    mEvent.packet->data,
+                    (char*)mEvent.peer->data,
+                    mEvent.channelID);
 
-                    /* Clean up the packet now that we're done using it. */
-                    enet_packet_destroy (mEvent.packet);
-                break;
+             
+                /* Clean up the packet now that we're done using it. */
+                enet_packet_destroy (mEvent.packet);
             }
+            break;
+            default:
+            break;
         }
     }
-    enet_host_destroy(mNetHost);
 }
 
 bool Client::message(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority)
@@ -126,5 +124,6 @@ bool Client::message(const void* msg, size_t size, enet_uint8 channel, enet_uint
 
 Client::~Client()
 {
+    enet_host_destroy(mNetHost);
     enet_deinitialize();
 }

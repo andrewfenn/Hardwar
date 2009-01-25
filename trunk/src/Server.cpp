@@ -28,6 +28,7 @@ Server::Server(int port=26500, std::string address = std::string("127.0.0.1"))
 {
     if (setupServer(port, address) == 1)
     {
+        /* setup number of avaliable clients */
         serverLoop();
     }
 }
@@ -70,12 +71,25 @@ bool Server::setupServer(int port, std::string address)
 
 bool Server::setupGame()
 {
+    bool result = true;
+
     mWorldMgr = new WorldManager;
-    if (mWorldMgr->loadWorldData(Ogre::String("world/default.db")))
+    result = mWorldMgr->loadWorldData(Ogre::String("world/default.db"));
+
+    if (result == true)
     {
-        return true;
+        mFileMgr = new FileManager;
+        mFileMgr->scanFiles();
     }
-    return false;
+    return result;
+}
+
+enet_uint8 Server::getIdFromPeer(ENetPeer* pPeer)
+{
+	int result = pPeer - mServer->peers;
+	if ( result < 0 || result > 1000)
+		return -1;
+	return enet_uint8( result );
 }
 
 void Server::serverLoop()
@@ -91,28 +105,45 @@ void Server::serverLoop()
             switch (mEvent.type)
             {
                 case ENET_EVENT_TYPE_CONNECT:
-                    printf ("A new client connected from %x:%u.\n", 
-                        mEvent.peer->address.host,
-                        mEvent.peer->address.port);
+                {
+                    printf ("A new client connected from %x\n",
+                                                     mEvent.peer->address.host);
 
+                    /* TODO: Check if server is full */
+                    /* TODO: Check address isn't banned */
                     /* Store any relevant client information here. */
-                    mClients.push(new Client(mEvent.peer->address.port));
+                    Player player;
+                    player.name = std::string("Player");
+                    player.conState = STATUS_LOBBY;
+
+                    int id = getIdFromPeer(mEvent.peer);
+                    mClients[id] = player;
+
+                    /* TODO: Add file checking */
+                    
+                    /* Send client to lobby */
+                    ENetPacket * packet = enet_packet_create(&player, sizeof(player), ENET_PACKET_FLAG_RELIABLE);
+                    enet_peer_send(mEvent.peer, 0, packet);
+                    enet_host_flush(mServer);
+                }
                 break;
                 case ENET_EVENT_TYPE_RECEIVE:
                     printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
                         mEvent.packet->dataLength,
                         mEvent.packet->data,
-                        mEvent.peer->data,
+                        (char*)mEvent.peer->data,
                         mEvent.channelID);
 
                     /* Clean up the packet now that we're done using it. */
                     enet_packet_destroy(mEvent.packet);
                 break;
                 case ENET_EVENT_TYPE_DISCONNECT:
-                    printf ("%s disconected.\n", mEvent.peer->data);
+                    printf ("%s disconected.\n", (char*)mEvent.peer->data);
 
                     /* Reset the peer's client information. */
                     mEvent.peer->data = NULL;
+                break;
+                default:
                 break;
             }
         }

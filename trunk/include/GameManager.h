@@ -29,6 +29,7 @@
 
 #include "InputManager.h"
 #include "GUIManager.h"
+#include "Client.h"
 
 #include <string>
 
@@ -36,9 +37,10 @@ class GameState;
 
 class GameManager : public OIS::KeyListener, OIS::MouseListener {
 public:
-    int mPort;
-    std::string mAddress;
-    bool mSinglePlayer;
+    int                 mPort;
+    std::string         mAddress;
+    bool                mSinglePlayer;
+    Client              *mNetwork;
 
     ~GameManager(void);
     void startGame(GameState *gameState);
@@ -48,7 +50,20 @@ public:
     void requestShutdown(void);
 
     static GameManager* getSingletonPtr(void);
+    bool setupNetwork(void);
 private:
+    Ogre::Root          *mRoot;
+    Ogre::RenderWindow  *mRenderWindow;
+    InputManager        *mInputMgr;
+    GUIManager			*mGUIMgr;
+
+    GameState           *mLoadState;
+    GameState           *mPlayState;
+
+    bool bShutdown;
+    std::vector<GameState*> mStates;
+    static GameManager *mGameManager;
+
     GameManager(void);
     GameManager(const GameManager&) { }
     GameManager & operator = (const GameManager&);
@@ -62,21 +77,5 @@ private:
     bool mouseMoved(const OIS::MouseEvent &e);
     bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-
-    Ogre::Root          *mRoot;
-    Ogre::RenderWindow  *mRenderWindow;
-    InputManager        *mInputMgr;
-    GUIManager			*mGUIMgr;
-
-    GameState           *mIntroState;
-    GameState           *mPlayState;
-    GameState           *mPauseState;
-    GameState			*mEditorState;
-    
-
-
-    bool bShutdown;
-    std::vector<GameState*> mStates;
-    static GameManager *mGameManager;
 };
 #endif

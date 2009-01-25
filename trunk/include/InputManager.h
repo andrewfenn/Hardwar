@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef InputManager_H
-#define InputManager_H
+#ifndef __InputManager_H_
+#define __InputManager_H_
 
 #include "OISInputManager.h"
 #include "OISException.h"
@@ -64,22 +64,6 @@ public:
 
     static InputManager* getSingletonPtr( void );
 private:
-    InputManager( void );
-    InputManager( const InputManager& ) { }
-    InputManager & operator = ( const InputManager& );
-
-    bool keyPressed( const OIS::KeyEvent &e );
-    bool keyReleased( const OIS::KeyEvent &e );
-
-    bool mouseMoved( const OIS::MouseEvent &e );
-    bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
-    bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
-
-    bool povMoved( const OIS::JoyStickEvent &e, int pov );
-    bool axisMoved( const OIS::JoyStickEvent &e, int axis );
-    bool sliderMoved( const OIS::JoyStickEvent &e, int sliderID );
-    bool buttonPressed( const OIS::JoyStickEvent &e, int button );
-    bool buttonReleased( const OIS::JoyStickEvent &e, int button );
 
     OIS::InputManager *mInputSystem;
     OIS::Mouse        *mMouse;
@@ -102,6 +86,23 @@ private:
     std::map<std::string, OIS::JoyStickListener*>::iterator itJoystickListenerEnd;
 
     static InputManager *mInputManager;
+
+    InputManager( void );
+    InputManager( const InputManager& ) { }
+    InputManager & operator = ( const InputManager& );
+
+    bool keyPressed( const OIS::KeyEvent &e );
+    bool keyReleased( const OIS::KeyEvent &e );
+
+    bool mouseMoved( const OIS::MouseEvent &e );
+    bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+    bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+
+    bool povMoved( const OIS::JoyStickEvent &e, int pov );
+    bool axisMoved( const OIS::JoyStickEvent &e, int axis );
+    bool sliderMoved( const OIS::JoyStickEvent &e, int sliderID );
+    bool buttonPressed( const OIS::JoyStickEvent &e, int button );
+    bool buttonReleased( const OIS::JoyStickEvent &e, int button );
 };
-#endif
+#endif /* __InputManager_H_ */
 

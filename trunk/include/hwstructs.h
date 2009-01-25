@@ -19,10 +19,14 @@
 #ifndef __HW_STRUCTS_H_
 #define __HW_STRUCTS_H_
 
+#include <string.h>
+#include <OgreEntity.h>
+#include "srvstructs.h"
+#include "enet/enet.h"
 
 typedef struct {
-	int isBot;							// If the player is controlled by the AI or not
-	
+    std::string name;       /* Players name */
+    enet_uint32 conState;  /* Connection state */
 } Player;
 
 typedef struct {

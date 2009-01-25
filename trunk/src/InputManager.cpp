@@ -22,9 +22,9 @@
 InputManager *InputManager::mInputManager;
 
 InputManager::InputManager( void ) :
+    mInputSystem( 0 ),
     mMouse( 0 ),
-    mKeyboard( 0 ),
-    mInputSystem( 0 ) {
+    mKeyboard( 0 ) {
 }
 
 InputManager::~InputManager( void ) {

@@ -35,9 +35,11 @@ GUIConsole::~GUIConsole(){
    
 }
 
-void GUIConsole::init(Ogre::Root *root){
+void GUIConsole::init(Ogre::Root *root)
+{
     if(!root->getSceneManagerIterator().hasMoreElements())
-        OGRE_EXCEPT( Exception::ERR_INTERNAL_ERROR, "No scene manager found!", "init" );
+        OGRE_EXCEPT( Exception::ERR_INTERNAL_ERROR, "No scene manager found!", 
+                                                                     "init()" );
 
     mRoot=root;
     mScene=mRoot->getSceneManagerIterator().getNext();
@@ -50,11 +52,13 @@ void GUIConsole::init(Ogre::Root *root){
     mRect->setCorners(-1, 1, 1, 1-mHeight);
     mRect->setMaterial("console/background");
     mRect->setRenderQueueGroup(RENDER_QUEUE_OVERLAY);
-    mRect->setBoundingBox(AxisAlignedBox(-100000.0*Vector3::UNIT_SCALE, 100000.0*Vector3::UNIT_SCALE));
+    mRect->setBoundingBox(AxisAlignedBox(-100000.0*Vector3::UNIT_SCALE, 100000.0
+                                                         *Vector3::UNIT_SCALE));
     mNode = mScene->getRootSceneNode()->createChildSceneNode("#Console");
     mNode->attachObject(mRect);
 
-    mTextbox=OverlayManager::getSingleton().createOverlayElement("TextArea","ConsoleText");
+    mTextbox=OverlayManager::getSingleton().createOverlayElement("TextArea",
+                                                                 "ConsoleText");
     mTextbox->setMetricsMode(GMM_RELATIVE);
     mTextbox->setPosition(0,0);
     mTextbox->setParameter("font_name","Console");
@@ -69,7 +73,8 @@ void GUIConsole::init(Ogre::Root *root){
     LogManager::getSingleton().getDefaultLog()->addListener(this);
 }
 
-void GUIConsole::shutdown(){
+void GUIConsole::shutdown()
+{
    if(!mInitialized)
       return;
    delete mRect;
@@ -78,16 +83,17 @@ void GUIConsole::shutdown(){
    delete mOverlay;
 }
 
-void GUIConsole::onKeyPressed(const OIS::KeyEvent &e){
-   if(!mVisible)
+void GUIConsole::onKeyPressed(const OIS::KeyEvent &e)
+{
+    if(!mVisible)
       return;
-   if (e.key == OIS::KC_RETURN)
-   {
+    if (e.key == OIS::KC_RETURN)
+    {
       //split the parameter list
       const char *str=mPrompt.c_str();
       vector<String> params;
       String param="";
-      for(int c=0;c<mPrompt.length();c++){
+      for(unsigned int c=0;c<mPrompt.length();c++){
          if(str[c]==' '){
             if(param.length())
                params.push_back(param);
@@ -119,41 +125,47 @@ void GUIConsole::onKeyPressed(const OIS::KeyEvent &e){
 
       mPrompt="";
       mCursorPos=0;
-      mHistoryPos=-1;
-   }
+        if (mHistoryPos > 1)
+        {
+            mHistoryPos=0;
+        }
+    }
 
-   if (e.key == OIS::KC_BACK) {
-      mPrompt = mPrompt.substr(0,mPrompt.length()-mCursorPos-1) + mPrompt.substr(mPrompt.length()-mCursorPos, mPrompt.length());
-   }
+    if (e.key == OIS::KC_BACK)
+    {
+      mPrompt = mPrompt.substr(0,mPrompt.length()-mCursorPos-1) + 
+                  mPrompt.substr(mPrompt.length()-mCursorPos, mPrompt.length());
+    }
 
-   if (e.key == OIS::KC_PGUP)
-   {
+    if (e.key == OIS::KC_PGUP)
+    {
       if(mStartLine>0)
          mStartLine--;
-   }
+    }
 
-   if (e.key == OIS::KC_PGDOWN)
-   {
-      if(mStartLine<mLines.size())
+    if (e.key == OIS::KC_PGDOWN)
+    {
+      if(mStartLine < mLines.size())
          mStartLine++;
-   }
+    }
 
-   if (e.key == OIS::KC_LEFT) {
+    if (e.key == OIS::KC_LEFT) {
         /* Move cursor left */
         if (mPrompt.length() > mCursorPos) {
             mCursorPos++;
         }
-   }
+    }
 
-   if (e.key == OIS::KC_RIGHT) {
+    if (e.key == OIS::KC_RIGHT) {
         /* Move cursor right */
         if (mCursorPos > 0) {
             mCursorPos--;
         }
-   }
+    }
 
-   if (e.key == OIS::KC_UP) {
-        if (mHistoryPos == -1) {
+    if (e.key == OIS::KC_UP)
+    {
+        if (mHistoryPos == 0) {
             /* save the old value */
             mTempPrompt = mPrompt;
         }
@@ -163,12 +175,12 @@ void GUIConsole::onKeyPressed(const OIS::KeyEvent &e){
             mPrompt = mPromptHistory.at(mPromptHistory.size()-1-mHistoryPos);
             mCursorPos = 0;
         }
-   }
+    }
 
-   if (e.key == OIS::KC_DOWN) {
-        if (mHistoryPos > -1) {
+    if (e.key == OIS::KC_DOWN) {
+        if (mHistoryPos > 0) {
             mHistoryPos--;
-            if (mHistoryPos == -1) {
+            if (mHistoryPos == 0) {
                 /* Put old value back */
                 mPrompt = mTempPrompt;
             } else {
@@ -176,21 +188,20 @@ void GUIConsole::onKeyPressed(const OIS::KeyEvent &e){
                 mCursorPos = 0;
             }
         }
-   }
+    }
 
-   if (e.key == OIS::KC_LSHIFT || e.key == OIS::KC_RSHIFT || e.key > OIS::KC_CAPITAL || e.key == OIS::KC_LMENU) {
+    if (e.key == OIS::KC_LSHIFT || e.key == OIS::KC_RSHIFT || e.key > OIS::KC_CAPITAL || e.key == OIS::KC_LMENU) {
         /* Do nothing, otherwise it adds tabs into the console */
-   } else {
-
-      char legalchars[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890+!\"#%&/()=?[]\\*-_.:,; ";
-      for(int c=0;c<sizeof(legalchars);c++){
+    } else {
+        char legalchars[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890+!\"#%&/()=?[]\\*-_.:,; ";
+        for(int c=0;c<sizeof(legalchars);c++){
          if(legalchars[c]==e.text){
             mPrompt = mPrompt.substr(0,mPrompt.length()-mCursorPos) + e.text + mPrompt.substr(mPrompt.length()-mCursorPos, mPrompt.length());
             break;
          }
-      }
-   }
-   mUpdateOverlay=true;
+        }
+    }
+    mUpdateOverlay=true;
 }
 bool GUIConsole::frameStarted(const Ogre::FrameEvent &evt){
    if(mVisible&&mHeight<1){

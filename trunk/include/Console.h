@@ -66,14 +66,14 @@ private:
    float            mHeight;
    bool             mUpdateOverlay;
    bool             mNotShown;
-   int              mStartLine;
+   unsigned int     mStartLine;
    list<String>     mLines;
    String           mPrompt;
    String           mTempPrompt;
    bool             mIsBlink;
    Real             mTimeBlink;
-   int              mCursorPos;
-   int              mHistoryPos;
+   unsigned int     mCursorPos;
+   unsigned int       mHistoryPos;
    map<String,void (*)(vector<String>&)>  mCommands;
    vector<String>   mPromptHistory;
 };

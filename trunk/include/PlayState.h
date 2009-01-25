@@ -19,22 +19,18 @@
 #ifndef PlayState_H
 #define PlayState_H
 
-#include <OgreCamera.h>
-
 #include "GameState.h"
-#include "Client.h"
-extern "C"
-{
-	#include "enet/enet.h"
-}
+#include "Console.h"
+
+#include <OgreCamera.h>
 #include <OgreEntity.h>
 #include <OgreSceneQuery.h>
 #include <OgreSubMesh.h>
 #include <OgreRay.h>
 #include <OgreMeshManager.h>
 #include <OgreRenderable.h>
-#include "Console.h"
 #include "OgreMaxScene.hpp"
+
 
 class PlayState : public GameState
 {
@@ -75,8 +71,6 @@ private:
     Ogre::SceneNode         *mWorldNode;
     Ogre::SceneNode         *mWaterNode;
 
-    Client                  *mNetwork;
-
     static PlayState        *mPlayState;
 
     Ogre::Degree    mMouseRotX, mMouseRotY;
@@ -86,7 +80,6 @@ private:
     PlayState(void) { }
     PlayState(const PlayState&) { }
     PlayState & operator = (const PlayState&);
-    bool setupNetwork(void);
 };
 #endif /* Playstate_H */
 

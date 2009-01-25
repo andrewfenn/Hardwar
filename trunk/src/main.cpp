@@ -19,6 +19,7 @@
 #include <OgreException.h>
 #include "GameManager.h"
 #include "PlayState.h"
+#include "LoadState.h"
 #include "Server.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -119,7 +120,7 @@ int main( int argc, char **argv ) {
 
             try
             {                /* Initialise the game and switch to the first state */
-                gameManager->startGame(PlayState::getSingletonPtr());
+                gameManager->startGame(LoadState::getSingletonPtr());
             }
             catch ( Ogre::Exception& ex )
             {

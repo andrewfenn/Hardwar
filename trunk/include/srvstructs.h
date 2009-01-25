@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,26 +16,21 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CLIENT_H_
-#define __CLIENT_H_
 
-#include <string>
+#ifndef __SRVSTRUCTS_H_
+#define __SRVSTRUCTS_H_
 
-#include "WorldManager.h"
-#include "enet/enet.h"
+typedef enum {
+    NONE = 0,
+    HAS_FTP_ADDRESS         = 0x0001,
+    DOWNLOAD_FROM_SERVER    = 0x0002
+} serverDldMethod;
 
-class Client
-{
-    public:
-        Client();
-        ~Client();
-        bool connect(unsigned int, std::string);
-        void pollMessages();
-        bool message(const void*, size_t, enet_uint8, enet_uint32);
-        ENetHost * mNetHost;
-    private:
-        ENetEvent mEvent;
-        ENetPeer *mPeer;
-};
-#endif /* __CLIENT_H_ */
+typedef enum {
+    STATUS_CONNECTED    = 0,
+    STATUS_FILECHECK    = 0x0001,
+    STATUS_LOBBY        = 0x0002,
+    STATUS_INGAME       = 0x0003
+} clientStatus;
 
+#endif /* __SRVSTRUCTS_H_ */

@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,15 +16,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef IntroState_H
-#define IntroState_H
+#ifndef __LoadState_H_
+#define __LoadState_H_
 
-#include "PlayState.h"
 #include "GameState.h"
+#include "PlayState.h"
 
-class IntroState : public GameState {
+#include <OgreRoot.h>
+#include <OgreEntity.h>
+#include <OgreSceneQuery.h>
+#include <OgreSubMesh.h>
+#include <OgreRay.h>
+#include <OgreMeshManager.h>
+#include <OgreRenderable.h>
+
+class LoadState : public GameState {
 public:
-    ~IntroState( void );
+    ~LoadState( void );
 
     void enter( void );
     void exit( void );
@@ -40,21 +48,28 @@ public:
     void mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
     void mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
 
-    static IntroState* getSingletonPtr( void );
+    static LoadState* getSingletonPtr( void );
 private:
-    IntroState( void ) { }
-    IntroState( const IntroState& ) { }
-    IntroState & operator = ( const IntroState& );
 
     Ogre::Root           *mRoot;
     Ogre::Camera         *mCamera;
     Ogre::SceneManager   *mSceneMgr;
+    Ogre::RenderWindow   *mWindow;
     Ogre::Viewport       *mViewport;
     Ogre::OverlayManager *mOverlayMgr;
-    Ogre::Overlay        *mIntroOverlay;
-    Ogre::Overlay        *mMouseOverlay;
-    Ogre::OverlayElement *mMousePointer;
-    static IntroState    *mIntroState;
+    static LoadState    *mLoadState;
+    GameManager* mGameMgr;
+
+    bool mReverse;
+    int mConAttempts;
+
+    LoadState( void ) { }
+    LoadState( const LoadState& ) { }
+    LoadState & operator = ( const LoadState& );
+
+    void updateLoadbar(unsigned long);
+    void killLoadbar(void);
+    unsigned long mCounter;
 };
-#endif
+#endif /* __LoadState_H_ */
 

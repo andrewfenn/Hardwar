@@ -19,9 +19,7 @@
 #include "GameState.h"
 
 #include "PlayState.h"
-#include "IntroState.h"
-#include "PauseState.h"
-#include "EditorState.h"
+#include "LoadState.h"
 
 #include "GameManager.h"
 
@@ -30,8 +28,8 @@ using namespace Ogre;
 GameManager* GameManager::mGameManager;
 
 GameManager::GameManager( void ) :
-                            mRoot( 0 ), mInputMgr( 0 ), mIntroState( 0 ), 
-                            mPlayState( 0 ), mPauseState( 0 ), bShutdown( false )
+                            mRoot( 0 ), mInputMgr( 0 ), mLoadState( 0 ), 
+                            mPlayState( 0 ), bShutdown( false )
 {
     mSinglePlayer = false;
     mPort = 26500;
@@ -55,20 +53,15 @@ GameManager::~GameManager( void ) {
         delete mGUIMgr;
         mGUIMgr = 0;
     }
-    if(mIntroState)
+    if(mLoadState)
     {
-        delete mIntroState;
-        mIntroState = 0;
+        delete mLoadState;
+        mLoadState = 0;
     }	
     if(mPlayState)
     {
         delete mPlayState;
         mPlayState  = 0;
-    }
-    if(mPauseState)
-    {
-        delete mPauseState;
-        mPauseState = 0;
     }
     if(mRoot)
     {
@@ -88,7 +81,8 @@ void GameManager::startGame( GameState *gameState )
     #endif
 
     /* Setup states */
-    mEditorState = EditorState::getSingletonPtr();
+    mLoadState = LoadState::getSingletonPtr();
+    mPlayState = PlayState::getSingletonPtr();
 
     this->setupResources();
     if( !this->configureGame() )
@@ -96,7 +90,7 @@ void GameManager::startGame( GameState *gameState )
         /* If game can't be configured, throw exception and quit application */
         throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR,
                                       "Error - Couldn't Configure Renderwindow",
-                                      "Example - Error" );
+                                      "Game Error" );
         return;
     }
 
@@ -108,6 +102,7 @@ void GameManager::startGame( GameState *gameState )
     mInputMgr->getJoystick( 1 );
 
     mGUIMgr = 0;
+    mNetwork = new Client;
 
     /* Go to the first state */
     this->changeState( gameState );
@@ -277,6 +272,26 @@ bool GameManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     mStates.back()->mouseReleased( e, id );
 
     return true;
+}
+
+bool GameManager::setupNetwork(void)
+{
+    /* If single player game then start a server and connect to it */
+    if (mSinglePlayer)
+    {
+        std::cout << "Starting Singleplayer server" << std::endl;
+        return true;
+    }
+    else
+    {
+        if (mNetwork->connect(this->mPort, this->mAddress))
+        {
+            /* request a position */
+            mNetwork->message("packet", strlen("packet")+1, 0, ENET_PACKET_FLAG_RELIABLE);
+            return true;
+        }
+    }
+    return false;
 }
 
 GameManager* GameManager::getSingletonPtr(void)

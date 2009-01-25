@@ -237,7 +237,7 @@ bool WorldManager::addBuilding(Ogre::Vector3 position, const char* meshName)
 	newbuilding.mesh = (std::string)meshName;
 
 	/* check the building was added */
-	int numBuildings = mBuildings.size();
+	unsigned int numBuildings = mBuildings.size();
 	mBuildings.push_back(newbuilding);
 	if (mBuildings.size() > numBuildings)	
 		return true;
