@@ -55,8 +55,12 @@ void LoadState::enter( void )
         loadstats->setCaption(Ogre::String("Connecting to server"));
     }
 
-    mConAttempts = 0; /* connection attempts */
+    mConAttempts = 0; /* connection attempts so far */
     mCounter = 101; /* timer for a delay between connection attempts */
+
+    mLoadStatus = STATUS_CONNECTING;
+    mRetryLimit = 10; /* TODO: Make this config option */
+    mTimeout = 30; /* TODO: Make this config option. */
 }
 
 void LoadState::exit( void )
@@ -79,12 +83,66 @@ void LoadState::update( unsigned long lTimeElapsed )
 {
     updateLoadbar(lTimeElapsed);
 
-    
-    
-    if (mCounter > 1000)
+    /*this->changeState(PlayState::getSingletonPtr());*/
+    switch(mLoadStatus)
+    {
+        case STATUS_CONNECTING:
+                connect();
+                mCounter += lTimeElapsed;
+        break;
+        case STATUS_LISTENING:
+                waitForReply();
+                mCounter += lTimeElapsed;
+        break;
+        default:
+        break;
+    }
+}
+
+void LoadState::waitForReply(void)
+{
+    ENetEvent event;
+    if (mGameMgr->mNetwork->pollMessage(&event))
+    {
+        switch (event.type)
+        {
+            case ENET_EVENT_TYPE_RECEIVE:
+            {
+                printf ("A packet of length %u containing 0x%08x was received on channel %u.\n",
+                    event.packet->dataLength,
+                    event.packet->data,
+                    event.channelID);
+             
+                // Clean up the packet now that we're done using it.
+                enet_packet_destroy(event.packet);
+            }
+            break;
+            default:
+            break;
+        }
+    }
+    else
+    {
+        unsigned int timeout = mTimeout - (mCounter*0.001);
+        if (timeout < mTimeout-1)
+        {
+            Ogre::OverlayElement* loadstats = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Comment");
+            loadstats->setCaption(Ogre::String("Waiting for response. Timeout: ")+Ogre::StringConverter::toString(timeout));
+            if (timeout == 0)
+            {
+                mLoadStatus = STATUS_CONNECTING;
+                mConAttempts++;
+            }
+        }
+    }
+}
+
+void LoadState::connect(void)
+{
+    if ((mCounter*0.001) > 1)
     {
         Ogre::OverlayElement* loadstats = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Comment");
-        if (mConAttempts < 10)
+        if (mConAttempts < mRetryLimit)
         {
             mCounter = 0;
             
@@ -93,13 +151,13 @@ void LoadState::update( unsigned long lTimeElapsed )
             {
                 if (mGameMgr->mSinglePlayer)
                 {
-                    loadstats->setCaption(Ogre::String("Connected to server"));
+                    loadstats->setCaption(Ogre::String("Loading world"));
                 }
                 else
                 {
-                    loadstats->setCaption(Ogre::String("Started game"));
+                    loadstats->setCaption(Ogre::String("Waiting for response"));
                 }
-                this->changeState(PlayState::getSingletonPtr());
+                mLoadStatus = STATUS_LISTENING;
             }
             else
             {
@@ -117,10 +175,10 @@ void LoadState::update( unsigned long lTimeElapsed )
         else
         {
             /* the connection has failed */
+            mLoadStatus = STATUS_DISCONNECTED;
             killLoadbar();
         }
     }
-    mCounter += lTimeElapsed;
 }
 
 void LoadState::updateLoadbar(unsigned long lTimeElapsed)

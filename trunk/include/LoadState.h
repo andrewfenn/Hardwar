@@ -20,6 +20,7 @@
 #define __LoadState_H_
 
 #include "GameState.h"
+#include "srvstructs.h"
 #include "PlayState.h"
 
 #include <OgreRoot.h>
@@ -30,7 +31,10 @@
 #include <OgreMeshManager.h>
 #include <OgreRenderable.h>
 
-class LoadState : public GameState {
+#include "enet/enet.h"
+
+class LoadState : public GameState
+{
 public:
     ~LoadState( void );
 
@@ -59,9 +63,12 @@ private:
     Ogre::OverlayManager *mOverlayMgr;
     static LoadState    *mLoadState;
     GameManager* mGameMgr;
+    clientStatus         mLoadStatus;
 
     bool mReverse;
     int mConAttempts;
+    int mRetryLimit;
+    int mTimeout;
 
     LoadState( void ) { }
     LoadState( const LoadState& ) { }
@@ -69,6 +76,8 @@ private:
 
     void updateLoadbar(unsigned long);
     void killLoadbar(void);
+    void connect(void);
+    void waitForReply(void);
     unsigned long mCounter;
 };
 #endif /* __LoadState_H_ */

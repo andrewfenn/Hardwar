@@ -114,7 +114,7 @@ void Server::serverLoop()
                     /* Store any relevant client information here. */
                     Player player;
                     player.name = std::string("Player");
-                    player.conState = STATUS_LOBBY;
+                    player.conState = STATUS_CONNECTED;
 
                     int id = getIdFromPeer(mEvent.peer);
                     mClients[id] = player;

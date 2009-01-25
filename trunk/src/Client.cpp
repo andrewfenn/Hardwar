@@ -76,30 +76,14 @@ bool Client::connect(unsigned int port, std::string address)
     return false;
 }
 
-void Client::pollMessages()
+bool Client::pollMessage(ENetEvent *pEvent)
 {
     /* Wait up to 1000 milliseconds for an event. */
-    while (enet_host_service(mNetHost, &mEvent, 0) > 0)
+    if (enet_host_service(mNetHost, pEvent, 0) > 0)
     {
-        switch (mEvent.type)
-        {
-            case ENET_EVENT_TYPE_RECEIVE:
-            {
-                printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                    mEvent.packet->dataLength,
-                    mEvent.packet->data,
-                    (char*)mEvent.peer->data,
-                    mEvent.channelID);
-
-             
-                /* Clean up the packet now that we're done using it. */
-                enet_packet_destroy (mEvent.packet);
-            }
-            break;
-            default:
-            break;
-        }
+        return true;
     }
+    return false;
 }
 
 bool Client::message(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority)

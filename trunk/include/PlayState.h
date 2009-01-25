@@ -62,6 +62,7 @@ private:
     Ogre::Viewport          *mViewport;
     Ogre::OverlayManager    *mOverlayMgr;
     Ogre::RenderWindow      *mWindow;
+    GameManager             *mGameMgr;
 
     GUIManager			    *mGUIMgr;
     GUIConsole              *mConsole;

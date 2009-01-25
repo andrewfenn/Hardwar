@@ -27,10 +27,14 @@ typedef enum {
 } serverDldMethod;
 
 typedef enum {
-    STATUS_CONNECTED    = 0,
-    STATUS_FILECHECK    = 0x0001,
-    STATUS_LOBBY        = 0x0002,
-    STATUS_INGAME       = 0x0003
+    STATUS_DISCONNECTED = 0,
+    STATUS_CONNECTING   = 0x0001,
+    STATUS_LISTENING    = 0x0002,
+    STATUS_CONNECTED    = 0x0003,
+    STATUS_FILECHECK    = 0x0004,
+    STATUS_LOBBY_NAME   = 0x0005,
+    STATUS_LOBBY_CLASS  = 0x0006,
+    STATUS_INGAME       = 0x0007
 } clientStatus;
 
 #endif /* __SRVSTRUCTS_H_ */

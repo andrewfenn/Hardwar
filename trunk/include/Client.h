@@ -30,7 +30,7 @@ class Client
         Client();
         ~Client();
         bool connect(unsigned int, std::string);
-        void pollMessages();
+        bool pollMessage(ENetEvent*);
         bool message(const void*, size_t, enet_uint8, enet_uint32);
         ENetHost * mNetHost;
     private:

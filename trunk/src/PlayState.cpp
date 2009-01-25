@@ -37,13 +37,14 @@ void PlayState::enter( void ) {
 	mGUIMgr		  = GUIManager::getSingletonPtr();
     mConsole      = new GUIConsole;
     mOgreMax      = new OgreMax::OgreMaxScene;
+    mGameMgr      = GameManager::getSingletonPtr();
 
 	/* Initialise CEGUI for user interface stuff */
 	mGUIMgr->initialise(mSceneMgr, mWindow);
 
     /* Initialise the console and add commands */
     mConsole->init(mRoot);
-    mConsole->addCommand("addBuilding", PlayState::switchToEditor);
+    /*mConsole->addCommand("addBuilding", PlayState::switchToEditor);*/
 
     mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
@@ -66,7 +67,7 @@ void PlayState::enter( void ) {
     mOgreMax->Load(filename, mWindow, 0, mSceneMgr, mWorldNode);
 
     mMouseRotX = mMouseRotY = 0;
-    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
+    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;    
 }
 
 void PlayState::exit( void )
