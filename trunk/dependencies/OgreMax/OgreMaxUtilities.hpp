@@ -122,6 +122,7 @@ namespace OgreMax
             {
                 case Types::OBJECT_VISIBLE: object->setVisible(true); break;
                 case Types::OBJECT_HIDDEN: object->setVisible(false); break;
+                default: break;
             }
         }
         static void SetCustomParameters(Ogre::Renderable* renderable, const std::vector<Types::CustomParameter>& customParameters);

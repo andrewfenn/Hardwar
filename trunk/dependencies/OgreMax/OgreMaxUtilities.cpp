@@ -199,15 +199,17 @@ void OgreMaxUtilities::LoadBoundingVolume(const TiXmlElement* objectElement, Bou
 
     //Parse child elements
     String elementName;
-    const TiXmlElement* childElement = 0;
-    while (childElement = IterateChildElements(objectElement, childElement))
+    const TiXmlElement* childElement = IterateChildElements(objectElement, childElement);
+    while (childElement != 0)
     {
         elementName = childElement->Value();
 
         if (elementName == "size")
             volume.boxSize = LoadXYZ(childElement);
         else if (elementName == "faces")
-            LoadBoundingVolumeFaces(childElement, faceCount, volume.meshFaces);        
+            LoadBoundingVolumeFaces(childElement, faceCount, volume.meshFaces);
+
+        childElement = IterateChildElements(objectElement, childElement);
     }
 }
 
@@ -215,16 +217,21 @@ void OgreMaxUtilities::LoadBoundingVolumeFaces(const TiXmlElement* objectElement
 {
     //Parse child elements, treating them all as faces
     int faceIndex = 0;
-    const TiXmlElement* childElement = 0;
-    while ((childElement = IterateChildElements(objectElement, childElement)) && faceIndex < faceCount)
+    const TiXmlElement* childElement = IterateChildElements(objectElement, childElement);
+    while (childElement != 0 && faceIndex < faceCount)
     {
         BoundingVolume::Face& face = faces[faceIndex++];
 
         //Load the vertices
         int vertexIndex = 0;
-        const TiXmlElement* vertexElement = 0;
-        while ((vertexElement = IterateChildElements(childElement, vertexElement)) && vertexIndex < 3)
+        const TiXmlElement* vertexElement = IterateChildElements(childElement, vertexElement);
+        while (vertexElement !=0 && vertexIndex < 3)
+        {
             LoadXYZ(vertexElement, face.vertex[vertexIndex++]);
+            vertexElement = IterateChildElements(childElement, vertexElement);
+        }
+
+        childElement = IterateChildElements(objectElement, childElement);
     }
 }
 
@@ -489,13 +496,14 @@ void OgreMaxUtilities::LoadCustomParameters(const TiXmlElement* objectElement, s
     customParameters.resize(GetElementCount(objectElement, "customParameter"));
     
     size_t customParameterIndex = 0;
-    const TiXmlElement* childElement = 0;
-    while (childElement = IterateChildElements(objectElement, childElement))
+    const TiXmlElement* childElement = IterateChildElements(objectElement, childElement);
+    while (childElement != 0)
     {
         customParameters[customParameterIndex].id = (size_t)GetIntAttribute(childElement, "id", 0);
         customParameters[customParameterIndex].value = GetVector4Attributes(childElement);
 
         customParameterIndex++;
+        childElement = IterateChildElements(objectElement, childElement);
     }
 }
 
@@ -508,11 +516,13 @@ void OgreMaxUtilities::LoadSubentities(const TiXmlElement* objectElement, std::v
 {
     subentities.resize(GetElementCount(objectElement, "subentity"));
     
-    const TiXmlElement* childElement = 0;
-    while (childElement = IterateChildElements(objectElement, childElement))
+    const TiXmlElement* childElement = IterateChildElements(objectElement, childElement);
+    while (childElement != 0)
     {
         int index = GetIntAttribute(childElement, "index", 0);
         subentities[index].materialName = GetStringAttribute(childElement, "materialName");
+
+        childElement = IterateChildElements(objectElement, childElement);
     }
 }
 
@@ -525,13 +535,15 @@ void OgreMaxUtilities::LoadNoteTracks(const TiXmlElement* objectElement, std::ve
     //Parse child elements
     size_t noteTrackIndex = 0;
     String elementName;
-    const TiXmlElement* childElement = 0;
-    while (childElement = IterateChildElements(objectElement, childElement))
+    const TiXmlElement* childElement = IterateChildElements(objectElement, childElement);
+    while (childElement != 0)
     {
         elementName = childElement->Value();
 
         if (elementName == "noteTrack")
             LoadNoteTrack(childElement, noteTracks[noteTrackIndex++]);
+
+        childElement = IterateChildElements(objectElement, childElement);
     }
 }
 
@@ -547,13 +559,15 @@ void OgreMaxUtilities::LoadNoteTrack(const TiXmlElement* objectElement, NoteTrac
     //Load notes
     size_t noteIndex = 0;
     String elementName;
-    const TiXmlElement* childElement = 0;
-    while (childElement = IterateChildElements(objectElement, childElement))
+    const TiXmlElement* childElement = IterateChildElements(objectElement, childElement);
+    while (childElement != 0)
     {
         elementName = childElement->Value();
 
         if (elementName == "note")
             LoadNote(childElement, noteTrack.notes[noteIndex++]);
+
+        childElement = IterateChildElements(objectElement, childElement);
     }
 }
 
@@ -957,9 +971,12 @@ size_t OgreMaxUtilities::GetElementCount(const TiXmlElement* xmlElement, const S
         count++;
 
     //Recurse into children
-    const TiXmlElement* childElement = 0;
-    while (childElement = IterateChildElements(xmlElement, childElement))
+    const TiXmlElement* childElement = IterateChildElements(xmlElement, childElement);
+    while (childElement != 0)
+    {
         count += GetElementCount(childElement, elementName);
+        childElement = IterateChildElements(xmlElement, childElement);
+    }
 
     return count;
 }
@@ -969,11 +986,13 @@ size_t OgreMaxUtilities::GetChildElementCount(const TiXmlElement* xmlElement, co
     size_t count = 0;
 
     //Check children
-    const TiXmlElement* childElement = 0;
-    while (childElement = IterateChildElements(xmlElement, childElement))
+    const TiXmlElement* childElement = IterateChildElements(xmlElement, childElement);
+    while (childElement != 0)
     {
         if (elementName == childElement->Value())
             count++;
+
+        childElement = IterateChildElements(xmlElement, childElement);
     }
 
     return count;
@@ -1041,6 +1060,7 @@ void OgreMaxUtilities::SetNodeVisibility(SceneNode* node, NodeVisibility visibil
         case NODE_HIDDEN: node->setVisible(false, false); break;
         case NODE_TREE_VISIBLE: node->setVisible(true, true); break;
         case NODE_TREE_HIDDEN: node->setVisible(false, true); break;
+        default: break;
     }
 }
 
