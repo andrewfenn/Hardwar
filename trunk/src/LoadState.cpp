@@ -43,7 +43,7 @@ void LoadState::enter( void )
         o->show();
     }
 
-    mReverse = false; /* for the load bar */
+    mReverse = false; /* for the load bar animation */
     Ogre::OverlayElement* loadstats = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Comment");
 
     if (mGameMgr->mSinglePlayer)
@@ -174,6 +174,14 @@ void LoadState::keyReleased( const OIS::KeyEvent &e )
     {
         this->requestShutdown();
     }
+
+	if (e.key == OIS::KC_SYSRQ) { // screenshot
+		char filename[30] ;
+
+       
+	   std::sprintf(filename, "./screenshots/screenshot.png");
+	   mRoot->getAutoCreatedWindow()->writeContentsToFile(filename);
+	}    
 }
 
 void LoadState::mouseMoved( const OIS::MouseEvent &e )

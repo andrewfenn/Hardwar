@@ -122,17 +122,13 @@ void Server::serverLoop()
                     /* TODO: Add file checking */
                     
                     /* Send client to lobby */
-                    ENetPacket * packet = enet_packet_create(&player, sizeof(player), ENET_PACKET_FLAG_RELIABLE);
-                    enet_peer_send(mEvent.peer, 0, packet);
-                    enet_host_flush(mServer);
+                    message(mEvent.peer,&player,sizeof(player),0,ENET_PACKET_FLAG_RELIABLE);
                 }
                 break;
                 case ENET_EVENT_TYPE_RECEIVE:
                     printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                        mEvent.packet->dataLength,
-                        mEvent.packet->data,
-                        (char*)mEvent.peer->data,
-                        mEvent.channelID);
+                                 mEvent.packet->dataLength, mEvent.packet->data,
+                                    (char*)mEvent.peer->data, mEvent.channelID);
 
                     /* Clean up the packet now that we're done using it. */
                     enet_packet_destroy(mEvent.packet);
@@ -148,4 +144,19 @@ void Server::serverLoop()
             }
         }
     }
+}
+
+bool Server::message(ENetPeer *peer,const void* msg, size_t size, 
+                                       enet_uint8 channel, enet_uint32 priority)
+{
+    bool result = true;
+    ENetPacket * packet = enet_packet_create (msg, size, priority);
+
+    if (enet_peer_send(peer, channel, packet) <0)
+    {
+        result = false;
+    }
+
+    enet_host_flush(mServer);
+    return result;
 }

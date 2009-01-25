@@ -104,22 +104,16 @@ void Client::pollMessages()
 
 bool Client::message(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority)
 {
-    printf("Sending message\n");
-    /* Create a reliable packet of size 7 containing "packet\0" */
+    bool result = true;
     ENetPacket * packet = enet_packet_create (msg, size, priority);
 
-    /* Extend the packet so and append the string "foo", so it now */
-    /* contains "packetfoo\0"                                      */
-/*    enet_packet_resize(packet, strlen("packetfoo")+1);
-    strcpy(&packet->data[strlen("packet")],"foo");
-  */  
-    /* Send the packet to the peer over channel id 0. */
-    /* One could also broadcast the packet by         */
-    /* enet_host_broadcast (host, 0, packet);         */
-    enet_peer_send(mPeer, channel, packet);
+    if (enet_peer_send(mPeer, channel, packet) <0)
+    {
+        result = false;
+    }
 
     enet_host_flush(mNetHost);
-    return true;
+    return result;
 }
 
 Client::~Client()
