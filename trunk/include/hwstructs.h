@@ -25,7 +25,7 @@
 #include "enet/enet.h"
 
 typedef struct {
-    std::string name;       /* Players name */
+    char name[40];       /* Players name */
     enet_uint32 conState;  /* Connection state */
 } Player;
 

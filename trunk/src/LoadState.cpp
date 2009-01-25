@@ -108,11 +108,12 @@ void LoadState::waitForReply(void)
         {
             case ENET_EVENT_TYPE_RECEIVE:
             {
-                printf ("A packet of length %u containing 0x%08x was received on channel %u.\n",
+                printf("A packet of length %u containing 0x%08x was received on channel %u.\n",
                     event.packet->dataLength,
                     event.packet->data,
                     event.channelID);
-             
+                Player player;
+                
                 // Clean up the packet now that we're done using it.
                 enet_packet_destroy(event.packet);
             }

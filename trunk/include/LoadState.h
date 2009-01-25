@@ -21,6 +21,7 @@
 
 #include "GameState.h"
 #include "srvstructs.h"
+#include "hwstructs.h"
 #include "PlayState.h"
 
 #include <OgreRoot.h>
@@ -66,9 +67,9 @@ private:
     clientStatus         mLoadStatus;
 
     bool mReverse;
-    int mConAttempts;
-    int mRetryLimit;
-    int mTimeout;
+    unsigned int mConAttempts;
+    unsigned int mRetryLimit;
+    unsigned int mTimeout;
 
     LoadState( void ) { }
     LoadState( const LoadState& ) { }

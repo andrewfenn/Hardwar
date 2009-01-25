@@ -113,7 +113,7 @@ void Server::serverLoop()
                     /* TODO: Check address isn't banned */
                     /* Store any relevant client information here. */
                     Player player;
-                    player.name = std::string("Player");
+                    strcat(player.name, "Player");
                     player.conState = STATUS_CONNECTED;
 
                     int id = getIdFromPeer(mEvent.peer);
