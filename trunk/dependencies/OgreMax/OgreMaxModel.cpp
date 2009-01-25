@@ -46,7 +46,9 @@ void OgreMaxModel::LoadNode(const TiXmlElement* objectElement, NodeParameters& n
 {   
     ObjectExtraData extraData;
     node.name = OgreMaxUtilities::GetStringAttribute(objectElement, "name");    
-    node.modelName = OgreMaxUtilities::GetStringAttribute(objectElement, "modelName");    
+    node.modelFile = OgreMaxUtilities::GetStringAttribute(objectElement, "modelFile");    
+    if (node.modelFile.empty())
+        node.modelFile = OgreMaxUtilities::GetStringAttribute(objectElement, "modelName");    
     node.visibility = OgreMaxUtilities::GetNodeVisibilityAttribute(objectElement, "visibility");    
     node.childNodes.resize(OgreMaxUtilities::GetChildElementCount(objectElement, "node"));
     extraData.id = OgreMaxUtilities::GetStringAttribute(objectElement, "id");
@@ -667,9 +669,9 @@ SceneNode* OgreMaxModel::CreateInstance
     }
     
     //Create the model instance (an instance within an instance) if there is one
-    if (!nodeParams.modelName.empty() && scene != 0)
+    if (!nodeParams.modelFile.empty() && scene != 0)
     {
-        OgreMaxModel* model = scene->GetModel(nodeParams.modelName);        
+        OgreMaxModel* model = scene->GetModel(nodeParams.modelFile);        
         if (model != 0)
         {
             model->CreateInstance
@@ -884,7 +886,8 @@ void OgreMaxModel::CreateEntity
     for (size_t subentityIndex = 0; subentityIndex < subentityCount; subentityIndex++)
     {
         SubEntity* subentity = entity->getSubEntity((unsigned int)subentityIndex);
-        subentity->setMaterialName(entityParams->subentities[subentityIndex].materialName);
+        if (!entityParams->subentities[subentityIndex].materialName.empty())
+            subentity->setMaterialName(entityParams->subentities[subentityIndex].materialName);
     }
 
     //Create bone attachments
@@ -1067,7 +1070,8 @@ void OgreMaxModel::CreateBillboardSet
     billboardSet->setRenderQueueGroup(billboardSetParams->renderQueue);
     billboardSet->setRenderingDistance(billboardSetParams->renderingDistance);
     OgreMaxUtilities::SetCustomParameters(billboardSet, billboardSetParams->customParameters);
-    billboardSet->setMaterialName(billboardSetParams->material);
+    if (!billboardSetParams->material.empty())
+        billboardSet->setMaterialName(billboardSetParams->material);
     billboardSet->setDefaultWidth(billboardSetParams->width);
     billboardSet->setDefaultHeight(billboardSetParams->height);
     billboardSet->setBillboardType(billboardSetParams->billboardType);
@@ -1150,7 +1154,8 @@ void OgreMaxModel::CreatePlane
     entity->setRenderQueueGroup(planeParameters->renderQueue);
     entity->setRenderingDistance(planeParameters->renderingDistance);
     OgreMaxUtilities::SetCustomParameters(entity, planeParameters->customParameters);
-    entity->setMaterialName(planeParameters->material);
+    if (!planeParameters->material.empty())
+        entity->setMaterialName(planeParameters->material);
     
     //Set extra data owner object
     objectExtraData->object = entity;

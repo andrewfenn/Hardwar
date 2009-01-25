@@ -800,32 +800,48 @@ void OgreMaxScene::LoadScene(const TiXmlElement* objectElement)
     if (this->rootNode == 0)
         this->rootNode = this->sceneManager->getRootSceneNode();
 
+    //Load scene user data
+    const TiXmlElement* userDataReferenceElement = objectElement->FirstChildElement("userDataReference");
+    const TiXmlElement* userDataElement = objectElement->FirstChildElement("userData");
+    if (userDataReferenceElement != 0 || userDataElement != 0)
+    {
+        if (userDataReferenceElement != 0)
+            OgreMaxUtilities::LoadUserDataReference(userDataReferenceElement, this->sceneExtraData.userDataReference);
+        if (userDataElement != 0)
+            OgreMaxUtilities::GetChildText(userDataElement, this->sceneExtraData.userData);
+
+        if (this->callback != 0)
+            this->callback->LoadedUserData(this, this->sceneExtraData.userDataReference, this->sceneExtraData.userData);
+    }        
+
     //Load resource locations 
     if ((this->loadOptions & SKIP_RESOURCE_LOCATIONS) == 0)
     {    
-        //Notify callback
-        if (this->callback != 0)
-            this->callback->LoadingResourceLocations(this);
-        
         const TiXmlElement* resourceLocationsElement = objectElement->FirstChildElement("resourceLocations");
-        if (resourceLocationsElement != 0)
+        if (resourceLocationsElement != 0 || this->loadedFromFileSystem)
+        {
+            //Notify callback
+            if (this->callback != 0)
+                this->callback->LoadingResourceLocations(this);
+
             LoadResourceLocations(resourceLocationsElement);
 
-        //If necessary, add the base resource directory
-        if (this->loadedFromFileSystem)
-        {    
-            String baseResourceLocation = !this->baseResourceLocation.empty() ? this->baseResourceLocation : "./";
-            
-            ResourceLocation resourceLocation(baseResourceLocation, "FileSystem");
-            AddResourceLocation(resourceLocation);
-        }
+            //If necessary, add the base resource directory
+            if (this->loadedFromFileSystem)
+            {    
+                String baseResourceLocation = !this->baseResourceLocation.empty() ? this->baseResourceLocation : "./";
+                
+                ResourceLocation resourceLocation(baseResourceLocation, "FileSystem");
+                AddResourceLocation(resourceLocation);
+            }
 
-        //Commit new resource locations
-        CommitResourceLocations();
-        
-        //Notify callback
-        if (this->callback != 0)
-            this->callback->LoadedResourceLocations(this, this->resourceLocations);
+            //Commit new resource locations
+            CommitResourceLocations();
+            
+            //Notify callback
+            if (this->callback != 0)
+                this->callback->LoadedResourceLocations(this, this->resourceLocations);
+        }
     }
 
     //Load environment settings
@@ -860,10 +876,6 @@ void OgreMaxScene::LoadScene(const TiXmlElement* objectElement)
             LoadLight(childElement, MovableObjectOwner());
         else if (elementName == "camera")
             LoadCamera(childElement, MovableObjectOwner());
-        else if (elementName == "userDataReference")        
-            OgreMaxUtilities::LoadUserDataReference(childElement, this->sceneExtraData.userDataReference);
-        else if (elementName == "userData")
-            OgreMaxUtilities::GetChildText(childElement, this->sceneExtraData.userData);
         else if (elementName == "queryFlags")
             LoadQueryFlagAliases(childElement);
         else if (elementName == "visibilityFlags")
@@ -1318,7 +1330,6 @@ void OgreMaxScene::LoadNodes(const TiXmlElement* objectElement)
 
     //Iterate over all the node children
     String elementName;
-    String modelName;
     const TiXmlElement* childElement = 0;
     while (childElement = OgreMaxUtilities::IterateChildElements(objectElement, childElement))
     {
@@ -1746,7 +1757,9 @@ void OgreMaxScene::LoadNode(const TiXmlElement* objectElement, SceneNode* parent
     name += OgreMaxUtilities::GetStringAttribute(objectElement, "name");
     
     //Get/load the model
-    String modelFileName = OgreMaxUtilities::GetStringAttribute(objectElement, "modelName");
+    String modelFileName = OgreMaxUtilities::GetStringAttribute(objectElement, "modelFile");
+    if (modelFileName.empty())
+        modelFileName = OgreMaxUtilities::GetStringAttribute(objectElement, "modelName");    
     OgreMaxModel* model = modelFileName.empty() ? 0 : GetModel(modelFileName);
 
     extraData.id = OgreMaxUtilities::GetStringAttribute(objectElement, "id");
@@ -2299,7 +2312,8 @@ void OgreMaxScene::LoadEntity(const TiXmlElement* objectElement, const MovableOb
     for (size_t subentityIndex = 0; subentityIndex < subentityCount; subentityIndex++)
     {
         SubEntity* subentity = entity->getSubEntity((unsigned int)subentityIndex);
-        subentity->setMaterialName(parameters.subentities[subentityIndex].materialName);
+        if (!parameters.subentities[subentityIndex].materialName.empty())
+            subentity->setMaterialName(parameters.subentities[subentityIndex].materialName);
     }
             
     //Attach entity to the owner
@@ -2569,7 +2583,8 @@ void OgreMaxScene::LoadBillboardSet(const TiXmlElement* objectElement, const Mov
     OgreMaxUtilities::SetObjectVisibility(billboardSet, visibility);
     billboardSet->setRenderQueueGroup(OgreMaxUtilities::ParseRenderQueue(renderQueue));
     billboardSet->setRenderingDistance(renderingDistance);
-    billboardSet->setMaterialName(material);
+    if (!material.empty())
+        billboardSet->setMaterialName(material);
     billboardSet->setDefaultWidth(width);
     billboardSet->setDefaultHeight(height);
     billboardSet->setBillboardType(OgreMaxUtilities::ParseBillboardType(type));
@@ -2741,7 +2756,8 @@ void OgreMaxScene::LoadPlane(const TiXmlElement* objectElement, const MovableObj
     entity->setRenderQueueGroup(parameters.renderQueue);
     entity->setRenderingDistance(parameters.renderingDistance);
     OgreMaxUtilities::SetCustomParameters(entity, parameters.customParameters);
-    entity->setMaterialName(parameters.material);
+    if (!parameters.material.empty())
+        entity->setMaterialName(parameters.material);
     objectExtraData->object = entity;
 
     //Attach plane entity and movable object to the node

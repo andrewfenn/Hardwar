@@ -687,9 +687,8 @@ ObjectVisibility OgreMaxUtilities::ParseObjectVisibility(const String& visibilit
 
 uint8 OgreMaxUtilities::ParseRenderQueue(const String& renderQueue)
 {
-    static bool initialized = false;
     static std::map<String, uint8> nameToNumber;
-    if (!initialized)
+    if (nameToNumber.empty())
     {
         nameToNumber["background"] = RENDER_QUEUE_BACKGROUND;
         nameToNumber["skiesearly"] = RENDER_QUEUE_SKIES_EARLY;
@@ -707,8 +706,6 @@ uint8 OgreMaxUtilities::ParseRenderQueue(const String& renderQueue)
         nameToNumber["skieslate"] = RENDER_QUEUE_SKIES_LATE;
         nameToNumber["overlay"] = RENDER_QUEUE_OVERLAY;
 		nameToNumber["max"] = RENDER_QUEUE_MAX;
-
-        initialized = true;
     }
 
     if (renderQueue.empty())

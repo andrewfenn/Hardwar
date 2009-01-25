@@ -18,7 +18,7 @@
 
 
 //Includes---------------------------------------------------------------------
-#include "tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include <OgreString.h>
 #include <OgreStringConverter.h>
 #include <OgreMaterial.h>
@@ -661,7 +661,7 @@ namespace OgreMax
             ObjectExtraDataPtr extraData;
 
             Ogre::String name;
-            Ogre::String modelName;
+            Ogre::String modelFile;
             
             NodeVisibility visibility;
             

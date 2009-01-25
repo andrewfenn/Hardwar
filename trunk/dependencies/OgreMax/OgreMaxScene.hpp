@@ -604,6 +604,10 @@ namespace OgreMax
 
         virtual void CreatedExternal(const OgreMaxScene* scene, const OgreMax::Types::ExternalItem& item) {}
 
+        //Called when scene (not per-object) user data is loaded. Will only be called if there is user data
+        virtual void LoadedUserData(const OgreMaxScene* scene, const Ogre::String& userDataReference, const Ogre::String& userData) {}
+
+        //Called when resource locations are loaded. Will only be called if there are resource locations
         virtual void LoadingResourceLocations(const OgreMaxScene* scene) {}
         virtual void LoadedResourceLocations(const OgreMaxScene* scene, const OgreMaxScene::ResourceLocations& resourceLocations) {}
 

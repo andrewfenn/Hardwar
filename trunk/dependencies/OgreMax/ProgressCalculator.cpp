@@ -68,12 +68,7 @@ Real ProgressCalculator::GetProgress()
             this->progress += (*calculator)->GetProgress() * influence;
         }
     }
-    else if (this->range == 0)
-    {
-        //No child calculators and no range. There is no progress to be made
-        this->progress = 1;
-    }
-
+    
     return this->progress;
 }
 
