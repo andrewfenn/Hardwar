@@ -18,7 +18,7 @@
 
 
 //Includes---------------------------------------------------------------------
-#include "tinyxml/tinyxml.h"
+#include "tinyxml.h"
 #include <OgreString.h>
 #include <OgreStringConverter.h>
 #include <OgreMaterial.h>
