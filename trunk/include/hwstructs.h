@@ -47,7 +47,7 @@ typedef struct {
 typedef struct {
     unsigned int id;				/* unique id */
     unsigned int targetBuilding;	/*	same as id in Building struct */
-    char[40] name;                  /*	buildings name */
+    char name[40];                  /*	buildings name */
     unsigned int* software;         /* Software installed in the building */
     unsigned int* function;			/* Building's function */
     unsigned int* subfunction;      /* any other functions the building provides*/

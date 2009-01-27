@@ -36,11 +36,9 @@ class Server
         ~Server();
     private:
         ENetHost *mServer;
-        ENetAddress mAddress;
-        ENetEvent mEvent;
 
         Player mClients[64];
-        int mPlayerCount;
+        unsigned int mPlayerCount;
         /* World manager, manages the craters build placement, etc */
         WorldManager *mWorldMgr;
         FileManager *mFileMgr;
@@ -48,7 +46,6 @@ class Server
         bool  setupServer(int, std::string);
         bool  setupGame();
         void  serverLoop();
-        enet_uint8 getIdFromPeer(ENetPeer*);
         bool message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
 };
 #endif /* __SERVER_H_ */

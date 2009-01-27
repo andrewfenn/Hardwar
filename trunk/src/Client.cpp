@@ -25,9 +25,9 @@ Client::Client()
     }
 }
 
-bool Client::connect(unsigned int port, std::string address)
+bool Client::connect(unsigned int port, std::string ip)
 {
-    ENetAddress mAddress;
+    ENetAddress address;
 
     mNetHost = enet_host_create (NULL /* create a client host */,
                1 /* only allow 1 outgoing connection */,
@@ -41,17 +41,17 @@ bool Client::connect(unsigned int port, std::string address)
         return false;
     }
 
-    std::cout << "Connecting to " << address << ":" << port << std::endl;
+    std::cout << "Connecting to " << ip << ":" << port << std::endl;
 
-    if (enet_address_set_host(&mAddress, address.c_str()) < 0)
+    if (enet_address_set_host(&address, ip.c_str()) < 0)
     {
         printf("enet_address_set_host() failed.\n");
         return false;
     }
-    mAddress.port = port;
+    address.port = port;
 
     /* Initiate the connection, allocating the two channels 0 and 1. */
-    mPeer = enet_host_connect (mNetHost, &mAddress, 2);
+    mPeer = enet_host_connect (mNetHost, &address, 2);
 
     if (!mPeer) {
        fprintf(stderr, "No available peers for initiating an ENet connection.\n");
@@ -61,7 +61,7 @@ bool Client::connect(unsigned int port, std::string address)
     /* Wait up to 5 seconds for the connection attempt to succeed. */
     if (enet_host_service (mNetHost, & mEvent, 5000) > 0 && mEvent.type == ENET_EVENT_TYPE_CONNECT)
     {
-        std::cout << "Connection to " << address << ":" << port << " succeeded" << std::endl;
+        std::cout << "Connection to " << ip << ":" << port << " succeeded" << std::endl;
         return true;
     }
     else
@@ -70,7 +70,7 @@ bool Client::connect(unsigned int port, std::string address)
         /* received. Reset the peer in the event the 5 seconds   */
         /* had run out without any significant event.            */
         enet_peer_reset (mPeer);
-        std::cout << "Connection to " << address << ":" << port << " failed" << std::endl;
+        std::cout << "Connection to " << ip << ":" << port << " failed" << std::endl;
     }
 
     return false;

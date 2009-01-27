@@ -24,9 +24,9 @@ Server::Server()
     Server(26500, std::string("127.0.0.1"));
 }
 
-Server::Server(int port=26500, std::string address = std::string("127.0.0.1"))
+Server::Server(int port=26500, std::string ip = std::string("127.0.0.1"))
 {
-    if (setupServer(port, address) == 1)
+    if (setupServer(port, ip) == 1)
     {
         /* setup number of avaliable clients */
         serverLoop();
@@ -39,9 +39,11 @@ Server::~Server()
     enet_deinitialize();
 }
 
-bool Server::setupServer(int port, std::string address)
+bool Server::setupServer(int port, std::string ip)
 {
+    ENetAddress address;
     mServer=NULL;
+    mPlayerCount = 0;
 
     if (enet_initialize() != 0)
     {
@@ -49,11 +51,11 @@ bool Server::setupServer(int port, std::string address)
         return false;
     }
 
-    mAddress.host = ENET_HOST_ANY;
-    mAddress.port = port;
+    address.host = ENET_HOST_ANY;
+    address.port = port;
 
     printf("Starting server on port: %d\n", port);
-    mServer = enet_host_create (&mAddress /* the address to bind the server host to */, 
+    mServer = enet_host_create (&address /* the address to bind the server host to */, 
                                  32      /* allow up to 32 clients and/or outgoing connections */,
                                   0      /* assume any amount of incoming bandwidth */,
                                   0      /* assume any amount of outgoing bandwidth */);
@@ -84,61 +86,66 @@ bool Server::setupGame()
     return result;
 }
 
-enet_uint8 Server::getIdFromPeer(ENetPeer* pPeer)
-{
-	int result = pPeer - mServer->peers;
-	if ( result < 0 || result > 1000)
-		return -1;
-	return enet_uint8( result );
-}
-
 void Server::serverLoop()
 {
     bool serverRunning = true;
     std::cout << "Server running.." << std::endl;
+    ENetEvent event;
 
     while (serverRunning)
     {
         /* Wait up to 1000 milliseconds for an event. */
-        while (enet_host_service(mServer, &mEvent, 1000) > 0)
+        while (enet_host_service(mServer, &event, 1000) > 0)
         {
-            switch (mEvent.type)
+            switch (event.type)
             {
                 case ENET_EVENT_TYPE_CONNECT:
                 {
-                    printf ("A new client connected from %x\n",
-                                                     mEvent.peer->address.host);
+                    char address[20];
+                    enet_address_get_host_ip(&event.peer->address, address, sizeof(address));
+                    printf ("A new client connected from %s\n", address);
 
-                    /* TODO: Check if server is full */
-                    /* TODO: Check address isn't banned */
-                    /* Store any relevant client information here. */
                     Player player;
                     strcpy(player.name, "Player");
-                    player.conState = STATUS_CONNECTED;
+                    player.conState = STATUS_CONNECTING;
 
-                    int id = getIdFromPeer(mEvent.peer);
-                    mClients[id] = player;
-
-                    /* TODO: Add file checking */
-                    
-                    /* Send client to lobby */
-                    std::cout << sizeof(player) <<std::endl;
-                    message(mEvent.peer,&player,sizeof(player),0,ENET_PACKET_FLAG_RELIABLE);
+                    event.peer->data = (void*)mPlayerCount;
+                    mClients[mPlayerCount] = player;
+                    mPlayerCount++;
                 }
                 break;
                 case ENET_EVENT_TYPE_RECEIVE:
-                    printf ("A packet of length %u containing %s was received from %s on channel %u.\n",
-                                 mEvent.packet->dataLength, mEvent.packet->data,
-                                    (char*)mEvent.peer->data, mEvent.channelID);
+                    printf ("A packet of length %u containing %s was received from client:%d on channel %u.\n",
+                                 event.packet->dataLength, event.packet->data,
+                                    event.peer->data, event.channelID);
+                    switch(event.channelID)
+                    {
+                        case 0: /* This channel of join requests and pings */
+                            char* data = (char*)event.packet->data;
+                            
+                            if (strcmp(data, "join") == 0)
+                            {
+                                /* TODO: Check if server is full */
+                                /* TODO: Check address isn't banned */
+                                /* Store any relevant client information here. */
+                                
 
+                                /* TODO: Add file checking */
+                                unsigned int id = (unsigned int)event.peer->data;
+                                mClients[id].conState = STATUS_CONNECTED;
+                                /* Send client to lobby */
+                                message(event.peer,&mClients[id],sizeof(mClients[id]),0,ENET_PACKET_FLAG_RELIABLE);
+                            }
+                        break;
+                    }
                     /* Clean up the packet now that we're done using it. */
-                    enet_packet_destroy(mEvent.packet);
+                    enet_packet_destroy(event.packet);
                 break;
                 case ENET_EVENT_TYPE_DISCONNECT:
-                    printf ("%s disconected.\n", (char*)mEvent.peer->data);
+                    printf ("client:%d disconected.\n", (char*)event.peer->data);
 
                     /* Reset the peer's client information. */
-                    mEvent.peer->data = NULL;
+                    event.peer->data = NULL;
                 break;
                 default:
                 break;
