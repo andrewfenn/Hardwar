@@ -113,7 +113,7 @@ void Server::serverLoop()
                     /* TODO: Check address isn't banned */
                     /* Store any relevant client information here. */
                     Player player;
-                    strcat(player.name, "Player");
+                    strcpy(player.name, "Player");
                     player.conState = STATUS_CONNECTED;
 
                     int id = getIdFromPeer(mEvent.peer);
@@ -122,6 +122,7 @@ void Server::serverLoop()
                     /* TODO: Add file checking */
                     
                     /* Send client to lobby */
+                    std::cout << sizeof(player) <<std::endl;
                     message(mEvent.peer,&player,sizeof(player),0,ENET_PACKET_FLAG_RELIABLE);
                 }
                 break;

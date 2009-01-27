@@ -26,7 +26,7 @@
 
 typedef struct {
     char name[40];       /* Players name */
-    enet_uint32 conState;  /* Connection state */
+    clientStatus conState;  /* Connection state */
 } Player;
 
 typedef struct {

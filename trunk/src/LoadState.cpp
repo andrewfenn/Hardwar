@@ -83,7 +83,6 @@ void LoadState::update( unsigned long lTimeElapsed )
 {
     updateLoadbar(lTimeElapsed);
 
-    /*this->changeState(PlayState::getSingletonPtr());*/
     switch(mLoadStatus)
     {
         case STATUS_CONNECTING:
@@ -93,6 +92,9 @@ void LoadState::update( unsigned long lTimeElapsed )
         case STATUS_LISTENING:
                 waitForReply();
                 mCounter += lTimeElapsed;
+        break;
+        case STATUS_CONNECTED:
+                this->changeState(PlayState::getSingletonPtr());
         break;
         default:
         break;
@@ -113,7 +115,10 @@ void LoadState::waitForReply(void)
                     event.packet->data,
                     event.channelID);
                 Player player;
-                
+                memcpy(&player, event.packet->data, sizeof(Player));
+                printf("Packet contains name: \"%s\" connection state: 0x%08x was inside.\n",
+                    player.name, player.conState);
+                mLoadStatus = player.conState;
                 // Clean up the packet now that we're done using it.
                 enet_packet_destroy(event.packet);
             }
