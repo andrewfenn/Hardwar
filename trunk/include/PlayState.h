@@ -78,9 +78,15 @@ private:
     int             mKeydownUp, mKeydownDown, mKeydownRight, mKeydownLeft;
     Real            fpstimer;
 
+    unsigned long   mPingTime; /* indicator of connection strength */
+    unsigned long   mPingWaitTime; /* used for counting while waiting for reply*/
+    bool            mPingSent; /* If we sent a ping yet */
+
     PlayState(void) { }
     PlayState(const PlayState&) { }
     PlayState & operator = (const PlayState&);
+
+    void networkUpdate(unsigned long);
 };
 #endif /* Playstate_H */
 

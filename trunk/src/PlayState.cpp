@@ -67,7 +67,11 @@ void PlayState::enter( void ) {
     mOgreMax->Load(filename, mWindow, 0, mSceneMgr, mWorldNode);
 
     mMouseRotX = mMouseRotY = 0;
-    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;    
+    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
+
+    mPingWaitTime = 0;
+    mPingSent = false;
+    mPingTime = 0;
 }
 
 void PlayState::exit( void )
@@ -94,7 +98,8 @@ void PlayState::resume( void )
 
 void PlayState::update( unsigned long lTimeElapsed )
 {
-/*    mNetwork->pollMessages();*/
+
+    networkUpdate(lTimeElapsed);
     fpstimer += lTimeElapsed;
     if (fpstimer > 0.5)
     {
@@ -122,7 +127,7 @@ void PlayState::update( unsigned long lTimeElapsed )
         guiBest->setCaption(bestFps + StringConverter::toString(mCamera->getPosition().y));
         guiWorst->setCaption(worstFps + StringConverter::toString(mCamera->getPosition().x));
         guiTris->setCaption(tris + StringConverter::toString(mCamera->getPosition().z));
-        guiBatch->setCaption("Nothing to see here");
+        guiBatch->setCaption("Ping: " + StringConverter::toString(mPingTime));
         Ogre::Overlay* o = OverlayManager::getSingleton().getByName("Core/DebugOverlay");
 
         if (!o)
@@ -156,6 +161,55 @@ void PlayState::update( unsigned long lTimeElapsed )
     mCamera->setPosition(mCamera->getPosition()+translateVector);
 
     mMouseRotX = mMouseRotY = 0;
+}
+
+void PlayState::networkUpdate(unsigned long lTimeElapsed)
+{
+    mPingWaitTime += lTimeElapsed;
+    if (mPingWaitTime > 3000)
+    {
+        if (mPingSent)
+        {
+            /* No reply, send again */
+            mPingSent = false;
+        }
+        else
+        {
+            /* Wait before sending another ping request */
+            if (mGameMgr->mNetwork->message("ping", strlen("ping")+1, 0, ENET_PACKET_FLAG_UNSEQUENCED))
+            {
+                mPingSent = true;
+            }
+        }
+
+        mPingWaitTime = 0;
+    }
+
+    ENetEvent lEvent;
+    mGameMgr->mNetwork->pollMessage(&lEvent);
+
+    switch(lEvent.type)
+    {
+        case ENET_EVENT_TYPE_RECEIVE:
+            switch(lEvent.channelID)
+            {
+                case 0:
+                {
+                    char* data = (char*)lEvent.packet->data;
+
+                    if (strcmp(data, "pong") == 0)
+                    {
+                        mPingTime = mPingWaitTime;
+                    }
+                }
+                break;
+                default:
+                break;
+            }
+        break;
+        default:
+        break;
+    }
 }
 
 void PlayState::keyPressed( const OIS::KeyEvent &e )

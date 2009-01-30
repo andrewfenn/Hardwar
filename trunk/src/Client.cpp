@@ -78,7 +78,6 @@ bool Client::connect(unsigned int port, std::string ip)
 
 bool Client::pollMessage(ENetEvent *pEvent)
 {
-    /* Wait up to 1000 milliseconds for an event. */
     if (enet_host_service(mNetHost, pEvent, 0) > 0)
     {
         return true;

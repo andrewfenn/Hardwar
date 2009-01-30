@@ -115,9 +115,6 @@ void Server::serverLoop()
                 }
                 break;
                 case ENET_EVENT_TYPE_RECEIVE:
-                    printf ("A packet of length %u containing %s was received from client:%d on channel %u.\n",
-                                 event.packet->dataLength, event.packet->data,
-                                    event.peer->data, event.channelID);
                     switch(event.channelID)
                     {
                         case 0: /* This channel of join requests and pings */
@@ -135,6 +132,10 @@ void Server::serverLoop()
                                 mClients[id].conState = STATUS_CONNECTED;
                                 /* Send client to lobby */
                                 message(event.peer,&mClients[id],sizeof(mClients[id]),0,ENET_PACKET_FLAG_RELIABLE);
+                            }
+                            else if (strcmp(data, "ping") == 0)
+                            {
+                                message(event.peer,"pong",strlen("pong")+1,0, ENET_PACKET_FLAG_UNSEQUENCED);
                             }
                         break;
                     }

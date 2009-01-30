@@ -287,7 +287,8 @@ bool GameManager::setupNetwork(void)
         if (mNetwork->connect(this->mPort, this->mAddress))
         {
             /* join request - data doesn't matter because we don't look at it */
-            mNetwork->message("join", strlen("join")+1, 0, ENET_PACKET_FLAG_RELIABLE);
+            mNetwork->message("join", strlen("join")+1, 0, 
+                                                     ENET_PACKET_FLAG_RELIABLE);
             return true;
         }
     }
