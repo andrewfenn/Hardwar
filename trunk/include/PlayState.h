@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PlayState_H
-#define PlayState_H
+#ifndef __Playstate_H_
+#define __Playstate_H_
 
 #include "GameState.h"
 #include "Console.h"
@@ -88,5 +88,5 @@ private:
 
     void networkUpdate(unsigned long);
 };
-#endif /* Playstate_H */
+#endif /* __Playstate_H_ */
 

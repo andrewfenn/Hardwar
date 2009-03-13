@@ -27,6 +27,13 @@
 typedef struct {
     char name[40];          /* Players name */
     clientStatus conState;  /* Connection state */
+    unsigned int ping;      /* players connection status */
+    signed long posX;       /* position x,y,z of where the player is */
+    signed long posY;
+    signed long posZ;
+    signed int  oriX;       /* orientation x,y,z of the player */
+    signed int  oriY;
+    signed int  oriZ;
 } Player;
 
 typedef struct {

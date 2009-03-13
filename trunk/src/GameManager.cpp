@@ -37,7 +37,7 @@ GameManager::GameManager( void ) :
 }
 
 GameManager::~GameManager( void ) {
-    // Clean up all the states
+    /* Clean up all the states */
     while(!mStates.empty())
     {
         mStates.back()->exit();
@@ -215,14 +215,14 @@ void GameManager::pushState(GameState *gameState)
 
 void GameManager::popState()
 {
-    // Cleanup the current state
+    /* Cleanup the current state */
     if(!mStates.empty())
     {
         mStates.back()->exit();
         mStates.pop_back();
     }
 
-    // Resume previous state
+    /* Resume previous state */
     if(!mStates.empty())
     {
         mStates.back()->resume();

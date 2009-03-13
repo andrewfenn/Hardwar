@@ -83,6 +83,7 @@ bool Server::setupGame()
         mFileMgr = new FileManager;
         mFileMgr->scanFiles();
     }
+  
     return result;
 }
 
@@ -118,6 +119,7 @@ void Server::serverLoop()
                     switch(event.channelID)
                     {
                         case 0: /* This channel of join requests and pings */
+                        {
                             char* data = (char*)event.packet->data;
                             
                             if (strcmp(data, "join") == 0)
@@ -137,6 +139,15 @@ void Server::serverLoop()
                             {
                                 message(event.peer,"pong",strlen("pong")+1,0, ENET_PACKET_FLAG_UNSEQUENCED);
                             }
+                        }
+                        break;
+                        case 1:
+                        {
+                            /* This channel is for movement */
+                            printf ("A packet of length %u containing %s was received from client:%d on channel %u.\n",
+                                 event.packet->dataLength, event.packet->data,
+                                   event.peer->data, event.channelID);
+                        }
                         break;
                     }
                     /* Clean up the packet now that we're done using it. */

@@ -26,7 +26,10 @@
 
 #include "enet/enet.h"
 #include <OgreString.h>
+#include <OgreEntity.h>
+#include <OgreSceneManager.h>
 #include <string>
+#include <OgreRoot.h>
 
 class Server
 {
@@ -35,18 +38,17 @@ class Server
         Server(int, std::string);
         ~Server();
     private:
-        ENetHost *mServer;
+        ENetHost            *mServer;
+        Player              mClients[64];
+        unsigned int        mPlayerCount;
 
-        Player mClients[64];
-        unsigned int mPlayerCount;
-        /* World manager, manages the craters build placement, etc */
-        WorldManager *mWorldMgr;
-        FileManager *mFileMgr;
+        WorldManager        *mWorldMgr;
+        FileManager         *mFileMgr;
 
-        bool  setupServer(int, std::string);
-        bool  setupGame();
-        void  serverLoop();
-        bool message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
+        bool    setupServer(int, std::string);
+        bool    setupGame();
+        void    serverLoop();
+        bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
 };
 #endif /* __SERVER_H_ */
 

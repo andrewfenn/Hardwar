@@ -11,3 +11,7 @@ hardwar
 include/config.h
 trunk/include/config.h
 ./bin/ogre.cfg
+names
+lib
+bin/ogre.cfg
+./bin/ogre.cfg
