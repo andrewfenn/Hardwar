@@ -59,11 +59,11 @@ int main( int argc, char **argv ) {
 
             if (cmdvar.compare("help") == 0)
             {
-                printf("usage: hardwar [--connect[-ip|-port]] [--server[port]]\n\n");
-                printf("The full list of commands are:\n");
-                printf("\tconnect\t\tConnects to server running the same version.\n");
-                printf("\tserver\t\tStarts up a dedicated server running the game.\n");
-                printf("\thelp\t\tDisplays this help text.\n");
+                printf(gettext("usage: hardwar [--connect[-ip|-port]] [--server[port]]\n\n"));
+                printf(gettext("The full list of commands are:\n"));
+                printf(gettext("\tconnect\t\tConnects to server running the same version.\n"));
+                printf(gettext("\tserver\t\tStarts up a dedicated server running the game.\n"));
+                printf(gettext("\thelp\t\tDisplays this help text.\n"));
             }
             else if (cmdvar.compare("connect") == 0)
             {

@@ -1,0 +1,2 @@
+#!/bin/bash
+xgettext -d src -s -o ./default.pot ../src/*.cpp --package-name=Hardwar --copyright-holder="Andrew Fenn" --msgid-bugs-address="andrew@hardwar.org" --package-version=0.0.`bzr revno`
