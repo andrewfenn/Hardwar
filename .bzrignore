@@ -14,7 +14,7 @@ trunk/include/config.h
 names
 lib
 bin/ogre.cfg
-./bin/ogre.cfg
+trunk/bin/ogre.cfg
 default.pot
 bin/ogre.cfg
 lib
