@@ -16,3 +16,5 @@ lib
 bin/ogre.cfg
 ./bin/ogre.cfg
 default.pot
+bin/ogre.cfg
+lib
