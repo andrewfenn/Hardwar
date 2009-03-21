@@ -28,7 +28,6 @@
 #include <OgreWindowEventUtilities.h>
 
 #include "InputManager.h"
-#include "GUIManager.h"
 #include "Client.h"
 
 #include <string>
@@ -55,7 +54,6 @@ private:
     Ogre::Root          *mRoot;
     Ogre::RenderWindow  *mRenderWindow;
     InputManager        *mInputMgr;
-    GUIManager			*mGUIMgr;
 
     GameState           *mLoadState;
     GameState           *mPlayState;

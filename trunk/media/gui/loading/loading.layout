@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+    <Widget type="StaticImage" skin="StaticImage" position="176 288 256 232" layer="Back">
+        <Property key="Image_Texture" value="load_bkg_hint.png"/>
+    </Widget>
+    <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1.19922 1" align="Left Top" layer="Background">
+        <Property key="Image_Texture" value="load.png"/>
+        <Property key="Widget_Show" value="true"/>
+        <Widget type="StaticImage" skin="StaticImage" position_real="0.692997 0.0494792 0.127036 0.0429688" layer="Back">
+            <Property key="Image_Texture" value="hwlogo.png"/>
+            <UserString key="" value=""/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position_real="0 0.799479 0.833876 0.199219" align="Left Bottom" layer="Back">
+            <Property key="Image_Texture" value="load_bkg_hint.png"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position_real="0.25 0.347656 0.29886 0.199219" align="Center" layer="Back">
+            <Property key="Image_Texture" value="load_bkg_status.png"/>
+        </Widget>
+    </Widget>
+</MyGUI>

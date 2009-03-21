@@ -16,11 +16,9 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 #Declare any external dependencies that your project may have here.
 SET(Required_Packages
-   Boost
    OIS
    OGRE
-   CEGUI
-   CEGUIOGRE
+   MyGUI
    SQLITE
    ENET
    TinyXML

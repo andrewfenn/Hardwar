@@ -48,11 +48,6 @@ GameManager::~GameManager( void ) {
         delete mInputMgr;
         mInputMgr = 0;
     }
-    if(mGUIMgr)
-    {
-        delete mGUIMgr;
-        mGUIMgr = 0;
-    }
     if(mLoadState)
     {
         delete mLoadState;
@@ -101,7 +96,6 @@ void GameManager::startGame( GameState *gameState )
     mInputMgr->addMouseListener( this, "GameManager" );
     mInputMgr->getJoystick( 1 );
 
-    mGUIMgr = 0;
     mNetwork = new Client;
 
     /* Go to the first state */

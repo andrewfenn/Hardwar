@@ -17,7 +17,6 @@
 */
 
 #include "PlayState.h"
-#include "EditorState.h"
 #include <OgreTextureUnitState.h>
 
 using namespace Ogre;
@@ -34,17 +33,9 @@ void PlayState::enter( void ) {
 	mSceneMgr     = mRoot->getSceneManager("PlaySceneMgr");
 	mCamera       = mSceneMgr->createCamera("PlayerCamera");
 	mViewport     = mWindow->addViewport( mCamera, 0 );
-	mGUIMgr		  = GUIManager::getSingletonPtr();
-    mConsole      = new GUIConsole;
     mOgreMax      = new OgreMax::OgreMaxScene;
     mGameMgr      = GameManager::getSingletonPtr();
 
-	/* Initialise CEGUI for user interface stuff */
-	mGUIMgr->initialise(mSceneMgr, mWindow);
-
-    /* Initialise the console and add commands */
-    mConsole->init(mRoot);
-    /*mConsole->addCommand("addBuilding", PlayState::switchToEditor);*/
 
     mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
@@ -81,12 +72,11 @@ void PlayState::exit( void )
     mRoot->getAutoCreatedWindow()->removeAllViewports();
 }
 
-void PlayState::switchToEditor(vector<String>& Params)
+/*void PlayState::switchToEditor(vector<String>& Params)
 {
-    PlayState* play = PlayState::getSingletonPtr();
-    play->mConsole->setVisible(false);
-    play->changeState( EditorState::getSingletonPtr());
-}
+    PlayState* play = PlayState::getSingletonPtr(); 
+  //  play->changeState( EditorState::getSingletonPtr());
+}*/
 
 void PlayState::pause( void )
 {
@@ -217,44 +207,28 @@ void PlayState::keyPressed( const OIS::KeyEvent &e )
 
     if (e.key == OIS::KC_GRAVE)
     {
-        if (mConsole->isVisible())
-        {
-            mConsole->setVisible(false);
-        }
-        else
-        {
-            mConsole->setVisible(true);
-        }
+       
     }
-
-    if (mConsole->isVisible())
+    if (e.key == OIS::KC_W)
     {
-        /* Redirect input to the console */
-        mConsole->onKeyPressed(e);
+        mKeydownUp = 1;
     }
-    else
+    if (e.key == OIS::KC_S)
     {
-        if (e.key == OIS::KC_W)
-        {
-            mKeydownUp = 1;
-        }
-        if (e.key == OIS::KC_S)
-        {
-            mKeydownDown = 1;
-        }
-        if (e.key == OIS::KC_A)
-        {
-            mKeydownLeft = 1;
-        }
-        if (e.key == OIS::KC_D)
-        {
-            mKeydownRight = 1;
-        }
-        if(e.key == OIS::KC_B)
-        {
-    		mSceneMgr->showBoundingBoxes(true);
-    	}
+        mKeydownDown = 1;
     }
+    if (e.key == OIS::KC_A)
+    {
+        mKeydownLeft = 1;
+    }
+    if (e.key == OIS::KC_D)
+    {
+        mKeydownRight = 1;
+    }
+    if(e.key == OIS::KC_B)
+    {
+		mSceneMgr->showBoundingBoxes(true);
+	}
 }
 
 void PlayState::keyReleased( const OIS::KeyEvent &e )
@@ -287,13 +261,11 @@ void PlayState::mouseMoved( const OIS::MouseEvent &e )
 
     mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
     mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
-        
-    /*CEGUI::System::getSingleton().injectMousePosition(mouseState.X.abs, mouseState.Y.abs);*/
 }
 
 void PlayState::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id )
 {
- 	/*CEGUI::System::getSingleton().injectMouseButtonDown((CEGUI::MouseButton)id);*/
+
 }
 
 void PlayState::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id )

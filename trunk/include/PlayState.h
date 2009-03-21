@@ -20,7 +20,6 @@
 #define __Playstate_H_
 
 #include "GameState.h"
-#include "Console.h"
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -53,8 +52,6 @@ public:
 
    static PlayState* getSingletonPtr(void);
 
-   /* console cmds */
-   static void switchToEditor(vector<String>& Params);
 private:
     Ogre::Root              *mRoot;
     Ogre::Camera            *mCamera;
@@ -64,8 +61,6 @@ private:
     Ogre::RenderWindow      *mWindow;
     GameManager             *mGameMgr;
 
-    GUIManager			    *mGUIMgr;
-    GUIConsole              *mConsole;
     OgreMax::OgreMaxScene   *mOgreMax;
     OIS::Keyboard           *mInputDevice;
 
@@ -76,7 +71,7 @@ private:
 
     Ogre::Degree    mMouseRotX, mMouseRotY;
     int             mKeydownUp, mKeydownDown, mKeydownRight, mKeydownLeft;
-    Real            fpstimer;
+    Ogre::Real            fpstimer;
 
     unsigned long   mPingTime; /* indicator of connection strength */
     unsigned long   mPingWaitTime; /* used for counting while waiting for reply*/

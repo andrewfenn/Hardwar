@@ -112,7 +112,7 @@ void LoadState::waitForReply(void)
             {
                 printf("A packet of length %u containing 0x%08x was received on channel %u.\n",
                     event.packet->dataLength,
-                    event.packet->data,
+                    (unsigned int)event.packet->data,
                     event.channelID);
                 Player player;
                 memcpy(&player, event.packet->data, sizeof(Player));
