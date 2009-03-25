@@ -18,3 +18,4 @@ trunk/bin/ogre.cfg
 default.pot
 bin/ogre.cfg
 lib
+./trunk/bin/MyGUI.log

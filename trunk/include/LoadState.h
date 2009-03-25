@@ -31,7 +31,7 @@
 #include <OgreRay.h>
 #include <OgreMeshManager.h>
 #include <OgreRenderable.h>
-
+#include "MyGUI.h"
 #include "enet/enet.h"
 
 class LoadState : public GameState
@@ -61,9 +61,9 @@ private:
     Ogre::SceneManager   *mSceneMgr;
     Ogre::RenderWindow   *mWindow;
     Ogre::Viewport       *mViewport;
-    Ogre::OverlayManager *mOverlayMgr;
-    static LoadState    *mLoadState;
-    GameManager* mGameMgr;
+    MyGUI::Gui           *mGUI;
+    static LoadState     *mLoadState;
+    GameManager          *mGameMgr;
     clientStatus         mLoadStatus;
 
     bool mReverse;

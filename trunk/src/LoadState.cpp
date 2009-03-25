@@ -25,36 +25,30 @@ void LoadState::enter( void )
     mRoot            = Ogre::Root::getSingletonPtr();
 	mRoot->createSceneManager(Ogre::ST_GENERIC,"LoadSceneMgr");
 
-	mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
     mWindow       = mRoot->getAutoCreatedWindow();
 	mSceneMgr     = mRoot->getSceneManager("LoadSceneMgr");
-	mCamera       = mSceneMgr->createCamera("PlayerCamera");
+	mCamera       = mSceneMgr->createCamera("LoadCamera");
 	mViewport     = mWindow->addViewport(mCamera, 0 );
     mGameMgr      = GameManager::getSingletonPtr();
 
-    Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/LoadOverlay");
-
-    if (!o)
-    {
-        OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/LoadOverlay", "LoadState.cpp::enter()");
-    }
-    else
-    {
-        o->show();
-    }
-
+    mGUI = new MyGUI::Gui();
+    mGUI->initialise(mWindow);
+    mGUI->hidePointer();
     mReverse = false; /* for the load bar animation */
-    Ogre::OverlayElement* loadstats = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Comment");
 
-    if (mGameMgr->mSinglePlayer)
+    /* Get MyGUI loading layout */
+    MyGUI::LayoutManager::getInstance().load("loading.layout");
+
+
+/*    if (mGameMgr->mSinglePlayer)
     {
-        loadstats->setCaption(Ogre::String("Starting game"));
+        loadstats->setCaption(Ogre::String(gettext("Starting game")));
     }
     else
     {
-        loadstats->setCaption(Ogre::String("Connecting to server"));
+        loadstats->setCaption(Ogre::String(gettext("Connecting to server")));
     }
-
+*/
     mConAttempts = 0; /* connection attempts so far */
     mCounter = 101; /* timer for a delay between connection attempts */
 
@@ -63,11 +57,14 @@ void LoadState::enter( void )
     mTimeout = 30; /* TODO: Make this config option. */
 }
 
+/* Destory everything we created when entering */
 void LoadState::exit( void )
 {
-    /* Destory everything we created when entering */
-    Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/LoadOverlay");
-    o->hide();
+    /* Delete MyGUI */
+    mGUI->shutdown();
+    delete mGUI;
+    mGUI = 0;
+    /* Delete the camera and scene */
     mSceneMgr->destroyCamera(mCamera);
     mWindow->removeAllViewports();
     mRoot->destroySceneManager(mSceneMgr);
@@ -132,8 +129,8 @@ void LoadState::waitForReply(void)
         unsigned int timeout = mTimeout - (mCounter*0.001);
         if (timeout < mTimeout-1)
         {
-            Ogre::OverlayElement* loadstats = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Comment");
-            loadstats->setCaption(Ogre::String("Waiting for response. Timeout: ")+Ogre::StringConverter::toString(timeout));
+            /*
+            loadstats->setCaption(Ogre::String("Waiting for response. Timeout: ")+Ogre::StringConverter::toString(timeout));*/
             if (timeout == 0)
             {
                 mLoadStatus = STATUS_CONNECTING;
@@ -147,7 +144,6 @@ void LoadState::connect(void)
 {
     if ((mCounter*0.001) > 1)
     {
-        Ogre::OverlayElement* loadstats = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Comment");
         if (mConAttempts < mRetryLimit)
         {
             mCounter = 0;
@@ -157,11 +153,11 @@ void LoadState::connect(void)
             {
                 if (mGameMgr->mSinglePlayer)
                 {
-                    loadstats->setCaption(Ogre::String("Loading world"));
+              /*      loadstats->setCaption(Ogre::String("Loading world"));*/
                 }
                 else
                 {
-                    loadstats->setCaption(Ogre::String("Waiting for response"));
+              /*     loadstats->setCaption(Ogre::String("Waiting for response"));*/
                 }
                 mLoadStatus = STATUS_LISTENING;
             }
@@ -170,11 +166,11 @@ void LoadState::connect(void)
                 mConAttempts++;
                 if (mGameMgr->mSinglePlayer)
                 {
-                    loadstats->setCaption(Ogre::String("Problem starting game. (Attempts: ")+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")"));
+                  /*  loadstats->setCaption(Ogre::String("Problem starting game. (Attempts: ")+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")")); */
                 }
                 else
                 {
-                    loadstats->setCaption(Ogre::String("Connection failed, Retrying. (Attempts: ")+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")"));
+                  /*  loadstats->setCaption(Ogre::String("Connection failed, Retrying. (Attempts: ")+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")")); */
                 }
             }
         }
@@ -189,7 +185,7 @@ void LoadState::connect(void)
 
 void LoadState::updateLoadbar(unsigned long lTimeElapsed)
 {
-    Ogre::OverlayElement* progress = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Bar/Progress");
+/*    Ogre::OverlayElement* progress = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Bar/Progress");
     Ogre::Real left = progress->getLeft();
     if (mReverse)
     {
@@ -209,23 +205,22 @@ void LoadState::updateLoadbar(unsigned long lTimeElapsed)
             left = 350;
         }
     }
-    progress->setLeft(left);
+    progress->setLeft(left); */
 }
 
+/* Stop the loading animation and stop failure message */
 void LoadState::killLoadbar()
 {
-    Ogre::OverlayElement* loadstats = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Comment");
-    loadstats->setCaption(Ogre::String("Press ESC to quit"));
-    Ogre::OverlayElement* progress = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Bar/Progress");
-    progress->hide();
-    Ogre::OverlayElement* desctext = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Description");
+ 
+   /* loadstats->setCaption(Ogre::String("Press ESC to quit")); */
+
     if (mGameMgr->mSinglePlayer)
     {
-        desctext->setCaption(Ogre::String("Failed to start game"));
+/*        desctext->setCaption(Ogre::String("Failed to start game")); */
     }
     else
     {
-        desctext->setCaption(Ogre::String("Failed to connect to server"));
+/*        desctext->setCaption(Ogre::String("Failed to connect to server"));*/
     }
 }
 
@@ -243,7 +238,6 @@ void LoadState::keyReleased( const OIS::KeyEvent &e )
 	if (e.key == OIS::KC_SYSRQ) { // screenshot
 		char filename[30] ;
 
-       
 	   std::sprintf(filename, "./screenshots/screenshot.png");
 	   mRoot->getAutoCreatedWindow()->writeContentsToFile(filename);
 	}    
