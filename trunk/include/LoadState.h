@@ -79,7 +79,9 @@ private:
     void killLoadbar(void);
     void connect(void);
     void waitForReply(void);
+
     unsigned long mCounter;
+    MyGUI::StaticTextPtr mStatusText;
 };
 #endif /* __LoadState_H_ */
 

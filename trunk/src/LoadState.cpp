@@ -38,17 +38,19 @@ void LoadState::enter( void )
 
     /* Get MyGUI loading layout */
     MyGUI::LayoutManager::getInstance().load("loading.layout");
+    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");
+    /* Change the colour, couldn't figure out how to change it in the template */
+    mStatusText->setTextColour(MyGUI::Colour(1,1,1,1));
 
-
-/*    if (mGameMgr->mSinglePlayer)
+    if (mGameMgr->mSinglePlayer)
     {
-        loadstats->setCaption(Ogre::String(gettext("Starting game")));
+        mStatusText->setCaption(Ogre::String(gettext("Starting game")));
     }
     else
     {
-        loadstats->setCaption(Ogre::String(gettext("Connecting to server")));
+        mStatusText->setCaption(Ogre::String(gettext("Connecting to server")));
     }
-*/
+
     mConAttempts = 0; /* connection attempts so far */
     mCounter = 101; /* timer for a delay between connection attempts */
 
@@ -60,6 +62,8 @@ void LoadState::enter( void )
 /* Destory everything we created when entering */
 void LoadState::exit( void )
 {
+    /* Delete pointer */
+    MyGUI::Gui::getInstance().destroyWidget(mStatusText);
     /* Delete MyGUI */
     mGUI->shutdown();
     delete mGUI;
@@ -129,8 +133,7 @@ void LoadState::waitForReply(void)
         unsigned int timeout = mTimeout - (mCounter*0.001);
         if (timeout < mTimeout-1)
         {
-            /*
-            loadstats->setCaption(Ogre::String("Waiting for response. Timeout: ")+Ogre::StringConverter::toString(timeout));*/
+            mStatusText->setCaption(Ogre::String(gettext("Waiting for response. Timeout: "))+Ogre::StringConverter::toString(timeout));
             if (timeout == 0)
             {
                 mLoadStatus = STATUS_CONNECTING;
@@ -153,11 +156,11 @@ void LoadState::connect(void)
             {
                 if (mGameMgr->mSinglePlayer)
                 {
-              /*      loadstats->setCaption(Ogre::String("Loading world"));*/
+                    mStatusText->setCaption(Ogre::String(gettext("Loading world")));
                 }
                 else
                 {
-              /*     loadstats->setCaption(Ogre::String("Waiting for response"));*/
+                    mStatusText->setCaption(Ogre::String(gettext("Waiting for response")));
                 }
                 mLoadStatus = STATUS_LISTENING;
             }
@@ -166,11 +169,11 @@ void LoadState::connect(void)
                 mConAttempts++;
                 if (mGameMgr->mSinglePlayer)
                 {
-                  /*  loadstats->setCaption(Ogre::String("Problem starting game. (Attempts: ")+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")")); */
+                    mStatusText->setCaption(Ogre::String(gettext("Problem starting game. (Attempts: "))+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")"));
                 }
                 else
                 {
-                  /*  loadstats->setCaption(Ogre::String("Connection failed, Retrying. (Attempts: ")+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")")); */
+                    mStatusText->setCaption(Ogre::String(gettext("Connection failed, Retrying. (Attempts: "))+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")"));
                 }
             }
         }
@@ -212,15 +215,15 @@ void LoadState::updateLoadbar(unsigned long lTimeElapsed)
 void LoadState::killLoadbar()
 {
  
-   /* loadstats->setCaption(Ogre::String("Press ESC to quit")); */
+    /*mStatusText->setCaption(Ogre::String(gettext("Press ESC to quit")));*/
 
     if (mGameMgr->mSinglePlayer)
     {
-/*        desctext->setCaption(Ogre::String("Failed to start game")); */
+        mStatusText->setCaption(Ogre::String(gettext("Failed to start game")));
     }
     else
     {
-/*        desctext->setCaption(Ogre::String("Failed to connect to server"));*/
+        mStatusText->setCaption(Ogre::String(gettext("Failed to connect to server")));
     }
 }
 
