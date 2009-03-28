@@ -39,8 +39,6 @@ void LoadState::enter( void )
     /* Get MyGUI loading layout */
     MyGUI::LayoutManager::getInstance().load("loading.layout");
     mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");
-    /* Change the colour, couldn't figure out how to change it in the template */
-    mStatusText->setTextColour(MyGUI::Colour(1,1,1,1));
 
     if (mGameMgr->mSinglePlayer)
     {
@@ -167,14 +165,9 @@ void LoadState::connect(void)
             else
             {
                 mConAttempts++;
-                if (mGameMgr->mSinglePlayer)
-                {
-                    mStatusText->setCaption(Ogre::String(gettext("Problem starting game. (Attempts: "))+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")"));
-                }
-                else
-                {
-                    mStatusText->setCaption(Ogre::String(gettext("Connection failed, Retrying. (Attempts: "))+Ogre::StringConverter::toString(mConAttempts)+Ogre::String(")"));
-                }
+                mStatusText->setCaption(Ogre::UTFString(gettext("Retrying"))+Ogre::UTFString(" (")+
+                                  Ogre::StringConverter::toString(mConAttempts)+Ogre::UTFString(")"));
+
             }
         }
         else
@@ -236,14 +229,7 @@ void LoadState::keyReleased( const OIS::KeyEvent &e )
     if( e.key == OIS::KC_ESCAPE )
     {
         this->requestShutdown();
-    }
-
-	if (e.key == OIS::KC_SYSRQ) { // screenshot
-		char filename[30] ;
-
-	   std::sprintf(filename, "./screenshots/screenshot.png");
-	   mRoot->getAutoCreatedWindow()->writeContentsToFile(filename);
-	}    
+    } 
 }
 
 void LoadState::mouseMoved( const OIS::MouseEvent &e )

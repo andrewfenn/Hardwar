@@ -54,6 +54,7 @@ public:
     void mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
 
     static LoadState* getSingletonPtr( void );
+    MyGUI::StaticTextPtr mStatusText;
 private:
 
     Ogre::Root           *mRoot;
@@ -81,7 +82,7 @@ private:
     void waitForReply(void);
 
     unsigned long mCounter;
-    MyGUI::StaticTextPtr mStatusText;
+
 };
 #endif /* __LoadState_H_ */
 
