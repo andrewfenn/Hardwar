@@ -68,11 +68,37 @@ GameManager::~GameManager( void ) {
 void GameManager::startGame( GameState *gameState )
 {
     #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    mRoot = new Root();
+    mRoot = new Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
     #else
     /* Unix */
-    /* TODO: We assume the system has plugins.cfg the way Debian has it */
-    mRoot = new Root("/etc/OGRE/plugins.cfg");
+    FILE *file;
+    if ((file = fopen ("/etc/OGRE/plugins.cfg","r")))
+    {
+        /* check for Debian plugins.cfg in /etc/OGRE/ */
+        fclose(file);
+        mRoot = new Root("/etc/OGRE/plugins.cfg", "game.cfg", "./logs/ogre.log");
+    }
+    else
+    {
+        /* Look for the plugins we want manually */
+        mRoot = new Root("", "game.cfg", "./logs/ogre.log");
+
+        if (opendir ("/usr/lib/OGRE") != NULL)
+        {
+            mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
+            mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
+        }
+        else if (opendir ("/usr/local/lib/OGRE") != NULL)
+        {
+            mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
+            mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
+        }
+        else
+        {
+            /* Can't find where Ogre is, just start and hope for the best */
+            mRoot = new Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
+        }
+    }
     #endif
 
     /* Setup states */

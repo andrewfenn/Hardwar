@@ -54,7 +54,6 @@ public:
     void mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
 
     static LoadState* getSingletonPtr( void );
-    MyGUI::StaticTextPtr mStatusText;
 private:
 
     Ogre::Root           *mRoot;
@@ -67,7 +66,6 @@ private:
     GameManager          *mGameMgr;
     clientStatus         mLoadStatus;
 
-    bool mReverse;
     unsigned int mConAttempts;
     unsigned int mRetryLimit;
     unsigned int mTimeout;
@@ -81,8 +79,12 @@ private:
     void connect(void);
     void waitForReply(void);
 
-    unsigned long mCounter;
+    unsigned long mCounter; /* keeps track of time between connection attempts */
 
+    unsigned short mGUIcount; /* used for GUI animation */
+    bool mReverse; /* use for GUI animation */
+    unsigned long mGUICounter; /* keeps track of time between animation updates */
+    MyGUI::StaticTextPtr  mStatusText;
 };
 #endif /* __LoadState_H_ */
 

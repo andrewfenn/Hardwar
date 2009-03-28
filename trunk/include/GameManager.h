@@ -27,6 +27,11 @@
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
 
+#include <stdio.h>
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+#include <dirent.h>
+#endif
+
 #include "InputManager.h"
 #include "Client.h"
 

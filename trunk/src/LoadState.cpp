@@ -55,6 +55,8 @@ void LoadState::enter( void )
     mLoadStatus = STATUS_CONNECTING;
     mRetryLimit = 10; /* TODO: Make this config option */
     mTimeout = 30; /* TODO: Make this config option. */
+    mGUIcount = 0;
+    mReverse = false;
 }
 
 /* Destory everything we created when entering */
@@ -179,35 +181,62 @@ void LoadState::connect(void)
     }
 }
 
+/* Update the GUI animation */
 void LoadState::updateLoadbar(unsigned long lTimeElapsed)
 {
-/*    Ogre::OverlayElement* progress = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LoadPanel/Bar/Progress");
-    Ogre::Real left = progress->getLeft();
-    if (mReverse)
+    MyGUI::types::TCoord<Ogre::Real> coord;
+    mGUICounter += lTimeElapsed;
+    if (mGUICounter*0.001 > 1)
     {
-        left -=(0.1*lTimeElapsed);
-        if (left < 0)
+        mGUICounter = 0;
+        MyGUI::StaticImagePtr statusImage;
+
+        if (mGUIcount > 0)
         {
+            /* set the size of the last big dot to small */
+            statusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
+                                                             Ogre::UTFString("dot")+
+                                          Ogre::StringConverter::toString(mGUIcount)
+                                                                                  );
+            coord = statusImage->getClientCoord();
+            std::cout << coord.print() << std::endl;
+            statusImage->setSize(coord.width -5, coord.height -5);
+        }
+
+        if (mReverse)
+        {
+            mGUIcount--;
+        }
+        else
+        {
+            mGUIcount++;
+        }
+
+        if (mGUIcount < 1)
+        {
+            mGUIcount = 1;
             mReverse = false;
-            left = 0;
         }
-    }
-    else
-    {
-        left +=(0.1*lTimeElapsed);
-        if (left > 350)
+        if (mGUIcount > 3)
         {
+            mGUIcount = 3;
             mReverse = true;
-            left = 350;
         }
+/*
+        statusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
+                                                             Ogre::UTFString("dot")+
+                                          Ogre::StringConverter::toString(mGUIcount)
+                                                                                  );
+        MyGUI::types::TCoord<int> coord = statusImage->getClientCoord();
+        statusImage->setRealCoord(coord.left, coord.top -3, coord.width +5, coord.height +5);*/
     }
-    progress->setLeft(left); */
 }
 
 /* Stop the loading animation and stop failure message */
 void LoadState::killLoadbar()
 {
- 
+    /* TODO: make this a popup window? */
+
     /*mStatusText->setCaption(Ogre::String(gettext("Press ESC to quit")));*/
 
     if (mGameMgr->mSinglePlayer)

@@ -19,19 +19,19 @@
                 <Property key="Text_FontName" value="DejaVuSans.17"/>
                 <Property key="Text_FontHeight" value="25"/>
             </Widget>
-            <Widget type="StaticImage" skin="StaticImage" position="40 80 30 30" layer="Back">
+            <Widget type="StaticImage" skin="StaticImage" position="40 80 30 30" layer="Back" name="dot1">
                 <Property key="Image_Name" value="dot1"/>
                 <Property key="Image_Texture" value="dot.zworks.png"/>
                 <Property key="Widget_Alpha" value="0.25"/>
                 <Property key="Widget_InheritsAlpha" value="true"/>
             </Widget>
-            <Widget type="StaticImage" skin="StaticImage" position="260 80 30 30" layer="Back">
+            <Widget type="StaticImage" skin="StaticImage" position="260 80 30 30" layer="Back" name="dot3">
                 <Property key="Image_Name" value="dot3"/>
                 <Property key="Image_Texture" value="dot.zworks.png"/>
                 <Property key="Widget_InheritsAlpha" value="true"/>
                 <Property key="Widget_Alpha" value="0.25"/>
             </Widget>
-            <Widget type="StaticImage" skin="StaticImage" position="150 77 35 35" layer="Back">
+            <Widget type="StaticImage" skin="StaticImage" position="150 77 35 35" layer="Back" name="dot2">
                 <Property key="Image_Name" value="dot2"/>
                 <Property key="Image_Texture" value="dot.zworks.png"/>
                 <Property key="Widget_InheritsAlpha" value="true"/>
