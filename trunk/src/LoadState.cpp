@@ -82,17 +82,18 @@ void LoadState::resume(void)
 
 void LoadState::update( unsigned long lTimeElapsed )
 {
-    updateLoadbar(lTimeElapsed);
+    mGUICounter += lTimeElapsed;
+    mCounter += lTimeElapsed;
+
+    updateLoadbar();
 
     switch(mLoadStatus)
     {
         case STATUS_CONNECTING:
                 connect();
-                mCounter += lTimeElapsed;
         break;
         case STATUS_LISTENING:
                 waitForReply();
-                mCounter += lTimeElapsed;
         break;
         case STATUS_CONNECTED:
                 this->changeState(PlayState::getSingletonPtr());
@@ -182,11 +183,10 @@ void LoadState::connect(void)
 }
 
 /* Update the GUI animation */
-void LoadState::updateLoadbar(unsigned long lTimeElapsed)
+void LoadState::updateLoadbar(void)
 {
     MyGUI::types::TCoord<Ogre::Real> coord;
-    mGUICounter += lTimeElapsed;
-    if (mGUICounter*0.001 > 1)
+    if (mGUICounter*0.001 > 0.5)
     {
         mGUICounter = 0;
         MyGUI::StaticImagePtr statusImage;
@@ -198,9 +198,8 @@ void LoadState::updateLoadbar(unsigned long lTimeElapsed)
                                                              Ogre::UTFString("dot")+
                                           Ogre::StringConverter::toString(mGUIcount)
                                                                                   );
-            coord = statusImage->getClientCoord();
-            std::cout << coord.print() << std::endl;
-            statusImage->setSize(coord.width -5, coord.height -5);
+            coord = statusImage->getCoord();
+            statusImage->setCoord(coord.left+3, coord.top +3, coord.width -5, coord.height -5);
         }
 
         if (mReverse)
@@ -212,23 +211,23 @@ void LoadState::updateLoadbar(unsigned long lTimeElapsed)
             mGUIcount++;
         }
 
-        if (mGUIcount < 1)
+        if (mGUIcount < 2)
         {
             mGUIcount = 1;
             mReverse = false;
         }
-        if (mGUIcount > 3)
+        if (mGUIcount > 2)
         {
             mGUIcount = 3;
             mReverse = true;
         }
-/*
+
         statusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
                                                              Ogre::UTFString("dot")+
                                           Ogre::StringConverter::toString(mGUIcount)
                                                                                   );
-        MyGUI::types::TCoord<int> coord = statusImage->getClientCoord();
-        statusImage->setRealCoord(coord.left, coord.top -3, coord.width +5, coord.height +5);*/
+        coord = statusImage->getCoord();
+        statusImage->setCoord(coord.left-3, coord.top -3, coord.width +5, coord.height +5);
     }
 }
 

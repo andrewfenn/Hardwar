@@ -74,7 +74,7 @@ private:
     LoadState( const LoadState& ) { }
     LoadState & operator = ( const LoadState& );
 
-    void updateLoadbar(unsigned long);
+    void updateLoadbar(void);
     void killLoadbar(void);
     void connect(void);
     void waitForReply(void);

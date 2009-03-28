@@ -20,3 +20,7 @@ bin/ogre.cfg
 lib
 ./trunk/bin/MyGUI.log
 ./bin/logs/ogre.log
+game.cfg
+logs/ogre.log
+trunk/logs/ogre.log
+trunk/bin/logs/ogre.log
