@@ -130,7 +130,7 @@ void Server::serverLoop()
                                 
 
                                 /* TODO: Add file checking */
-                                unsigned int id = (unsigned int)event.peer->data;
+                                unsigned int id = (intptr_t) event.peer->data;
                                 mClients[id].conState = STATUS_CONNECTED;
                                 /* Send client to lobby */
                                 message(event.peer,&mClients[id],sizeof(mClients[id]),0,ENET_PACKET_FLAG_RELIABLE);
