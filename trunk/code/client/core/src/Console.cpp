@@ -21,6 +21,11 @@
 Console::Console()
 {
    mShow = false;
+   mAlpha = 0.0f;
+   mGUI = MyGUI::Gui::getInstancePtr();
+   MyGUI::LayoutManager::getInstance().load("console.layout");
+   mGUIConsole = mGUI->findWidget<MyGUI::Window>("console");
+   mGUIConsole->setAlpha(mAlpha);
 }
 
 Console::~Console()
@@ -28,7 +33,37 @@ Console::~Console()
 
 }
 
-void Console::draw()
+void Console::toggleShow()
 {
+   if (mShow)
+   {
+      mShow = false;
+      mGUI->hidePointer();
+   }
+   else
+   {
+      mShow = true;
+      mGUIConsole->setVisible(true);
+      mGUI->showPointer();
+   }
+}
 
+bool Console::isVisible()
+{
+   return mShow;
+}
+
+void Console::update()
+{
+   if (mShow && mAlpha < 0.9f)
+   {
+      mAlpha += 0.01f;
+   }
+   else if (!mShow && mAlpha > 0.01f)
+   {
+      mAlpha -= 0.01f;
+      if (mAlpha < 0.02f)
+         mGUIConsole->setVisible(false);
+   }
+   mGUIConsole->setAlpha(mAlpha);
 }

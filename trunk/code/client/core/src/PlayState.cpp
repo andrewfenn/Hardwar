@@ -27,11 +27,12 @@ void PlayState::enter(void)
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
    mSceneMgr     = mRoot->getSceneManager("PlaySceneMgr");
+   mGUI          = MyGUI::Gui::getInstancePtr();
+   mGUI->setSceneManager(mSceneMgr);
    mCamera       = mSceneMgr->createCamera("PlayerCamera");
    mViewport     = mWindow->addViewport(mCamera, 0);
    mOgreMax      = new OgreMax::OgreMaxScene;
    mGameMgr      = GameManager::getSingletonPtr();
-
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
@@ -54,6 +55,8 @@ void PlayState::enter(void)
    mPingWaitTime = 0;
    mPingSent = false;
    mPingTime = 0;
+
+   mConsole = new Console();
 }
 
 void PlayState::exit(void)
@@ -83,8 +86,10 @@ void PlayState::update(unsigned long lTimeElapsed)
    fpstimer += lTimeElapsed;
    if (fpstimer > 0.5)
    {
+      /* Don't need to update this stuff every frame */
       fpstimer = 0;
-      showDebug();      
+      showDebug();
+      mConsole->update();
    }
 
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
@@ -197,55 +202,86 @@ void PlayState::showDebug(void)
 
 void PlayState::keyPressed(const OIS::KeyEvent &e)
 {
-   if (e.key == OIS::KC_GRAVE)
-   {}
+   if (mConsole->isVisible())
+   {
+      mGUI->injectKeyPress(e);
+   }
+   else
+   {
+      if (e.key == OIS::KC_W)
+         mKeydownUp = 1;
 
-   if (e.key == OIS::KC_W)
-      mKeydownUp = 1;
+      if (e.key == OIS::KC_S)
+         mKeydownDown = 1;
 
-   if (e.key == OIS::KC_S)
-      mKeydownDown = 1;
+      if (e.key == OIS::KC_A)
+         mKeydownLeft = 1;
 
-   if (e.key == OIS::KC_A)
-      mKeydownLeft = 1;
+      if (e.key == OIS::KC_D)
+         mKeydownRight = 1;
 
-   if (e.key == OIS::KC_D)
-      mKeydownRight = 1;
-
-   if(e.key == OIS::KC_B)
-      mSceneMgr->showBoundingBoxes(true);
+      if(e.key == OIS::KC_B)
+         mSceneMgr->showBoundingBoxes(true);
+   }
 }
 
 void PlayState::keyReleased(const OIS::KeyEvent &e)
 {
-   if (e.key == OIS::KC_ESCAPE)
-      this->requestShutdown();
+   if (e.key == OIS::KC_GRAVE)
+      mConsole->toggleShow();
 
-   if (e.key == OIS::KC_W)
-      mKeydownUp = 0;
+   if (mConsole->isVisible())
+   {
+      mGUI->injectKeyRelease(e);
+   }
+   else
+   {
+      if (e.key == OIS::KC_ESCAPE)
+         this->requestShutdown();
 
-   if (e.key == OIS::KC_S)
-      mKeydownDown = 0;
+      if (e.key == OIS::KC_W)
+         mKeydownUp = 0;
 
-   if (e.key == OIS::KC_A)
-      mKeydownLeft = 0;
+      if (e.key == OIS::KC_S)
+         mKeydownDown = 0;
 
-   if (e.key == OIS::KC_D)
-      mKeydownRight = 0;
+      if (e.key == OIS::KC_A)
+         mKeydownLeft = 0;
+
+      if (e.key == OIS::KC_D)
+         mKeydownRight = 0;
+   }
 }
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
-   const OIS::MouseState &mouseState = e.state;
-   mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
-   mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
+   if (mConsole->isVisible())
+   {
+      mGUI->injectMouseMove(e);
+   }
+   else
+   {
+      const OIS::MouseState &mouseState = e.state;
+      mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
+      mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
+   }
 }
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ }
+{
+   if (mConsole->isVisible())
+   {
+      mGUI->injectMousePress(e, id);
+   }
+}
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ }
+{
+   if (mConsole->isVisible())
+   {
+      mGUI->injectMouseRelease(e, id);
+   }
+}
 
 PlayState* PlayState::getSingletonPtr(void)
 {

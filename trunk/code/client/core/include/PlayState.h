@@ -23,6 +23,7 @@
 
 #include "GameState.h"
 #include "OgreMaxScene.hpp"
+#include "Console.h"
 
 class PlayState : public GameState
 {
@@ -53,8 +54,10 @@ class PlayState : public GameState
       Ogre::RenderWindow      *mWindow;
       OgreMax::OgreMaxScene   *mOgreMax;
       OIS::Keyboard           *mInputDevice;
+      MyGUI::Gui              *mGUI;
 
       GameManager             *mGameMgr;
+      Console                 *mConsole;
 
       Ogre::SceneNode         *mWorldNode;
       Ogre::SceneNode         *mWaterNode;

@@ -147,7 +147,7 @@ void GameManager::startGame( GameState *gameState )
       mInputMgr->capture();
 
       /* update the current state */
-      mStates.back()->update( lTimeSinceLastFrame );
+      mStates.back()->update(lTimeSinceLastFrame);
 
       /* render the next frame */
       mRoot->renderOneFrame();

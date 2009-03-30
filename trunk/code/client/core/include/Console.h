@@ -19,16 +19,22 @@
 #ifndef __CONSOLE_H_
 #define __CONSOLE_H_
 
+#include <MyGUI.h>
 
 class Console
 {
    public:
       Console();
       ~Console();
-
+      void toggleShow();
+      void update();
+      bool isVisible();
    private:
       void draw();
       bool mShow;
+      MyGUI::Gui  *mGUI;
+      MyGUI::WindowPtr mGUIConsole;
+      float mAlpha;
 };
 #endif /* __Console_H_ */
 
