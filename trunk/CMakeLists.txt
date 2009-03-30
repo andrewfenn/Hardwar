@@ -29,15 +29,17 @@ SET(Required_Packages
 # searches for all .cpp and .h files in the current directory and add them 
 # to the current project
 
-FILE(GLOB folder_source ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/code/*.cpp)
 SOURCE_GROUP("Hardwar" FILES ${folder_source})
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/client/core/include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/client/editor/include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/server/include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/shared/include)
 
 IF (NOT WIN32) # Unix
     # Add compiler warnings
-    #ADD_DEFINITIONS( "-Wall -Wextra -Wunused -ansi -Wshadow" )
-    ADD_DEFINITIONS( "-Wall -Wunused -ansi" )
+    ADD_DEFINITIONS("-Wall -Wunused -ansi")
 ENDIF (NOT WIN32)
 
 IF (MSVC_IDE)
@@ -80,7 +82,7 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/code/shared/include/config.h)
 IF (MSVC_IDE)
 	TARGET_LINK_LIBRARIES(hardwar boost_filesystem-*)
 ELSE (MSVC_IDE) # UNIX
