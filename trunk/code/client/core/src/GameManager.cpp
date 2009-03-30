@@ -27,8 +27,7 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
                                                  mPlayState(0), bShutdown(false)
 {
    mSinglePlayer = false;
-   mPort = 26500;
-   mAddress = std::string("127.0.0.1");
+   mNetwork = new Network;
 }
 
 GameManager::~GameManager( void )
@@ -117,8 +116,6 @@ void GameManager::startGame( GameState *gameState )
    mInputMgr->addKeyListener( this, "GameManager" );
    mInputMgr->addMouseListener( this, "GameManager" );
    mInputMgr->getJoystick( 1 );
-
-   mNetwork = new Client;
 
    /* Go to the first state */
    this->changeState( gameState );
@@ -288,28 +285,6 @@ bool GameManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
    mStates.back()->mouseReleased( e, id );
 
    return true;
-}
-
-/* FIXME: Is this really the best place to put this? */
-bool GameManager::setupNetwork(void)
-{
-   /* If single player game then start a server and connect to it */
-   if (mSinglePlayer)
-   {
-      std::cout << "Starting Singleplayer server" << std::endl;
-      return true;
-   }
-   else
-   {
-      if (mNetwork->connect(this->mPort, this->mAddress))
-      {
-         /* join request - data doesn't matter because we don't look at it */
-         mNetwork->message("join", strlen("join")+1, 0, 
-                                                     ENET_PACKET_FLAG_RELIABLE);
-         return true;
-      }
-   }
-   return false;
 }
 
 GameManager* GameManager::getSingletonPtr(void)

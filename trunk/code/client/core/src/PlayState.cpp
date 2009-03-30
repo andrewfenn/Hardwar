@@ -22,7 +22,6 @@ PlayState* PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
-
    mRoot         = Ogre::Root::getSingletonPtr();
    mRoot->createSceneManager(Ogre::ST_GENERIC,"PlaySceneMgr");
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();

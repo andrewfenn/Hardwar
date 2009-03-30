@@ -51,6 +51,7 @@ int main( int argc, char **argv ) {
     std::string address = "127.0.0.1";
     int port = 26500;
 
+    /* FIXME: Horrible, use regular expression */
     for (int i=1; i < argc; i++)
     {
         cmdvar = std::string(argv[i]);
@@ -115,8 +116,8 @@ int main( int argc, char **argv ) {
         case 1: /* connect */
         {
             GameManager *gameManager = GameManager::getSingletonPtr();
-            gameManager->mPort = port;
-            gameManager->mAddress = address;
+            gameManager->mNetwork->setPort(port);
+            gameManager->mNetwork->setAddress(address);
             gameManager->mSinglePlayer = false;
 
             try

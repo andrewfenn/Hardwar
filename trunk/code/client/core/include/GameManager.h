@@ -32,17 +32,15 @@
 #endif
 
 #include "InputManager.h"
-#include "Client.h"
+#include "Network.h"
 
 class GameState;
 
 class GameManager : public OIS::KeyListener, OIS::MouseListener
 {
    public:
-      int                 mPort;
-      std::string         mAddress;
       bool                mSinglePlayer;
-      Client              *mNetwork;
+      Network             *mNetwork;
 
       ~GameManager(void);
       void startGame(GameState *gameState);
@@ -52,7 +50,6 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       void requestShutdown(void);
 
       static GameManager* getSingletonPtr(void);
-      bool setupNetwork(void);
    private:
       Ogre::Root          *mRoot;
       Ogre::RenderWindow  *mRenderWindow;
