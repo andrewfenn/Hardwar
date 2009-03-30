@@ -21,13 +21,12 @@
 
 #include <OISMouse.h>
 #include <OISKeyboard.h>
-
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
-
 #include <stdio.h>
+#include <string.h>
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <dirent.h>
 #endif
@@ -35,50 +34,50 @@
 #include "InputManager.h"
 #include "Client.h"
 
-#include <string>
-
 class GameState;
 
-class GameManager : public OIS::KeyListener, OIS::MouseListener {
-public:
-    int                 mPort;
-    std::string         mAddress;
-    bool                mSinglePlayer;
-    Client              *mNetwork;
+class GameManager : public OIS::KeyListener, OIS::MouseListener
+{
+   public:
+      int                 mPort;
+      std::string         mAddress;
+      bool                mSinglePlayer;
+      Client              *mNetwork;
 
-    ~GameManager(void);
-    void startGame(GameState *gameState);
-    void changeState(GameState *gameState);
-    void pushState(GameState *gameState);
-    void popState(void);
-    void requestShutdown(void);
+      ~GameManager(void);
+      void startGame(GameState *gameState);
+      void changeState(GameState *gameState);
+      void pushState(GameState *gameState);
+      void popState(void);
+      void requestShutdown(void);
 
-    static GameManager* getSingletonPtr(void);
-    bool setupNetwork(void);
-private:
-    Ogre::Root          *mRoot;
-    Ogre::RenderWindow  *mRenderWindow;
-    InputManager        *mInputMgr;
+      static GameManager* getSingletonPtr(void);
+      bool setupNetwork(void);
+   private:
+      Ogre::Root          *mRoot;
+      Ogre::RenderWindow  *mRenderWindow;
+      InputManager        *mInputMgr;
 
-    GameState           *mLoadState;
-    GameState           *mPlayState;
+      GameState           *mLoadState;
+      GameState           *mPlayState;
 
-    bool bShutdown;
-    std::vector<GameState*> mStates;
-    static GameManager *mGameManager;
+      bool bShutdown;
+      std::vector<GameState*> mStates;
+      static GameManager *mGameManager;
 
-    GameManager(void);
-    GameManager(const GameManager&) { }
-    GameManager & operator = (const GameManager&);
+      GameManager(void);
+      GameManager(const GameManager&) { }
+      GameManager & operator = (const GameManager&);
 
-    bool configureGame(void);
-    void setupResources(void);
+      bool configureGame(void);
+      void setupResources(void);
 
-    bool keyPressed(const OIS::KeyEvent &e);
-    bool keyReleased(const OIS::KeyEvent &e);
+      bool keyPressed(const OIS::KeyEvent &e);
+      bool keyReleased(const OIS::KeyEvent &e);
 
-    bool mouseMoved(const OIS::MouseEvent &e);
-    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+      bool mouseMoved(const OIS::MouseEvent &e);
+      bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+      bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 };
 #endif
+

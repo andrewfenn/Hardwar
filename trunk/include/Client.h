@@ -26,16 +26,16 @@
 
 class Client
 {
-    public:
-        Client();
-        ~Client();
-        bool connect(unsigned int, std::string);
-        bool pollMessage(ENetEvent*);
-        bool message(const void*, size_t, enet_uint8, enet_uint32);
-        ENetHost * mNetHost;
-    private:
-        ENetEvent mEvent;
-        ENetPeer *mPeer;
+   public:
+      Client();
+      ~Client();
+      bool connect(unsigned int, std::string);
+      bool pollMessage(ENetEvent*);
+      bool message(const void*, size_t, enet_uint8, enet_uint32);
+      ENetHost * mNetHost;
+   private:
+      ENetEvent mEvent;
+      ENetPeer *mPeer;
 };
 #endif /* __CLIENT_H_ */
 

@@ -19,17 +19,10 @@
 #ifndef __Playstate_H_
 #define __Playstate_H_
 
+#include <OgreRoot.h>
+
 #include "GameState.h"
-
-#include <OgreCamera.h>
-#include <OgreEntity.h>
-#include <OgreSceneQuery.h>
-#include <OgreSubMesh.h>
-#include <OgreRay.h>
-#include <OgreMeshManager.h>
-#include <OgreRenderable.h>
 #include "OgreMaxScene.hpp"
-
 
 class PlayState : public GameState
 {
@@ -59,23 +52,24 @@ private:
     Ogre::Viewport          *mViewport;
     Ogre::OverlayManager    *mOverlayMgr;
     Ogre::RenderWindow      *mWindow;
-    GameManager             *mGameMgr;
-
     OgreMax::OgreMaxScene   *mOgreMax;
     OIS::Keyboard           *mInputDevice;
+
+    GameManager             *mGameMgr;
 
     Ogre::SceneNode         *mWorldNode;
     Ogre::SceneNode         *mWaterNode;
 
     static PlayState        *mPlayState;
 
-    Ogre::Degree    mMouseRotX, mMouseRotY;
-    int             mKeydownUp, mKeydownDown, mKeydownRight, mKeydownLeft;
-    Ogre::Real            fpstimer;
+    Ogre::Degree            mMouseRotX, mMouseRotY;
+    int                     mKeydownUp, mKeydownDown, 
+                            mKeydownRight, mKeydownLeft;
+    Ogre::Real              fpstimer;
 
-    unsigned long   mPingTime; /* indicator of connection strength */
-    unsigned long   mPingWaitTime; /* used for counting while waiting for reply*/
-    bool            mPingSent; /* If we sent a ping yet */
+    unsigned long           mPingTime; /* indicator of connection strength */
+    unsigned long           mPingWaitTime; /* ping delay time */
+    bool                    mPingSent; /* If we sent a ping yet */
 
     PlayState(void) { }
     PlayState(const PlayState&) { }

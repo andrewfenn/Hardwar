@@ -17,6 +17,7 @@
 */
 
 #include <OgreException.h>
+
 #include "GameManager.h"
 #include "PlayState.h"
 #include "LoadState.h"

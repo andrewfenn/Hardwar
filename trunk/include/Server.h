@@ -19,36 +19,35 @@
 #ifndef __SERVER_H_
 #define __SERVER_H_
 
+#include <OgreString.h>
+#include <OgreEntity.h>
+#include <string>
+#include <libintl.h>
+
 #include "hwstructs.h"
 #include "WorldManager.h"
 #include "FileManager.h"
 #include "srvstructs.h"
-
 #include "enet/enet.h"
-#include <OgreString.h>
-#include <OgreEntity.h>
-#include <OgreSceneManager.h>
-#include <string>
-#include <OgreRoot.h>
 
 class Server
 {
-    public:
-        Server();
-        Server(int, std::string);
-        ~Server();
-    private:
-        ENetHost            *mServer;
-        Player              mClients[64];
-        unsigned int        mPlayerCount;
+   public:
+      Server();
+      Server(int, std::string);
+      ~Server();
+   private:
+      ENetHost            *mServer;
+      Player              mClients[64];
+      unsigned int        mPlayerCount;
 
-        WorldManager        *mWorldMgr;
-        FileManager         *mFileMgr;
+      WorldManager        *mWorldMgr;
+      FileManager         *mFileMgr;
 
-        bool    setupServer(int, std::string);
-        bool    setupGame();
-        void    serverLoop();
-        bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
+      bool    setupServer(int, std::string);
+      bool    setupGame();
+      void    serverLoop();
+      bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
 };
 #endif /* __SERVER_H_ */
 

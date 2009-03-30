@@ -18,8 +18,6 @@
 
 #include "GameState.h"
 
-using namespace Ogre;
-
 void GameState::changeState( GameState *state ) { 
     GameManager::getSingletonPtr()->changeState( state ); 
 }

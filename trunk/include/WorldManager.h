@@ -23,28 +23,28 @@
 #include <OgreEntity.h>
 #include <OgreStringConverter.h>
 #include <sqlite3.h>
+
 #include "hwstructs.h"
 
 
-
-
 class WorldManager {
-public:
-	WorldManager( void );
-	~WorldManager( void );
-	bool loadWorldData(Ogre::String);
-	bool saveWorldData();
-	bool loadBuildings();
-	bool deleteBuilding(Ogre::String); 
-	bool addBuilding(Ogre::Vector3, const char*);
-	Ogre::SceneManager      *mSceneMgr;	
-private:
-	std::vector<Building>   mBuildings;
-	unsigned int            mBuildCount;
-	Ogre::SceneNode         *mWorldNode; // attach all ground objects to this SceneNode
-    Ogre::Root              *mRoot;
-	sqlite3                 *mSQLdb;
-	bool drawBuildings();
+   public:
+      WorldManager( void );
+      ~WorldManager( void );
+      bool loadWorldData(Ogre::String);
+      bool saveWorldData();
+      bool loadBuildings();
+      bool deleteBuilding(Ogre::String); 
+      bool addBuilding(Ogre::Vector3, const char*);
+      Ogre::SceneManager      *mSceneMgr;	
+   private:
+      std::vector<Building>   mBuildings;
+      unsigned int            mBuildCount;
+      /* All buildings should be attached to the world node */
+      Ogre::SceneNode         *mWorldNode;
+      Ogre::Root              *mRoot;
+      sqlite3                 *mSQLdb;
+      bool drawBuildings();
 };
 #endif
 

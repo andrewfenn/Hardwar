@@ -19,19 +19,14 @@
 #ifndef __LoadState_H_
 #define __LoadState_H_
 
+#include <OgreRoot.h>
+#include <libintl.h>
+#include <MyGUI.h>
+
 #include "GameState.h"
 #include "srvstructs.h"
 #include "hwstructs.h"
 #include "PlayState.h"
-
-#include <OgreRoot.h>
-#include <OgreEntity.h>
-#include <OgreSceneQuery.h>
-#include <OgreSubMesh.h>
-#include <OgreRay.h>
-#include <OgreMeshManager.h>
-#include <OgreRenderable.h>
-#include "MyGUI.h"
 #include "enet/enet.h"
 
 class LoadState : public GameState

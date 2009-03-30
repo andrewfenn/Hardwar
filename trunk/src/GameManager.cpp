@@ -17,144 +17,140 @@
 */
 
 #include "GameState.h"
-
 #include "PlayState.h"
 #include "LoadState.h"
-
 #include "GameManager.h"
-
-using namespace Ogre;
 
 GameManager* GameManager::mGameManager;
 
-GameManager::GameManager( void ) :
-                            mRoot( 0 ), mInputMgr( 0 ), mLoadState( 0 ), 
-                            mPlayState( 0 ), bShutdown( false )
+GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0), 
+                                                 mPlayState(0), bShutdown(false)
 {
-    mSinglePlayer = false;
-    mPort = 26500;
-    mAddress = std::string("127.0.0.1");
+   mSinglePlayer = false;
+   mPort = 26500;
+   mAddress = std::string("127.0.0.1");
 }
 
-GameManager::~GameManager( void ) {
-    /* Clean up all the states */
-    while(!mStates.empty())
-    {
-        mStates.back()->exit();
-        mStates.pop_back();
-    }
-    if(mInputMgr)
-    {
-        delete mInputMgr;
-        mInputMgr = 0;
-    }
-    if(mLoadState)
-    {
-        delete mLoadState;
-        mLoadState = 0;
-    }	
-    if(mPlayState)
-    {
-        delete mPlayState;
-        mPlayState  = 0;
-    }
-    if(mRoot)
-    {
-        delete mRoot;
-        mRoot = 0;
-    }
+GameManager::~GameManager( void )
+{
+   /* Clean up all the states */
+   while(!mStates.empty())
+   {
+      mStates.back()->exit();
+      mStates.pop_back();
+   }
+   if(mInputMgr)
+   {
+      delete mInputMgr;
+      mInputMgr = 0;
+   }
+   if(mLoadState)
+   {
+      delete mLoadState;
+      mLoadState = 0;
+   }	
+   if(mPlayState)
+   {
+      delete mPlayState;
+      mPlayState  = 0;
+   }
+   if(mRoot)
+   {
+      delete mRoot;
+      mRoot = 0;
+   }
 }
 
 void GameManager::startGame( GameState *gameState )
 {
-    #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    mRoot = new Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
-    #else
-    /* Unix */
-    FILE *file;
-    if ((file = fopen ("/etc/OGRE/plugins.cfg","r")))
-    {
-        /* check for Debian plugins.cfg in /etc/OGRE/ */
-        fclose(file);
-        mRoot = new Root("/etc/OGRE/plugins.cfg", "game.cfg", "./logs/ogre.log");
-    }
-    else
-    {
-        /* Look for the plugins we want manually */
-        mRoot = new Root("", "game.cfg", "./logs/ogre.log");
+   #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+   mRoot = new Ogre::Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
+   #else
+   /* Unix */
+   FILE *file;
+   if ((file = fopen ("/etc/OGRE/plugins.cfg","r")))
+   {
+      /* check for Debian plugins.cfg in /etc/OGRE/ */
+      fclose(file);
+      mRoot = new Ogre::Root("/etc/OGRE/plugins.cfg", "game.cfg", "./logs/ogre.log");
+   }
+   else
+   {
+      /* Look for the plugins we want manually */
+      mRoot = new Ogre::Root("", "game.cfg", "./logs/ogre.log");
 
-        if (opendir ("/usr/lib/OGRE") != NULL)
-        {
-            mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
-            mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
-        }
-        else if (opendir ("/usr/local/lib/OGRE") != NULL)
-        {
-            mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
-            mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
-        }
-        else
-        {
-            /* Can't find where Ogre is, just start and hope for the best */
-            mRoot = new Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
-        }
-    }
-    #endif
+      if (opendir ("/usr/lib/OGRE") != NULL)
+      {
+         mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
+         mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
+      }
+      else if (opendir ("/usr/local/lib/OGRE") != NULL)
+      {
+         mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
+         mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
+      }
+      else
+      {
+         /* Can't find where Ogre is, just start and hope for the best */
+         mRoot = new Ogre::Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
+      }
+   }
+   #endif
 
-    /* Setup states */
-    mLoadState = LoadState::getSingletonPtr();
-    mPlayState = PlayState::getSingletonPtr();
+   /* Setup states */
+   mLoadState = LoadState::getSingletonPtr();
+   mPlayState = PlayState::getSingletonPtr();
 
-    this->setupResources();
-    if( !this->configureGame() )
-    {
-        /* If game can't be configured, throw exception and quit application */
-        throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR,
+   this->setupResources();
+   if( !this->configureGame() )
+   {
+      /* If game can't be configured, throw exception and quit application */
+      throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR,
                                       "Error - Couldn't Configure Renderwindow",
                                       "Game Error" );
-        return;
-    }
+      return;
+   }
 
-    /* Setup open input system */
-    mInputMgr = InputManager::getSingletonPtr();
-    mInputMgr->initialise( mRenderWindow );
-    mInputMgr->addKeyListener( this, "GameManager" );
-    mInputMgr->addMouseListener( this, "GameManager" );
-    mInputMgr->getJoystick( 1 );
+   /* Setup open input system */
+   mInputMgr = InputManager::getSingletonPtr();
+   mInputMgr->initialise( mRenderWindow );
+   mInputMgr->addKeyListener( this, "GameManager" );
+   mInputMgr->addMouseListener( this, "GameManager" );
+   mInputMgr->getJoystick( 1 );
 
-    mNetwork = new Client;
+   mNetwork = new Client;
 
-    /* Go to the first state */
-    this->changeState( gameState );
+   /* Go to the first state */
+   this->changeState( gameState );
 
-    /* 
-     * lTimeLastFrame remembers the last time that it was checked
-     * We use it to calculate the time since last frame
-     */
-    unsigned long lTimeLastFrame = 0;
+   /* 
+   * lTimeLastFrame remembers the last time that it was checked
+   * We use it to calculate the time since last frame
+   */
+   unsigned long lTimeLastFrame = 0;
 
-    while( !bShutdown )
-    {
-        /* 
-         * Calculate time since last frame and remember current time 
-         * for next frame 
-         */
-        unsigned long lTimeCurrentFrame = mRoot->getTimer()->getMilliseconds();
-        unsigned long lTimeSinceLastFrame = lTimeCurrentFrame - lTimeLastFrame;
-        lTimeLastFrame = lTimeCurrentFrame;
+   while( !bShutdown )
+   {
+      /* 
+      * Calculate time since last frame and remember current time 
+      * for next frame 
+      */
+      unsigned long lTimeCurrentFrame = mRoot->getTimer()->getMilliseconds();
+      unsigned long lTimeSinceLastFrame = lTimeCurrentFrame - lTimeLastFrame;
+      lTimeLastFrame = lTimeCurrentFrame;
 
-        /* update input */
-        mInputMgr->capture();
+      /* update input */
+      mInputMgr->capture();
 
-        /* update the current state */
-        mStates.back()->update( lTimeSinceLastFrame );
+      /* update the current state */
+      mStates.back()->update( lTimeSinceLastFrame );
 
-        /* render the next frame */
-        mRoot->renderOneFrame();
+      /* render the next frame */
+      mRoot->renderOneFrame();
 
-        /* Deal with platform specific issues */
-        WindowEventUtilities::messagePump();
-    }
+      /* Deal with platform specific issues */
+      Ogre::WindowEventUtilities::messagePump();
+   }
 }
 
 bool GameManager::configureGame( void )
@@ -162,166 +158,167 @@ bool GameManager::configureGame( void )
     /* Load config settings from ogre.cfg */
     if( !mRoot->restoreConfig())
     {
-        // If there is no config file, show the configuration dialog
-        if( !mRoot->showConfigDialog())
-        {
-            return false;
-        }
+      // If there is no config file, show the configuration dialog
+      if( !mRoot->showConfigDialog())
+      {
+         return false;
+      }
     }
 
     /* Initialise and create a default rendering window */
     mRenderWindow = mRoot->initialise( true, "Hardwar" );
 
     /* Initialise resources */
-    ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     return true;
 }
 
 void GameManager::setupResources(void)
 {
-    /* Load resource paths from config file */
-    ConfigFile cf;
-    cf.load( "resources.cfg" );
+   /* Load resource paths from config file */
+   Ogre::ConfigFile cf;
+   cf.load("resources.cfg");
 
-    /* go through all settings in the file */
-    ConfigFile::SectionIterator itSection = cf.getSectionIterator();
+   /* go through all settings in the file */
+   Ogre::ConfigFile::SectionIterator itSection = cf.getSectionIterator();
 
-    String sSection, sType, sArch;
-    while(itSection.hasMoreElements())
-    {
-        sSection = itSection.peekNextKey();
+   Ogre::String sSection, sType, sArch;
+   while(itSection.hasMoreElements())
+   {
+      sSection = itSection.peekNextKey();
 
-        ConfigFile::SettingsMultiMap *mapSettings = itSection.getNext();
-        ConfigFile::SettingsMultiMap::iterator itSetting = mapSettings->begin();
-        while(itSetting != mapSettings->end())
-        {
-            sType = itSetting->first;
-            sArch = itSetting->second;
-                            
-            ResourceGroupManager::getSingleton().addResourceLocation(
-                sArch, sType, sSection );
+      Ogre::ConfigFile::SettingsMultiMap *mapSettings = itSection.getNext();
+      Ogre::ConfigFile::SettingsMultiMap::iterator itSetting = mapSettings->begin();
+      while(itSetting != mapSettings->end())
+      {
+         sType = itSetting->first;
+         sArch = itSetting->second;
+                         
+         Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sArch,
+                                                               sType, sSection);
 
-            ++itSetting;
-        }
-    }
+         ++itSetting;
+      }
+   }
 }
 
 void GameManager::changeState(GameState *gameState)
 {
-    /* cleanup the current state */
-    if(!mStates.empty())
-    {
-        mStates.back()->exit();
-        mStates.pop_back();
-    }
-    /* store and init the new state */
-    mStates.push_back( gameState );
-    mStates.back()->enter();
+   /* cleanup the current state */
+   if(!mStates.empty())
+   {
+      mStates.back()->exit();
+      mStates.pop_back();
+   }
+   /* store and init the new state */
+   mStates.push_back( gameState );
+   mStates.back()->enter();
 }
 
 void GameManager::pushState(GameState *gameState)
 {
-    /* pause current state */
-    if(!mStates.empty())
-    {
-        mStates.back()->pause();
-    }
+   /* pause current state */
+   if(!mStates.empty())
+   {
+      mStates.back()->pause();
+   }
 
-    /* Store and init the new state */
-    mStates.push_back( gameState );
-    mStates.back()->enter();
+   /* Store and init the new state */
+   mStates.push_back( gameState );
+   mStates.back()->enter();
 }
 
 void GameManager::popState()
 {
-    /* Cleanup the current state */
-    if(!mStates.empty())
-    {
-        mStates.back()->exit();
-        mStates.pop_back();
-    }
+   /* Cleanup the current state */
+   if(!mStates.empty())
+   {
+      mStates.back()->exit();
+      mStates.pop_back();
+   }
 
-    /* Resume previous state */
-    if(!mStates.empty())
-    {
-        mStates.back()->resume();
-    }
+   /* Resume previous state */
+   if(!mStates.empty())
+   {
+      mStates.back()->resume();
+   }
 }
 
 void GameManager::requestShutdown(void)
 {
-    bShutdown = true;
+   bShutdown = true;
 }
 
 bool GameManager::keyPressed(const OIS::KeyEvent &e)
 {
-    /* Call keyPressed of current state */
-    mStates.back()->keyPressed( e );
+   /* Call keyPressed of current state */
+   mStates.back()->keyPressed( e );
 
-    return true;
+   return true;
 }
 
 bool GameManager::keyReleased(const OIS::KeyEvent &e)
 {
-    /* call keyReleased of current state */
-    mStates.back()->keyReleased(e);
+   /* call keyReleased of current state */
+   mStates.back()->keyReleased(e);
 
-    return true;
+   return true;
 }
 
 bool GameManager::mouseMoved(const OIS::MouseEvent &e)
 {
-    /* call mouseMoved of current state */
-    mStates.back()->mouseMoved( e );
+   /* call mouseMoved of current state */
+   mStates.back()->mouseMoved( e );
 
-    return true;
+   return true;
 }
 
 bool GameManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-    /* Call mousePressed of current state */
-    mStates.back()->mousePressed( e, id );
+   /* Call mousePressed of current state */
+   mStates.back()->mousePressed( e, id );
 
-    return true;
+   return true;
 }
 
 bool GameManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-    /* Call mouseReleased of current state */
-    mStates.back()->mouseReleased( e, id );
+   /* Call mouseReleased of current state */
+   mStates.back()->mouseReleased( e, id );
 
-    return true;
+   return true;
 }
 
+/* FIXME: Is this really the best place to put this? */
 bool GameManager::setupNetwork(void)
 {
-    /* If single player game then start a server and connect to it */
-    if (mSinglePlayer)
-    {
-        std::cout << "Starting Singleplayer server" << std::endl;
-        return true;
-    }
-    else
-    {
-        if (mNetwork->connect(this->mPort, this->mAddress))
-        {
-            /* join request - data doesn't matter because we don't look at it */
-            mNetwork->message("join", strlen("join")+1, 0, 
+   /* If single player game then start a server and connect to it */
+   if (mSinglePlayer)
+   {
+      std::cout << "Starting Singleplayer server" << std::endl;
+      return true;
+   }
+   else
+   {
+      if (mNetwork->connect(this->mPort, this->mAddress))
+      {
+         /* join request - data doesn't matter because we don't look at it */
+         mNetwork->message("join", strlen("join")+1, 0, 
                                                      ENET_PACKET_FLAG_RELIABLE);
-            return true;
-        }
-    }
-    return false;
+         return true;
+      }
+   }
+   return false;
 }
 
 GameManager* GameManager::getSingletonPtr(void)
 {
-    if(!mGameManager)
-    {
-        mGameManager = new GameManager();
-    }
+   if(!mGameManager)
+   {
+      mGameManager = new GameManager();
+   }
 
-    return mGameManager;
+   return mGameManager;
 }
 
