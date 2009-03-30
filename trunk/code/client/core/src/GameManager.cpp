@@ -32,6 +32,10 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
 
 GameManager::~GameManager( void )
 {
+   /* Delete MyGUI */
+   mGUI->shutdown();
+   delete mGUI;
+   mGUI = 0;
    /* Clean up all the states */
    while(!mStates.empty())
    {
@@ -96,10 +100,6 @@ void GameManager::startGame( GameState *gameState )
    }
    #endif
 
-   /* Setup states */
-   mLoadState = LoadState::getSingletonPtr();
-   mPlayState = PlayState::getSingletonPtr();
-
    this->setupResources();
    if( !this->configureGame() )
    {
@@ -112,26 +112,33 @@ void GameManager::startGame( GameState *gameState )
 
    /* Setup open input system */
    mInputMgr = InputManager::getSingletonPtr();
-   mInputMgr->initialise( mRenderWindow );
-   mInputMgr->addKeyListener( this, "GameManager" );
-   mInputMgr->addMouseListener( this, "GameManager" );
-   mInputMgr->getJoystick( 1 );
+   mInputMgr->initialise(mRenderWindow);
+   mInputMgr->addKeyListener(this, "GameManager");
+   mInputMgr->addMouseListener(this, "GameManager");
+   mInputMgr->getJoystick(1);
+
+   /* Create just one MyGUI instance rather then within the states */
+   mGUI = new MyGUI::Gui();
+   
+   /* Setup states */
+   mLoadState = LoadState::getSingletonPtr();
+   mPlayState = PlayState::getSingletonPtr();
 
    /* Go to the first state */
    this->changeState( gameState );
 
    /* 
-   * lTimeLastFrame remembers the last time that it was checked
-   * We use it to calculate the time since last frame
-   */
+    * lTimeLastFrame remembers the last time that it was checked
+    * We use it to calculate the time since last frame
+    */
    unsigned long lTimeLastFrame = 0;
 
    while( !bShutdown )
    {
       /* 
-      * Calculate time since last frame and remember current time 
-      * for next frame 
-      */
+       * Calculate time since last frame and remember current time 
+       * for next frame 
+       */
       unsigned long lTimeCurrentFrame = mRoot->getTimer()->getMilliseconds();
       unsigned long lTimeSinceLastFrame = lTimeCurrentFrame - lTimeLastFrame;
       lTimeLastFrame = lTimeCurrentFrame;
@@ -174,7 +181,7 @@ bool GameManager::configureGame( void )
 void GameManager::setupResources(void)
 {
    /* Load resource paths from config file */
-   Ogre::ConfigFile cf;
+   Ogre::ConfigFile cf;   /* Create just one MyGUI instance rather then within the states */
    cf.load("resources.cfg");
 
    /* go through all settings in the file */

@@ -21,7 +21,6 @@
 
 #include <OgreRoot.h>
 #include <libintl.h>
-#include <MyGUI.h>
 
 #include "GameState.h"
 #include "srvstructs.h"
@@ -56,7 +55,6 @@ private:
     Ogre::SceneManager   *mSceneMgr;
     Ogre::RenderWindow   *mWindow;
     Ogre::Viewport       *mViewport;
-    MyGUI::Gui           *mGUI;
     static LoadState     *mLoadState;
     GameManager          *mGameMgr;
     clientStatus         mLoadStatus;

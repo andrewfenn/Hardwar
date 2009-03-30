@@ -31,9 +31,10 @@ void LoadState::enter( void )
    mViewport     = mWindow->addViewport(mCamera, 0 );
    mGameMgr      = GameManager::getSingletonPtr();
 
-   mGUI = new MyGUI::Gui();
-   mGUI->initialise(mWindow);
-   mGUI->hidePointer();
+   /* FIXME: This should be in gamemanager but it's not working there */
+   mGameMgr->mGUI->initialise(mWindow);
+
+   mGameMgr->mGUI->hidePointer();
    mReverse = false; /* for the load bar animation */
 
    /* Get MyGUI loading layout */
@@ -63,11 +64,7 @@ void LoadState::enter( void )
 void LoadState::exit( void )
 {
    /* Delete pointer */
-   MyGUI::Gui::getInstance().destroyWidget(mStatusText);
-   /* Delete MyGUI */
-   mGUI->shutdown();
-   delete mGUI;
-   mGUI = 0;
+   MyGUI::Gui::getInstance().destroyAllChildWidget();
    /* Delete the camera and scene */
    mSceneMgr->destroyCamera(mCamera);
    mWindow->removeAllViewports();

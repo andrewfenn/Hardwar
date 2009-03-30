@@ -84,40 +84,7 @@ void PlayState::update(unsigned long lTimeElapsed)
    if (fpstimer > 0.5)
    {
       fpstimer = 0;
-
-      static Ogre::String currFps = "Current FPS: ";
-      static Ogre::String avgFps = "Average FPS: ";
-      static Ogre::String worstFps = "X: ";
-      static Ogre::String bestFps = "Y: ";
-      static Ogre::String tris = "Z: ";
-
-      /* update stats when necessary */
-      Ogre::RenderWindow* rw = mRoot->getAutoCreatedWindow();
-      Ogre::OverlayElement* guiAvg   = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
-      Ogre::OverlayElement* guiCurr  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
-      Ogre::OverlayElement* guiBest  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
-      Ogre::OverlayElement* guiWorst = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/BestFps");
-      Ogre::OverlayElement* guiTris  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumTris");
-      Ogre::OverlayElement* guiBatch = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumBatches");
-      Ogre::OverlayElement* guiImage = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LogoPanel");
-      guiImage->hide();
-
-      guiAvg->setCaption(avgFps + Ogre::StringConverter::toString(rw->getAverageFPS()));
-      guiCurr->setCaption(currFps + Ogre::StringConverter::toString(rw->getLastFPS()));
-      guiBest->setCaption(bestFps + Ogre::StringConverter::toString(mCamera->getPosition().y));
-      guiWorst->setCaption(worstFps + Ogre::StringConverter::toString(mCamera->getPosition().x));
-      guiTris->setCaption(tris + Ogre::StringConverter::toString(mCamera->getPosition().z));
-      guiBatch->setCaption("Ping: " + Ogre::StringConverter::toString(mPingTime));
-      Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-
-      if (!o)
-      {
-         OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "showDebugOverlay" );
-      }
-      else
-      {
-         o->show();
-      }
+      showDebug();      
    }
 
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
@@ -188,6 +155,43 @@ void PlayState::networkUpdate(unsigned long lTimeElapsed)
       break;
       default:
       break;
+   }
+}
+
+void PlayState::showDebug(void)
+{
+   static Ogre::String currFps = "Current FPS: ";
+   static Ogre::String avgFps = "Average FPS: ";
+   static Ogre::String worstFps = "X: ";
+   static Ogre::String bestFps = "Y: ";
+   static Ogre::String tris = "Z: ";
+
+   /* update stats when necessary */
+   Ogre::RenderWindow* rw = mRoot->getAutoCreatedWindow();
+   Ogre::OverlayElement* guiAvg   = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
+   Ogre::OverlayElement* guiCurr  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
+   Ogre::OverlayElement* guiBest  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
+   Ogre::OverlayElement* guiWorst = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/BestFps");
+   Ogre::OverlayElement* guiTris  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumTris");
+   Ogre::OverlayElement* guiBatch = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumBatches");
+   Ogre::OverlayElement* guiImage = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LogoPanel");
+   guiImage->hide();
+
+   guiAvg->setCaption(avgFps + Ogre::StringConverter::toString(rw->getAverageFPS()));
+   guiCurr->setCaption(currFps + Ogre::StringConverter::toString(rw->getLastFPS()));
+   guiBest->setCaption(bestFps + Ogre::StringConverter::toString(mCamera->getPosition().y));
+   guiWorst->setCaption(worstFps + Ogre::StringConverter::toString(mCamera->getPosition().x));
+   guiTris->setCaption(tris + Ogre::StringConverter::toString(mCamera->getPosition().z));
+   guiBatch->setCaption("Ping: " + Ogre::StringConverter::toString(mPingTime));
+   Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/DebugOverlay");
+
+   if (!o)
+   {
+      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "showDebugOverlay" );
+   }
+   else
+   {
+      o->show();
    }
 }
 

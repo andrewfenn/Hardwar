@@ -26,56 +26,56 @@
 
 class PlayState : public GameState
 {
-public:
-   ~PlayState(void);
+   public:
+      ~PlayState(void);
 
-   void enter(void);
-   void exit(void);
+      void enter(void);
+      void exit(void);
 
-   void pause(void);
-   void resume(void);
-   void update(unsigned long lTimeElapsed);
+      void pause(void);
+      void resume(void);
+      void update(unsigned long lTimeElapsed);
 
-   void keyPressed(const OIS::KeyEvent &e);
-   void keyReleased(const OIS::KeyEvent &e);
+      void keyPressed(const OIS::KeyEvent &e);
+      void keyReleased(const OIS::KeyEvent &e);
 
-   void mouseMoved(const OIS::MouseEvent &e);
-   void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-   void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+      void mouseMoved(const OIS::MouseEvent &e);
+      void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+      void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-   static PlayState* getSingletonPtr(void);
+      static PlayState* getSingletonPtr(void);
+   private:
+      Ogre::Root              *mRoot;
+      Ogre::Camera            *mCamera;
+      Ogre::SceneManager      *mSceneMgr;
+      Ogre::Viewport          *mViewport;
+      Ogre::OverlayManager    *mOverlayMgr;
+      Ogre::RenderWindow      *mWindow;
+      OgreMax::OgreMaxScene   *mOgreMax;
+      OIS::Keyboard           *mInputDevice;
 
-private:
-    Ogre::Root              *mRoot;
-    Ogre::Camera            *mCamera;
-    Ogre::SceneManager      *mSceneMgr;
-    Ogre::Viewport          *mViewport;
-    Ogre::OverlayManager    *mOverlayMgr;
-    Ogre::RenderWindow      *mWindow;
-    OgreMax::OgreMaxScene   *mOgreMax;
-    OIS::Keyboard           *mInputDevice;
+      GameManager             *mGameMgr;
 
-    GameManager             *mGameMgr;
+      Ogre::SceneNode         *mWorldNode;
+      Ogre::SceneNode         *mWaterNode;
 
-    Ogre::SceneNode         *mWorldNode;
-    Ogre::SceneNode         *mWaterNode;
+      static PlayState        *mPlayState;
 
-    static PlayState        *mPlayState;
-
-    Ogre::Degree            mMouseRotX, mMouseRotY;
-    int                     mKeydownUp, mKeydownDown, 
+      Ogre::Degree            mMouseRotX, mMouseRotY;
+      int                     mKeydownUp, mKeydownDown, 
                             mKeydownRight, mKeydownLeft;
-    Ogre::Real              fpstimer;
+      Ogre::Real              fpstimer;
 
-    unsigned long           mPingTime; /* indicator of connection strength */
-    unsigned long           mPingWaitTime; /* ping delay time */
-    bool                    mPingSent; /* If we sent a ping yet */
+      unsigned long           mPingTime; /* indicator of connection strength */
+      unsigned long           mPingWaitTime; /* ping delay time */
+      bool                    mPingSent; /* If we sent a ping yet */
 
-    PlayState(void) { }
-    PlayState(const PlayState&) { }
-    PlayState & operator = (const PlayState&);
+      PlayState(void) { }
+      PlayState(const PlayState&) { }
+      PlayState & operator = (const PlayState&);
 
-    void networkUpdate(unsigned long);
+      void networkUpdate(unsigned long);
+      void showDebug();
 };
 #endif /* __Playstate_H_ */
 

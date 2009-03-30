@@ -30,6 +30,7 @@
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <dirent.h>
 #endif
+#include <MyGUI.h>
 
 #include "InputManager.h"
 #include "Network.h"
@@ -50,17 +51,19 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       void requestShutdown(void);
 
       static GameManager* getSingletonPtr(void);
+      MyGUI::Gui           *mGUI;
    private:
-      Ogre::Root          *mRoot;
-      Ogre::RenderWindow  *mRenderWindow;
-      InputManager        *mInputMgr;
+      Ogre::Root           *mRoot;
+      Ogre::RenderWindow   *mRenderWindow;
+      InputManager         *mInputMgr;
 
-      GameState           *mLoadState;
-      GameState           *mPlayState;
+      GameState            *mLoadState;
+      GameState            *mPlayState;
 
-      bool bShutdown;
+      bool                 bShutdown;
+      static GameManager   *mGameManager;
+
       std::vector<GameState*> mStates;
-      static GameManager *mGameManager;
 
       GameManager(void);
       GameManager(const GameManager&) { }
