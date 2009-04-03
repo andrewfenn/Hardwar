@@ -97,6 +97,8 @@ class Console
 
       float mAlpha;
       typedef std::map<Ogre::UTFString,CommandDelegate> MapFunction;
+      std::vector<Ogre::UTFString> mUsedCommands;
+      signed short mListPos;
 		MapFunction mFunctions;
 };
 #endif /* __Console_H_ */

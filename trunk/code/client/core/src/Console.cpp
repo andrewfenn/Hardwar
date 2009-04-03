@@ -21,6 +21,7 @@
 Console::Console()
 {
    mShow = false;
+   mListPos = 0;
    mAlpha = 0.0f;
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("console.layout");
@@ -98,6 +99,35 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
 	   edit->eraseText(len-1);
    }
 
+   /* make tab key move cursor to the end */
+   if ((key == MyGUI::KeyCode::Tab) && (len > 0) && (mAutoCompleted))
+   {
+      edit->setTextSelection(len, len);
+   }
+
+   addToConsole(getConsoleFormat(), "test:", Ogre::StringConverter::toString(mListPos)+Ogre::UTFString(" ")+Ogre::StringConverter::toString(mUsedCommands.size()));
+
+   if (key == MyGUI::KeyCode::ArrowUp && mListPos < mUsedCommands.size())
+   {
+      sender->setCaption(mUsedCommands.at(mListPos));
+      len = sender->getCaption().length();
+      edit->setTextSelection(len, len);
+
+      mListPos++;
+      return;
+   }
+
+   if (key == MyGUI::KeyCode::ArrowDown && mListPos >= 0)
+   {
+      if (mListPos == mUsedCommands.size()) mListPos--;
+      sender->setCaption(mUsedCommands.at(mListPos));
+      len = sender->getCaption().length();
+      edit->setTextSelection(len, len);
+
+      if (mListPos > 0) mListPos--;
+      return;
+   }
+
    Ogre::UTFString command = sender->getCaption();
    if (command.length() == 0) return;
 
@@ -129,6 +159,8 @@ void Console::notifyCommandAccept(MyGUI::ComboBoxPtr sender, size_t index)
 		key = command.substr(0, pos);
 		value = command.substr(pos + 1);
 	}
+
+   mUsedCommands.push_back(command);
 
 	MapFunction::iterator iter = mFunctions.find(key);
 	if (iter != mFunctions.end())
