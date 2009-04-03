@@ -28,13 +28,13 @@ void PlayState::enter(void)
    mWindow       = mRoot->getAutoCreatedWindow();
    mSceneMgr     = mRoot->getSceneManager("PlaySceneMgr");
    mGUI          = MyGUI::Gui::getInstancePtr();
-   mGUI->setSceneManager(mSceneMgr);
    mCamera       = mSceneMgr->createCamera("PlayerCamera");
    mViewport     = mWindow->addViewport(mCamera, 0);
    mOgreMax      = new OgreMax::OgreMaxScene;
    mGameMgr      = GameManager::getSingletonPtr();
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
+   mGUI->setSceneManager(mSceneMgr);
 
    /* Setup our camera position in the world, we use the following coords
     * below because it is inside the model
@@ -55,8 +55,9 @@ void PlayState::enter(void)
    mPingWaitTime = 0;
    mPingSent = false;
    mPingTime = 0;
-
+   mShowDebug = false;
    mConsole = new Console();
+   mConsole->addCommand(Ogre::UTFString("showfps"), MyGUI::newDelegate(this, &PlayState::cmd_showFPS), Ogre::UTFString("Show debug information"));
 }
 
 void PlayState::exit(void)
@@ -80,6 +81,21 @@ void PlayState::resume(void)
 {
 }
 
+void PlayState::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   bool show;
+   if (!MyGUI::utility::parseComplex(value, show))
+   {
+      mConsole->addToConsole(mConsole->getConsoleStringError(), key, value);
+      mConsole->addToConsole(mConsole->getConsoleStringFormat(), key, "true | false");
+   }
+   else
+   {
+      mConsole->addToConsole(mConsole->getConsoleStringSuccess(), key, value);
+      mShowDebug = show;
+   }
+}
+
 void PlayState::update(unsigned long lTimeElapsed)
 {
    networkUpdate(lTimeElapsed);
@@ -88,7 +104,7 @@ void PlayState::update(unsigned long lTimeElapsed)
    {
       /* Don't need to update this stuff every frame */
       fpstimer = 0;
-      showDebug();
+      if (mShowDebug) showDebug();
       mConsole->update();
    }
 
@@ -232,6 +248,9 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 
    if (mConsole->isVisible())
    {
+      if (e.key == OIS::KC_ESCAPE)
+         mConsole->toggleShow();
+
       mGUI->injectKeyRelease(e);
    }
    else

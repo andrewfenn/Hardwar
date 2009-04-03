@@ -21,6 +21,16 @@
 
 #include <MyGUI.h>
 
+typedef MyGUI::delegates::CDelegate2<const Ogre::UTFString &, const Ogre::UTFString &> CommandDelegate;
+
+namespace formates
+{
+   template<typename T> inline std::string format() { return MyGUI::utility::toString("[ ", std::numeric_limits<T>::min(), " | ", std::numeric_limits<T>::max(), " ]"); }
+   template<> inline std::string format<bool>() { return "[ true | false ]"; }
+   template<> inline std::string format<float>() { return MyGUI::utility::toString("[ ", -std::numeric_limits<float>::max(), " | ", std::numeric_limits<float>::max(), " ]"); }
+   template<> inline std::string format<double>() { return MyGUI::utility::toString("[ ", -std::numeric_limits<double>::max(), " | ", std::numeric_limits<double>::max(), " ]"); }
+}
+
 class Console
 {
    public:
@@ -29,12 +39,64 @@ class Console
       void toggleShow();
       void update();
       bool isVisible();
+      bool addCommand(const Ogre::UTFString&, CommandDelegate::IDelegate*, const Ogre::UTFString&);
+      void addToConsole(const Ogre::UTFString&);
+      void addToConsole(const Ogre::UTFString& reason, const Ogre::UTFString& key, const Ogre::UTFString& value)
+      {
+         addToConsole(MyGUI::utility::toString(reason, "'", key, " ", value, "'"));
+      }
+
+      const Ogre::UTFString & getConsoleStringCurrent() { return mStringCurrent; }
+      const Ogre::UTFString & getConsoleStringError() { return mStringError; }
+      const Ogre::UTFString & getConsoleStringSuccess() { return mStringSuccess; }
+      const Ogre::UTFString & getConsoleStringUnknow() { return mStringUnknown; }
+      const Ogre::UTFString & getConsoleStringFormat() { return mStringFormat; }
+      CommandDelegate eventConsoleUnknowCommand;
+
+      template <typename T> bool isAction(T& result, const Ogre::UTFString& key, const Ogre::UTFString& value, const Ogre::UTFString& format = "")
+      {
+         if (value.empty())
+         {
+            addToConsole(getConsoleStringCurrent(), key, MyGUI::utility::toString(result));
+         }
+         else
+         {
+            if (!MyGUI::utility::parseComplex(value, result)) {
+               addToConsole(getConsoleStringError(), key, value);
+               addToConsole(getConsoleStringFormat(), key, format.empty() ? formates::format<T>() : format);
+            }
+            else
+            {
+               addToConsole(getConsoleStringSuccess(), key, value);
+               return true;
+            }
+	      }
+	      return false;
+      }
+
    private:
       void draw();
+      void notifyCommandTyped(MyGUI::WidgetPtr, MyGUI::KeyCode, MyGUI::Char);
+      void notifyCommandAccept(MyGUI::ComboBoxPtr, size_t);
+
       bool mShow;
+      bool mAutoCompleted;
+
       MyGUI::Gui  *mGUI;
       MyGUI::WindowPtr mGUIConsole;
+      MyGUI::ComboBoxPtr   mCommandBox;
+      MyGUI::EditPtr       mHistoryList;
+      MyGUI::ButtonPtr     mSubmitButton;
+
+      Ogre::UTFString mStringCurrent;
+		Ogre::UTFString mStringError;
+		Ogre::UTFString mStringSuccess;
+		Ogre::UTFString mStringUnknown;
+		Ogre::UTFString mStringFormat;
+
       float mAlpha;
+      typedef std::map<Ogre::UTFString,CommandDelegate> MapFunction;
+		MapFunction mFunctions;
 };
 #endif /* __Console_H_ */
 

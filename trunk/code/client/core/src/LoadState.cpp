@@ -34,6 +34,7 @@ void LoadState::enter( void )
    /* FIXME: This should be in gamemanager but it's not working there */
    mGameMgr->mGUI->initialise(mWindow);
 
+   mGameMgr->mGUI->setSceneManager(mSceneMgr);
    mGameMgr->mGUI->hidePointer();
    mReverse = false; /* for the load bar animation */
 

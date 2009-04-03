@@ -44,6 +44,8 @@ class PlayState : public GameState
       void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
       void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
+      void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+
       static PlayState* getSingletonPtr(void);
    private:
       Ogre::Root              *mRoot;
@@ -72,6 +74,7 @@ class PlayState : public GameState
       unsigned long           mPingTime; /* indicator of connection strength */
       unsigned long           mPingWaitTime; /* ping delay time */
       bool                    mPingSent; /* If we sent a ping yet */
+      bool                    mShowDebug; /* show the fps, etc*/
 
       PlayState(void) { }
       PlayState(const PlayState&) { }
