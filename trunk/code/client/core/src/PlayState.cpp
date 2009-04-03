@@ -57,7 +57,7 @@ void PlayState::enter(void)
    mPingTime = 0;
    mShowDebug = false;
    mConsole = new Console();
-   mConsole->addCommand(Ogre::UTFString("showfps"), MyGUI::newDelegate(this, &PlayState::cmd_showFPS), Ogre::UTFString("Show debug information"));
+   mConsole->addCommand(Ogre::UTFString("showfps"), MyGUI::newDelegate(this, &PlayState::cmd_showFPS));
 }
 
 void PlayState::exit(void)
@@ -86,13 +86,22 @@ void PlayState::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &v
    bool show;
    if (!MyGUI::utility::parseComplex(value, show))
    {
-      mConsole->addToConsole(mConsole->getConsoleStringError(), key, value);
-      mConsole->addToConsole(mConsole->getConsoleStringFormat(), key, "true | false");
+      if (!value.empty())
+      {
+         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+      }
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show debug information"));
    }
    else
    {
-      mConsole->addToConsole(mConsole->getConsoleStringSuccess(), key, value);
+      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
       mShowDebug = show;
+      if (!show)
+      {
+         /* hide the overlay */
+         Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/DebugOverlay");
+         o->hide();
+      }
    }
 }
 
@@ -188,7 +197,6 @@ void PlayState::showDebug(void)
    static Ogre::String tris = "Z: ";
 
    /* update stats when necessary */
-   Ogre::RenderWindow* rw = mRoot->getAutoCreatedWindow();
    Ogre::OverlayElement* guiAvg   = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
    Ogre::OverlayElement* guiCurr  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
    Ogre::OverlayElement* guiBest  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
@@ -198,8 +206,8 @@ void PlayState::showDebug(void)
    Ogre::OverlayElement* guiImage = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LogoPanel");
    guiImage->hide();
 
-   guiAvg->setCaption(avgFps + Ogre::StringConverter::toString(rw->getAverageFPS()));
-   guiCurr->setCaption(currFps + Ogre::StringConverter::toString(rw->getLastFPS()));
+   guiAvg->setCaption(avgFps + Ogre::StringConverter::toString(mWindow->getAverageFPS()));
+   guiCurr->setCaption(currFps + Ogre::StringConverter::toString(mWindow->getLastFPS()));
    guiBest->setCaption(bestFps + Ogre::StringConverter::toString(mCamera->getPosition().y));
    guiWorst->setCaption(worstFps + Ogre::StringConverter::toString(mCamera->getPosition().x));
    guiTris->setCaption(tris + Ogre::StringConverter::toString(mCamera->getPosition().z));

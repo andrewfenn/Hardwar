@@ -27,6 +27,7 @@ Console::Console()
    mGUIConsole = mGUI->findWidget<MyGUI::Window>("console");
    mCommandBox = mGUI->findWidget<MyGUI::ComboBox>("commandbox");
    mHistoryList = mGUI->findWidget<MyGUI::Edit>("historylist");
+   mHistoryList->setOverflowToTheLeft(true);
    mSubmitButton = mGUI->findWidget<MyGUI::Button>("submit");
 
    mStringCurrent = mGUIConsole->getUserString("Current");
@@ -37,7 +38,7 @@ Console::Console()
 
 	mCommandBox->eventComboAccept = newDelegate(this, &Console::notifyCommandAccept);
 	mCommandBox->eventKeyButtonPressed = newDelegate(this, &Console::notifyCommandTyped);
-	//mButtonSubmit->eventMouseButtonClick = newDelegate(this, &Console::notifyMouseButtonClick);
+	mSubmitButton->eventMouseButtonClick = newDelegate(this, &Console::notifySubmitButtonClick);
 
    mSubmitButton->setCaption(Ogre::UTFString(gettext("submit")));
    mGUIConsole->setAlpha(mAlpha);
@@ -53,7 +54,7 @@ Console::~Console()
  * Description: Adds functions to the console so they can be used
  *
  */
-bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate* function, const Ogre::UTFString &description)
+bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate* function)
 {
    mCommandBox->addItem(name);
    MapFunction::iterator iter = mFunctions.find(name);
@@ -77,7 +78,13 @@ void Console::toggleShow()
       mShow = true;
       mGUIConsole->setVisible(true);
       mGUI->showPointer();
+      MyGUI::InputManager::getInstance().setKeyFocusWidget(mCommandBox);
    }
+}
+
+void Console::notifySubmitButtonClick(MyGUI::WidgetPtr sender)
+{
+   notifyCommandAccept(mCommandBox, MyGUI::ITEM_NONE);
 }
 
 void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, MyGUI::Char character)
@@ -130,13 +137,13 @@ void Console::notifyCommandAccept(MyGUI::ComboBoxPtr sender, size_t index)
 	}
 	else
    {
-		if (eventConsoleUnknowCommand.empty())
+		if (eventConsoleUnknownCommand.empty())
       {
 			addToConsole(mStringUnknown + "'" + key + "'");
 		}
 		else
       {
-			eventConsoleUnknowCommand(key, value);
+			eventConsoleUnknownCommand(key, value);
 		}
 	}
 	sender->setCaption("");

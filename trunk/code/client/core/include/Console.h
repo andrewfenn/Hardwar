@@ -21,7 +21,7 @@
 
 #include <MyGUI.h>
 
-typedef MyGUI::delegates::CDelegate2<const Ogre::UTFString &, const Ogre::UTFString &> CommandDelegate;
+typedef MyGUI::delegates::CDelegate2<const Ogre::UTFString&, const Ogre::UTFString&> CommandDelegate;
 
 namespace formates
 {
@@ -39,35 +39,35 @@ class Console
       void toggleShow();
       void update();
       bool isVisible();
-      bool addCommand(const Ogre::UTFString&, CommandDelegate::IDelegate*, const Ogre::UTFString&);
+      bool addCommand(const Ogre::UTFString&, CommandDelegate::IDelegate*);
       void addToConsole(const Ogre::UTFString&);
       void addToConsole(const Ogre::UTFString& reason, const Ogre::UTFString& key, const Ogre::UTFString& value)
       {
          addToConsole(MyGUI::utility::toString(reason, "'", key, " ", value, "'"));
       }
 
-      const Ogre::UTFString & getConsoleStringCurrent() { return mStringCurrent; }
-      const Ogre::UTFString & getConsoleStringError() { return mStringError; }
-      const Ogre::UTFString & getConsoleStringSuccess() { return mStringSuccess; }
-      const Ogre::UTFString & getConsoleStringUnknow() { return mStringUnknown; }
-      const Ogre::UTFString & getConsoleStringFormat() { return mStringFormat; }
-      CommandDelegate eventConsoleUnknowCommand;
+      const Ogre::UTFString & getConsoleCurrent() { return mStringCurrent; }
+      const Ogre::UTFString & getConsoleError() { return mStringError; }
+      const Ogre::UTFString & getConsoleSuccess() { return mStringSuccess; }
+      const Ogre::UTFString & getConsoleUnknow() { return mStringUnknown; }
+      const Ogre::UTFString & getConsoleFormat() { return mStringFormat; }
+      CommandDelegate eventConsoleUnknownCommand;
 
       template <typename T> bool isAction(T& result, const Ogre::UTFString& key, const Ogre::UTFString& value, const Ogre::UTFString& format = "")
       {
          if (value.empty())
          {
-            addToConsole(getConsoleStringCurrent(), key, MyGUI::utility::toString(result));
+            addToConsole(getConsoleCurrent(), key, MyGUI::utility::toString(result));
          }
          else
          {
             if (!MyGUI::utility::parseComplex(value, result)) {
-               addToConsole(getConsoleStringError(), key, value);
-               addToConsole(getConsoleStringFormat(), key, format.empty() ? formates::format<T>() : format);
+               addToConsole(getConsoleError(), key, value);
+               addToConsole(getConsoleFormat(), key, format.empty() ? formates::format<T>() : format);
             }
             else
             {
-               addToConsole(getConsoleStringSuccess(), key, value);
+               addToConsole(getConsoleSuccess(), key, value);
                return true;
             }
 	      }
@@ -78,6 +78,7 @@ class Console
       void draw();
       void notifyCommandTyped(MyGUI::WidgetPtr, MyGUI::KeyCode, MyGUI::Char);
       void notifyCommandAccept(MyGUI::ComboBoxPtr, size_t);
+      void notifySubmitButtonClick(MyGUI::WidgetPtr);
 
       bool mShow;
       bool mAutoCompleted;
