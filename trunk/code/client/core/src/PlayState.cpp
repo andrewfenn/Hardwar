@@ -118,19 +118,19 @@ void PlayState::update(unsigned long lTimeElapsed)
    }
 
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
-   float scale = 5.0f;
+   float scale = 0.9f;
 
    if (mKeydownUp == 1)
-     translateVector.z -= scale;
+     translateVector.z -= scale*lTimeElapsed;
 
    if (mKeydownDown == 1)
-     translateVector.z += scale;
+     translateVector.z += scale*lTimeElapsed;
 
    if (mKeydownLeft == 1)
-     translateVector.x -= scale;
+     translateVector.x -= scale*lTimeElapsed;
 
    if (mKeydownRight == 1)
-     translateVector.x += scale;
+     translateVector.x += scale*lTimeElapsed;
 
    mCamera->yaw(mMouseRotX);
    mCamera->pitch(mMouseRotY);    

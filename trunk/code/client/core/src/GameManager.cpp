@@ -132,6 +132,8 @@ void GameManager::startGame( GameState *gameState )
     * We use it to calculate the time since last frame
     */
    unsigned long lTimeLastFrame = 0;
+   unsigned long lDelay = 0;
+   mWaitTime = ceil(1000/60); /* FIXME: Set the FPS in config file */
 
    while( !bShutdown )
    {
@@ -149,9 +151,16 @@ void GameManager::startGame( GameState *gameState )
       /* update the current state */
       mStates.back()->update(lTimeSinceLastFrame);
 
-      /* render the next frame */
-      mRoot->renderOneFrame();
+      lDelay += lTimeSinceLastFrame;
+      if (lDelay > mWaitTime)
+      {
+         /* render the next frame */
+         mRoot->renderOneFrame();
 
+         /* FIXME: dividing by ten is the magic number apparently otherwise MyGUI is too fast */
+         mGUI->injectFrameEntered(lTimeSinceLastFrame/10);
+         lDelay = 0;
+      }
       /* Deal with platform specific issues */
       Ogre::WindowEventUtilities::messagePump();
    }

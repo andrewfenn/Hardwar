@@ -62,6 +62,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
 
       bool                 bShutdown;
       static GameManager   *mGameManager;
+      unsigned short mWaitTime;
 
       std::vector<GameState*> mStates;
 
