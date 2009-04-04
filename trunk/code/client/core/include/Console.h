@@ -82,6 +82,7 @@ class Console
 
       bool mShow;
       bool mAutoCompleted;
+      bool mKeptTempWord;
 
       MyGUI::Gui  *mGUI;
       MyGUI::WindowPtr mGUIConsole;
@@ -98,7 +99,7 @@ class Console
       float mAlpha;
       typedef std::map<Ogre::UTFString,CommandDelegate> MapFunction;
       std::vector<Ogre::UTFString> mUsedCommands;
-      signed short mListPos;
+      unsigned short mListPos;
 		MapFunction mFunctions;
 };
 #endif /* __Console_H_ */

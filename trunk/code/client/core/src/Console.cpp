@@ -21,6 +21,7 @@
 Console::Console()
 {
    mShow = false;
+   mKeptTempWord = false;
    mListPos = 0;
    mAlpha = 0.0f;
    mGUI = MyGUI::Gui::getInstancePtr();
@@ -105,25 +106,28 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
       edit->setTextSelection(len, len);
    }
 
-   addToConsole(getConsoleFormat(), "test:", Ogre::StringConverter::toString(mListPos)+Ogre::UTFString(" ")+Ogre::StringConverter::toString(mUsedCommands.size()));
-
-   if (key == MyGUI::KeyCode::ArrowUp && mListPos < mUsedCommands.size())
+   if (!mAutoCompleted && key == MyGUI::KeyCode::ArrowUp && mListPos < mUsedCommands.size())
    {
-      sender->setCaption(mUsedCommands.at(mListPos));
+      if (mListPos==0 && sender->getCaption().length() > 0)
+      {
+         mKeptTempWord = true;
+         mUsedCommands.push_back(sender->getCaption());
+         mListPos++;
+      }
+
+      sender->setCaption(mUsedCommands.at((mUsedCommands.size()-1)-mListPos));
       len = sender->getCaption().length();
       edit->setTextSelection(len, len);
-
       mListPos++;
       return;
    }
 
-   if (key == MyGUI::KeyCode::ArrowDown && mListPos >= 0)
+   if (!mAutoCompleted && key == MyGUI::KeyCode::ArrowDown && (mListPos==0 || mListPos > 0))
    {
       if (mListPos == mUsedCommands.size()) mListPos--;
-      sender->setCaption(mUsedCommands.at(mListPos));
+      sender->setCaption(mUsedCommands.at((mUsedCommands.size()-1)-mListPos));
       len = sender->getCaption().length();
       edit->setTextSelection(len, len);
-
       if (mListPos > 0) mListPos--;
       return;
    }
@@ -160,7 +164,13 @@ void Console::notifyCommandAccept(MyGUI::ComboBoxPtr sender, size_t index)
 		value = command.substr(pos + 1);
 	}
 
+   if (mKeptTempWord)
+   {
+      mUsedCommands.pop_back();
+      mKeptTempWord = false;
+   }
    mUsedCommands.push_back(command);
+   mListPos = 0;
 
 	MapFunction::iterator iter = mFunctions.find(key);
 	if (iter != mFunctions.end())

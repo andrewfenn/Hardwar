@@ -711,15 +711,15 @@
     <Property key="TextAlign" value = "Center" />
     <Property key="TextColour" value = "#{MyGUI_Theme_Button_ColourNormal}"/>
 
-    <BasisSkin type="SubSkin" offset = "0 0 15 28" align = "Left VStretch">
+    <BasisSkin type="SubSkin" offset = "0 9 15 19" align = "Left VStretch">
       <State name="normal" offset = "356 36 15 28"/>
       <State name="highlighted" offset = "356 70 15 28"/>
     </BasisSkin>
-    <BasisSkin type="SubSkin" offset = "15 0 36 28" align = "Stretch">
+    <BasisSkin type="SubSkin" offset = "15 9 36 19" align = "Stretch">
       <State name="normal" offset = "371 36 36 28"/>
       <State name="highlighted" offset = "371 70 36 28"/>
     </BasisSkin>
-    <BasisSkin type="SubSkin" offset = "51 0 17 28" align = "Right VStretch">
+    <BasisSkin type="SubSkin" offset = "51 9 17 19" align = "Right VStretch">
       <State name="normal" offset = "407 36 17 28"/>
       <State name="highlighted" offset = "407 70 17 28"/>
     </BasisSkin>
