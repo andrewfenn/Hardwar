@@ -30,7 +30,7 @@ void PlayState::enter(void)
    mGUI          = MyGUI::Gui::getInstancePtr();
    mCamera       = mGameMgr->mCamera;
    mViewport     = mGameMgr->mViewport;
-   mOgreMax      = new OgreMax::OgreMaxScene;
+
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
@@ -40,12 +40,7 @@ void PlayState::enter(void)
    mCamera->setPosition(Ogre::Vector3(43027.3, 1414.33, -30462.4));
    mCamera->setNearClipDistance(5);
 
-   mWorldNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("world");
-   mWorldNode->attachObject(mCamera);
-
-   /* load world */
-   const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
-   mOgreMax->Load(filename, mWindow, 0, mSceneMgr, mWorldNode);
+   //mWorldNode = mSceneMgr->getRootSceneNode()->getSceneNode("world");
 
    mMouseRotX = mMouseRotY = 0;
    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
@@ -79,7 +74,7 @@ void PlayState::resume(void)
 
 void PlayState::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
 {
-   bool show;
+   bool show = false;
    if (!MyGUI::utility::parseComplex(value, show))
    {
       if (!value.empty())

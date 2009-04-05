@@ -79,13 +79,21 @@ void LoadState::update( unsigned long lTimeElapsed )
    switch(mLoadStatus)
    {
       case STATUS_CONNECTING:
-             connect();
+         connect();
       break;
       case STATUS_LISTENING:
-             waitForReply();
+         waitForReply();
       break;
       case STATUS_CONNECTED:
-             this->changeState(PlayState::getSingletonPtr());
+         {
+         /* load world */
+         OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
+         const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
+         Ogre::SceneNode* lWorldNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("world");
+         lOgreMax->Load(filename, mWindow, 0, mSceneMgr, lWorldNode);
+         
+         this->changeState(PlayState::getSingletonPtr());
+         }
       break;
       default:
       break;

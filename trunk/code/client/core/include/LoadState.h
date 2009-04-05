@@ -27,6 +27,7 @@
 #include "hwstructs.h"
 #include "PlayState.h"
 #include "enet/enet.h"
+#include "OgreMaxScene.hpp"
 
 class LoadState : public GameState
 {
