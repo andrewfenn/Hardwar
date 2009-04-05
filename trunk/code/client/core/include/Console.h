@@ -20,6 +20,7 @@
 #define __CONSOLE_H_
 
 #include <MyGUI.h>
+#include <libintl.h>
 
 typedef MyGUI::delegates::CDelegate2<const Ogre::UTFString&, const Ogre::UTFString&> CommandDelegate;
 
