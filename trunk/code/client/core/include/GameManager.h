@@ -34,6 +34,7 @@
 
 #include "InputManager.h"
 #include "Network.h"
+#include "Console.h"
 
 class GameState;
 
@@ -52,6 +53,12 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
 
       static GameManager* getSingletonPtr(void);
       MyGUI::Gui           *mGUI;
+      Console              *mConsole;
+
+      Ogre::Camera            *mCamera;
+      Ogre::SceneManager      *mSceneMgr;
+      Ogre::Viewport          *mViewport;
+
    private:
       Ogre::Root           *mRoot;
       Ogre::RenderWindow   *mRenderWindow;

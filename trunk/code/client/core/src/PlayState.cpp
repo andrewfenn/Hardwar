@@ -22,19 +22,17 @@ PlayState* PlayState::mPlayState;
 
 void PlayState::enter(void)
 {
+   mGameMgr      = GameManager::getSingletonPtr();
    mRoot         = Ogre::Root::getSingletonPtr();
-   mRoot->createSceneManager(Ogre::ST_GENERIC,"PlaySceneMgr");
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
-   mSceneMgr     = mRoot->getSceneManager("PlaySceneMgr");
+   mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
    mGUI          = MyGUI::Gui::getInstancePtr();
-   mCamera       = mSceneMgr->createCamera("PlayerCamera");
-   mViewport     = mWindow->addViewport(mCamera, 0);
+   mCamera       = mGameMgr->mCamera;
+   mViewport     = mGameMgr->mViewport;
    mOgreMax      = new OgreMax::OgreMaxScene;
-   mGameMgr      = GameManager::getSingletonPtr();
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
-   mGUI->setSceneManager(mSceneMgr);
 
    /* Setup our camera position in the world, we use the following coords
     * below because it is inside the model
@@ -55,16 +53,14 @@ void PlayState::enter(void)
    mPingWaitTime = 0;
    mPingSent = false;
    mPingTime = 0;
-   mShowDebug = false;
-   mConsole = new Console();
-   mConsole->addCommand(Ogre::UTFString("showfps"), MyGUI::newDelegate(this, &PlayState::cmd_showFPS));
+   mShowFPS = false;
+
+   mGameMgr->mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &PlayState::cmd_showFPS));
 }
 
 void PlayState::exit(void)
 {
-   mSceneMgr->clearScene();
-   mSceneMgr->destroyAllCameras();
-   mRoot->getAutoCreatedWindow()->removeAllViewports();
+
 }
 
 /*void PlayState::switchToEditor(vector<String>& Params)
@@ -88,14 +84,14 @@ void PlayState::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &v
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         mGameMgr->mConsole->addToConsole(mGameMgr->mConsole->getConsoleError(), key, value);
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show debug information"));
+      mGameMgr->mConsole->addToConsole(mGameMgr->mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show debug information"));
    }
    else
    {
-      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
-      mShowDebug = show;
+      mGameMgr->mConsole->addToConsole(mGameMgr->mConsole->getConsoleSuccess(), key, value);
+      mShowFPS = show;
       if (!show)
       {
          /* hide the overlay */
@@ -113,8 +109,7 @@ void PlayState::update(unsigned long lTimeElapsed)
    {
       /* Don't need to update this stuff every frame */
       fpstimer = 0;
-      if (mShowDebug) showDebug();
-      mConsole->update();
+      if (mShowFPS) showFPS();
    }
 
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
@@ -188,7 +183,7 @@ void PlayState::networkUpdate(unsigned long lTimeElapsed)
    }
 }
 
-void PlayState::showDebug(void)
+void PlayState::showFPS(void)
 {
    static Ogre::String currFps = "Current FPS: ";
    static Ogre::String avgFps = "Average FPS: ";
@@ -226,7 +221,7 @@ void PlayState::showDebug(void)
 
 void PlayState::keyPressed(const OIS::KeyEvent &e)
 {
-   if (mConsole->isVisible())
+   if (mGameMgr->mConsole->isVisible())
    {
       mGUI->injectKeyPress(e);
    }
@@ -252,12 +247,12 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 void PlayState::keyReleased(const OIS::KeyEvent &e)
 {
    if (e.key == OIS::KC_GRAVE)
-      mConsole->toggleShow();
+      mGameMgr->mConsole->toggleShow();
 
-   if (mConsole->isVisible())
+   if (mGameMgr->mConsole->isVisible())
    {
       if (e.key == OIS::KC_ESCAPE)
-         mConsole->toggleShow();
+         mGameMgr->mConsole->toggleShow();
 
       mGUI->injectKeyRelease(e);
    }
@@ -282,7 +277,7 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
-   if (mConsole->isVisible())
+   if (mGameMgr->mConsole->isVisible())
    {
       mGUI->injectMouseMove(e);
    }
@@ -296,7 +291,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mConsole->isVisible())
+   if (mGameMgr->mConsole->isVisible())
    {
       mGUI->injectMousePress(e, id);
    }
@@ -304,7 +299,7 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mConsole->isVisible())
+   if (mGameMgr->mConsole->isVisible())
    {
       mGUI->injectMouseRelease(e, id);
    }

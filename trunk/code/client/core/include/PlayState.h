@@ -23,7 +23,6 @@
 
 #include "GameState.h"
 #include "OgreMaxScene.hpp"
-#include "Console.h"
 
 class PlayState : public GameState
 {
@@ -59,7 +58,6 @@ class PlayState : public GameState
       MyGUI::Gui              *mGUI;
 
       GameManager             *mGameMgr;
-      Console                 *mConsole;
 
       Ogre::SceneNode         *mWorldNode;
       Ogre::SceneNode         *mWaterNode;
@@ -68,20 +66,20 @@ class PlayState : public GameState
 
       Ogre::Degree            mMouseRotX, mMouseRotY;
       int                     mKeydownUp, mKeydownDown, 
-                            mKeydownRight, mKeydownLeft;
+                              mKeydownRight, mKeydownLeft;
       Ogre::Real              fpstimer;
 
       unsigned long           mPingTime; /* indicator of connection strength */
       unsigned long           mPingWaitTime; /* ping delay time */
       bool                    mPingSent; /* If we sent a ping yet */
-      bool                    mShowDebug; /* show the fps, etc*/
+      bool                    mShowFPS; /* show the fps, etc*/
 
       PlayState(void) { }
       PlayState(const PlayState&) { }
       PlayState & operator = (const PlayState&);
 
       void networkUpdate(unsigned long);
-      void showDebug();
+      void showFPS();
 };
 #endif /* __Playstate_H_ */
 

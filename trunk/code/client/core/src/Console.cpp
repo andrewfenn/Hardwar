@@ -93,11 +93,10 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
 {
    size_t len = sender->getCaption().length();
    MyGUI::EditPtr edit = sender->castType<MyGUI::Edit>();
-   if ((key == MyGUI::KeyCode::Backspace) && (len > 0) && (mAutoCompleted))
+   if ((key == MyGUI::KeyCode::Backspace) && (len > 0))
    {
-	   edit->deleteTextSelection();
-	   len = sender->getCaption().length();
-	   edit->eraseText(len-1);
+	   edit->eraseText(len);
+      return;
    }
 
    /* make tab key move cursor to the end */
@@ -105,7 +104,7 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
    {
       edit->setTextSelection(len, len);
    }
-
+/*
    if (!mAutoCompleted && key == MyGUI::KeyCode::ArrowUp && mListPos < mUsedCommands.size())
    {
       if (mListPos==0 && sender->getCaption().length() > 0)
@@ -131,7 +130,7 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
       if (mListPos > 0) mListPos--;
       return;
    }
-
+*/
    Ogre::UTFString command = sender->getCaption();
    if (command.length() == 0) return;
 

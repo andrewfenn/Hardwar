@@ -32,6 +32,10 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
 
 GameManager::~GameManager( void )
 {
+   mSceneMgr->clearScene();
+   mSceneMgr->destroyAllCameras();
+   mRoot->getAutoCreatedWindow()->removeAllViewports();
+
    /* Delete MyGUI */
    mGUI->shutdown();
    delete mGUI;
@@ -119,11 +123,21 @@ void GameManager::startGame( GameState *gameState )
 
    /* Create just one MyGUI instance rather then within the states */
    mGUI = new MyGUI::Gui();
-   
+
+   mRoot->createSceneManager(Ogre::ST_GENERIC,"GameSceneMgr");
+   mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
+   mCamera       = mSceneMgr->createCamera("GameCamera");
+   mViewport     = mRenderWindow->addViewport(mCamera,0);
+
+   mGUI->initialise(mRoot->getAutoCreatedWindow());
+   mGUI->setSceneManager(mSceneMgr);
+
+   /* Add Console */
+   mConsole = new Console();
+
    /* Setup states */
    mLoadState = LoadState::getSingletonPtr();
    mPlayState = PlayState::getSingletonPtr();
-
    /* Go to the first state */
    this->changeState( gameState );
 
@@ -157,10 +171,11 @@ void GameManager::startGame( GameState *gameState )
          /* render the next frame */
          mRoot->renderOneFrame();
 
-         /* FIXME: dividing by ten is the magic number apparently otherwise MyGUI is too fast */
-         mGUI->injectFrameEntered(lTimeSinceLastFrame/10);
+         /* FIXME: dividing by 20 is the magic number apparently otherwise MyGUI is too fast */
+         mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/20);
          lDelay = 0;
       }
+      mConsole->update();
       /* Deal with platform specific issues */
       Ogre::WindowEventUtilities::messagePump();
    }

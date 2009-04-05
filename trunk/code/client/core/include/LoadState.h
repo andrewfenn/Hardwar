@@ -59,6 +59,8 @@ private:
     GameManager          *mGameMgr;
     clientStatus         mLoadStatus;
 
+    MyGUI::VectorWidgetPtr mLayout;
+
     unsigned int mConAttempts;
     unsigned int mRetryLimit;
     unsigned int mTimeout;

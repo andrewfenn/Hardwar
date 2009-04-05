@@ -23,23 +23,18 @@ LoadState* LoadState::mLoadState;
 void LoadState::enter( void )
 {
    mRoot            = Ogre::Root::getSingletonPtr();
-   mRoot->createSceneManager(Ogre::ST_GENERIC,"LoadSceneMgr");
 
-   mWindow       = mRoot->getAutoCreatedWindow();
-   mSceneMgr     = mRoot->getSceneManager("LoadSceneMgr");
-   mCamera       = mSceneMgr->createCamera("LoadCamera");
-   mViewport     = mWindow->addViewport(mCamera, 0 );
    mGameMgr      = GameManager::getSingletonPtr();
+   mWindow       = mRoot->getAutoCreatedWindow();
+   mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
+   mCamera       = mGameMgr->mCamera;
+   mViewport     = mGameMgr->mViewport;
 
-   /* FIXME: This should be in gamemanager but it's not working there */
-   mGameMgr->mGUI->initialise(mWindow);
-
-   mGameMgr->mGUI->setSceneManager(mSceneMgr);
    mGameMgr->mGUI->hidePointer();
    mReverse = false; /* for the load bar animation */
 
    /* Get MyGUI loading layout */
-   MyGUI::LayoutManager::getInstance().load("loading.layout");
+   mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");
 
    if (mGameMgr->mSinglePlayer)
@@ -64,12 +59,8 @@ void LoadState::enter( void )
 /* Destory everything we created when entering */
 void LoadState::exit( void )
 {
-   /* Delete pointer */
-   MyGUI::Gui::getInstance().destroyAllChildWidget();
-   /* Delete the camera and scene */
-   mSceneMgr->destroyCamera(mCamera);
-   mWindow->removeAllViewports();
-   mRoot->destroySceneManager(mSceneMgr);
+   /* Delete what we loaded */
+   MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
 }
 
 void LoadState::pause(void)
