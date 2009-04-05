@@ -19,8 +19,7 @@
 #ifndef __SERVER_H_
 #define __SERVER_H_
 
-#include <OgreString.h>
-#include <OgreEntity.h>
+#include <Ogre.h>
 #include <string>
 #include <libintl.h>
 
@@ -34,12 +33,13 @@ class Server
 {
    public:
       Server();
-      Server(int, std::string);
+      Server(Ogre::ConfigFile);
       ~Server();
    private:
       ENetHost            *mServer;
       Player              mClients[64];
       unsigned int        mPlayerCount;
+      Ogre::ConfigFile    mConfig;
 
       WorldManager        *mWorldMgr;
       FileManager         *mFileMgr;

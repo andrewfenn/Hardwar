@@ -20,13 +20,13 @@
 
 
 Server::Server()
-{
-   Server(26500, std::string("127.0.0.1"));
-}
+{ }
 
-Server::Server(int port=26500, std::string ip = std::string("127.0.0.1"))
+Server::Server(Ogre::ConfigFile config)
 {
-   if (setupServer(port, ip) == 1)
+   mConfig = config;
+   if (setupServer(Ogre::StringConverter::parseInt(mConfig.getSetting("default port", "Network Settings")),
+                  mConfig.getSetting("local address", "Network Settings")) == 1)
    {
       /* setup number of avaliable clients */
       serverLoop();
@@ -39,7 +39,7 @@ Server::~Server()
    enet_deinitialize();
 }
 
-bool Server::setupServer(int port, std::string ip)
+bool Server::setupServer(int port, Ogre::String ip)
 {
    ENetAddress address;
    mServer=NULL;
@@ -54,7 +54,9 @@ bool Server::setupServer(int port, std::string ip)
    address.host = ENET_HOST_ANY;
    address.port = port;
 
-   printf("Starting server on port: %d\n", port);
+   printf("Starting server\n");
+   printf("Port: %d\n", port);
+/*   printf("Local Address: %s\n", ip);*/
    mServer = enet_host_create (&address /* the address to bind the server host to */, 
                               32      /* allow up to 32 clients and/or outgoing connections */,
                                0      /* assume any amount of incoming bandwidth */,

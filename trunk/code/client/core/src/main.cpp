@@ -48,8 +48,11 @@ int main( int argc, char **argv ) {
     std::string cmdvar;
     int cmd = 0;
 
-    std::string address = "127.0.0.1";
-    int port = 26500;
+    Ogre::ConfigFile lconfig;
+    lconfig.load("settings.cfg");
+
+    Ogre::String address = lconfig.getSetting("local address", "Network Settings");
+    unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("default port", "Network Settings"));
 
     /* FIXME: Horrible, use regular expression */
     for (int i=1; i < argc; i++)
@@ -135,7 +138,7 @@ int main( int argc, char **argv ) {
         break;
         case 2: /* server */
         {
-            Server server = Server(port, address);
+            Server server = Server(lconfig);
         }
         break;
         default:
