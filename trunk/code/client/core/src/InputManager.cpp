@@ -68,7 +68,7 @@ void InputManager::initialise(Ogre::RenderWindow *renderWindow)
       OIS::ParamList paramList;    
       size_t windowHnd = 0;
       std::ostringstream windowHndStr;
-      unsigned long timeout;
+      unsigned long timeout = 0;
 
       /*
        * on windows OIS crashes because renderWindow hasn't initilized to make
