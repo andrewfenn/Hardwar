@@ -20,14 +20,16 @@
 #define __HW_STRUCTS_H_
 
 #include <string.h>
-#include <OgreEntity.h>
+#include <Ogre.h>
+#include <list>
 #include "srvstructs.h"
 #include "enet/enet.h"
 
 typedef struct {
-    char name[40];          /* Players name */
+    char name[30];        /* Players name */
+    unsigned short ping;    /* players connection status */
+    std::list<ENetEvent> events;
     clientStatus conState;  /* Connection state */
-    unsigned int ping;      /* players connection status */
     signed long posX;       /* position x,y,z of where the player is */
     signed long posY;
     signed long posZ;

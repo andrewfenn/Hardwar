@@ -56,7 +56,7 @@ bool Server::setupServer(int port, Ogre::String ip)
 
    printf("Starting server\n");
    printf("Port: %d\n", port);
-/*   printf("Local Address: %s\n", ip);*/
+
    mServer = enet_host_create (&address /* the address to bind the server host to */, 
                               32      /* allow up to 32 clients and/or outgoing connections */,
                                0      /* assume any amount of incoming bandwidth */,
@@ -94,6 +94,8 @@ void Server::serverLoop()
    bool serverRunning = true;
    std::cout << "Server running.." << std::endl;
    ENetEvent event;
+   Player lNewClient;
+   lNewClient.conState = STATUS_CONNECTING;
 
    while (serverRunning)
    {
@@ -104,68 +106,73 @@ void Server::serverLoop()
          {
             case ENET_EVENT_TYPE_CONNECT:
             {
-            char address[20];
-            enet_address_get_host_ip(&event.peer->address, address, sizeof(address));
-            printf ("A new client connected from %s\n", address);
-
-            Player player;
-            strcpy(player.name, "Player");
-            player.conState = STATUS_CONNECTING;
-
-            event.peer->data = (void*)mPlayerCount;
-            mClients[mPlayerCount] = player;
-            mPlayerCount++;
+               char address[20];
+               enet_address_get_host_ip(&event.peer->address, address, sizeof(address));
+               printf ("A new client connected from %s\n", address);
+               mPlayer[event.peer->incomingPeerID] = lNewClient;
+               /* TODO: start new client thread */
             }
             break;
             case ENET_EVENT_TYPE_RECEIVE:
-              switch(event.channelID)
-              {
-                  case 0: /* This channel of join requests and pings */
-                  {
-                     char* data = (char*)event.packet->data;
-
-                     if (strcmp(data, "join") == 0)
-                     {
-                        /* TODO: Check if server is full */
-                        /* TODO: Check address isn't banned */
-                        /* Store any relevant client information here. */
-
-
-                        /* TODO: Add file checking */
-                        unsigned int id = (intptr_t) event.peer->data;
-                        mClients[id].conState = STATUS_CONNECTED;
-                        /* Send client to lobby */
-                        message(event.peer,&mClients[id],sizeof(mClients[id]),0,ENET_PACKET_FLAG_RELIABLE);
-                     }
-                     else if (strcmp(data, "ping") == 0)
-                     {
-                        message(event.peer,"pong",strlen("pong")+1,0, ENET_PACKET_FLAG_UNSEQUENCED);
-                     }
-                  }
-                  break;
-                  case 1:
-                  {
-                     /* This channel is for movement */
-                     printf ("A packet of length %u containing %s was received from client:%d on channel %u.\n",
-                                            (intptr_t) event.packet->dataLength,
-                                           event.packet->data, event.peer->data,
-                                                               event.channelID);
-                  }
-                  break;
-              }
+               mPlayer[event.peer->incomingPeerID].events.push_back(event);
               /* Clean up the packet now that we're done using it. */
               enet_packet_destroy(event.packet);
             break;
             case ENET_EVENT_TYPE_DISCONNECT:
-               printf ("client:%d disconected.\n", (char*)event.peer->data);
-
+            {
+               printf ("client: %s disconected.\n", (char*)event.peer->data);
+               /* TODO: destory client's thread */
+               
+               /* remove player */
+               mPlayer.erase(event.peer->incomingPeerID); 
                /* Reset the peer's client information. */
                event.peer->data = NULL;
+            }
             break;
             default:
             break;
          }
       }
+   }
+}
+
+void Server::clientLoop()
+{
+   /* TODO: Get the client data, put this in a while loop and thread it up */
+   ENetEvent event;
+   
+   switch(event.channelID)
+   {
+      case 0: /* This channel of join requests and pings */
+      {
+         char* data = (char*)event.packet->data;
+         if (strcmp(data, "join") == 0)
+         {
+            /* TODO: Check if server is full */
+            /* TODO: Check address isn't banned */
+            /* Store any relevant client information here. */
+
+
+            /* TODO: Add file checking */
+            mPlayer[event.peer->incomingPeerID].conState = STATUS_CONNECTED;
+            /* Send client to lobby */
+            message(event.peer,&mPlayer[event.peer->incomingPeerID],sizeof(mPlayer[event.peer->incomingPeerID]),0,ENET_PACKET_FLAG_RELIABLE);
+         }
+         else if (strcmp(data, "ping") == 0)
+         {
+            message(event.peer,"pong",strlen("pong")+1,0, ENET_PACKET_FLAG_UNSEQUENCED);
+         }
+      }
+      break;
+      case 1:
+      {
+         /* This channel is for movement */
+         printf ("A packet of length %u containing %s was received from client:%d on channel %u.\n",
+                                (intptr_t) event.packet->dataLength,
+                               event.packet->data, event.peer->data,
+                                                   event.channelID);
+      }
+      break;
    }
 }
 

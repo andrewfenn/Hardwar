@@ -22,19 +22,19 @@
 
 typedef enum {
     NONE = 0,
-    HAS_FTP_ADDRESS         = 0x0001,
-    DOWNLOAD_FROM_SERVER    = 0x0002
+    HAS_FTP_ADDRESS         = 0x0001,/* Send the client to download somewhere else */
+    DOWNLOAD_FROM_SERVER    = 0x0002 /* Download level files from the server */
 } serverDldMethod;
 
 typedef enum {
     STATUS_DISCONNECTED = 0,
-    STATUS_CONNECTING   = 0x0001,
-    STATUS_LISTENING    = 0x0002,
-    STATUS_CONNECTED    = 0x0003,
-    STATUS_FILECHECK    = 0x0004,
-    STATUS_LOBBY_NAME   = 0x0005,
-    STATUS_LOBBY_CLASS  = 0x0006,
-    STATUS_INGAME       = 0x0007
+    STATUS_CONNECTING   = 0x0001, /* Joined server */
+    STATUS_LISTENING    = 0x0002, /* Waiting for server response */
+    STATUS_CONNECTED    = 0x0003, /* Connected */
+    STATUS_FILECHECK    = 0x0004, /* Checking level files */
+    STATUS_LOBBY_NAME   = 0x0005, /* Server login screen */
+    STATUS_LOBBY_CLASS  = 0x0006, /* picking character class */
+    STATUS_INGAME       = 0x0007  /* playing in the game */
 } clientStatus;
 
 #endif /* __SRVSTRUCTS_H_ */

@@ -37,7 +37,8 @@ class Server
       ~Server();
    private:
       ENetHost            *mServer;
-      Player              mClients[64];
+      typedef std::map<enet_uint16, Player> Clients;
+      Clients             mPlayer;
       unsigned int        mPlayerCount;
       Ogre::ConfigFile    mConfig;
 
@@ -47,6 +48,7 @@ class Server
       bool    setupServer(int, std::string);
       bool    setupGame();
       void    serverLoop();
+      void    clientLoop();
       bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
 };
 #endif /* __SERVER_H_ */
