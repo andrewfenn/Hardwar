@@ -18,6 +18,8 @@
 
 #include "EditorState.h"
 
+using namespace Client;
+
 Editorstate* Editorstate::mEditorstate;
 
 void Editorstate::enter(void)

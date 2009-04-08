@@ -23,6 +23,9 @@
 
 #include "GameState.h"
 
+namespace Client
+{
+
 class Editorstate : public GameState
 {
 public:
@@ -68,5 +71,7 @@ private:
     Editorstate(const Editorstate&) { }
     Editorstate & operator = (const Editorstate&);
 };
+
+}
 #endif /* __Editorstate_H_ */
 

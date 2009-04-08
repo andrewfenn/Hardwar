@@ -19,6 +19,9 @@
 #ifndef __HW_FILE_MANAGER_H_
 #define __HW_FILE_MANAGER_H_
 
+namespace Client
+{
+
 class FileManager {
 public:
 	FileManager(void);
@@ -27,5 +30,7 @@ public:
 private:
 	
 };
+
+}
 #endif /* __HW_FILE_MANAGER_H_ */
 

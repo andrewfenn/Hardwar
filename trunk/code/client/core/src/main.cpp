@@ -118,14 +118,14 @@ int main( int argc, char **argv ) {
     {
         case 1: /* connect */
         {
-            GameManager *gameManager = GameManager::getSingletonPtr();
+            Client::GameManager *gameManager = Client::GameManager::getSingletonPtr();
             gameManager->mNetwork->setPort(port);
             gameManager->mNetwork->setAddress(address);
             gameManager->mSinglePlayer = false;
 
             try
             {                /* Initialise the game and switch to the first state */
-                gameManager->startGame(LoadState::getSingletonPtr());
+                gameManager->startGame(Client::LoadState::getSingletonPtr());
             }
             catch ( Ogre::Exception& ex )
             {
@@ -138,7 +138,7 @@ int main( int argc, char **argv ) {
         break;
         case 2: /* server */
         {
-            Server server = Server(lconfig);
+            Server::ServerMain server = Server::ServerMain(lconfig);
         }
         break;
         default:

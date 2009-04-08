@@ -31,6 +31,9 @@
 #include "GameManager.h"
 #include "InputManager.h"
 
+namespace Client
+{
+
 class GameState {
 public:
     ~GameState( void ) { }
@@ -59,5 +62,7 @@ private:
     GameState( const GameState& ) { }
     GameState & operator = ( const GameState& );
 };
+
+}
 #endif
 

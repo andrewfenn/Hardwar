@@ -18,6 +18,8 @@
 
 #include "InputManager.h"
 
+using namespace Client;
+
 InputManager *InputManager::mInputManager;
 
 InputManager::InputManager(void) : mInputSystem(0),mMouse(0),mKeyboard(0)

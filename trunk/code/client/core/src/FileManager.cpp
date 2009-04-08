@@ -18,6 +18,8 @@
 
 #include "FileManager.h"
 
+using namespace Client;
+
 FileManager::FileManager()
 {
 	

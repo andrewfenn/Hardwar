@@ -29,12 +29,15 @@
 #include "srvstructs.h"
 #include "enet/enet.h"
 
-class Server
+namespace Server
+{
+
+class ServerMain
 {
    public:
-      Server();
-      Server(Ogre::ConfigFile);
-      ~Server();
+      ServerMain();
+      ServerMain(Ogre::ConfigFile);
+      ~ServerMain();
    private:
       ENetHost            *mServer;
       typedef std::map<enet_uint16, Player> Clients;
@@ -42,8 +45,7 @@ class Server
       unsigned int        mPlayerCount;
       Ogre::ConfigFile    mConfig;
 
-      WorldManager        *mWorldMgr;
-      FileManager         *mFileMgr;
+//      WorldManager        *mWorldMgr;
 
       bool    setupServer(int, std::string);
       bool    setupGame();
@@ -51,5 +53,7 @@ class Server
       void    clientLoop();
       bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
 };
+
+}
 #endif /* __SERVER_H_ */
 

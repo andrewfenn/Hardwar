@@ -24,6 +24,9 @@
 #include "WorldManager.h"
 #include "enet/enet.h"
 
+namespace Client
+{
+
 class Network
 {
    public:
@@ -45,5 +48,7 @@ class Network
       std::string       mAddress;
       bool connect(unsigned int, std::string);
 };
+
+}
 #endif /* __NETWORK_H_ */
 

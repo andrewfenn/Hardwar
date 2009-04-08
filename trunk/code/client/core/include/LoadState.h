@@ -29,6 +29,9 @@
 #include "enet/enet.h"
 #include "OgreMaxScene.hpp"
 
+namespace Client
+{
+
 class LoadState : public GameState
 {
 public:
@@ -82,5 +85,7 @@ private:
     unsigned long mGUICounter; /* keeps track of time between animation updates */
     MyGUI::StaticTextPtr  mStatusText;
 };
+
+}
 #endif /* __LoadState_H_ */
 

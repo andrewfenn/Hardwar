@@ -18,6 +18,8 @@
 
 #include "PlayState.h"
 
+using namespace Client;
+
 PlayState* PlayState::mPlayState;
 
 void PlayState::enter(void)

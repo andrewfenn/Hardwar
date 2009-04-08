@@ -29,6 +29,8 @@
 
 #include <OgreRenderWindow.h>
 
+namespace Client
+{
 
 class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener {
 public:
@@ -104,5 +106,7 @@ private:
     bool buttonPressed( const OIS::JoyStickEvent &e, int button );
     bool buttonReleased( const OIS::JoyStickEvent &e, int button );
 };
+
+}
 #endif /* __InputManager_H_ */
 

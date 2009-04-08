@@ -18,6 +18,8 @@
 
 #include "Console.h"
 
+using namespace Client;
+
 Console::Console()
 {
    mShow = false;

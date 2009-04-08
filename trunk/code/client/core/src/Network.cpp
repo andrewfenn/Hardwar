@@ -18,6 +18,8 @@
 
 #include "Network.h"
 
+using namespace Client;
+
 Network::Network()
 {
    if (enet_initialize() != 0) {

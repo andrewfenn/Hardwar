@@ -18,11 +18,12 @@
 
 #include "Server.h"
 
+using namespace Server;
 
-Server::Server()
+ServerMain::ServerMain()
 { }
 
-Server::Server(Ogre::ConfigFile config)
+ServerMain::ServerMain(Ogre::ConfigFile config)
 {
    mConfig = config;
    if (setupServer(Ogre::StringConverter::parseInt(mConfig.getSetting("default port", "Network Settings")),
@@ -33,13 +34,13 @@ Server::Server(Ogre::ConfigFile config)
    }
 }
 
-Server::~Server()
+ServerMain::~ServerMain()
 {
    enet_host_destroy(mServer);
    enet_deinitialize();
 }
 
-bool Server::setupServer(int port, Ogre::String ip)
+bool ServerMain::setupServer(int port, Ogre::String ip)
 {
    ENetAddress address;
    mServer=NULL;
@@ -73,11 +74,11 @@ bool Server::setupServer(int port, Ogre::String ip)
    return true;
 }
 
-bool Server::setupGame()
+bool ServerMain::setupGame()
 {
    bool result = true;
 
-   mWorldMgr = new WorldManager;
+  /* mWorldMgr = new WorldManager;
    result = mWorldMgr->loadWorldData(Ogre::String("world/default.db"));
 
    if (result == true)
@@ -85,11 +86,11 @@ bool Server::setupGame()
       mFileMgr = new FileManager;
       mFileMgr->scanFiles();
    }
-
+*/
    return result;
 }
 
-void Server::serverLoop()
+void ServerMain::serverLoop()
 {
    bool serverRunning = true;
    std::cout << "Server running.." << std::endl;
@@ -136,7 +137,7 @@ void Server::serverLoop()
    }
 }
 
-void Server::clientLoop()
+void ServerMain::clientLoop()
 {
    /* TODO: Get the client data, put this in a while loop and thread it up */
    ENetEvent event;
@@ -176,7 +177,7 @@ void Server::clientLoop()
    }
 }
 
-bool Server::message(ENetPeer *peer,const void* msg, size_t size, 
+bool ServerMain::message(ENetPeer *peer,const void* msg, size_t size, 
                                        enet_uint8 channel, enet_uint32 priority)
 {
    bool result = true;

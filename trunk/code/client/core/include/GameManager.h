@@ -36,6 +36,9 @@
 #include "Network.h"
 #include "Console.h"
 
+namespace Client
+{
+
 class GameState;
 
 class GameManager : public OIS::KeyListener, OIS::MouseListener
@@ -87,5 +90,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
       bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 };
+
+}
 #endif
 

@@ -32,6 +32,9 @@ namespace formates
    template<> inline std::string format<double>() { return MyGUI::utility::toString("[ ", -std::numeric_limits<double>::max(), " | ", std::numeric_limits<double>::max(), " ]"); }
 }
 
+namespace Client
+{
+
 class Console
 {
    public:
@@ -103,5 +106,7 @@ class Console
       unsigned short mListPos;
 		MapFunction mFunctions;
 };
+
+}
 #endif /* __Console_H_ */
 

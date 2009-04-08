@@ -23,6 +23,9 @@
 
 #include "GameState.h"
 
+namespace Client
+{
+
 class PlayState : public GameState
 {
    public:
@@ -80,5 +83,7 @@ class PlayState : public GameState
       void networkUpdate(unsigned long);
       void showFPS();
 };
+
+}
 #endif /* __Playstate_H_ */
 

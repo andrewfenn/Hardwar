@@ -18,6 +18,8 @@
 
 #include "GameState.h"
 
+using namespace Client;
+
 void GameState::changeState( GameState *state ) { 
     GameManager::getSingletonPtr()->changeState( state ); 
 }

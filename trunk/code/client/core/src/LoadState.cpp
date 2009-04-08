@@ -18,6 +18,8 @@
 
 #include "LoadState.h"
 
+using namespace Client;
+
 LoadState* LoadState::mLoadState;
 
 void LoadState::enter( void )

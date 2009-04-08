@@ -21,6 +21,8 @@
 #include "LoadState.h"
 #include "GameManager.h"
 
+using namespace Client;
+
 GameManager* GameManager::mGameManager;
 
 GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0), 
