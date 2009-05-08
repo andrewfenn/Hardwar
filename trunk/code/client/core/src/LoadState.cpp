@@ -111,15 +111,11 @@ void LoadState::waitForReply(void)
       {
          case ENET_EVENT_TYPE_RECEIVE:
          {
-            printf("A packet of length %u containing 0x%08x was received on channel %u.\n",
-              event.packet->dataLength,
-              (intptr_t)event.packet->data,
-              event.channelID);
-            Player player;
-            memcpy(&player, event.packet->data, sizeof(Player));
-            printf("Packet contains name: \"%s\" connection state: 0x%08x was inside.\n",
-              player.name, player.conState);
-            mLoadStatus = player.conState;
+            Player lPlayer;
+            clientStatus lConState;
+            memcpy(&lConState, event.packet->data, sizeof(event.packet->data));
+            lPlayer.conState = lConState;
+            mLoadStatus = lPlayer.conState;
             // Clean up the packet now that we're done using it.
             enet_packet_destroy(event.packet);
          }

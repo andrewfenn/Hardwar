@@ -86,5 +86,5 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BIN
 IF (MSVC_IDE)
 	TARGET_LINK_LIBRARIES(hardwar boost_filesystem-*)
 ELSE (MSVC_IDE) # UNIX
-	TARGET_LINK_LIBRARIES(hardwar boost_filesystem)
+	TARGET_LINK_LIBRARIES(hardwar boost_filesystem boost_thread)
 ENDIF (MSVC_IDE)

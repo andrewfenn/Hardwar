@@ -90,90 +90,48 @@ bool ServerMain::setupGame()
    return result;
 }
 
+void ServerMain::createClient(ENetPeer *lpeer)
+{
+   printf ("A new client connected with the peer ID: %d\n", lpeer->incomingPeerID);
+   mPlayer[lpeer->incomingPeerID] = new Client();
+   mPlayer[lpeer->incomingPeerID]->setPeer(lpeer);
+   /* start new client thread */
+   mPlayer[lpeer->incomingPeerID]->makeThread();
+}
+
 void ServerMain::serverLoop()
 {
    bool serverRunning = true;
-   std::cout << "Server running.." << std::endl;
-   ENetEvent event;
-   Player lNewClient;
-   lNewClient.conState = STATUS_CONNECTING;
+   printf("Server running..\n");
+   ENetEvent lEvent;
 
    while (serverRunning)
    {
+      enet_host_flush(mServer);
       /* Wait up to 1000 milliseconds for an event. */
-      while (enet_host_service(mServer, &event, 1000) > 0)
+      while (enet_host_service(mServer, &lEvent, 1000) > 0)
       {
-         switch (event.type)
+         switch (lEvent.type)
          {
             case ENET_EVENT_TYPE_CONNECT:
-            {
-               char address[20];
-               enet_address_get_host_ip(&event.peer->address, address, sizeof(address));
-               printf ("A new client connected from %s\n", address);
-               mPlayer[event.peer->incomingPeerID] = lNewClient;
-               /* TODO: start new client thread */
-            }
+               createClient(lEvent.peer);
             break;
             case ENET_EVENT_TYPE_RECEIVE:
-               mPlayer[event.peer->incomingPeerID].events.push_back(event);
-              /* Clean up the packet now that we're done using it. */
-              enet_packet_destroy(event.packet);
+               mPlayer[lEvent.peer->incomingPeerID]->addMessage(lEvent);
+               enet_packet_destroy(lEvent.packet);
             break;
             case ENET_EVENT_TYPE_DISCONNECT:
             {
-               printf ("client: %s disconected.\n", (char*)event.peer->data);
+               printf ("client: %s disconected.\n", (char*)lEvent.peer->incomingPeerID);
                /* TODO: destory client's thread */
-               
-               /* remove player */
-               mPlayer.erase(event.peer->incomingPeerID); 
-               /* Reset the peer's client information. */
-               event.peer->data = NULL;
+               delete mPlayer[lEvent.peer->incomingPeerID];
+               mPlayer.erase(lEvent.peer->incomingPeerID);
             }
             break;
             default:
             break;
          }
       }
-   }
-}
-
-void ServerMain::clientLoop()
-{
-   /* TODO: Get the client data, put this in a while loop and thread it up */
-   ENetEvent event;
-   
-   switch(event.channelID)
-   {
-      case 0: /* This channel of join requests and pings */
-      {
-         char* data = (char*)event.packet->data;
-         if (strcmp(data, "join") == 0)
-         {
-            /* TODO: Check if server is full */
-            /* TODO: Check address isn't banned */
-            /* Store any relevant client information here. */
-
-
-            /* TODO: Add file checking */
-            mPlayer[event.peer->incomingPeerID].conState = STATUS_CONNECTED;
-            /* Send client to lobby */
-            message(event.peer,&mPlayer[event.peer->incomingPeerID],sizeof(mPlayer[event.peer->incomingPeerID]),0,ENET_PACKET_FLAG_RELIABLE);
-         }
-         else if (strcmp(data, "ping") == 0)
-         {
-            message(event.peer,"pong",strlen("pong")+1,0, ENET_PACKET_FLAG_UNSEQUENCED);
-         }
-      }
-      break;
-      case 1:
-      {
-         /* This channel is for movement */
-         printf ("A packet of length %u containing %s was received from client:%d on channel %u.\n",
-                                (intptr_t) event.packet->dataLength,
-                               event.packet->data, event.peer->data,
-                                                   event.channelID);
-      }
-      break;
    }
 }
 

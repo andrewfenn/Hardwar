@@ -41,6 +41,7 @@ GameManager::~GameManager( void )
    /* Delete MyGUI */
    mGUI->shutdown();
    delete mGUI;
+   delete mNetwork;
    mGUI = 0;
    /* Clean up all the states */
    while(!mStates.empty())

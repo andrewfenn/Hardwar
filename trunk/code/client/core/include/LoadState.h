@@ -31,27 +31,26 @@
 
 namespace Client
 {
-
 class LoadState : public GameState
 {
 public:
-    ~LoadState( void );
+    ~LoadState(void);
 
-    void enter( void );
-    void exit( void );
+    void enter(void);
+    void exit(void);
 
-    void pause( void );
-    void resume( void );
-    void update( unsigned long lTimeElapsed );
+    void pause(void);
+    void resume(void);
+    void update(unsigned long lTimeElapsed);
 
-    void keyPressed( const OIS::KeyEvent &e );
-    void keyReleased( const OIS::KeyEvent &e );
+    void keyPressed(const OIS::KeyEvent &e);
+    void keyReleased(const OIS::KeyEvent &e);
 
-    void mouseMoved( const OIS::MouseEvent &e );
-    void mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
-    void mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+    void mouseMoved(const OIS::MouseEvent &e );
+    void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-    static LoadState* getSingletonPtr( void );
+    static LoadState* getSingletonPtr(void);
 private:
 
     Ogre::Root           *mRoot;
@@ -69,9 +68,9 @@ private:
     unsigned int mRetryLimit;
     unsigned int mTimeout;
 
-    LoadState( void ) { }
-    LoadState( const LoadState& ) { }
-    LoadState & operator = ( const LoadState& );
+    LoadState(void) { }
+    LoadState(const LoadState&) { }
+    LoadState & operator = (const LoadState&);
 
     void updateLoadbar(void);
     void killLoadbar(void);
@@ -85,7 +84,6 @@ private:
     unsigned long mGUICounter; /* keeps track of time between animation updates */
     MyGUI::StaticTextPtr  mStatusText;
 };
-
 }
 #endif /* __LoadState_H_ */
 

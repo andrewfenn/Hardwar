@@ -16,45 +16,36 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __SERVER_H_
-#define __SERVER_H_
+#ifndef __CLIENT_H_
+#define __CLIENT_H_
 
-#include <Ogre.h>
-#include <string>
-#include <libintl.h>
+#include "enet/enet.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
-#include "enet/enet.h"
+#include <map>
 
-#include "WorldManager.h"
-#include "FileManager.h"
 #include "srvstructs.h"
-#include "Client.h"
 
 namespace Server
 {
-class ServerMain
+class Client
 {
    public:
-      ServerMain();
-      ServerMain(Ogre::ConfigFile);
-      ~ServerMain();
+      Client();
+      ~Client();
+      void addMessage(ENetEvent);
+      void makeThread(void);
+      void setPeer(ENetPeer*);
    private:
-      ENetHost            *mServer;
-      typedef std::map<enet_uint16, Server::Client*> Clients;
-      Clients             mPlayer;
-      unsigned int        mPlayerCount;
-      Ogre::ConfigFile    mConfig;
-
-//      WorldManager        *mWorldMgr;
-
-      bool    setupServer(int, std::string);
-      bool    setupGame();
-      void    serverLoop();
-      void    clientLoop();
-      void    createClient(ENetPeer*);
-      bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
+      void loop(void);
+      bool sendMessage(const void*, size_t, enet_uint8, enet_uint32);
+      bool mRunClient;
+      ENetPeer* mPeer;
+      clientStatus mConState;
+      typedef std::multimap<enet_uint8,ENetPacket*> Message;
+      Message mMessages;
+      boost::thread mThread;
 };
 }
-#endif /* __SERVER_H_ */
+#endif /* __CLIENT_H_ */
 
