@@ -22,6 +22,7 @@
 #include <OgreRoot.h>
 
 #include "GameState.h"
+#include "srvstructs.h"
 
 namespace Client
 {

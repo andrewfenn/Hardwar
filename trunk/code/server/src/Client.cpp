@@ -55,7 +55,7 @@ void Client::loop(void)
    /* TODO: Check address isn't banned */
    /* TODO: Add file checking */
    mConState = STATUS_CONNECTED;
-   sendMessage(&mConState, sizeof(mConState), 0, ENET_PACKET_FLAG_RELIABLE);
+   sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_PING, ENET_PACKET_FLAG_RELIABLE);
 
    Message::iterator itEvent;
    Message lMessages;
@@ -76,20 +76,15 @@ void Client::loop(void)
                                                               (*itEvent).first);
             switch((*itEvent).first)
             {
-               case 0: /* This channel of join requests and pings */
-               {
-                  char* data = (char*)(*itEvent).second.packet->data;
-                  if (strcmp(data, "ping") == 0)
+               case SERVER_CHANNEL_PING:
+                  /* This channel of join requests and pings */
+                  if (strcmp((char*)(*itEvent).second.packet->data, "ping") == 0)
                   {
-                     sendMessage("pong", strlen("pong")+1, 0, ENET_PACKET_FLAG_UNSEQUENCED);
+                     sendMessage("pong", strlen("pong")+1, SERVER_CHANNEL_PING, ENET_PACKET_FLAG_UNSEQUENCED);
                   }
-               }
                break;
-               case 1:
-               {
+               case SERVER_CHANNEL_MOVEMENT:
                   /* This channel is for movement */
-
-               }
                break;
             }
             /* finished with the packet, destory it */

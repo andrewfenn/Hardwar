@@ -161,7 +161,7 @@ void PlayState::networkUpdate(unsigned long lTimeElapsed)
       case ENET_EVENT_TYPE_RECEIVE:
          switch(lEvent.channelID)
          {
-            case 0:
+            case SERVER_CHANNEL_PING:
             {
                char* data = (char*)lEvent.packet->data;
 

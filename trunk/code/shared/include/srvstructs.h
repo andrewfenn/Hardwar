@@ -20,6 +20,9 @@
 #ifndef __SRVSTRUCTS_H_
 #define __SRVSTRUCTS_H_
 
+#define SERVER_CHANNEL_PING      0
+#define SERVER_CHANNEL_MOVEMENT  1
+
 typedef enum {
     NONE = 0,
     HAS_FTP_ADDRESS         = 0x0001,/* Send the client to download somewhere else */

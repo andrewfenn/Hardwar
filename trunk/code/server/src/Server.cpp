@@ -117,15 +117,16 @@ void ServerMain::serverLoop()
                createClient(lEvent.peer);
             break;
             case ENET_EVENT_TYPE_RECEIVE:
+            /* Any packets we recieve are added to the specific client that needs
+               them. They are then deleted in the thread after they have been
+               used. */
                mPlayer[lEvent.peer->incomingPeerID]->addMessage(lEvent);
             break;
             case ENET_EVENT_TYPE_DISCONNECT:
-            {
                printf ("client: %s disconected.\n", (char*)lEvent.peer->incomingPeerID);
-               /* TODO: destory client's thread */
+               /* TODO: destory client's thread? */
                delete mPlayer[lEvent.peer->incomingPeerID];
                mPlayer.erase(lEvent.peer->incomingPeerID);
-            }
             break;
             default:
             break;
