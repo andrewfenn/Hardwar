@@ -118,7 +118,6 @@ void ServerMain::serverLoop()
             break;
             case ENET_EVENT_TYPE_RECEIVE:
                mPlayer[lEvent.peer->incomingPeerID]->addMessage(lEvent);
-               enet_packet_destroy(lEvent.packet);
             break;
             case ENET_EVENT_TYPE_DISCONNECT:
             {

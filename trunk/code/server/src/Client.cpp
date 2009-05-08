@@ -33,12 +33,7 @@ Client::~Client()
 
 void Client::addMessage(const ENetEvent lEvent)
 {
-   mMessages.insert(std::pair<enet_uint8,ENetPacket*>(lEvent.channelID, lEvent.packet));
-   printf ("\nline 38 --%u - %s - client:%d - channel %u.\n",
-                                       (intptr_t) lEvent.packet->dataLength,
-                                                (char*) lEvent.packet->data,
-                                                          mPeer->incomingPeerID,
-                                                              lEvent.channelID);
+   mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
 }
 
 void Client::makeThread(void)
@@ -72,21 +67,20 @@ void Client::loop(void)
          lMessages = mMessages;
          mMessages.clear();
 
-         for (itEvent=lMessages.begin(); itEvent != lMessages.end(); itEvent++ )
+         for (itEvent=lMessages.begin(); itEvent != lMessages.end(); itEvent++)
          {
-            printf ("line 78 --%u - %s - client:%d - channel %u.\n",
-                                         (intptr_t) (*itEvent).second->dataLength,
-                                                  (char*) (*itEvent).second->data,
-                                                            mPeer->incomingPeerID,
-                                                            (*itEvent).first);
+            printf ("len:%u - value:%s - client:%d - channel %u.\n",
+                                (intptr_t) (*itEvent).second.packet->dataLength,
+                                         (char*) (*itEvent).second.packet->data,
+                                                          mPeer->incomingPeerID,
+                                                              (*itEvent).first);
             switch((*itEvent).first)
             {
                case 0: /* This channel of join requests and pings */
                {
-                  char* data = (char*)(*itEvent).second->data;
+                  char* data = (char*)(*itEvent).second.packet->data;
                   if (strcmp(data, "ping") == 0)
                   {
-                     printf("replied\n");
                      sendMessage("pong", strlen("pong")+1, 0, ENET_PACKET_FLAG_UNSEQUENCED);
                   }
                }
@@ -98,6 +92,8 @@ void Client::loop(void)
                }
                break;
             }
+            /* finished with the packet, destory it */
+            enet_packet_destroy((*itEvent).second.packet);
          }
       }
    }

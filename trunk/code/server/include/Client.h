@@ -42,7 +42,7 @@ class Client
       bool mRunClient;
       ENetPeer* mPeer;
       clientStatus mConState;
-      typedef std::multimap<enet_uint8,ENetPacket*> Message;
+      typedef std::multimap<enet_uint8,ENetEvent> Message;
       Message mMessages;
       boost::thread mThread;
 };
