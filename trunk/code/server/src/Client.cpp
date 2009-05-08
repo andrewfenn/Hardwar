@@ -31,10 +31,14 @@ Client::~Client()
    mRunClient = false;
 }
 
-void Client::addMessage(ENetEvent lEvent)
+void Client::addMessage(const ENetEvent lEvent)
 {
-   Message::iterator itEvent;
    mMessages.insert(std::pair<enet_uint8,ENetPacket*>(lEvent.channelID, lEvent.packet));
+   printf ("\nline 38 --%u - %s - client:%d - channel %u.\n",
+                                       (intptr_t) lEvent.packet->dataLength,
+                                                (char*) lEvent.packet->data,
+                                                          mPeer->incomingPeerID,
+                                                              lEvent.channelID);
 }
 
 void Client::makeThread(void)
@@ -59,25 +63,43 @@ void Client::loop(void)
    sendMessage(&mConState, sizeof(mConState), 0, ENET_PACKET_FLAG_RELIABLE);
 
    Message::iterator itEvent;
-
+   Message lMessages;
    while(mRunClient)
    {
-      for (itEvent=mMessages.begin(); itEvent != mMessages.end(); itEvent++ )
+      if (mMessages.size() > 0)
       {
-         switch((*itEvent).first)
+         /* TODO: mutex lock before copying and deleting */
+         lMessages = mMessages;
+         mMessages.clear();
+
+         for (itEvent=lMessages.begin(); itEvent != lMessages.end(); itEvent++ )
          {
-            case 0: /* This channel of join requests and pings */
+            printf ("line 78 --%u - %s - client:%d - channel %u.\n",
+                                         (intptr_t) (*itEvent).second->dataLength,
+                                                  (char*) (*itEvent).second->data,
+                                                            mPeer->incomingPeerID,
+                                                            (*itEvent).first);
+            switch((*itEvent).first)
             {
-               char* data = (char*)(*itEvent).second->data;
-               if (strcmp(data, "ping") == 0)
+               case 0: /* This channel of join requests and pings */
                {
-                  sendMessage("pong", strlen("pong")+1, 0, ENET_PACKET_FLAG_UNSEQUENCED);
+                  char* data = (char*)(*itEvent).second->data;
+                  if (strcmp(data, "ping") == 0)
+                  {
+                     printf("replied\n");
+                     sendMessage("pong", strlen("pong")+1, 0, ENET_PACKET_FLAG_UNSEQUENCED);
+                  }
                }
+               break;
+               case 1:
+               {
+                  /* This channel is for movement */
+
+               }
+               break;
             }
-            break;
          }
       }
-      mMessages.clear();
    }
 }
 

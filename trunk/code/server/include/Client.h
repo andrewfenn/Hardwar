@@ -33,7 +33,7 @@ class Client
    public:
       Client();
       ~Client();
-      void addMessage(ENetEvent);
+      void addMessage(const ENetEvent);
       void makeThread(void);
       void setPeer(ENetPeer*);
    private:
