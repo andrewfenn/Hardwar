@@ -50,13 +50,6 @@ void Client::setPeer(ENetPeer* lpeer)
 
 void Client::loop(void)
 {
-   /* New client joined. Begin by sending back the connection status */
-   /* TODO: Check if server is full */
-   /* TODO: Check address isn't banned */
-   /* TODO: Add file checking */
-   mConState = STATUS_CONNECTED;
-   sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_PING, ENET_PACKET_FLAG_RELIABLE);
-
    Message::iterator itEvent;
    Message lMessages;
    while(mRunClient)
@@ -81,6 +74,15 @@ void Client::loop(void)
                   if (strcmp((char*)(*itEvent).second.packet->data, "ping") == 0)
                   {
                      sendMessage("pong", strlen("pong")+1, SERVER_CHANNEL_PING, ENET_PACKET_FLAG_UNSEQUENCED);
+                  }
+                  else if (strcmp((char*)(*itEvent).second.packet->data, "join") == 0)
+                  {
+                     /* New client joined. Begin by sending back the connection status */
+                     /* TODO: Check if server is full */
+                     /* TODO: Check address isn't banned */
+                     /* TODO: Add file checking */
+                     mConState = STATUS_CONNECTED;
+                     sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_PING, ENET_PACKET_FLAG_RELIABLE);
                   }
                break;
                case SERVER_CHANNEL_MOVEMENT:
