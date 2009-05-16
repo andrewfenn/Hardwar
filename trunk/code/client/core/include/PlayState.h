@@ -23,6 +23,7 @@
 
 #include "GameState.h"
 #include "srvstructs.h"
+#include "BuildEditor.h"
 
 namespace Client
 {
@@ -66,7 +67,7 @@ class PlayState : public GameState
       Ogre::SceneNode         *mWaterNode;
 
       static PlayState        *mPlayState;
-
+      BuildEditor             *mBuildEditor;
       Ogre::Degree            mMouseRotX, mMouseRotY;
       int                     mKeydownUp, mKeydownDown, 
                               mKeydownRight, mKeydownLeft;

@@ -52,12 +52,15 @@ void PlayState::enter(void)
    mPingTime = 0;
    mShowFPS = false;
 
+   /* FIXME: this should go in game manager as it's a basic command not specific to the play state */
    mGameMgr->mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &PlayState::cmd_showFPS));
+
+   mBuildEditor = new BuildEditor;
 }
 
 void PlayState::exit(void)
 {
-
+   delete mBuildEditor;
 }
 
 /*void PlayState::switchToEditor(vector<String>& Params)
@@ -218,7 +221,7 @@ void PlayState::showFPS(void)
 
 void PlayState::keyPressed(const OIS::KeyEvent &e)
 {
-   if (mGameMgr->mConsole->isVisible())
+   if (mGameMgr->mConsole->isVisible() && e.key != OIS::KC_GRAVE)
    {
       mGUI->injectKeyPress(e);
    }

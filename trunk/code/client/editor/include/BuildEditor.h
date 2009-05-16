@@ -16,36 +16,28 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __CLIENT_H_
-#define __CLIENT_H_
+#ifndef __BuildEditor_H_
+#define __BuildEditor_H_
 
-#include "enet/enet.h"
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
-#include <map>
+#include <MyGUI.h>
+#include <OgreRoot.h>
 
-#include "srvstructs.h"
-
-namespace Server
+namespace Client
 {
-class Client
+
+class BuildEditor
 {
-   public:
-      Client();
-      ~Client();
-      void addMessage(const ENetEvent);
-      void makeThread(void);
-      void setPeer(ENetPeer*);
-   private:
-      void loop(void);
-      bool sendMessage(const void*, size_t, enet_uint8, enet_uint32);
-      bool mRunThread;
-      ENetPeer* mPeer;
-      clientStatus mConState;
-      typedef std::multimap<enet_uint8,ENetEvent> Message;
-      Message mMessages;
-      boost::thread mThread;
+public:
+   BuildEditor();
+   ~BuildEditor(void);
+   void toggleShow();
+private:
+   bool mShow;
+   MyGUI::Gui  *mGUI;
+   MyGUI::StaticImagePtr mMenuBar;
+   MyGUI::WidgetPtr mMenuPanel;
 };
+
 }
-#endif /* __CLIENT_H_ */
+#endif /* __BuildEditor_H_ */
 

@@ -22,6 +22,7 @@
 
 #define SERVER_CHANNEL_PING      0
 #define SERVER_CHANNEL_MOVEMENT  1
+#define SERVER_CHANNEL_ADMIN     2
 
 typedef enum {
     NONE = 0,

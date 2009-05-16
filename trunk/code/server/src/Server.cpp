@@ -36,6 +36,8 @@ ServerMain::ServerMain(Ogre::ConfigFile config)
 
 ServerMain::~ServerMain()
 {
+   mAdmin->stopThread();
+   delete mAdmin;
    enet_host_destroy(mServer);
    enet_deinitialize();
 }
@@ -78,6 +80,10 @@ bool ServerMain::setupGame()
 {
    bool result = true;
 
+   /* Start thread to process admin commands */
+   mAdmin = new Admin;
+   mAdmin->makeThread();
+   printf("Thread: Admin - started\n");
   /* mWorldMgr = new WorldManager;
    result = mWorldMgr->loadWorldData(Ogre::String("world/default.db"));
 
@@ -92,11 +98,11 @@ bool ServerMain::setupGame()
 
 void ServerMain::createClient(ENetPeer *lpeer)
 {
-   printf ("A new client connected with the peer ID: %d\n", lpeer->incomingPeerID);
    mPlayer[lpeer->incomingPeerID] = new Client();
    mPlayer[lpeer->incomingPeerID]->setPeer(lpeer);
    /* start new client thread */
    mPlayer[lpeer->incomingPeerID]->makeThread();
+   printf("Thread: Client - %d - started\n", lpeer->incomingPeerID);
 }
 
 void ServerMain::serverLoop()
@@ -117,16 +123,24 @@ void ServerMain::serverLoop()
                createClient(lEvent.peer);
             break;
             case ENET_EVENT_TYPE_RECEIVE:
-            /* Any packets we recieve are added to the specific client that needs
-               them. They are then deleted in the thread after they have been
-               used. */
-               mPlayer[lEvent.peer->incomingPeerID]->addMessage(lEvent);
+               switch (lEvent.channelID)
+               {
+                  case SERVER_CHANNEL_ADMIN:
+                        mAdmin->addMessage(lEvent);
+                  break;
+                  default:
+                     /* Any packets we recieve are added to the specific client that needs
+                        them. They are then deleted in the thread after they have been
+                        used. */
+                        mPlayer[lEvent.peer->incomingPeerID]->addMessage(lEvent);
+                  break;
+               }
             break;
             case ENET_EVENT_TYPE_DISCONNECT:
-               printf ("client: %s disconected.\n", (char*)lEvent.peer->incomingPeerID);
                /* TODO: destory client's thread? */
                delete mPlayer[lEvent.peer->incomingPeerID];
                mPlayer.erase(lEvent.peer->incomingPeerID);
+               printf("Thread: Client - %d - killed\n", lEvent.peer->incomingPeerID);
             break;
             default:
             break;

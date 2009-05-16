@@ -174,8 +174,7 @@ void GameManager::startGame( GameState *gameState )
          /* render the next frame */
          mRoot->renderOneFrame();
 
-         /* FIXME: dividing by 20 is the magic number apparently otherwise MyGUI is too fast */
-         mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/20);
+         mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/1000);
          lDelay = 0;
       }
       mConsole->update();

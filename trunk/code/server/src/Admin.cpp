@@ -16,39 +16,38 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Client.h"
+#include "Admin.h"
 
 using namespace Server;
 
-Client::Client()
+Admin::Admin()
 {
    mRunThread = true;
-   mConState = STATUS_CONNECTING;
 }
 
-Client::~Client()
+Admin::~Admin()
 {
    mRunThread = false;
 }
 
-void Client::addMessage(const ENetEvent lEvent)
+void Admin::addMessage(const ENetEvent lEvent)
 {
    mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
 }
 
-void Client::makeThread(void)
+void Admin::makeThread(void)
 {
    /* creates a new thread */
-   boost::thread mThread(boost::bind(&Client::loop, this));
+   boost::thread mThread(boost::bind(&Admin::loop, this));
    return;
 }
 
-void Client::setPeer(ENetPeer* lpeer)
+void Admin::stopThread(void)
 {
-   mPeer = lpeer;
+   mRunThread = false;
 }
 
-void Client::loop(void)
+void Admin::loop(void)
 {
    Message::iterator itEvent;
    Message lMessages;
@@ -65,30 +64,9 @@ void Client::loop(void)
             printf ("len:%u - value:%s - client:%d - channel %u.\n",
                                 (intptr_t) (*itEvent).second.packet->dataLength,
                                          (char*) (*itEvent).second.packet->data,
-                                                          mPeer->incomingPeerID,
+                                         (*itEvent).second.peer->incomingPeerID,
                                                               (*itEvent).first);
-            switch((*itEvent).first)
-            {
-               case SERVER_CHANNEL_PING:
-                  /* This channel of join requests and pings */
-                  if (strcmp((char*)(*itEvent).second.packet->data, "ping") == 0)
-                  {
-                     sendMessage("pong", strlen("pong")+1, SERVER_CHANNEL_PING, ENET_PACKET_FLAG_UNSEQUENCED);
-                  }
-                  else if (strcmp((char*)(*itEvent).second.packet->data, "join") == 0)
-                  {
-                     /* New client joined. Begin by sending back the connection status */
-                     /* TODO: Check if server is full */
-                     /* TODO: Check address isn't banned */
-                     /* TODO: Add file checking */
-                     mConState = STATUS_CONNECTED;
-                     sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_PING, ENET_PACKET_FLAG_RELIABLE);
-                  }
-               break;
-               case SERVER_CHANNEL_MOVEMENT:
-                  /* This channel is for movement */
-               break;
-            }
+            
             /* finished with the packet, destory it */
             enet_packet_destroy((*itEvent).second.packet);
          }
@@ -96,12 +74,13 @@ void Client::loop(void)
    }
 }
 
-bool Client::sendMessage(const void* msg, size_t size,
+bool Admin::sendMessage(ENetPeer *peer,const void* msg, size_t size, 
                                        enet_uint8 channel, enet_uint32 priority)
 {
    bool result = true;
-   ENetPacket * packet = enet_packet_create(msg, size, priority);
-   if (enet_peer_send(mPeer, channel, packet) < 0)
+   ENetPacket * packet = enet_packet_create (msg, size, priority);
+
+   if (enet_peer_send(peer, channel, packet) <0)
    {
       result = false;
    }
