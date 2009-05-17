@@ -153,7 +153,6 @@ void GameManager::startGame( GameState *gameState )
     */
    unsigned long lTimeLastFrame = 0;
    unsigned long lDelay = 0;
-   mWaitTime = ceil(1000/60); /* FIXME: Set the FPS in config file */
 
    while( !bShutdown )
    {
@@ -172,7 +171,7 @@ void GameManager::startGame( GameState *gameState )
       mStates.back()->update(lTimeSinceLastFrame);
 
       lDelay += lTimeSinceLastFrame;
-      if (lDelay > mWaitTime)
+      if (lDelay > mSettings->getDelayTime())
       {
          /* render the next frame */
          mRoot->renderOneFrame();

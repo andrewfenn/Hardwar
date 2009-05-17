@@ -32,11 +32,15 @@ class GameSettings
       ~GameSettings(void);
       void update(unsigned long);
       void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+      void cmd_maxFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+      unsigned short getDelayTime(void);
 
    private:      Console *mConsole;
       void showFPS(void);
 
       bool mShowFPS;
+      unsigned short mMaxFPS;
+      unsigned short mWaitTime;
       unsigned long mFPStimer;      
 };
 

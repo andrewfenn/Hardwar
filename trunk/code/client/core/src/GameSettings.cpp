@@ -22,9 +22,32 @@ using namespace Client;
 
 GameSettings::GameSettings(void)
 {
+   mMaxFPS = 60;
    mShowFPS = false;
+   /* TODO: Everything above should be configurable from file */
    mConsole = Console::getSingletonPtr();
    mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameSettings::cmd_showFPS));
+   mConsole->addCommand(Ogre::UTFString("cl_maxfps"), MyGUI::newDelegate(this, &GameSettings::cmd_maxFPS));
+   mWaitTime = ceil(1000/mMaxFPS);
+}
+
+void GameSettings::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   unsigned short newfps = 60;
+   if (!MyGUI::utility::parseComplex(value, newfps))
+   {
+      if (!value.empty())
+      {
+         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+      }
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "int - "+Ogre::UTFString("Set the max FPS limit"));
+   }
+   else
+   {
+      mWaitTime = ceil(1000/newfps);
+      mMaxFPS = newfps;
+      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);    
+   }
 }
 
 void GameSettings::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
@@ -49,6 +72,11 @@ void GameSettings::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString
          o->hide();
       }
    }
+}
+
+unsigned short GameSettings::getDelayTime(void)
+{
+   return mWaitTime;
 }
 
 void GameSettings::update(unsigned long lTimeElapsed)
