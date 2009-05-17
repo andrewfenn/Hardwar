@@ -46,7 +46,6 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
 {
    public:
       bool                mSinglePlayer;
-      Network             *mNetwork;
 
       ~GameManager(void);
       void startGame(GameState *gameState);
@@ -59,10 +58,11 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       MyGUI::Gui           *mGUI;
       Console              *mConsole;
       GameSettings         *mSettings;
+      Network              *mNetwork;
 
-      Ogre::Camera            *mCamera;
-      Ogre::SceneManager      *mSceneMgr;
-      Ogre::Viewport          *mViewport;
+      Ogre::Camera         *mCamera;
+      Ogre::SceneManager   *mSceneMgr;
+      Ogre::Viewport       *mViewport;
 
    private:
       Ogre::Root           *mRoot;

@@ -20,8 +20,10 @@
 #define __NETWORK_H_
 
 #include <string>
-
-#include "WorldManager.h"
+#include <stdio.h>
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+#include "srvstructs.h"
 #include "enet/enet.h"
 
 namespace Client
@@ -32,12 +34,22 @@ class Network
    public:
       Network();
       ~Network();
-      bool sendJoinRequest(void);
-      bool pollMessage(ENetEvent*);
-      bool message(const void*, size_t, enet_uint8, enet_uint32);
-      bool setPort(int);
-      bool setAddress(std::string);
 
+      void connect(void);
+      bool pollMessage(ENetEvent*);
+
+      bool setAddress(std::string);
+      bool setPort(int);
+
+      enet_uint32 getTimeout(void);
+      unsigned short getRetryAttempts(void);
+
+      bool message(const void*, size_t, enet_uint8, enet_uint32);
+
+      void startThread(void);
+      void stopThread(void);
+
+      clientStatus getConStatus(void);
       ENetHost*         mNetHost;
 
    private:
@@ -46,7 +58,18 @@ class Network
       int               mPort;
       bool              mConnected;
       std::string       mAddress;
+      clientStatus      mStatus;
+      unsigned short    mConAttempts;
+      unsigned short    mRetryLimit;
+      unsigned short    mTimeout;
+
       bool connect(unsigned int, std::string);
+      bool sendJoinRequest(void);
+      void threadLoop(void);
+      void setConStatus(clientStatus);
+
+      boost::thread mThread;
+      bool mRunThread;
 };
 
 }

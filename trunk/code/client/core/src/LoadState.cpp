@@ -33,29 +33,15 @@ void LoadState::enter( void )
    mViewport     = mGameMgr->mViewport;
 
    mGameMgr->mGUI->hidePointer();
-   mReverse = false; /* for the load bar animation */
-
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");
 
-   if (mGameMgr->mSinglePlayer)
-   {
-     mStatusText->setCaption(Ogre::String(gettext("Starting game")));
-   }
-   else
-   {
-     mStatusText->setCaption(Ogre::String(gettext("Connecting to server")));
-   }
+   mGameMgr->mNetwork->startThread();
+   mGameMgr->mNetwork->connect();
 
-   mConAttempts = 0; /* connection attempts so far */
-   mCounter = 101; /* timer for a delay between connection attempts */
-
-   mLoadStatus = STATUS_CONNECTING;
-   mRetryLimit = 10; /* TODO: Make this config option */
-   mTimeout = 30; /* TODO: Make this config option. */
    mGUIcount = 0;
-   mReverse = false;
+   mReverse = false; /* for the load bar animation */
 }
 
 /* Destory everything we created when entering */
@@ -78,13 +64,19 @@ void LoadState::update( unsigned long lTimeElapsed )
 
    updateLoadbar();
 
-   switch(mLoadStatus)
+   switch(mGameMgr->mNetwork->getConStatus())
    {
       case STATUS_CONNECTING:
-         connect();
+         mStatusText->setCaption(Ogre::String(gettext("Connecting")));
+
+         if (mGameMgr->mNetwork->getRetryAttempts() > 0)
+         {
+            mStatusText->setCaption(Ogre::UTFString(gettext("Retrying"))+Ogre::UTFString(" (")+
+                            Ogre::StringConverter::toString(mGameMgr->mNetwork->getRetryAttempts())+Ogre::UTFString(")"));
+         }
       break;
       case STATUS_LISTENING:
-         waitForReply();
+         mStatusText->setCaption(Ogre::String(gettext("Loading")));
       break;
       case STATUS_CONNECTED:
          {
@@ -97,83 +89,12 @@ void LoadState::update( unsigned long lTimeElapsed )
          this->changeState(PlayState::getSingletonPtr());
          }
       break;
+      case STATUS_DISCONNECTED:
+         /* the connection has failed */
+         killLoadbar();
+      break;
       default:
       break;
-   }
-}
-
-void LoadState::waitForReply(void)
-{
-   ENetEvent event;
-   if (mGameMgr->mNetwork->pollMessage(&event))
-   {
-      switch (event.type)
-      {
-         case ENET_EVENT_TYPE_RECEIVE:
-         {
-            Player lPlayer;
-            clientStatus lConState;
-            memcpy(&lConState, event.packet->data, sizeof(event.packet->data));
-            lPlayer.conState = lConState;
-            mLoadStatus = lPlayer.conState;
-            // Clean up the packet now that we're done using it.
-            enet_packet_destroy(event.packet);
-         }
-         break;
-         default:
-         break;
-      }
-   }
-   else
-   {
-      unsigned int timeout = mTimeout - (mCounter*0.001);
-      if (timeout < mTimeout-1)
-      {
-         mStatusText->setCaption(Ogre::String(gettext("Waiting for response. Timeout: "))+Ogre::StringConverter::toString(timeout));
-         if (timeout == 0)
-         {
-             mLoadStatus = STATUS_CONNECTING;
-             mConAttempts++;
-         }
-      }
-   }
-}
-
-void LoadState::connect(void)
-{
-   if ((mCounter*0.001) > 1)
-   {
-      if (mConAttempts < mRetryLimit)
-      {
-         mCounter = 0;
-         
-         bool result = mGameMgr->mNetwork->sendJoinRequest();
-         if (result)
-         {
-            if (mGameMgr->mSinglePlayer)
-            {
-               mStatusText->setCaption(Ogre::String(gettext("Loading world")));
-            }
-            else
-            {
-               mStatusText->setCaption(Ogre::String(gettext("Waiting for response")));
-            }
-            mLoadStatus = STATUS_LISTENING;
-         }
-         else
-         {
-            mConAttempts++;
-            mStatusText->setCaption(Ogre::UTFString(gettext("Retrying"))+Ogre::UTFString(" (")+
-                            Ogre::StringConverter::toString(mConAttempts)+Ogre::UTFString(")"));
-
-         }
-      }
-      else
-      {
-         /* the connection has failed */
-         mLoadStatus = STATUS_DISCONNECTED;
-         killLoadbar();
-      }
    }
 }
 
@@ -184,17 +105,17 @@ void LoadState::updateLoadbar(void)
    if (mGUICounter*0.001 > 0.5)
    {
       mGUICounter = 0;
-      MyGUI::StaticImagePtr statusImage;
+      MyGUI::StaticImagePtr lstatusImage;
 
       if (mGUIcount > 0)
       {
          /* set the size of the last big dot to small */
-         statusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
+         lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
                                                           Ogre::UTFString("dot")+
                                        Ogre::StringConverter::toString(mGUIcount)
                                                                                );
-         coord = statusImage->getCoord();
-         statusImage->setCoord(coord.left+3, coord.top +3, coord.width -5, coord.height -5);
+         coord = lstatusImage->getCoord();
+         lstatusImage->setCoord(coord.left+3, coord.top +3, coord.width -5, coord.height -5);
       }
 
       if (mReverse)
@@ -217,30 +138,27 @@ void LoadState::updateLoadbar(void)
          mReverse = true;
       }
 
-      statusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
+      lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
                                                           Ogre::UTFString("dot")+
                                        Ogre::StringConverter::toString(mGUIcount)
                                                                                );
-      coord = statusImage->getCoord();
-      statusImage->setCoord(coord.left-3, coord.top -3, coord.width +5, coord.height +5);
+      coord = lstatusImage->getCoord();
+      lstatusImage->setCoord(coord.left-3, coord.top -3, coord.width +5, coord.height +5);
    }
 }
 
 /* Stop the loading animation and stop failure message */
 void LoadState::killLoadbar()
 {
+   MyGUI::StaticImagePtr lstatusImage;
+   lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> ("dot1");
+   lstatusImage->setVisible(false);
+   lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> ("dot2");
+   lstatusImage->setVisible(false);
+   lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> ("dot3");
+   lstatusImage->setVisible(false);
    /* TODO: make this a popup window? */
-
-   /*mStatusText->setCaption(Ogre::String(gettext("Press ESC to quit")));*/
-
-   if (mGameMgr->mSinglePlayer)
-   {
-      mStatusText->setCaption(Ogre::String(gettext("Failed to start game")));
-   }
-   else
-   {
-      mStatusText->setCaption(Ogre::String(gettext("Failed to connect to server")));
-   }
+   mStatusText->setCaption(Ogre::String(gettext("Failed")));
 }
 
 void LoadState::keyPressed(const OIS::KeyEvent &e)

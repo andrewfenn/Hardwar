@@ -23,11 +23,16 @@ using namespace Client;
 Network::Network()
 {
    if (enet_initialize() != 0) {
-      std::cerr << "An error occurred while initializing ENet." << std::endl;
+      fprintf(stderr,"An error occurred while initializing ENet\n");
    }
    mPort = 26500;
    mAddress = std::string("127.0.0.1");
    mConnected = false;
+   mRunThread = false;
+   mStatus = STATUS_DISCONNECTED;
+   mRetryLimit = 5; /* TODO: Make this config option */
+   mTimeout = 5; /* TODO: Make this config option. */
+   mConAttempts = 0;
 }
 
 bool Network::setPort(int port)
@@ -48,6 +53,105 @@ bool Network::setAddress(std::string address)
    return true;
 }
 
+void Network::connect(void)
+{
+   if (mPort > 0 && !mAddress.empty())
+   {
+      setConStatus(STATUS_CONNECTING);
+   }
+}
+
+void Network::setConStatus(clientStatus lStatus)
+{
+   /* TODO: Add mutex */
+   mStatus = lStatus;
+}
+
+unsigned short Network::getRetryAttempts(void)
+{
+   return mConAttempts;
+}
+
+clientStatus Network::getConStatus(void)
+{
+   /* TODO: Add mutex */
+   return mStatus;
+}
+
+void Network::startThread(void)
+{
+   if (!mRunThread)
+   {
+      /* create a new thread */
+      boost::thread mThread(boost::bind(&Network::threadLoop, this));
+   }
+}
+
+void Network::stopThread(void)
+{
+   if (mRunThread)
+   {
+      mRunThread = false;
+      mThread.join();
+   }
+}
+
+enet_uint32 Network::getTimeout(void)
+{
+   return mPeer->nextTimeout;
+}
+
+void Network::threadLoop(void)
+{
+   mRunThread = true;
+   ENetEvent lEvent;
+   clientStatus lStatus;
+
+   while (mRunThread)
+   {
+      switch(mStatus)
+      {
+         case STATUS_CONNECTING:
+            if (sendJoinRequest())
+            {
+               setConStatus(STATUS_LISTENING);
+            }
+            else
+            {
+               mConAttempts++;
+               if (mConAttempts > mRetryLimit)
+               {
+                  setConStatus(STATUS_DISCONNECTED);
+               }
+            }
+         break;
+         case STATUS_LISTENING:
+         {
+            if (pollMessage(&lEvent))
+            {
+               switch (lEvent.type)
+               {
+                  case ENET_EVENT_TYPE_RECEIVE:
+                     memcpy(&lStatus, lEvent.packet->data, sizeof(lEvent.packet->data));
+                     setConStatus(lStatus);
+                     /* Clean up the packet now that we are done using it */
+                     enet_packet_destroy(lEvent.packet);
+                  break;
+                  default:
+                  break;
+               }
+            }
+         }
+         break;
+         case STATUS_CONNECTED:
+
+         break;
+         default:
+         break;
+      }
+   }
+}
+
 bool Network::sendJoinRequest(void)
 {
    if (connect(mPort, mAddress))
@@ -64,6 +168,7 @@ bool Network::connect(unsigned int port, std::string ip)
    /* TODO: Add all print out messages to a log */
    ENetAddress address;
 
+   /* TODO: Add config option to increase speed */
    mNetHost = enet_host_create (NULL /* create a Network host */,
                                        1 /* only allow 1 outgoing connection */,
                     57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
@@ -76,7 +181,7 @@ bool Network::connect(unsigned int port, std::string ip)
       return false;
    }
 
-   std::cout << "Connecting to " << ip << ":" << port << std::endl;
+   printf("Connecting to %s:%d\n", ip.c_str(), port);
 
    if (enet_address_set_host(&address, ip.c_str()) < 0)
    {
@@ -85,29 +190,29 @@ bool Network::connect(unsigned int port, std::string ip)
    }
    address.port = port;
 
-   /* Initiate the connection, allocating the two channels 0 and 1. */
-   mPeer = enet_host_connect (mNetHost, &address, 2);
+   /* Initiate the connection */
+   mPeer = enet_host_connect (mNetHost, &address, SERVER_MAX_CHANNELS);
 
    if (!mPeer) {
       fprintf(stderr, "No available peers for initiating an ENet connection.\n");
       return false;
    }
 
-   /* Wait up to 5 seconds for the connection attempt to succeed. */
-   if (enet_host_service (mNetHost, & mEvent, 5000) > 0 && mEvent.type == ENET_EVENT_TYPE_CONNECT)
+   /* Wait up to n seconds for the connection attempt to succeed. */
+   if (enet_host_service (mNetHost, & mEvent, mTimeout*1000) > 0 && mEvent.type == ENET_EVENT_TYPE_CONNECT)
    {
-      std::cout << "Connection to " << ip << ":" << port << " succeeded" << std::endl;
+      printf("Connection succeeded\n");
       mConnected = true;
       return true;
    }
    else
    {
-      /* Either the 5 seconds are up or a disconnect event was
-       * received. Reset the peer in the event the 5 seconds
+      /* Either the n seconds are up or a disconnect event was
+       * received. Reset the peer in the event the n seconds
        * had run out without any significant event.
        */
       enet_peer_reset (mPeer);
-      std::cout << "Connection to " << ip << ":" << port << " failed" << std::endl;
+      printf("Connection failed\n");
    }
 
    return false;
@@ -138,6 +243,7 @@ bool Network::message(const void* msg, size_t size, enet_uint8 channel, enet_uin
 
 Network::~Network()
 {
+   stopThread();
    enet_host_destroy(mNetHost);
    enet_deinitialize();
 }

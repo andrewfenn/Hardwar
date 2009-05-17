@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __LoadState_H_
-#define __LoadState_H_
+#ifndef __LOADSTATE_H_
+#define __LOADSTATE_H_
 
 #include <OgreRoot.h>
 #include <libintl.h>
@@ -64,18 +64,12 @@ private:
 
     MyGUI::VectorWidgetPtr mLayout;
 
-    unsigned int mConAttempts;
-    unsigned int mRetryLimit;
-    unsigned int mTimeout;
-
     LoadState(void) { }
     LoadState(const LoadState&) { }
     LoadState & operator = (const LoadState&);
 
     void updateLoadbar(void);
     void killLoadbar(void);
-    void connect(void);
-    void waitForReply(void);
 
     unsigned long mCounter; /* keeps track of time between connection attempts */
 
@@ -85,5 +79,5 @@ private:
     MyGUI::StaticTextPtr  mStatusText;
 };
 }
-#endif /* __LoadState_H_ */
+#endif /* __LOADSTATE_H_ */
 

@@ -20,6 +20,9 @@
 #ifndef __SRVSTRUCTS_H_
 #define __SRVSTRUCTS_H_
 
+/* How many channels we have */
+#define SERVER_MAX_CHANNELS      3
+
 #define SERVER_CHANNEL_PING      0
 #define SERVER_CHANNEL_MOVEMENT  1
 #define SERVER_CHANNEL_ADMIN     2
