@@ -29,7 +29,7 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
                                                  mPlayState(0), bShutdown(false)
 {
    mSinglePlayer = false;
-   mNetwork = new Network;
+   mNetwork = Network::getSingletonPtr();
 }
 
 GameManager::~GameManager( void )

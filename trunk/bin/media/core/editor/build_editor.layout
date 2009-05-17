@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+    <Widget type="StaticImage" skin="StaticImage" position="0 0 400 40" layer="Back" name="BuildEditorMenuTop">
+        <Property key="Image_Texture" value="layout_bar.png"/>
+        <Widget type="StaticImage" skin="StaticImage" position="16 0 40 40" layer="Back">
+            <Property key="Image_Texture" value="icon_build.png"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="16 1 38 38" layer="Back">
+            <Property key="Image_Texture" value="button_null.png"/>
+        </Widget>
+    </Widget>
+    <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuBottom">
+        <Property key="Widget_Alpha" value="0.5"/>
+        <Widget type="Button" skin="ButtonLeft" position="16 16 24 24" layer="Back">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+        </Widget>
+        <Widget type="Button" skin="ButtonRight" position="358 16 24 24" layer="Back">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+        </Widget>
+        <Widget type="RenderBox" skin="RenderBox" position="20 60 60 60" layer="Back">
+            <Property key="RenderBox_BackgroundColour" value="0 0 0 0"/>
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="RenderBox" skin="RenderBox" position="100 60 60 60" layer="Back">
+            <Property key="RenderBox_BackgroundColour" value="0 0 0 0"/>
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+    </Widget>
+</MyGUI>

@@ -32,8 +32,8 @@ namespace Client
 class Network
 {
    public:
-      Network();
       ~Network();
+      static Network* getSingletonPtr(void);
 
       void connect(void);
       bool pollMessage(ENetEvent*);
@@ -50,6 +50,7 @@ class Network
       void stopThread(void);
 
       clientStatus getConStatus(void);
+
       ENetHost*         mNetHost;
 
    private:
@@ -63,9 +64,16 @@ class Network
       unsigned short    mRetryLimit;
       unsigned short    mTimeout;
 
+      static Network *mNetwork;
+
+      Network(void);
+      Network(const Network&) { }
+      Network & operator = (const Network&);
+
       bool connect(unsigned int, std::string);
       bool sendJoinRequest(void);
-      void threadLoop(void);
+      void threadLoopConnect(void);
+      void threadLoopGame(void);
       void setConStatus(clientStatus);
 
       boost::thread mThread;

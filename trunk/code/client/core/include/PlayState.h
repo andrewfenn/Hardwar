@@ -70,15 +70,9 @@ class PlayState : public GameState
                               mKeydownRight, mKeydownLeft;
       Ogre::Real              fpstimer;
 
-      unsigned long           mPingTime; /* indicator of connection strength */
-      unsigned long           mPingWaitTime; /* ping delay time */
-      bool                    mPingSent; /* If we sent a ping yet */
-
       PlayState(void) { }
       PlayState(const PlayState&) { }
       PlayState & operator = (const PlayState&);
-
-      void networkUpdate(unsigned long);
 };
 
 }

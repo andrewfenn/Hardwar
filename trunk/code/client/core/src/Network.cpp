@@ -20,6 +20,8 @@
 
 using namespace Client;
 
+Network* Network::mNetwork;
+
 Network::Network()
 {
    if (enet_initialize() != 0) {
@@ -83,7 +85,7 @@ void Network::startThread(void)
    if (!mRunThread)
    {
       /* create a new thread */
-      boost::thread mThread(boost::bind(&Network::threadLoop, this));
+      boost::thread mThread(boost::bind(&Network::threadLoopConnect, this));
    }
 }
 
@@ -101,7 +103,7 @@ enet_uint32 Network::getTimeout(void)
    return mPeer->nextTimeout;
 }
 
-void Network::threadLoop(void)
+void Network::threadLoopConnect(void)
 {
    mRunThread = true;
    ENetEvent lEvent;
@@ -144,7 +146,37 @@ void Network::threadLoop(void)
          }
          break;
          case STATUS_CONNECTED:
+            threadLoopGame();
+         break;
+         default:
+         break;
+      }
+   }
+}
 
+void Network::threadLoopGame()
+{
+   ENetEvent lEvent;
+   while (enet_host_service(mNetHost, &lEvent, 1000) > 0)
+   {
+      switch(lEvent.type)
+      {
+         case ENET_EVENT_TYPE_RECEIVE:
+            switch(lEvent.channelID)
+            {
+               case SERVER_CHANNEL_PING:
+               {
+                  char* data = (char*)lEvent.packet->data;
+
+                  if (strcmp(data, "pong") == 0)
+                  {
+                  
+                  }
+               }
+               break;
+               default:
+               break;
+            }
          break;
          default:
          break;
@@ -246,4 +278,14 @@ Network::~Network()
    stopThread();
    enet_host_destroy(mNetHost);
    enet_deinitialize();
+}
+
+Network* Network::getSingletonPtr(void)
+{
+   if(!mNetwork)
+   {
+      mNetwork = new Network();
+   }
+
+   return mNetwork;
 }

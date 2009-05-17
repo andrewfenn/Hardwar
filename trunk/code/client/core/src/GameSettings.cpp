@@ -23,31 +23,14 @@ using namespace Client;
 GameSettings::GameSettings(void)
 {
    mMaxFPS = 60;
-   mShowFPS = false;
+   mShowFPS = true;
+   mShowNet = true;
    /* TODO: Everything above should be configurable from file */
    mConsole = Console::getSingletonPtr();
    mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameSettings::cmd_showFPS));
    mConsole->addCommand(Ogre::UTFString("cl_maxfps"), MyGUI::newDelegate(this, &GameSettings::cmd_maxFPS));
+   mConsole->addCommand(Ogre::UTFString("cl_shownet"), MyGUI::newDelegate(this, &GameSettings::cmd_showNet));
    mWaitTime = ceil(1000/mMaxFPS);
-}
-
-void GameSettings::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
-{
-   unsigned short newfps = 60;
-   if (!MyGUI::utility::parseComplex(value, newfps))
-   {
-      if (!value.empty())
-      {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
-      }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "int - "+Ogre::UTFString("Set the max FPS limit"));
-   }
-   else
-   {
-      mWaitTime = ceil(1000/newfps);
-      mMaxFPS = newfps;
-      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);    
-   }
 }
 
 void GameSettings::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
@@ -74,6 +57,52 @@ void GameSettings::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString
    }
 }
 
+void GameSettings::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   unsigned short newfps = 60;
+   if (!MyGUI::utility::parseComplex(value, newfps))
+   {
+      if (!value.empty())
+      {
+         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+      }
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "int - "+Ogre::UTFString("Set the max FPS limit"));
+   }
+   else
+   {
+      if (newfps > 25)
+      {
+         mWaitTime = ceil(1000/newfps);
+         mMaxFPS = newfps;
+         mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
+      }
+   }
+}
+
+void GameSettings::cmd_showNet(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   bool show = false;
+   if (!MyGUI::utility::parseComplex(value, show))
+   {
+      if (!value.empty())
+      {
+         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+      }
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show network information"));
+   }
+   else
+   {
+      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
+      mShowNet = show;
+      if (!show)
+      {
+         /* hide the overlay */
+         Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Hardwar/NetStats");
+         o->hide();
+      }
+   }
+}
+
 unsigned short GameSettings::getDelayTime(void)
 {
    return mWaitTime;
@@ -87,6 +116,47 @@ void GameSettings::update(unsigned long lTimeElapsed)
       /* Don't need to update this stuff every frame */
       mFPStimer = 0;
       if (mShowFPS) showFPS();
+      if (mShowNet) showNet();
+   }
+}
+
+void GameSettings::showNet(void)
+{
+   static Ogre::String lPing = "Ping: ";
+   static Ogre::String lIncData = "Incomming Data: ";
+   static Ogre::String lOutData = "Outgoing Data: ";
+   static Ogre::String lPackSent = "Packets Sent: ";
+   static Ogre::String lPackLost = "Packets Lost: ";
+   static Ogre::String lTimeout = "Next Timeout: ";
+
+   Ogre::OverlayManager *lOverlayMgr = Ogre::OverlayManager::getSingletonPtr();
+
+   /* update stats when necessary */
+   Ogre::OverlayElement* lguiPing   = lOverlayMgr->getOverlayElement("Hardwar/Ping");
+   Ogre::OverlayElement* lguiIncData  = lOverlayMgr->getOverlayElement("Hardwar/Incomming");
+   Ogre::OverlayElement* lguiOutData  = lOverlayMgr->getOverlayElement("Hardwar/Outgoing");
+   Ogre::OverlayElement* lguiPackSent = lOverlayMgr->getOverlayElement("Hardwar/PacketsSent");
+   Ogre::OverlayElement* lguiPackLost  = lOverlayMgr->getOverlayElement("Hardwar/PacketsLost");
+   Ogre::OverlayElement* lguiTimeout = lOverlayMgr->getOverlayElement("Hardwar/Timeout");
+
+   ENetHost *lHost = Network::getSingletonPtr()->mNetHost;
+
+   lguiPing->setCaption(lPing + Ogre::StringConverter::toString(lHost->lastServicedPeer->roundTripTime) + Ogre::String(" ms"));
+   lguiIncData->setCaption(lIncData + Ogre::StringConverter::toString(Ogre::Real(lHost->incomingBandwidth/1000)) + Ogre::String(" Kib"));
+   lguiOutData->setCaption(lOutData + Ogre::StringConverter::toString(Ogre::Real(lHost->outgoingBandwidth/1000)) + Ogre::String(" Kib"));
+   lguiPackSent->setCaption(lPackSent + Ogre::StringConverter::toString(lHost->lastServicedPeer->packetsSent));
+   lguiPackLost->setCaption(lPackLost + Ogre::StringConverter::toString(lHost->lastServicedPeer->packetsLost));
+   lguiTimeout->setCaption("");
+
+   Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Hardwar/NetStats");
+
+   if (!o)
+   {
+      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Hardwar/NetStats", "GameSettings::showNet" );
+   }
+   else
+   {
+      o->show();
    }
 }
 
@@ -123,7 +193,7 @@ void GameSettings::showFPS(void)
 
    if (!o)
    {
-      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "showDebugOverlay" );
+      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "GameSettings::showFPS" );
    }
    else
    {

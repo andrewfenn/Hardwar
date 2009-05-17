@@ -20,7 +20,9 @@
 #define __GAMESETTINGS_H_
 
 #include <OgreRoot.h>
+
 #include "Console.h"
+#include "Network.h"
 
 namespace Client
 {
@@ -33,12 +35,15 @@ class GameSettings
       void update(unsigned long);
       void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
       void cmd_maxFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+      void cmd_showNet(const Ogre::UTFString&, const Ogre::UTFString&);
       unsigned short getDelayTime(void);
 
    private:      Console *mConsole;
       void showFPS(void);
+      void showNet(void);
 
       bool mShowFPS;
+      bool mShowNet;
       unsigned short mMaxFPS;
       unsigned short mWaitTime;
       unsigned long mFPStimer;      

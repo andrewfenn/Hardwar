@@ -47,10 +47,6 @@ void PlayState::enter(void)
    mMouseRotX = mMouseRotY = 0;
    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
 
-   mPingWaitTime = 0;
-   mPingSent = false;
-   mPingTime = 0;
-
    mBuildEditor = new BuildEditor;
 }
 
@@ -75,8 +71,6 @@ void PlayState::resume(void)
 
 void PlayState::update(unsigned long lTimeElapsed)
 {
-   networkUpdate(lTimeElapsed);
-
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
    float scale = 0.9f;
 
@@ -98,54 +92,6 @@ void PlayState::update(unsigned long lTimeElapsed)
    mCamera->setPosition(mCamera->getPosition()+translateVector);
 
    mMouseRotX = mMouseRotY = 0;
-}
-
-void PlayState::networkUpdate(unsigned long lTimeElapsed)
-{
-   mPingWaitTime += lTimeElapsed;
-   if (mPingWaitTime > 3000)
-   {
-      if (mPingSent)
-      {
-         /* No reply, send again */
-         mPingSent = false;
-      }
-      else
-      {
-         /* Wait before sending another ping request */
-         if (mGameMgr->mNetwork->message("ping", strlen("ping")+1, 0, ENET_PACKET_FLAG_UNSEQUENCED))
-         {
-             mPingSent = true;
-         }
-      }
-      mPingWaitTime = 0;
-   }
-
-   ENetEvent lEvent;
-   mGameMgr->mNetwork->pollMessage(&lEvent);
-
-   switch(lEvent.type)
-   {
-      case ENET_EVENT_TYPE_RECEIVE:
-         switch(lEvent.channelID)
-         {
-            case SERVER_CHANNEL_PING:
-            {
-               char* data = (char*)lEvent.packet->data;
-
-               if (strcmp(data, "pong") == 0)
-               {
-                  mPingTime = mPingWaitTime;
-               }
-            }
-            break;
-            default:
-            break;
-         }
-      break;
-      default:
-      break;
-   }
 }
 
 void PlayState::keyPressed(const OIS::KeyEvent &e)
