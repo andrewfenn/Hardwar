@@ -136,7 +136,10 @@ void GameManager::startGame( GameState *gameState )
    mGUI->setSceneManager(mSceneMgr);
 
    /* Add Console */
-   mConsole = new Console();
+   mConsole = Console::getSingletonPtr();
+
+   /* Add Game Settings */
+   mSettings = new GameSettings();
 
    /* Setup states */
    mLoadState = LoadState::getSingletonPtr();
@@ -173,7 +176,7 @@ void GameManager::startGame( GameState *gameState )
       {
          /* render the next frame */
          mRoot->renderOneFrame();
-
+         mSettings->update(lTimeSinceLastFrame);
          mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/1000);
          lDelay = 0;
       }

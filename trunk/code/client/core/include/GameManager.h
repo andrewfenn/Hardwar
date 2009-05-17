@@ -35,6 +35,7 @@
 #include "InputManager.h"
 #include "Network.h"
 #include "Console.h"
+#include "GameSettings.h"
 
 namespace Client
 {
@@ -57,6 +58,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       static GameManager* getSingletonPtr(void);
       MyGUI::Gui           *mGUI;
       Console              *mConsole;
+      GameSettings         *mSettings;
 
       Ogre::Camera            *mCamera;
       Ogre::SceneManager      *mSceneMgr;

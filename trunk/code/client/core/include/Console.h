@@ -38,8 +38,8 @@ namespace Client
 class Console
 {
    public:
-      Console();
       ~Console();
+      static Console* getSingletonPtr(void);
       void toggleShow();
       void update();
       bool isVisible();
@@ -83,6 +83,12 @@ class Console
       void notifyCommandTyped(MyGUI::WidgetPtr, MyGUI::KeyCode, MyGUI::Char);
       void notifyCommandAccept(MyGUI::ComboBoxPtr, size_t);
       void notifySubmitButtonClick(MyGUI::WidgetPtr);
+
+      static Console *mConsole;
+
+      Console(void);
+      Console(const Console&) { }
+      Console & operator = (const Console&);
 
       bool mShow;
       bool mAutoCompleted;

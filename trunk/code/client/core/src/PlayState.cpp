@@ -50,10 +50,6 @@ void PlayState::enter(void)
    mPingWaitTime = 0;
    mPingSent = false;
    mPingTime = 0;
-   mShowFPS = false;
-
-   /* FIXME: this should go in game manager as it's a basic command not specific to the play state */
-   mGameMgr->mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &PlayState::cmd_showFPS));
 
    mBuildEditor = new BuildEditor;
 }
@@ -77,40 +73,9 @@ void PlayState::resume(void)
 {
 }
 
-void PlayState::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
-{
-   bool show = false;
-   if (!MyGUI::utility::parseComplex(value, show))
-   {
-      if (!value.empty())
-      {
-         mGameMgr->mConsole->addToConsole(mGameMgr->mConsole->getConsoleError(), key, value);
-      }
-      mGameMgr->mConsole->addToConsole(mGameMgr->mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show debug information"));
-   }
-   else
-   {
-      mGameMgr->mConsole->addToConsole(mGameMgr->mConsole->getConsoleSuccess(), key, value);
-      mShowFPS = show;
-      if (!show)
-      {
-         /* hide the overlay */
-         Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-         o->hide();
-      }
-   }
-}
-
 void PlayState::update(unsigned long lTimeElapsed)
 {
    networkUpdate(lTimeElapsed);
-   fpstimer += lTimeElapsed;
-   if (fpstimer > 0.5)
-   {
-      /* Don't need to update this stuff every frame */
-      fpstimer = 0;
-      if (mShowFPS) showFPS();
-   }
 
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
    float scale = 0.9f;
@@ -180,42 +145,6 @@ void PlayState::networkUpdate(unsigned long lTimeElapsed)
       break;
       default:
       break;
-   }
-}
-
-void PlayState::showFPS(void)
-{
-   static Ogre::String currFps = "Current FPS: ";
-   static Ogre::String avgFps = "Average FPS: ";
-   static Ogre::String worstFps = "X: ";
-   static Ogre::String bestFps = "Y: ";
-   static Ogre::String tris = "Z: ";
-
-   /* update stats when necessary */
-   Ogre::OverlayElement* guiAvg   = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
-   Ogre::OverlayElement* guiCurr  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
-   Ogre::OverlayElement* guiBest  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
-   Ogre::OverlayElement* guiWorst = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/BestFps");
-   Ogre::OverlayElement* guiTris  = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumTris");
-   Ogre::OverlayElement* guiBatch = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumBatches");
-   Ogre::OverlayElement* guiImage = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/LogoPanel");
-   guiImage->hide();
-
-   guiAvg->setCaption(avgFps + Ogre::StringConverter::toString(mWindow->getAverageFPS()));
-   guiCurr->setCaption(currFps + Ogre::StringConverter::toString(mWindow->getLastFPS()));
-   guiBest->setCaption(bestFps + Ogre::StringConverter::toString(mCamera->getPosition().y));
-   guiWorst->setCaption(worstFps + Ogre::StringConverter::toString(mCamera->getPosition().x));
-   guiTris->setCaption(tris + Ogre::StringConverter::toString(mCamera->getPosition().z));
-   guiBatch->setCaption("Ping: " + Ogre::StringConverter::toString(mPingTime));
-   Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-
-   if (!o)
-   {
-      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "showDebugOverlay" );
-   }
-   else
-   {
-      o->show();
    }
 }
 

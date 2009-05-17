@@ -20,6 +20,8 @@
 
 using namespace Client;
 
+Console* Console::mConsole;
+
 Console::Console()
 {
    mShow = false;
@@ -223,4 +225,14 @@ void Console::update()
          mGUIConsole->setVisible(false);
    }
    mGUIConsole->setAlpha(mAlpha);
+}
+
+Console* Console::getSingletonPtr(void)
+{
+   if(!mConsole)
+   {
+      mConsole = new Console();
+   }
+
+   return mConsole;
 }

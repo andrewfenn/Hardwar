@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __Playstate_H_
-#define __Playstate_H_
+#ifndef __PLAYSTATE_H_
+#define __PLAYSTATE_H_
 
 #include <OgreRoot.h>
 
@@ -46,9 +46,6 @@ class PlayState : public GameState
       void mouseMoved(const OIS::MouseEvent &e);
       void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
       void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-
-      void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
-
       static PlayState* getSingletonPtr(void);
    private:
       Ogre::Root              *mRoot;
@@ -76,16 +73,14 @@ class PlayState : public GameState
       unsigned long           mPingTime; /* indicator of connection strength */
       unsigned long           mPingWaitTime; /* ping delay time */
       bool                    mPingSent; /* If we sent a ping yet */
-      bool                    mShowFPS; /* show the fps, etc*/
 
       PlayState(void) { }
       PlayState(const PlayState&) { }
       PlayState & operator = (const PlayState&);
 
       void networkUpdate(unsigned long);
-      void showFPS();
 };
 
 }
-#endif /* __Playstate_H_ */
+#endif /* __PLAYSTATE_H_ */
 
