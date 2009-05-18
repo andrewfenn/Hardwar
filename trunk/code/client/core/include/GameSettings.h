@@ -20,9 +20,11 @@
 #define __GAMESETTINGS_H_
 
 #include <OgreRoot.h>
+#include <map>
 
 #include "Console.h"
 #include "Network.h"
+#include "md5.h"
 
 namespace Client
 {
@@ -30,17 +32,29 @@ namespace Client
 class GameSettings
 {
    public:
-      GameSettings(void);
       ~GameSettings(void);
+      static GameSettings* getSingletonPtr(void);
+
       void update(unsigned long);
       void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
       void cmd_maxFPS(const Ogre::UTFString&, const Ogre::UTFString&);
       void cmd_showNet(const Ogre::UTFString&, const Ogre::UTFString&);
+      void cmd_remoteConnect(const Ogre::UTFString&, const Ogre::UTFString&);
       unsigned short getDelayTime(void);
+      void setOption(const Ogre::UTFString, Ogre::UTFString);
+      Ogre::UTFString getOption(const Ogre::UTFString);
 
    private:      Console *mConsole;
       void showFPS(void);
       void showNet(void);
+
+      typedef std::map<Ogre::UTFString,Ogre::UTFString> Option;
+      Option mOptions;
+
+      static GameSettings *mGameSettings;
+      GameSettings(void);
+      GameSettings(const GameSettings&) { }
+      GameSettings & operator = (const GameSettings&);
 
       bool mShowFPS;
       bool mShowNet;

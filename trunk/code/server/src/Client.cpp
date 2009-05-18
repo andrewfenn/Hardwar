@@ -69,20 +69,16 @@ void Client::loop(void)
                                                               (*itEvent).first);
             switch((*itEvent).first)
             {
-               case SERVER_CHANNEL_PING:
+               case SERVER_CHANNEL_GENERIC:
                   /* This channel of join requests and pings */
-                  if (strcmp((char*)(*itEvent).second.packet->data, "ping") == 0)
-                  {
-                     sendMessage("pong", strlen("pong")+1, SERVER_CHANNEL_PING, ENET_PACKET_FLAG_UNSEQUENCED);
-                  }
-                  else if (strcmp((char*)(*itEvent).second.packet->data, "join") == 0)
+                  if (strcmp((char*)(*itEvent).second.packet->data, "join") == 0)
                   {
                      /* New client joined. Begin by sending back the connection status */
                      /* TODO: Check if server is full */
                      /* TODO: Check address isn't banned */
                      /* TODO: Add file checking */
                      mConState = STATUS_CONNECTED;
-                     sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_PING, ENET_PACKET_FLAG_RELIABLE);
+                     sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                   }
                break;
                case SERVER_CHANNEL_MOVEMENT:

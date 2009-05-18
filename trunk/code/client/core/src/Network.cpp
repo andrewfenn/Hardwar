@@ -146,7 +146,25 @@ void Network::threadLoopConnect(void)
          }
          break;
          case STATUS_CONNECTED:
+            threadLoopMessages();
             threadLoopGame();
+         break;
+         default:
+         break;
+      }
+   }
+}
+
+void Network::threadLoopMessages()
+{
+   Ogre::UTFString lResponse;
+   ENetEvent lEvent;
+   while (enet_host_service(mNetHost, &lEvent, 1000) > 0)
+   {
+      switch(lEvent.type)
+      {
+         case ENET_EVENT_TYPE_RECEIVE:
+            addMessage(lEvent);
          break;
          default:
          break;
@@ -156,40 +174,48 @@ void Network::threadLoopConnect(void)
 
 void Network::threadLoopGame()
 {
-   ENetEvent lEvent;
-   while (enet_host_service(mNetHost, &lEvent, 1000) > 0)
+   Message::iterator itEvent;
+   for (itEvent=mMessages.begin(); itEvent != mMessages.end(); itEvent++)
    {
-      switch(lEvent.type)
+      switch((*itEvent).first)
       {
-         case ENET_EVENT_TYPE_RECEIVE:
-            switch(lEvent.channelID)
+         case SERVER_CHANNEL_ADMIN:
+            if (Ogre::UTFString((char*)(*itEvent).second.packet->data) == "login")
             {
-               case SERVER_CHANNEL_PING:
+               enet_packet_destroy((*itEvent).second.packet);
+               itEvent++;
+               Console* lConsole = Console::getSingletonPtr();
+               if (atoi((char*) (*itEvent).second.packet->data))
                {
-                  char* data = (char*)lEvent.packet->data;
-
-                  if (strcmp(data, "pong") == 0)
-                  {
-                  
-                  }
+                  /* Login Successful */               
+                  lConsole->addToConsole(lConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString("Logged in as admin"));
+                  GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));
                }
-               break;
-               default:
-               break;
+               else
+               {
+                  /* failed */
+                  lConsole->addToConsole(lConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString("Login failed"));
+               }
             }
          break;
          default:
          break;
       }
+      enet_packet_destroy((*itEvent).second.packet);
    }
+   mMessages.clear();
+}
+
+void Network::addMessage(const ENetEvent lEvent)
+{
+   mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
 }
 
 bool Network::sendJoinRequest(void)
 {
    if (connect(mPort, mAddress))
    {
-      /* join request - data doesn't matter because we don't look at it */
-      message("join", strlen("join")+1, 0, ENET_PACKET_FLAG_RELIABLE);
+      message("join", strlen("join")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
       return true;
    }
    return false;

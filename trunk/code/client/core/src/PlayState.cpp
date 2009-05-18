@@ -71,6 +71,7 @@ void PlayState::resume(void)
 
 void PlayState::update(unsigned long lTimeElapsed)
 {
+   mBuildEditor->update(lTimeElapsed);
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
    float scale = 0.9f;
 
@@ -152,7 +153,7 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
-   if (mGameMgr->mConsole->isVisible())
+   if (mGUI->isShowPointer())
    {
       mGUI->injectMouseMove(e);
    }
@@ -166,7 +167,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGameMgr->mConsole->isVisible())
+   if (mGUI->isShowPointer())
    {
       mGUI->injectMousePress(e, id);
    }
@@ -174,7 +175,7 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGameMgr->mConsole->isVisible())
+   if (mGUI->isShowPointer())
    {
       mGUI->injectMouseRelease(e, id);
    }

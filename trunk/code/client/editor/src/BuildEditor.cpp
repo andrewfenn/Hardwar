@@ -29,6 +29,7 @@ BuildEditor::BuildEditor(void)
    mMenuBar->setVisible(false);
    mMenuPanel = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuBottom");
    mMenuPanel->setVisible(false);
+   Console::getSingletonPtr()->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditor::cmd_showEditor));
 }
 
 BuildEditor::~BuildEditor(void)
@@ -36,20 +37,59 @@ BuildEditor::~BuildEditor(void)
    /* TODO: unload build editor resources */
 }
 
-void BuildEditor::toggleShow(void)
+void BuildEditor::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFString &value)
 {
-   if (mShow)
+   bool show = false;
+   Console* lConsole = Console::getSingletonPtr();
+
+   if (!MyGUI::utility::parseComplex(value, show))
+   {
+      if (!value.empty())
+      {
+         lConsole->addToConsole(lConsole->getConsoleError(), key, value);
+      }
+      lConsole->addToConsole(lConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show the hardwar editor"));
+   }
+   else
+   {
+      bool isAdmin = Ogre::StringConverter::parseBool(GameSettings::getSingletonPtr()->getOption("isAdmin"));
+      if (isAdmin)
+      {
+         toggleShow(show);
+         lConsole->addToConsole(lConsole->getConsoleSuccess(), key, Ogre::StringConverter::toString(show));
+      }
+      else
+      {
+         lConsole->addToConsole(lConsole->getConsoleError(), key, Ogre::UTFString("Not logged in as admin. (use rcon_password)"));
+      }
+   }
+}
+
+void BuildEditor::update(unsigned long lTimeElapsed)
+{
+   if (mShow && !mGUI->isShowPointer())
+   {
+      mGUI->showPointer();
+   }
+}
+
+void BuildEditor::toggleShow(bool lShow)
+{
+   Console* lConsole = Console::getSingletonPtr();
+   if (!lShow)
    {
       mShow = false;
       mMenuPanel->setVisible(false);
       mMenuBar->setVisible(false);
-      mGUI->hidePointer();
    }
    else
    {
+      if (lConsole->isVisible())
+      {
+         lConsole->toggleShow();
+      }
       mShow = true;
       mMenuPanel->setVisible(true);
       mMenuBar->setVisible(true);
-      mGUI->showPointer();
    }
 }

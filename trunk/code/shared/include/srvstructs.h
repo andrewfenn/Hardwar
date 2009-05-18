@@ -23,14 +23,14 @@
 /* How many channels we have */
 #define SERVER_MAX_CHANNELS      3
 
-#define SERVER_CHANNEL_PING      0
+#define SERVER_CHANNEL_GENERIC   0
 #define SERVER_CHANNEL_MOVEMENT  1
 #define SERVER_CHANNEL_ADMIN     2
 
 typedef enum {
     NONE = 0,
-    HAS_FTP_ADDRESS         = 0x0001,/* Send the client to download somewhere else */
-    DOWNLOAD_FROM_SERVER    = 0x0002 /* Download level files from the server */
+    HAS_FTP_ADDRESS         = 0x0001, /* Send the client to download somewhere else */
+    DOWNLOAD_FROM_SERVER    = 0x0002  /* Download level files from the server */
 } serverDldMethod;
 
 typedef enum {

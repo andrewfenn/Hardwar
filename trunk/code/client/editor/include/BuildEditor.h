@@ -22,6 +22,9 @@
 #include <MyGUI.h>
 #include <OgreRoot.h>
 
+#include "GameSettings.h"
+#include "Console.h"
+
 namespace Client
 {
 
@@ -30,9 +33,12 @@ class BuildEditor
 public:
    BuildEditor();
    ~BuildEditor(void);
-   void toggleShow();
+   void update(unsigned long);
+
+   void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
 private:
    bool mShow;
+   void toggleShow(bool);
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
    MyGUI::WidgetPtr mMenuPanel;

@@ -20,6 +20,8 @@
 
 using namespace Client;
 
+GameSettings* GameSettings::mGameSettings;
+
 GameSettings::GameSettings(void)
 {
    mMaxFPS = 60;
@@ -30,7 +32,28 @@ GameSettings::GameSettings(void)
    mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameSettings::cmd_showFPS));
    mConsole->addCommand(Ogre::UTFString("cl_maxfps"), MyGUI::newDelegate(this, &GameSettings::cmd_maxFPS));
    mConsole->addCommand(Ogre::UTFString("cl_shownet"), MyGUI::newDelegate(this, &GameSettings::cmd_showNet));
+   mConsole->addCommand(Ogre::UTFString("rcon_password"), MyGUI::newDelegate(this, &GameSettings::cmd_remoteConnect));
    mWaitTime = ceil(1000/mMaxFPS);
+}
+
+GameSettings::~GameSettings(void)
+{
+
+}
+
+void GameSettings::setOption(const Ogre::UTFString lName, Ogre::UTFString lValue)
+{
+   mOptions[lName] = lValue;
+}
+
+Ogre::UTFString GameSettings::getOption(const Ogre::UTFString lName)
+{
+   Option::iterator iter = mOptions.find(lName);
+   if (iter != mOptions.end())
+   {
+      return mOptions[lName];
+   }
+   return Ogre::UTFString("");
 }
 
 void GameSettings::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
@@ -66,7 +89,7 @@ void GameSettings::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString 
       {
          mConsole->addToConsole(mConsole->getConsoleError(), key, value);
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "int - "+Ogre::UTFString("Set the max FPS limit"));
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[integer] - "+Ogre::UTFString("Set the max FPS limit"));
    }
    else
    {
@@ -100,6 +123,26 @@ void GameSettings::cmd_showNet(const Ogre::UTFString &key, const Ogre::UTFString
          Ogre::Overlay* o = Ogre::OverlayManager::getSingleton().getByName("Hardwar/NetStats");
          o->hide();
       }
+   }
+}
+
+void GameSettings::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   Ogre::String lString;
+   if (!MyGUI::utility::parseComplex(value, lString))
+   {
+      if (!value.empty())
+      {
+         mConsole->addToConsole(mConsole->getConsoleError(), key, Ogre::UTFString("****"));
+      }
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[password] - "+Ogre::UTFString("Gain administrator privileges on the remote server"));
+   }
+   else
+   {
+      Network::getSingletonPtr()->message("login", strlen("login")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+      lString = md5(lString.c_str());
+      Network::getSingletonPtr()->message(lString.c_str(), strlen(lString.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+      /* reponse is dealt with in the Network thread */
    }
 }
 
@@ -199,4 +242,14 @@ void GameSettings::showFPS(void)
    {
       o->show();
    }
+}
+
+GameSettings* GameSettings::getSingletonPtr(void)
+{
+   if(!mGameSettings)
+   {
+      mGameSettings = new GameSettings();
+   }
+
+   return mGameSettings;
 }

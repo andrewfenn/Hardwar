@@ -66,6 +66,16 @@ void Admin::loop(void)
                                          (char*) (*itEvent).second.packet->data,
                                          (*itEvent).second.peer->incomingPeerID,
                                                               (*itEvent).first);
+
+            if (strcmp((char*)(*itEvent).second.packet->data, "login") == 0)
+            {
+               enet_packet_destroy((*itEvent).second.packet);
+               itEvent++;
+               printf ("Hash is:%s\n", (char*) (*itEvent).second.packet->data);
+               /* FIXME: There is no password */
+               sendMessage((*itEvent).second.peer, "login", sizeof("login")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+               sendMessage((*itEvent).second.peer, "1", 2, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+            }
             
             /* finished with the packet, destory it */
             enet_packet_destroy((*itEvent).second.packet);

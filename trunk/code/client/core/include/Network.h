@@ -23,8 +23,11 @@
 #include <stdio.h>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
-#include "srvstructs.h"
 #include "enet/enet.h"
+
+#include "srvstructs.h"
+#include "Console.h"
+#include "GameSettings.h"
 
 namespace Client
 {
@@ -65,6 +68,9 @@ class Network
       unsigned short    mTimeout;
 
       static Network *mNetwork;
+      typedef std::multimap<enet_uint8,ENetEvent> Message;
+      Message mMessages;
+      void addMessage(const ENetEvent);
 
       Network(void);
       Network(const Network&) { }
@@ -73,6 +79,7 @@ class Network
       bool connect(unsigned int, std::string);
       bool sendJoinRequest(void);
       void threadLoopConnect(void);
+      void threadLoopMessages(void);
       void threadLoopGame(void);
       void setConStatus(clientStatus);
 

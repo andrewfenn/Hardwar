@@ -38,6 +38,7 @@ GameManager::~GameManager( void )
    mSceneMgr->destroyAllCameras();
    mRoot->getAutoCreatedWindow()->removeAllViewports();
 
+   delete mSettings;
    /* Delete MyGUI */
    mGUI->shutdown();
    delete mGUI;
@@ -139,7 +140,7 @@ void GameManager::startGame( GameState *gameState )
    mConsole = Console::getSingletonPtr();
 
    /* Add Game Settings */
-   mSettings = new GameSettings();
+   mSettings = GameSettings::getSingletonPtr();
 
    /* Setup states */
    mLoadState = LoadState::getSingletonPtr();
