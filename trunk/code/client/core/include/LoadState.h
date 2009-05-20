@@ -31,6 +31,12 @@
 
 namespace Client
 {
+/** The Load State
+        @remarks
+            The Client::LoadState class is where a new game is loaded up from.
+        This class deals with animation of the loading screen, starting up a
+        thread from Client::Network and connecting to the server.
+    */
 class LoadState : public GameState
 {
 public:

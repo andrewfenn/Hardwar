@@ -20,7 +20,11 @@
 #ifndef __SRVSTRUCTS_H_
 #define __SRVSTRUCTS_H_
 
-/* How many channels we have */
+/** How many channels we have 
+   @remarks
+      This is needed when it comes to opening Enet connections so if more
+      channels are added update the number here.
+*/
 #define SERVER_MAX_CHANNELS      3
 
 #define SERVER_CHANNEL_GENERIC   0

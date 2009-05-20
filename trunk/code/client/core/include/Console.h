@@ -34,17 +34,43 @@ namespace formates
 
 namespace Client
 {
-
+/** The Game Console
+        @remarks
+            The Client::Console class deals with all the functionality required
+            to start and run the player's console. It depends upon MyGUI so must
+            be initialised afterward. 
+    */
 class Console
 {
    public:
       ~Console();
       static Console* getSingletonPtr(void);
+      /** The method either shows or hides the console from the screen */
       void toggleShow();
+      /** The method is used for fade effects when the console is hidden or shown */
       void update();
+      /** The method returns if the console is visible on the screen */
       bool isVisible();
+      /** The method adds a command to the console.
+      @param name
+             The name of the console which is typed by the user.
+      @param function
+             The function which is called when the user executes the console
+      command.
+      */
       bool addCommand(const Ogre::UTFString&, CommandDelegate::IDelegate*);
+      /** The method adds text to the console's window. */
       void addToConsole(const Ogre::UTFString&);
+      /** The method adds formatted text to the console's window according to
+      the UserString's in bin/media/core/console/console.layout
+      @param reason
+             The UserString for example getConsoleError()
+      @param key
+             The piece of text which describes value, for example the function
+      name which was executed.
+      @param value
+             The result text displayed after the key text.
+      */
       void addToConsole(const Ogre::UTFString& reason, const Ogre::UTFString& key, const Ogre::UTFString& value)
       {
          addToConsole(MyGUI::utility::toString(reason, "'", key, " ", value, "'"));
@@ -80,6 +106,15 @@ class Console
 
    private:
       void draw();
+      /** This method is called whenever a character is typed into the console's
+      text box.
+      @param widget
+             A pointer to the textbox widget
+      @param keycode
+             The character typed into the textbox by keycode
+      @param char
+             The character typed into the textbox
+      */
       void notifyCommandTyped(MyGUI::WidgetPtr, MyGUI::KeyCode, MyGUI::Char);
       void notifyCommandAccept(MyGUI::ComboBoxPtr, size_t);
       void notifySubmitButtonClick(MyGUI::WidgetPtr);

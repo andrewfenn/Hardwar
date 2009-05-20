@@ -29,6 +29,12 @@
 namespace Client
 {
 
+/** The GameSettings class
+        @remarks
+            The Client::GameSettings class is where operation variables are
+        stored, changed, loaded and saved. It also includes functions used by
+        Client::Console which change the variables stored here.
+    */
 class GameSettings
 {
    public:
@@ -36,12 +42,61 @@ class GameSettings
       static GameSettings* getSingletonPtr(void);
 
       void update(unsigned long);
+      /** This method is used by Client::Console to toggle the debug window that
+      shows FPS information.
+      @param key
+             The command name typed in the console.
+      @param value
+             A boolean value that either shows or hides the window.
+      command.
+      */
       void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+      /** This method is used by Client::Console to change the FPS limit.
+      @remarks
+             The value can not be below 25 FPS.
+      @param key
+             The command name typed in the console.
+      @param value
+             An integer for the new FPS limit.
+      command.
+      */
       void cmd_maxFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+      /** This method is used by Client::Console to toggle the debug window that
+      shows network information.
+      @param key
+             The command name typed in the console.
+      @param value
+             A boolean value that either shows or hides the window.
+      command.
+      */
       void cmd_showNet(const Ogre::UTFString&, const Ogre::UTFString&);
+      /** This method is used by Client::Console to remotely log into the server.
+      @param key
+             The command name typed in the console.
+      @param value
+             The password typed into the console.
+      command.
+      */
       void cmd_remoteConnect(const Ogre::UTFString&, const Ogre::UTFString&);
+      /** This method returns the delay time between render loops depending
+      upon what the max FPS limit is set to. */
       unsigned short getDelayTime(void);
+      /** Creates or changes a value stored in mGameSettings .
+      @remarks
+             All values are stored as Strings. You can use Ogre::StringConverter
+      to convert between types.
+      @param name
+             The name of the value trying to be created or changed
+      @param value
+             The value to be stored
+      */
       void setOption(const Ogre::UTFString, Ogre::UTFString);
+      /** Retrieves a value stored in mGameSettings 
+      @remarks
+             If there is no value found then an empty Ogre::String is returned.
+      @param name
+             The name of the value trying to be retrieved
+      */
       Ogre::UTFString getOption(const Ogre::UTFString);
 
    private:      Console *mConsole;

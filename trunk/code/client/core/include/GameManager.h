@@ -42,16 +42,35 @@ namespace Client
 
 class GameState;
 
+/** The Game Manager
+        @remarks
+            The Client::GameManager class is our root class which deals with the
+            initialisation and running of our game.
+    */
 class GameManager : public OIS::KeyListener, OIS::MouseListener
 {
    public:
       bool                mSinglePlayer;
 
       ~GameManager(void);
+      /** The method initialises Ogre::Root and other core parts of the game 
+         such as MyGUI, Client::InputManager , Client::Console and 
+         Client::GameSettings
+         @param gameState
+            The state used in this function will be the first state the game
+            goes to after initialisation.
+         @remarks
+            This method should only be called once.
+      */
       void startGame(GameState *gameState);
+      /** This method changes the current GameState being run.
+         @param gameState
+            The GameState being changed to.
+      */
       void changeState(GameState *gameState);
       void pushState(GameState *gameState);
       void popState(void);
+      /** Shuts down the game */
       void requestShutdown(void);
 
       static GameManager* getSingletonPtr(void);

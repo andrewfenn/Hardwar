@@ -28,13 +28,23 @@
 
 namespace Server
 {
+/** The Client Channel Manager
+        @remarks
+            The Server::Client class is where packets related to the client such
+            as movement are processed. Every client that joins has their own
+            Server::Client object and thread.
+    */
 class Client
 {
    public:
       Client();
       ~Client();
+      /** Adds a new network message to the list of network messages to be
+          processed. */
       void addMessage(const ENetEvent);
+      /** Starts a new thread which processes a client's messages. */
       void makeThread(void);
+      /** Sets the unique peer ID given to the client by Enet */
       void setPeer(ENetPeer*);
    private:
       void loop(void);

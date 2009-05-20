@@ -31,27 +31,51 @@
 
 namespace Client
 {
-
+/** Network Manager
+        @remarks
+            The Client::Network class manages a thread which deals with 
+            connecting and dealing with data sent from the server.
+    */
 class Network
 {
    public:
       ~Network();
       static Network* getSingletonPtr(void);
 
+      /** Connects to a server */
       void connect(void);
+      /** Looks for new UDP messages being recieved from the server */
       bool pollMessage(ENetEvent*);
-
+      /** Sets the IP address of the server to connect to
+         @param address
+                The IP address of the server
+      */
       bool setAddress(std::string);
+      /** Sets the port address of the server to connect to
+         @param address
+                The port address of the server
+      */
       bool setPort(int);
-
       enet_uint32 getTimeout(void);
+      /** Gets the number of times a connection has failed */
       unsigned short getRetryAttempts(void);
-
+      /** Sends a message to the server
+         @param data
+                The data being sent
+         @param size
+                The size of the data
+         @param channel
+                An Enet specific variable. Which channel the data is being sent 
+                on.
+         @param priority
+                An Enet specific variable.
+      */
       bool message(const void*, size_t, enet_uint8, enet_uint32);
-
+      /** Starts the network thread */
       void startThread(void);
+      /** Stops the network thread */
       void stopThread(void);
-
+      /** Gets the client's connection status */
       clientStatus getConStatus(void);
 
       ENetHost*         mNetHost;

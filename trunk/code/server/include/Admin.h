@@ -28,13 +28,23 @@
 
 namespace Server
 {
+/** The Admin Channel Manager
+        @remarks
+            The Server::Admin class is where packets from SERVER_CHANNEL_ADMIN
+            are processed. The class deals with logging in, placing buildings,
+            and other activities done with admin privileges.
+    */
 class Admin
 {
    public:
       Admin();
       ~Admin();
+      /** Adds a new network message to the list of network messages to be
+          processed. */
       void addMessage(const ENetEvent);
+      /** Starts a new thread which processes admin network messages. */
       void makeThread(void);
+      /** Stops the thread. */
       void stopThread();
    private:
       void loop(void);

@@ -29,14 +29,28 @@
 
 namespace Client
 {
-
+/** The Build Editor
+        @remarks
+            The Client::BuildEditor class deals with editing the levels in the
+            game such as placing down buildings.
+    */
 class BuildEditor
 {
 public:
    BuildEditor();
    ~BuildEditor(void);
    void update(unsigned long);
+   /** Shows or hides the editor panel, however keeps the top menu bar visible. */
    void toggleMinimise(MyGUI::WidgetPtr);
+   /** This method is used by Client::Console to show or hide the editor menu.
+   @remarks
+          The editor can only be accessed in the client has used rcon_password
+          to login to the server and gain admin privileges.
+   @param key
+          The command name typed in the console.
+   @param value
+           A boolean value that either shows or hides the window.
+   */
    void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
 private:
    Ogre::Root         *mRoot;

@@ -55,11 +55,6 @@ Console::~Console()
 
 }
 
-/*
- * Function: addCommand
- * Description: Adds functions to the console so they can be used
- *
- */
 bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate* function)
 {
    mCommandBox->addItem(name);

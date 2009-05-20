@@ -34,6 +34,12 @@
 
 namespace Server
 {
+/** The Main Server Loop
+        @remarks
+            The Server::ServerMain class acts as a hub where messages being
+            received by Enet are relayed on to the different threads to be
+            processed.
+    */
 class ServerMain
 {
    public:
