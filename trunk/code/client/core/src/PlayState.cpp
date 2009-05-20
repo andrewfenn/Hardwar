@@ -155,6 +155,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
    if (mGUI->isShowPointer())
    {
+      /* fixme: should move this to game manager */
       mGUI->injectMouseMove(e);
    }
    else

@@ -21,8 +21,10 @@
 
 #include <MyGUI.h>
 #include <OgreRoot.h>
+#include <boost/filesystem.hpp>
 
 #include "GameSettings.h"
+#include "GameManager.h"
 #include "Console.h"
 
 namespace Client
@@ -34,11 +36,15 @@ public:
    BuildEditor();
    ~BuildEditor(void);
    void update(unsigned long);
-
    void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
 private:
+   Ogre::Root         *mRoot;
+   Ogre::SceneManager *mSceneMgr;
+
    bool mShow;
    void toggleShow(bool);
+   void renderBuildingList();
+   void renderMesh(Ogre::UTFString, Ogre::UTFString);
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
    MyGUI::WidgetPtr mMenuPanel;

@@ -30,11 +30,76 @@ BuildEditor::BuildEditor(void)
    mMenuPanel = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuBottom");
    mMenuPanel->setVisible(false);
    Console::getSingletonPtr()->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditor::cmd_showEditor));
+
+   mRoot = Ogre::Root::getSingletonPtr();
+   mRoot->createSceneManager(Ogre::ST_GENERIC,"EditorSceneMgr");
+   mSceneMgr = mRoot->getSceneManager("EditorSceneMgr");
+   mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
+   renderBuildingList();
 }
 
 BuildEditor::~BuildEditor(void)
 {
    /* TODO: unload build editor resources */
+}
+
+void BuildEditor::renderBuildingList()
+{
+   boost::filesystem::path lPath("../media/models/hangers");
+	unsigned short x = 1;
+   unsigned short y = 1;
+
+	if (boost::filesystem::is_directory(lPath))
+   {
+	   for (boost::filesystem::directory_iterator itr(lPath); itr!=boost::filesystem::directory_iterator(); ++itr)
+      {
+	      Ogre::String temp = (Ogre::String) itr->path().leaf();
+	      if (temp.substr(temp.length()-4, 4).compare("mesh") == 0)
+         {
+            Ogre::UTFString lPanelName = Ogre::UTFString("RenderBox")+Ogre::StringConverter::toString(x)+"_"+Ogre::StringConverter::toString(y);
+	         renderMesh((Ogre::String) itr->path().leaf(), lPanelName);
+            y++;
+            if (y > 4)
+            {
+               x++;
+               y=1;
+            }
+            if (x > 4)
+            {
+               /* Build Editor is full so stop */
+               return;
+            }
+	      }
+	   }
+	}
+}
+
+void BuildEditor::renderMesh(Ogre::UTFString lMesh, Ogre::UTFString lPanelName)
+{
+   /* TODO: if entity exists, remove * */
+   Ogre::SceneNode *lEditorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(lPanelName, Ogre::Vector3(0, 0, 0 ));   
+   Ogre::Entity *lent = mSceneMgr->createEntity(lPanelName, lMesh);
+   lEditorNode->attachObject(lent);
+
+   /* TODO: if camera exists, don't create another, same for renderbox */
+   Ogre::Camera *lCamera = mSceneMgr->createCamera("EditorCamera_"+lPanelName);
+   lCamera->setPosition(Ogre::Vector3(0, 0+(lent->getBoundingBox().getSize().y*0.5), (lent->getBoundingBox().getSize().y)*1.2)+lent->getBoundingBox().getSize().z);
+   lCamera->lookAt(Ogre::Vector3(0,0,0));
+
+   Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(lPanelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                  Ogre::TEX_TYPE_2D, 64, 64, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET );
+   Ogre::RenderTexture *renderTexture = texture->getBuffer()->getRenderTarget();
+   renderTexture->addViewport(lCamera, 0);
+   renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::ZERO);
+   renderTexture->getViewport(0)->setOverlaysEnabled(false);
+   renderTexture->update(true);
+   MyGUI::StaticImage* lRenderPanel = mGUI->findWidget<MyGUI::StaticImage>(lPanelName);
+   lRenderPanel->setImageTexture(lPanelName);
+
+   renderTexture->setActive(false);
+   renderTexture->removeAllViewports();
+   mSceneMgr->destroyAllCameras();
+   mSceneMgr->destroySceneNode(lPanelName);
 }
 
 void BuildEditor::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFString &value)

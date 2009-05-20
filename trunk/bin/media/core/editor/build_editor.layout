@@ -17,13 +17,67 @@
         <Widget type="Button" skin="ButtonRight" position="358 16 24 24" layer="Back">
             <Property key="Widget_InheritsAlpha" value="false"/>
         </Widget>
-        <Widget type="RenderBox" skin="RenderBox" position="20 60 60 60" layer="Back">
-            <Property key="RenderBox_BackgroundColour" value="0 0 0 0"/>
+        <Widget type="StaticImage" skin="StaticImage" position="40 60 70 70" layer="Back" name="RenderBox1_1">
             <Property key="Widget_InheritsAlpha" value="false"/>
             <Property key="Widget_Visible" value="true"/>
         </Widget>
-        <Widget type="RenderBox" skin="RenderBox" position="100 60 60 60" layer="Back">
-            <Property key="RenderBox_BackgroundColour" value="0 0 0 0"/>
+        <Widget type="StaticImage" skin="StaticImage" position="120 60 70 70" layer="Back" name="RenderBox1_2">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="200 60 70 70" layer="Back" name="RenderBox1_3">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="280 60 70 70" layer="Back" name="RenderBox1_4">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="40 140 70 70" layer="Back" name="RenderBox2_1">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="120 140 70 70" layer="Back" name="RenderBox2_2">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="200 140 70 70" layer="Back" name="RenderBox2_3">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="280 140 70 70" layer="Back" name="RenderBox2_4">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="40 220 70 70" layer="Back" name="RenderBox3_1">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="120 220 70 70" layer="Back" name="RenderBox3_2">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="200 220 70 70" layer="Back" name="RenderBox3_3">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="280 220 70 70" layer="Back" name="RenderBox3_4">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="40 300 70 70" layer="Back" name="RenderBox4_1">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="120 300 70 70" layer="Back" name="RenderBox4_2">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="200 300 70 70" layer="Back" name="RenderBox4_3">
+            <Property key="Widget_InheritsAlpha" value="false"/>
+            <Property key="Widget_Visible" value="true"/>
+        </Widget>
+        <Widget type="StaticImage" skin="StaticImage" position="280 300 70 70" layer="Back" name="RenderBox4_4">
             <Property key="Widget_InheritsAlpha" value="false"/>
             <Property key="Widget_Visible" value="true"/>
         </Widget>

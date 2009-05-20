@@ -34,16 +34,15 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
 
 GameManager::~GameManager( void )
 {
-   mSceneMgr->clearScene();
-   mSceneMgr->destroyAllCameras();
-   mRoot->getAutoCreatedWindow()->removeAllViewports();
-
-   delete mSettings;
    /* Delete MyGUI */
+   mGUI->destroyAllChildWidget();
    mGUI->shutdown();
    delete mGUI;
-   delete mNetwork;
    mGUI = 0;
+
+   delete mSettings;
+   delete mNetwork;
+
    /* Clean up all the states */
    while(!mStates.empty())
    {
@@ -65,6 +64,11 @@ GameManager::~GameManager( void )
       delete mPlayState;
       mPlayState  = 0;
    }
+
+   mSceneMgr->clearScene();
+   mSceneMgr->destroyAllCameras();
+   mRoot->getAutoCreatedWindow()->removeAllViewports();
+
    if(mRoot)
    {
       delete mRoot;
@@ -131,9 +135,9 @@ void GameManager::startGame( GameState *gameState )
    mRoot->createSceneManager(Ogre::ST_GENERIC,"GameSceneMgr");
    mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
    mCamera       = mSceneMgr->createCamera("GameCamera");
-   mViewport     = mRenderWindow->addViewport(mCamera,0);
+   mViewport     = mRenderWindow->addViewport(mCamera,1);
 
-   mGUI->initialise(mRoot->getAutoCreatedWindow());
+   mGUI->initialise(mRoot->getAutoCreatedWindow(), "core.xml", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "logs/mygui.log");
    mGUI->setSceneManager(mSceneMgr);
 
    /* Add Console */
