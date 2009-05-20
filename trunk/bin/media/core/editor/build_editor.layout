@@ -2,15 +2,25 @@
 <MyGUI type="Layout">
     <Widget type="StaticImage" skin="StaticImage" position="0 0 400 40" layer="Back" name="BuildEditorMenuTop">
         <Property key="Image_Texture" value="layout_bar.png"/>
-        <Widget type="StaticImage" skin="StaticImage" position="16 0 40 40" layer="Back">
-            <Property key="Image_Texture" value="icon_build.png"/>
+        <Widget type="Button" skin="Button" position="16 0 40 40" layer="Back" name="EditorButtonMinimise">
+            <Widget type="StaticImage" skin="StaticImage" position="0 0 40 40" layer="Back">
+                <Property key="Widget_Alpha" value="0.3"/>
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Image_Texture" value="icon_minimise.png"/>
+                <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
         </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="16 1 38 38" layer="Back">
-            <Property key="Image_Texture" value="button_null.png"/>
+        <Widget type="Button" skin="Button" position="66 0 40 40" layer="Back">
+            <Widget type="StaticImage" skin="StaticImage" position="0 0 40 40" layer="Back">
+                <Property key="Widget_Alpha" value="0.3"/>
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Image_Texture" value="icon_build.png"/>
+                <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
         </Widget>
     </Widget>
     <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuBottom">
-        <Property key="Widget_Alpha" value="0.5"/>
+        <Property key="Widget_Alpha" value="0.8"/>
         <Widget type="Button" skin="ButtonLeft" position="16 16 24 24" layer="Back">
             <Property key="Widget_InheritsAlpha" value="false"/>
         </Widget>

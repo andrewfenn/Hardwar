@@ -36,6 +36,7 @@ public:
    BuildEditor();
    ~BuildEditor(void);
    void update(unsigned long);
+   void toggleMinimise(MyGUI::WidgetPtr);
    void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
 private:
    Ogre::Root         *mRoot;

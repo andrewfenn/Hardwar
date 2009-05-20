@@ -25,17 +25,22 @@ BuildEditor::BuildEditor(void)
    mShow = false;
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("build_editor.layout");
+
    mMenuBar = mGUI->findWidget<MyGUI::StaticImage>("BuildEditorMenuTop");
    mMenuBar->setVisible(false);
    mMenuPanel = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuBottom");
    mMenuPanel->setVisible(false);
    Console::getSingletonPtr()->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditor::cmd_showEditor));
 
+   MyGUI::ButtonPtr lButton = mGUI->findWidget<MyGUI::Button>("EditorButtonMinimise");
+   lButton->eventMouseButtonClick = MyGUI::newDelegate(this, &BuildEditor::toggleMinimise);
+
    mRoot = Ogre::Root::getSingletonPtr();
    mRoot->createSceneManager(Ogre::ST_GENERIC,"EditorSceneMgr");
    mSceneMgr = mRoot->getSceneManager("EditorSceneMgr");
    mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
    renderBuildingList();
+   toggleShow(true);
 }
 
 BuildEditor::~BuildEditor(void)
@@ -43,7 +48,21 @@ BuildEditor::~BuildEditor(void)
    /* TODO: unload build editor resources */
 }
 
-void BuildEditor::renderBuildingList()
+void BuildEditor::toggleMinimise(MyGUI::WidgetPtr lWidget)
+{
+   if (mShow)
+   {
+      mShow = false;
+      mGUI->hidePointer();
+   }
+   else
+   {
+      mShow = true;
+   }
+   mMenuPanel->setVisible(mShow);
+}
+
+void BuildEditor::renderBuildingList(void)
 {
    boost::filesystem::path lPath("../media/models/hangers");
 	unsigned short x = 1;
@@ -74,8 +93,10 @@ void BuildEditor::renderBuildingList()
 	}
 }
 
-void BuildEditor::renderMesh(Ogre::UTFString lMesh, Ogre::UTFString lPanelName)
+void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString lPanelName)
 {
+   /* FIXME: We could do this better by moving some of this over to renderBuildingList
+      instead of adding and removing it over and over */
    /* TODO: if entity exists, remove * */
    Ogre::SceneNode *lEditorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(lPanelName, Ogre::Vector3(0, 0, 0 ));   
    Ogre::Entity *lent = mSceneMgr->createEntity(lPanelName, lMesh);

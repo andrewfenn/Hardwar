@@ -25,8 +25,8 @@ GameSettings* GameSettings::mGameSettings;
 GameSettings::GameSettings(void)
 {
    mMaxFPS = 60;
-   mShowFPS = true;
-   mShowNet = true;
+   mShowFPS = false;
+   mShowNet = false;
    /* TODO: Everything above should be configurable from file */
    mConsole = Console::getSingletonPtr();
    mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameSettings::cmd_showFPS));
