@@ -24,6 +24,7 @@
 #include "GameState.h"
 #include "srvstructs.h"
 #include "BuildEditor.h"
+#include "Network.h"
 
 namespace Client
 {

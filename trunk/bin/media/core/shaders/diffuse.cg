@@ -1,0 +1,57 @@
+float3 fvLightPosition;
+float3 fvEyePosition;
+float4x4 matView;
+float4x4 matViewProjection;
+
+struct VS_INPUT
+{
+   float4 Position : POSITION0;
+   float3 Normal :   NORMAL0;
+};
+
+struct VS_OUTPUT
+{
+   float4 Position :        POSITION0;
+   float3 ViewDirection :   TEXCOORD1;
+   float3 LightDirection :  TEXCOORD2;
+   float3 Normal :          TEXCOORD3;
+};
+
+VS_OUTPUT vs_main(VS_INPUT Input)
+{
+   VS_OUTPUT Output;
+
+   Output.Position         = mul(matViewProjection, Input.Position);
+   float3 fvObjectPosition = mul(matView, Input.Position);
+
+   Output.ViewDirection    = fvEyePosition - fvObjectPosition;
+   Output.LightDirection   = fvLightPosition - fvObjectPosition;
+   Output.Normal           = mul(matView, float4(Input.Normal,0));
+   return(Output);
+}
+
+float4 fvAmbient;
+float4 fvDiffuse;
+
+struct PS_INPUT
+{
+   float3 ViewDirection :   TEXCOORD1;
+   float3 LightDirection:   TEXCOORD2;
+   float3 Normal :          TEXCOORD3;
+};
+
+float4 ps_main(PS_INPUT Input) : COLOR0
+{
+   float3 fvLightDirection = normalize( Input.LightDirection );
+   float3 fvNormal         = normalize( Input.Normal );
+   float  fNDotL           = dot( fvNormal, fvLightDirection );
+
+   float3 fvReflection     = normalize( ( ( 2.0f * fvNormal ) * ( fNDotL ) ) - fvLightDirection );
+   float3 fvViewDirection  = normalize( Input.ViewDirection );
+   float  fRDotV           = max( 0.0f, dot( fvReflection, fvViewDirection ) );
+
+   float4 fvTotalAmbient   = fvAmbient;
+   float4 fvTotalDiffuse   = fvDiffuse * fNDotL;
+
+   return( saturate( fvTotalAmbient + fvTotalDiffuse) );
+}

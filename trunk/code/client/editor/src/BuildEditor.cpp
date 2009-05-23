@@ -100,9 +100,9 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    /* TODO: if entity exists, remove * */
    Ogre::SceneNode *lEditorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(lPanelName, Ogre::Vector3(0, 0, 0 ));   
    Ogre::Entity *lent = mSceneMgr->createEntity(lPanelName, lMesh);
+   lent->setMaterialName("shader/orange");
    lEditorNode->attachObject(lent);
 
-   /* TODO: if camera exists, don't create another, same for renderbox */
    Ogre::Camera *lCamera = mSceneMgr->createCamera("EditorCamera_"+lPanelName);
    lCamera->setPosition(Ogre::Vector3(0, 0+(lent->getBoundingBox().getSize().y*0.5), (lent->getBoundingBox().getSize().y)*1.2)+lent->getBoundingBox().getSize().z);
    lCamera->lookAt(Ogre::Vector3(0,0,0));
@@ -110,10 +110,12 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(lPanelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                   Ogre::TEX_TYPE_2D, 64, 64, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET );
    Ogre::RenderTexture *renderTexture = texture->getBuffer()->getRenderTarget();
+
    renderTexture->addViewport(lCamera, 0);
    renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::ZERO);
    renderTexture->getViewport(0)->setOverlaysEnabled(false);
    renderTexture->update(true);
+
    MyGUI::StaticImage* lRenderPanel = mGUI->findWidget<MyGUI::StaticImage>(lPanelName);
    lRenderPanel->setImageTexture(lPanelName);
 

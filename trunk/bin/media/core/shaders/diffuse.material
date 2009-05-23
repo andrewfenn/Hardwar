@@ -1,0 +1,43 @@
+fragment_program shader/diffuse cg
+{
+	source diffuse.cg
+	entry_point ps_main
+	profiles ps_2_0 arbfp1
+}
+
+vertex_program shader/diffuse cg
+{
+	source diffuse.cg
+	entry_point vs_main
+	profiles vs_1_1 arbvp1
+}
+
+material shader/diffuse
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref shader/diffuse
+			{
+            param_named fvAmbient float 0.5
+				param_named_auto fvDiffuse light_diffuse_colour;
+            param_named_auto fvLightPosition light_position;
+            param_named_auto fvEyePosition view_direction;
+            param_named_auto matView view_matrix;
+            param_named_auto matViewProjection projection_matrix;
+			}
+
+			fragment_program_ref shader/diffuse
+			{
+            param_named fvAmbient float 0.5
+				param_named_auto fvDiffuse light_diffuse_colour;
+            param_named_auto fvLightPosition light_position;
+            param_named_auto fvEyePosition view_direction;
+            param_named_auto matView view_matrix;
+            param_named_auto matViewProjection projection_matrix;
+			}
+		}
+	}
+}
+

@@ -52,6 +52,7 @@ void PlayState::enter(void)
 
 void PlayState::exit(void)
 {
+   Network::getSingletonPtr()->stopThread();
    delete mBuildEditor;
 }
 
