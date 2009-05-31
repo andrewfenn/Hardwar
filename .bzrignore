@@ -25,3 +25,5 @@ logs/ogre.log
 trunk/logs/ogre.log
 trunk/bin/logs/ogre.log
 docs
+./bin/gdb-client
+trunk/bin/logs/mygui.log

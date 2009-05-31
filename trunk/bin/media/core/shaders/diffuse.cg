@@ -40,7 +40,7 @@ struct PS_INPUT
    float3 Normal :          TEXCOORD3;
 };
 
-float4 ps_main(PS_INPUT Input) : COLOR0
+float4 ps_main(PS_INPUT Input) : COLOR
 {
    float3 fvLightDirection = normalize( Input.LightDirection );
    float3 fvNormal         = normalize( Input.Normal );
@@ -50,8 +50,8 @@ float4 ps_main(PS_INPUT Input) : COLOR0
    float3 fvViewDirection  = normalize( Input.ViewDirection );
    float  fRDotV           = max( 0.0f, dot( fvReflection, fvViewDirection ) );
 
-   float4 fvTotalAmbient   = fvAmbient;
+   float4 fvTotalAmbient   = normalize(fvAmbient)+float4(0,0,0,1);
    float4 fvTotalDiffuse   = fvDiffuse * fNDotL;
 
-   return( saturate( fvTotalAmbient + fvTotalDiffuse) );
+   return(saturate(fvTotalAmbient + fvTotalDiffuse));
 }

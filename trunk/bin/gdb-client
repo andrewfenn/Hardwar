@@ -1,0 +1,6 @@
+exec ./hardwar
+set height 0
+run --connect
+bt
+c
+quit

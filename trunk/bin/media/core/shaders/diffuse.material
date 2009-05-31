@@ -1,11 +1,11 @@
-fragment_program shader/diffuse cg
+fragment_program shader/diffuse_fp cg
 {
 	source diffuse.cg
 	entry_point ps_main
 	profiles ps_2_0 arbfp1
 }
 
-vertex_program shader/diffuse cg
+vertex_program shader/diffuse_vp cg
 {
 	source diffuse.cg
 	entry_point vs_main
@@ -18,24 +18,18 @@ material shader/diffuse
 	{
 		pass
 		{
-			vertex_program_ref shader/diffuse
+			vertex_program_ref shader/diffuse_vp
 			{
-            param_named fvAmbient float 0.5
-				param_named_auto fvDiffuse light_diffuse_colour;
-            param_named_auto fvLightPosition light_position;
-            param_named_auto fvEyePosition view_direction;
-            param_named_auto matView view_matrix;
-            param_named_auto matViewProjection projection_matrix;
+            param_named_auto fvLightPosition light_position_object_space
+            param_named_auto fvEyePosition camera_position_object_space
+            param_named_auto matView view_matrix
+            param_named_auto matViewProjection viewproj_matrix
 			}
 
-			fragment_program_ref shader/diffuse
+			fragment_program_ref shader/diffuse_fp
 			{
-            param_named fvAmbient float 0.5
-				param_named_auto fvDiffuse light_diffuse_colour;
-            param_named_auto fvLightPosition light_position;
-            param_named_auto fvEyePosition view_direction;
-            param_named_auto matView view_matrix;
-            param_named_auto matViewProjection projection_matrix;
+            param_named fvAmbient float3 0.4 0.4 0.4
+				param_named fvDiffuse float3 0.3 0.3 0.3
 			}
 		}
 	}

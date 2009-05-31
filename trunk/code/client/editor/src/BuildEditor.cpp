@@ -100,7 +100,7 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    /* TODO: if entity exists, remove * */
    Ogre::SceneNode *lEditorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(lPanelName, Ogre::Vector3(0, 0, 0 ));   
    Ogre::Entity *lent = mSceneMgr->createEntity(lPanelName, lMesh);
-   lent->setMaterialName("shader/orange");
+   lent->setMaterialName("shader/diffuse");
    lEditorNode->attachObject(lent);
 
    Ogre::Camera *lCamera = mSceneMgr->createCamera("EditorCamera_"+lPanelName);
