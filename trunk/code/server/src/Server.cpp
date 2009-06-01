@@ -50,15 +50,15 @@ bool ServerMain::setupServer(int port, Ogre::String ip)
 
    if (enet_initialize() != 0)
    {
-      printf("Unable to initialize the network library.\n");
+      printf(gettext("Unable to initialize the network library.\n"));
       return false;
    }
 
    address.host = ENET_HOST_ANY;
    address.port = port;
 
-   printf("Starting server\n");
-   printf("Port: %d\n", port);
+   printf(gettext("Starting server\n"));
+   printf(gettext("Port: %d\n"), port);
 
    mServer = enet_host_create (&address /* the address to bind the server host to */, 
                               32      /* allow up to 32 clients and/or outgoing connections */,
@@ -66,7 +66,7 @@ bool ServerMain::setupServer(int port, Ogre::String ip)
                                0      /* assume any amount of outgoing bandwidth */);
    if (mServer == NULL)
    {
-      printf("An error occurred while trying to create an ENet server host.\n");
+      printf(gettext("An error occurred while trying to create an ENet server host.\n"));
       enet_deinitialize();
       return false;
    }
@@ -83,7 +83,7 @@ bool ServerMain::setupGame()
    /* Start thread to process admin commands */
    mAdmin = new Admin;
    mAdmin->makeThread();
-   printf("Thread: Admin - started\n");
+   printf(gettext("Thread: Admin - started\n"));
   /* mWorldMgr = new WorldManager;
    result = mWorldMgr->loadWorldData(Ogre::String("world/default.db"));
 
@@ -102,13 +102,13 @@ void ServerMain::createClient(ENetPeer *lpeer)
    mPlayer[lpeer->incomingPeerID]->setPeer(lpeer);
    /* start new client thread */
    mPlayer[lpeer->incomingPeerID]->makeThread();
-   printf("Thread: Client - %d - started\n", lpeer->incomingPeerID);
+   printf(gettext("Thread: Client - %d - started\n"), lpeer->incomingPeerID);
 }
 
 void ServerMain::serverLoop()
 {
    bool serverRunning = true;
-   printf("Server running..\n");
+   printf(gettext("Server running..\n"));
    ENetEvent lEvent;
 
    while (serverRunning)
@@ -140,7 +140,7 @@ void ServerMain::serverLoop()
                /* TODO: destory client's thread? */
                delete mPlayer[lEvent.peer->incomingPeerID];
                mPlayer.erase(lEvent.peer->incomingPeerID);
-               printf("Thread: Client - %d - killed\n", lEvent.peer->incomingPeerID);
+               printf(gettext("Thread: Client - %d - killed\n"), lEvent.peer->incomingPeerID);
             break;
             default:
             break;

@@ -21,6 +21,7 @@
 
 #include <MyGUI.h>
 #include <OgreRoot.h>
+#include <libintl.h>
 #include <boost/filesystem.hpp>
 
 #include "GameSettings.h"

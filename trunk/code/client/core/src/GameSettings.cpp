@@ -165,22 +165,22 @@ void GameSettings::update(unsigned long lTimeElapsed)
 
 void GameSettings::showNet(void)
 {
-   static Ogre::String lPing = "Ping: ";
-   static Ogre::String lIncData = "Incomming Data: ";
-   static Ogre::String lOutData = "Outgoing Data: ";
-   static Ogre::String lPackSent = "Packets Sent: ";
-   static Ogre::String lPackLost = "Packets Lost: ";
-   static Ogre::String lTimeout = "Next Timeout: ";
+   static Ogre::String lPing     = gettext("Ping: ");
+   static Ogre::String lIncData  = gettext("Incomming Data: ");
+   static Ogre::String lOutData  = gettext("Outgoing Data: ");
+   static Ogre::String lPackSent = gettext("Packets Sent: ");
+   static Ogre::String lPackLost = gettext("Packets Lost: ");
+   static Ogre::String lTimeout  = gettext("Next Timeout: ");
 
    Ogre::OverlayManager *lOverlayMgr = Ogre::OverlayManager::getSingletonPtr();
 
    /* update stats when necessary */
-   Ogre::OverlayElement* lguiPing   = lOverlayMgr->getOverlayElement("Hardwar/Ping");
+   Ogre::OverlayElement* lguiPing     = lOverlayMgr->getOverlayElement("Hardwar/Ping");
    Ogre::OverlayElement* lguiIncData  = lOverlayMgr->getOverlayElement("Hardwar/Incomming");
    Ogre::OverlayElement* lguiOutData  = lOverlayMgr->getOverlayElement("Hardwar/Outgoing");
    Ogre::OverlayElement* lguiPackSent = lOverlayMgr->getOverlayElement("Hardwar/PacketsSent");
-   Ogre::OverlayElement* lguiPackLost  = lOverlayMgr->getOverlayElement("Hardwar/PacketsLost");
-   Ogre::OverlayElement* lguiTimeout = lOverlayMgr->getOverlayElement("Hardwar/Timeout");
+   Ogre::OverlayElement* lguiPackLost = lOverlayMgr->getOverlayElement("Hardwar/PacketsLost");
+   Ogre::OverlayElement* lguiTimeout  = lOverlayMgr->getOverlayElement("Hardwar/Timeout");
 
    ENetHost *lHost = Network::getSingletonPtr()->mNetHost;
 
@@ -195,7 +195,7 @@ void GameSettings::showNet(void)
 
    if (!o)
    {
-      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Hardwar/NetStats", "GameSettings::showNet" );
+      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, gettext("Could not find overlay Hardwar/NetStats"), "GameSettings::showNet" );
    }
    else
    {
@@ -205,12 +205,12 @@ void GameSettings::showNet(void)
 
 void GameSettings::showFPS(void)
 {
-   static Ogre::String lcurrFps = "Current FPS: ";
-   static Ogre::String lavgFps = "Average FPS: ";
-   static Ogre::String lworstFps = "Worst FPS: ";
-   static Ogre::String lbestFps = "Best FPS: ";
-   static Ogre::String ltris = "Triangle Count: ";
-   static Ogre::String lbatch = "Batch Count: ";
+   static Ogre::String lcurrFps  = gettext("Current FPS: ");
+   static Ogre::String lavgFps   = gettext("Average FPS: ");
+   static Ogre::String lworstFps = gettext("Worst FPS: ");
+   static Ogre::String lbestFps  = gettext("Best FPS: ");
+   static Ogre::String ltris     = gettext("Triangle Count: ");
+   static Ogre::String lbatch    = gettext("Batch Count: ");
 
    Ogre::OverlayManager *lOverlayMgr = Ogre::OverlayManager::getSingletonPtr();
 
@@ -236,7 +236,7 @@ void GameSettings::showFPS(void)
 
    if (!o)
    {
-      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay Core/DebugOverlay", "GameSettings::showFPS" );
+      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, gettext("Could not find overlay Core/DebugOverlay"), "GameSettings::showFPS" );
    }
    else
    {

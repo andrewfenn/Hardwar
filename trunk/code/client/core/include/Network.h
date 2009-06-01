@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
+#include <libintl.h>
 #include "enet/enet.h"
 
 #include "srvstructs.h"

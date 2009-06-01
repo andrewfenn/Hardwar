@@ -21,6 +21,7 @@
 
 #include <OgreRoot.h>
 #include <map>
+#include <libintl.h>
 
 #include "Console.h"
 #include "Network.h"

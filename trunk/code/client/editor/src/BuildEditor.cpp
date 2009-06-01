@@ -141,7 +141,7 @@ void BuildEditor::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFStri
       {
          lConsole->addToConsole(lConsole->getConsoleError(), key, value);
       }
-      lConsole->addToConsole(lConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show the hardwar editor"));
+      lConsole->addToConsole(lConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString(gettext("Show the hardwar editor")));
    }
    else
    {
@@ -153,7 +153,7 @@ void BuildEditor::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFStri
       }
       else
       {
-         lConsole->addToConsole(lConsole->getConsoleError(), key, Ogre::UTFString("Not logged in as admin. (use rcon_password)"));
+         lConsole->addToConsole(lConsole->getConsoleError(), key, Ogre::UTFString(gettext("Not logged in as admin. (use rcon_password)")));
       }
    }
 }

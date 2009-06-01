@@ -25,7 +25,7 @@ Network* Network::mNetwork;
 Network::Network()
 {
    if (enet_initialize() != 0) {
-      fprintf(stderr,"An error occurred while initializing ENet\n");
+      fprintf(stderr, gettext("An error occurred while initializing ENet\n"));
    }
    mPort = 26500;
    mAddress = std::string("127.0.0.1");
@@ -193,13 +193,13 @@ void Network::threadLoopGame()
                if (atoi((char*) (*itEvent).second.packet->data))
                {
                   /* Login Successful */               
-                  lConsole->addToConsole(lConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString("Logged in as admin"));
+                  lConsole->addToConsole(lConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
                   GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));
                }
                else
                {
-                  /* failed */
-                  lConsole->addToConsole(lConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString("Login failed"));
+                  /* Failed to login correctly */
+                  lConsole->addToConsole(lConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Login failed")));
                }
             }
          break;
@@ -239,12 +239,11 @@ bool Network::connect(unsigned int port, std::string ip)
 
    if (mNetHost == NULL)
    {
-      fprintf (stderr, 
-             "An error occurred while trying to create an ENet Network host.\n");
+      fprintf (stderr, gettext("An error occurred while trying to create an ENet Network host.\n"));
       return false;
    }
 
-   printf("Connecting to %s:%d\n", ip.c_str(), port);
+   printf(gettext("Connecting to %s:%d\n"), ip.c_str(), port);
 
    if (enet_address_set_host(&address, ip.c_str()) < 0)
    {
@@ -256,15 +255,16 @@ bool Network::connect(unsigned int port, std::string ip)
    /* Initiate the connection */
    mPeer = enet_host_connect (mNetHost, &address, SERVER_MAX_CHANNELS);
 
-   if (!mPeer) {
-      fprintf(stderr, "No available peers for initiating an ENet connection.\n");
+   if (!mPeer)
+   {
+      fprintf(stderr, gettext("No available peers for initiating an ENet connection.\n"));
       return false;
    }
 
    /* Wait up to n seconds for the connection attempt to succeed. */
    if (enet_host_service (mNetHost, & mEvent, mTimeout*1000) > 0 && mEvent.type == ENET_EVENT_TYPE_CONNECT)
    {
-      printf("Connection succeeded\n");
+      printf(gettext("Connection succeeded\n"));
       return true;
    }
    else
@@ -273,8 +273,8 @@ bool Network::connect(unsigned int port, std::string ip)
        * received. Reset the peer in the event the n seconds
        * had run out without any significant event.
        */
-      enet_peer_reset (mPeer);
-      printf("Connection failed\n");
+      enet_peer_reset(mPeer);
+      printf(gettext("Connection failed\n"));
    }
 
    return false;
