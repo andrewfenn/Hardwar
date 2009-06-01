@@ -84,7 +84,6 @@ class Network
       ENetEvent         mEvent;
       ENetPeer*         mPeer;
       int               mPort;
-      bool              mConnected;
       std::string       mAddress;
       clientStatus      mStatus;
       unsigned short    mConAttempts;

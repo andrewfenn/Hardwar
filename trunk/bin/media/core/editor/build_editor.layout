@@ -27,6 +27,8 @@
         <Widget type="Button" skin="ButtonRight" position="358 16 24 24" layer="Back">
             <Property key="Widget_InheritsAlpha" value="false"/>
         </Widget>
+        <Widget type="ItemBox" skin="ItemBoxV" position="40 60 320 320" align="Stretch" name="BuildingPanel">
+        </Widget>
         <Widget type="StaticImage" skin="StaticImage" position="40 60 70 70" layer="Back" name="RenderBox1_1">
             <Property key="Widget_InheritsAlpha" value="false"/>
             <Property key="Widget_Visible" value="true"/>

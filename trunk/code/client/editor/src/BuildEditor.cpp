@@ -17,6 +17,7 @@
 */
 
 #include "BuildEditor.h"
+//#include "ItemBuilding.h"
 
 using namespace Client;
 
@@ -108,7 +109,7 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    lCamera->lookAt(Ogre::Vector3(0,0,0));
 
    Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(lPanelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                  Ogre::TEX_TYPE_2D, 64, 64, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET );
+                                  Ogre::TEX_TYPE_2D, 512, 512, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET );
    Ogre::RenderTexture *renderTexture = texture->getBuffer()->getRenderTarget();
 
    renderTexture->addViewport(lCamera, 0);
@@ -118,6 +119,9 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
 
    MyGUI::StaticImage* lRenderPanel = mGUI->findWidget<MyGUI::StaticImage>(lPanelName);
    lRenderPanel->setImageTexture(lPanelName);
+/*   MyGUI::ItemBox* lItemBox = mGUI->findWidget<MyGUI::ItemBox>("BuildingPanel");
+   lItemBox->addItem(new ItemBuilding(lPanelName));
+   lRenderPanel->setVisible(false);*/
 
    renderTexture->setActive(false);
    renderTexture->removeAllViewports();

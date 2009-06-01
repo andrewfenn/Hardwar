@@ -29,7 +29,6 @@ Network::Network()
    }
    mPort = 26500;
    mAddress = std::string("127.0.0.1");
-   mConnected = false;
    mRunThread = false;
    mStatus = STATUS_DISCONNECTED;
    mRetryLimit = 5; /* TODO: Make this config option */
@@ -39,20 +38,22 @@ Network::Network()
 
 bool Network::setPort(int port)
 {
-   if (mConnected)
-      return false;
-
-   mPort = port;
-   return true;
+   if (mStatus == STATUS_DISCONNECTED)
+   {
+      mPort = port;
+      return true;
+   }
+   return false;
 }
 
 bool Network::setAddress(std::string address)
 {
-   if (mConnected)
-      return false;
-
-   mAddress = address;
-   return true;
+   if (mStatus == STATUS_DISCONNECTED)
+   {
+      mAddress = address;
+      return true;
+   }
+   return false;
 }
 
 void Network::connect(void)
@@ -93,6 +94,7 @@ void Network::stopThread(void)
 {
    if (mRunThread)
    {
+      mStatus = STATUS_DISCONNECTED;
       mRunThread = false;
       mThread.join();
    }
@@ -153,6 +155,9 @@ void Network::threadLoopConnect(void)
          break;
       }
    }
+
+   enet_host_destroy(mNetHost);
+   enet_deinitialize();
 }
 
 void Network::threadLoopMessages()
@@ -260,7 +265,6 @@ bool Network::connect(unsigned int port, std::string ip)
    if (enet_host_service (mNetHost, & mEvent, mTimeout*1000) > 0 && mEvent.type == ENET_EVENT_TYPE_CONNECT)
    {
       printf("Connection succeeded\n");
-      mConnected = true;
       return true;
    }
    else
@@ -302,8 +306,6 @@ bool Network::message(const void* msg, size_t size, enet_uint8 channel, enet_uin
 Network::~Network()
 {
    stopThread();
-   enet_host_destroy(mNetHost);
-   enet_deinitialize();
 }
 
 Network* Network::getSingletonPtr(void)

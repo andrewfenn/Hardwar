@@ -34,13 +34,6 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
 
 GameManager::~GameManager( void )
 {
-   /* Delete MyGUI */
-   mGUI->destroyAllChildWidget();
-   mGUI->shutdown();
-   delete mGUI;
-   mGUI = 0;
-
-   delete mSettings;
    delete mNetwork;
 
    /* Clean up all the states */
@@ -64,6 +57,16 @@ GameManager::~GameManager( void )
       delete mPlayState;
       mPlayState  = 0;
    }
+
+   /* Delete settings manager */
+   delete mSettings;
+
+   /* Delete MyGUI */
+   mGUI->destroyAllChildWidget();
+   mGUI->shutdown();
+   delete mGUI;
+   mGUI = 0;
+
 
    mSceneMgr->clearScene();
    mSceneMgr->destroyAllCameras();
