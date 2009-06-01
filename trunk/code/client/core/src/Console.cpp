@@ -27,7 +27,6 @@ Console::Console()
    mShow = false;
    mKeptTempWord = false;
    mListPos = 0;
-   mAlpha = 0.0f;
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("console.layout");
    mGUIConsole = mGUI->findWidget<MyGUI::Window>("console");
@@ -47,7 +46,7 @@ Console::Console()
 	mSubmitButton->eventMouseButtonClick = newDelegate(this, &Console::notifySubmitButtonClick);
 
    mSubmitButton->setCaption(Ogre::UTFString(gettext("submit")));
-   mGUIConsole->setAlpha(mAlpha);
+   mGUIConsole->setVisible(false);
 }
 
 Console::~Console()
@@ -72,12 +71,15 @@ void Console::toggleShow()
    if (mShow)
    {
       mShow = false;
+      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(0, 100, true);
+      MyGUI::ControllerManager::getInstance().addItem(mGUIConsole, controller);
       mGUI->hidePointer();
    }
    else
    {
       mShow = true;
-      mGUIConsole->setVisible(true);
+      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(1, 100, true);
+      MyGUI::ControllerManager::getInstance().addItem(mGUIConsole, controller);
       mGUI->showPointer();
       MyGUI::InputManager::getInstance().setKeyFocusWidget(mCommandBox);
    }
@@ -209,17 +211,7 @@ bool Console::isVisible()
 
 void Console::update()
 {
-   if (mShow && mAlpha < 0.9f)
-   {
-      mAlpha += 0.01f;
-   }
-   else if (!mShow && mAlpha > 0.01f)
-   {
-      mAlpha -= 0.01f;
-      if (mAlpha < 0.02f)
-         mGUIConsole->setVisible(false);
-   }
-   mGUIConsole->setAlpha(mAlpha);
+
 }
 
 Console* Console::getSingletonPtr(void)

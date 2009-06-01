@@ -129,8 +129,8 @@ class Console
       bool mAutoCompleted;
       bool mKeptTempWord;
 
-      MyGUI::Gui  *mGUI;
-      MyGUI::WindowPtr mGUIConsole;
+      MyGUI::Gui          *mGUI;
+      MyGUI::WindowPtr     mGUIConsole;
       MyGUI::ComboBoxPtr   mCommandBox;
       MyGUI::EditPtr       mHistoryList;
       MyGUI::ButtonPtr     mSubmitButton;
@@ -141,7 +141,6 @@ class Console
 		Ogre::UTFString mStringUnknown;
 		Ogre::UTFString mStringFormat;
 
-      float mAlpha;
       typedef std::map<Ogre::UTFString,CommandDelegate> MapFunction;
       std::vector<Ogre::UTFString> mUsedCommands;
       unsigned short mListPos;
