@@ -113,6 +113,7 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    Ogre::RenderTexture *renderTexture = texture->getBuffer()->getRenderTarget();
 
    renderTexture->addViewport(lCamera, 0);
+   renderTexture->getViewport(0)->setDimensions(0, 0, 1, 1);
    renderTexture->getViewport(0)->setBackgroundColour(Ogre::ColourValue::ZERO);
    renderTexture->getViewport(0)->setOverlaysEnabled(false);
    renderTexture->update(true);

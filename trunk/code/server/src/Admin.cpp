@@ -81,6 +81,10 @@ void Admin::loop(void)
             enet_packet_destroy((*itEvent).second.packet);
          }
       }
+      else
+      {
+         sleep(1);
+      }
    }
 }
 

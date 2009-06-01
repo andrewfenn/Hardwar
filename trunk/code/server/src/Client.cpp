@@ -52,6 +52,7 @@ void Client::loop(void)
 {
    Message::iterator itEvent;
    Message lMessages;
+
    while(mRunThread)
    {
       if (mMessages.size() > 0)
@@ -88,6 +89,10 @@ void Client::loop(void)
             /* finished with the packet, destory it */
             enet_packet_destroy((*itEvent).second.packet);
          }
+      }
+      else
+      {
+         sleep(1);
       }
    }
 }
