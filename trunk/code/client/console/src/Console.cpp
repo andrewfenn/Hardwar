@@ -211,7 +211,7 @@ bool Console::isVisible()
 
 void Console::update()
 {
-
+   
 }
 
 Console* Console::getSingletonPtr(void)

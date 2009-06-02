@@ -146,6 +146,9 @@ void GameManager::startGame( GameState *gameState )
    /* Add Console */
    mConsole = Console::getSingletonPtr();
 
+   /* Add log listeners */
+   Ogre::LogManager::getSingletonPtr()->getDefaultLog()->addListener(new OgreLogListener);
+
    /* Add Game Settings */
    mSettings = GameSettings::getSingletonPtr();
 

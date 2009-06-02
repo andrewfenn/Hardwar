@@ -35,6 +35,7 @@
 #include "InputManager.h"
 #include "Network.h"
 #include "Console.h"
+#include "OgreLogListener.h"
 #include "GameSettings.h"
 
 namespace Client
