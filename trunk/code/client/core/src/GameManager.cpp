@@ -58,6 +58,10 @@ GameManager::~GameManager( void )
       mPlayState  = 0;
    }
 
+   /* Remove all listeners from console */
+   Ogre::LogManager::getSingletonPtr()->getDefaultLog()->removeListener(mOgreLogListener);
+   delete mOgreLogListener;
+
    /* Delete settings manager */
    delete mSettings;
 
@@ -147,7 +151,8 @@ void GameManager::startGame( GameState *gameState )
    mConsole = Console::getSingletonPtr();
 
    /* Add log listeners */
-   Ogre::LogManager::getSingletonPtr()->getDefaultLog()->addListener(new OgreLogListener);
+   mOgreLogListener = new OgreLogListener;
+   Ogre::LogManager::getSingletonPtr()->getDefaultLog()->addListener(mOgreLogListener);
 
    /* Add Game Settings */
    mSettings = GameSettings::getSingletonPtr();

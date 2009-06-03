@@ -92,6 +92,8 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       GameState            *mLoadState;
       GameState            *mPlayState;
 
+      OgreLogListener      *mOgreLogListener;
+
       bool                 bShutdown;
       static GameManager   *mGameManager;
 
