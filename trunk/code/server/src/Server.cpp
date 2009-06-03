@@ -26,8 +26,8 @@ ServerMain::ServerMain()
 ServerMain::ServerMain(Ogre::ConfigFile config)
 {
    mConfig = config;
-   if (setupServer(Ogre::StringConverter::parseInt(mConfig.getSetting("default port", "Network Settings")),
-                  mConfig.getSetting("local address", "Network Settings")) == 1)
+   if (setupServer(Ogre::StringConverter::parseInt(mConfig.getSetting("DefaultPort", "Network", "26500")),
+                  mConfig.getSetting("LocalAddress", "Network", "127.0.0.1")) == 1)
    {
       /* setup number of avaliable clients */
       serverLoop();

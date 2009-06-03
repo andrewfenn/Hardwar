@@ -31,8 +31,9 @@ Network::Network()
    mAddress = std::string("127.0.0.1");
    mRunThread = false;
    mStatus = STATUS_DISCONNECTED;
-   mRetryLimit = 5; /* TODO: Make this config option */
-   mTimeout = 5; /* TODO: Make this config option. */
+   GameSettings* lSettings = GameSettings::getSingletonPtr();
+   mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkRetryLimit"));
+   mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTimeout"));
    mConAttempts = 0;
 }
 

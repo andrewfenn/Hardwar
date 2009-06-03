@@ -136,7 +136,6 @@ void GameManager::startGame( GameState *gameState )
    mInputMgr->addMouseListener(this, "GameManager");
    mInputMgr->getJoystick(1);
 
-   /* Create just one MyGUI instance rather then within the states */
    mGUI = new MyGUI::Gui();
 
    mRoot->createSceneManager(Ogre::ST_GENERIC,"GameSceneMgr");
@@ -156,6 +155,9 @@ void GameManager::startGame( GameState *gameState )
 
    /* Add Game Settings */
    mSettings = GameSettings::getSingletonPtr();
+
+   /* Add the game's core functions */
+   mGameCore = new GameCore;
 
    /* Setup states */
    mLoadState = LoadState::getSingletonPtr();
@@ -187,11 +189,11 @@ void GameManager::startGame( GameState *gameState )
       mStates.back()->update(lTimeSinceLastFrame);
 
       lDelay += lTimeSinceLastFrame;
-      if (lDelay > mSettings->getDelayTime())
+      if (lDelay > mGameCore->getDelayTime())
       {
          /* render the next frame */
          mRoot->renderOneFrame();
-         mSettings->update(lTimeSinceLastFrame);
+         mGameCore->update(lTimeSinceLastFrame);
          mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/1000);
          lDelay = 0;
       }

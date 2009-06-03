@@ -16,19 +16,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __GAMESETTINGS_H_
-#define __GAMESETTINGS_H_
+#ifndef __HW_GAMESETTINGS_H_
+#define __HW_GAMESETTINGS_H_
 
-#include <OgreRoot.h>
 #include <map>
-#include <libintl.h>
 
-#include "Console.h"
-#include "Network.h"
-#include "md5.h"
+#include "Ogre.h"
+#include "Config.h"
 
-namespace Client
-{
 
 /** The GameSettings class
         @remarks
@@ -41,47 +36,6 @@ class GameSettings
    public:
       ~GameSettings(void);
       static GameSettings* getSingletonPtr(void);
-
-      void update(unsigned long);
-      /** This method is used by Client::Console to toggle the debug window that
-      shows FPS information.
-      @param key
-             The command name typed in the console.
-      @param value
-             A boolean value that either shows or hides the window.
-      command.
-      */
-      void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
-      /** This method is used by Client::Console to change the FPS limit.
-      @remarks
-             The value can not be below 25 FPS.
-      @param key
-             The command name typed in the console.
-      @param value
-             An integer for the new FPS limit.
-      command.
-      */
-      void cmd_maxFPS(const Ogre::UTFString&, const Ogre::UTFString&);
-      /** This method is used by Client::Console to toggle the debug window that
-      shows network information.
-      @param key
-             The command name typed in the console.
-      @param value
-             A boolean value that either shows or hides the window.
-      command.
-      */
-      void cmd_showNet(const Ogre::UTFString&, const Ogre::UTFString&);
-      /** This method is used by Client::Console to remotely log into the server.
-      @param key
-             The command name typed in the console.
-      @param value
-             The password typed into the console.
-      command.
-      */
-      void cmd_remoteConnect(const Ogre::UTFString&, const Ogre::UTFString&);
-      /** This method returns the delay time between render loops depending
-      upon what the max FPS limit is set to. */
-      unsigned short getDelayTime(void);
       /** Creates or changes a value stored in mGameSettings .
       @remarks
              All values are stored as Strings. You can use Ogre::StringConverter
@@ -99,11 +53,7 @@ class GameSettings
              The name of the value trying to be retrieved
       */
       Ogre::UTFString getOption(const Ogre::UTFString);
-
-   private:      Console *mConsole;
-      void showFPS(void);
-      void showNet(void);
-
+   private:
       typedef std::map<Ogre::UTFString,Ogre::UTFString> Option;
       Option mOptions;
 
@@ -111,14 +61,7 @@ class GameSettings
       GameSettings(void);
       GameSettings(const GameSettings&) { }
       GameSettings & operator = (const GameSettings&);
-
-      bool mShowFPS;
-      bool mShowNet;
-      unsigned short mMaxFPS;
-      unsigned short mWaitTime;
-      unsigned long mFPStimer;      
 };
 
-}
-#endif /* __GAMESETTINGS_H_ */
+#endif /* __HW_GAMESETTINGS_H_ */
 

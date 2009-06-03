@@ -22,6 +22,7 @@
 #include "PlayState.h"
 #include "LoadState.h"
 #include "Server.h"
+#include "Config.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 char **GetArgvCommandLine(int *argc)
@@ -49,10 +50,10 @@ int main( int argc, char **argv ) {
     int cmd = 0;
 
     Ogre::ConfigFile lconfig;
-    lconfig.load("settings.cfg");
+    lconfig.load(GAME_SETTINGS_FILE);
 
-    Ogre::String address = lconfig.getSetting("local address", "Network Settings");
-    unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("default port", "Network Settings"));
+    Ogre::String address = lconfig.getSetting("LocalAddress", "Network");
+    unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("DefaultPort", "Network"));
 
     /* FIXME: Horrible, use regular expression */
     for (int i=1; i < argc; i++)

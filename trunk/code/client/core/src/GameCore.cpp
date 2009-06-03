@@ -16,47 +16,28 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GameSettings.h"
+#include "GameCore.h"
 
 using namespace Client;
 
-GameSettings* GameSettings::mGameSettings;
-
-GameSettings::GameSettings(void)
+GameCore::GameCore(void)
 {
-   mMaxFPS = 60;
-   mShowFPS = false;
-   mShowNet = false;
-   /* TODO: Everything above should be configurable from file */
+   Ogre::ConfigFile lconfig;
+   lconfig.load(GAME_SETTINGS_FILE);
+
+   mMaxFPS  = Ogre::StringConverter::parseInt(lconfig.getSetting("MaxFPS", "Game", "60"));
+   mShowFPS = Ogre::StringConverter::parseBool(lconfig.getSetting("ShowFPS", "Debug", "false"));
+   mShowNet = Ogre::StringConverter::parseBool(lconfig.getSetting("ShowNet", "Debug", "false"));
+
    mConsole = Console::getSingletonPtr();
-   mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameSettings::cmd_showFPS));
-   mConsole->addCommand(Ogre::UTFString("cl_maxfps"), MyGUI::newDelegate(this, &GameSettings::cmd_maxFPS));
-   mConsole->addCommand(Ogre::UTFString("cl_shownet"), MyGUI::newDelegate(this, &GameSettings::cmd_showNet));
-   mConsole->addCommand(Ogre::UTFString("rcon_password"), MyGUI::newDelegate(this, &GameSettings::cmd_remoteConnect));
+   mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameCore::cmd_showFPS));
+   mConsole->addCommand(Ogre::UTFString("cl_maxfps"), MyGUI::newDelegate(this, &GameCore::cmd_maxFPS));
+   mConsole->addCommand(Ogre::UTFString("cl_shownet"), MyGUI::newDelegate(this, &GameCore::cmd_showNet));
+   mConsole->addCommand(Ogre::UTFString("rcon_password"), MyGUI::newDelegate(this, &GameCore::cmd_remoteConnect));
    mWaitTime = ceil(1000/mMaxFPS);
 }
 
-GameSettings::~GameSettings(void)
-{
-
-}
-
-void GameSettings::setOption(const Ogre::UTFString lName, Ogre::UTFString lValue)
-{
-   mOptions[lName] = lValue;
-}
-
-Ogre::UTFString GameSettings::getOption(const Ogre::UTFString lName)
-{
-   Option::iterator iter = mOptions.find(lName);
-   if (iter != mOptions.end())
-   {
-      return mOptions[lName];
-   }
-   return Ogre::UTFString("");
-}
-
-void GameSettings::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
+void GameCore::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
 {
    bool show = false;
    if (!MyGUI::utility::parseComplex(value, show))
@@ -80,7 +61,7 @@ void GameSettings::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString
    }
 }
 
-void GameSettings::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
+void GameCore::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
 {
    unsigned short newfps = 60;
    if (!MyGUI::utility::parseComplex(value, newfps))
@@ -102,7 +83,7 @@ void GameSettings::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString 
    }
 }
 
-void GameSettings::cmd_showNet(const Ogre::UTFString &key, const Ogre::UTFString &value)
+void GameCore::cmd_showNet(const Ogre::UTFString &key, const Ogre::UTFString &value)
 {
    bool show = false;
    if (!MyGUI::utility::parseComplex(value, show))
@@ -126,7 +107,7 @@ void GameSettings::cmd_showNet(const Ogre::UTFString &key, const Ogre::UTFString
    }
 }
 
-void GameSettings::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTFString &value)
+void GameCore::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTFString &value)
 {
    Ogre::String lString;
    if (!MyGUI::utility::parseComplex(value, lString))
@@ -146,12 +127,12 @@ void GameSettings::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTF
    }
 }
 
-unsigned short GameSettings::getDelayTime(void)
+unsigned short GameCore::getDelayTime(void)
 {
    return mWaitTime;
 }
 
-void GameSettings::update(unsigned long lTimeElapsed)
+void GameCore::update(unsigned long lTimeElapsed)
 {
    mFPStimer += lTimeElapsed;
    if (mFPStimer > 0.5)
@@ -163,7 +144,7 @@ void GameSettings::update(unsigned long lTimeElapsed)
    }
 }
 
-void GameSettings::showNet(void)
+void GameCore::showNet(void)
 {
    static Ogre::String lPing     = gettext("Ping: ");
    static Ogre::String lIncData  = gettext("Incomming Data: ");
@@ -195,7 +176,7 @@ void GameSettings::showNet(void)
 
    if (!o)
    {
-      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, gettext("Could not find overlay Hardwar/NetStats"), "GameSettings::showNet" );
+      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, gettext("Could not find overlay Hardwar/NetStats"), "GameCore::showNet" );
    }
    else
    {
@@ -203,7 +184,7 @@ void GameSettings::showNet(void)
    }
 }
 
-void GameSettings::showFPS(void)
+void GameCore::showFPS(void)
 {
    static Ogre::String lcurrFps  = gettext("Current FPS: ");
    static Ogre::String lavgFps   = gettext("Average FPS: ");
@@ -236,7 +217,7 @@ void GameSettings::showFPS(void)
 
    if (!o)
    {
-      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, gettext("Could not find overlay Core/DebugOverlay"), "GameSettings::showFPS" );
+      OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, gettext("Could not find overlay Core/DebugOverlay"), "GameCore::showFPS" );
    }
    else
    {
@@ -244,12 +225,3 @@ void GameSettings::showFPS(void)
    }
 }
 
-GameSettings* GameSettings::getSingletonPtr(void)
-{
-   if(!mGameSettings)
-   {
-      mGameSettings = new GameSettings();
-   }
-
-   return mGameSettings;
-}

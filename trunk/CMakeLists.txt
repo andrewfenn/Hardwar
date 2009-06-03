@@ -25,18 +25,21 @@ SET(Required_Packages
    OgreMax
 )
 
-
 # searches for all .cpp and .h files in the current directory and add them 
 # to the current project
 
 FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/code/*.cpp)
 SOURCE_GROUP("Hardwar" FILES ${folder_source})
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/client/core/include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/client/editor/include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/client/console/include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/server/include)
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/code/shared/include)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/code/shared/include/Config.h)
+
+INCLUDE_DIRECTORIES(
+         ${CMAKE_CURRENT_SOURCE_DIR}/code/client/core/include
+         ${CMAKE_CURRENT_SOURCE_DIR}/code/client/editor/include
+         ${CMAKE_CURRENT_SOURCE_DIR}/code/client/console/include
+         ${CMAKE_CURRENT_SOURCE_DIR}/code/server/include
+         ${CMAKE_CURRENT_SOURCE_DIR}/code/shared/include
+)
 
 IF (NOT WIN32) # Unix
     # Add compiler warnings
@@ -58,7 +61,7 @@ IF (MSVC_IDE)
 	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_35_0/lib)
 	LINK_DIRECTORIES(C:/Program\ Files/boost/boost_1_36_0/lib)
 
-	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /ZI /EHsc /SUBSYSTEM:WINDOWS /ENTRY:\"main\"")
+	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /GmCONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/code/shared/include/config.h) /Gy /fp:fast /ZI /EHsc /SUBSYSTEM:WINDOWS /ENTRY:\"main\"")
 	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Od /Gm /Gy /fp:fast /ZI")
 
 	SET(CMAKE_CXX_FLAGS "${PLATFORM_C_FLAGS}")
@@ -86,7 +89,6 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/code/shared/include/config.h)
 IF (MSVC_IDE)
 	TARGET_LINK_LIBRARIES(hardwar boost_filesystem-*)
 ELSE (MSVC_IDE) # UNIX

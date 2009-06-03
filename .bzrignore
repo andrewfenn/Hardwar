@@ -27,3 +27,4 @@ trunk/bin/logs/ogre.log
 docs
 ./bin/gdb-client
 trunk/bin/logs/mygui.log
+./code/shared/include/Config.h

@@ -37,6 +37,7 @@
 #include "Console.h"
 #include "OgreLogListener.h"
 #include "GameSettings.h"
+#include "GameCore.h"
 
 namespace Client
 {
@@ -77,7 +78,6 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       static GameManager* getSingletonPtr(void);
       MyGUI::Gui           *mGUI;
       Console              *mConsole;
-      GameSettings         *mSettings;
       Network              *mNetwork;
 
       Ogre::Camera         *mCamera;
@@ -88,7 +88,8 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       Ogre::Root           *mRoot;
       Ogre::RenderWindow   *mRenderWindow;
       InputManager         *mInputMgr;
-
+      GameSettings         *mSettings;
+      GameCore             *mGameCore;
       GameState            *mLoadState;
       GameState            *mPlayState;
 
