@@ -27,10 +27,12 @@ Console::Console()
    mShow = false;
    mKeptTempWord = false;
    mListPos = 0;
+   MyGUI::WidgetManager::getInstancePtr()->registerFactory(new MyGUI::factory::ConsoleComboBoxFactory());
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("console.layout");
+
    mGUIConsole = mGUI->findWidget<MyGUI::Window>("console");
-   mCommandBox = mGUI->findWidget<MyGUI::ComboBox>("commandbox");
+   mCommandBox = mGUI->findWidget<MyGUI::ConsoleComboBox>("commandbox");
    mHistoryList = mGUI->findWidget<MyGUI::Edit>("historylist");
    mHistoryList->setOverflowToTheLeft(true);
    mSubmitButton = mGUI->findWidget<MyGUI::Button>("submit");
@@ -50,9 +52,7 @@ Console::Console()
 }
 
 Console::~Console()
-{
-
-}
+{}
 
 bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate* function)
 {
@@ -93,6 +93,13 @@ void Console::notifySubmitButtonClick(MyGUI::WidgetPtr sender)
 void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, MyGUI::Char character)
 {
    size_t len = sender->getCaption().length();
+
+   MyGUI::ConsoleComboBoxPtr combo = sender->castType<MyGUI::ConsoleComboBox>();
+   if (len > 0)
+   {
+
+   }
+   
    MyGUI::EditPtr edit = sender->castType<MyGUI::Edit>();
    if ((key == MyGUI::KeyCode::Backspace) && (len > 0))
    {

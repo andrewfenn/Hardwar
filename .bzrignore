@@ -19,12 +19,9 @@ default.pot
 bin/ogre.cfg
 lib
 ./trunk/bin/MyGUI.log
-./bin/logs/ogre.log
 game.cfg
-logs/ogre.log
 trunk/logs/ogre.log
 trunk/bin/logs/ogre.log
-docs
-./bin/gdb-client
+trunk/docs
 trunk/bin/logs/mygui.log
-./code/shared/include/Config.h
+trunk/code/shared/include/Config.h

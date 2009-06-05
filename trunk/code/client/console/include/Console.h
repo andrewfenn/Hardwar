@@ -19,12 +19,13 @@
 #ifndef __CONSOLE_H_
 #define __CONSOLE_H_
 
+#include "ConsoleCombo.h"
 #include <MyGUI.h>
 #include <libintl.h>
 
 typedef MyGUI::delegates::CDelegate2<const Ogre::UTFString&, const Ogre::UTFString&> CommandDelegate;
 
-namespace formates
+namespace formats
 {
    template<typename T> inline std::string format() { return MyGUI::utility::toString("[ ", std::numeric_limits<T>::min(), " | ", std::numeric_limits<T>::max(), " ]"); }
    template<> inline std::string format<bool>() { return "[ true | false ]"; }
@@ -93,7 +94,7 @@ class Console
          {
             if (!MyGUI::utility::parseComplex(value, result)) {
                addToConsole(getConsoleError(), key, value);
-               addToConsole(getConsoleFormat(), key, format.empty() ? formates::format<T>() : format);
+               addToConsole(getConsoleFormat(), key, format.empty() ? formats::format<T>() : format);
             }
             else
             {
@@ -131,7 +132,7 @@ class Console
 
       MyGUI::Gui          *mGUI;
       MyGUI::WindowPtr     mGUIConsole;
-      MyGUI::ComboBoxPtr   mCommandBox;
+      MyGUI::ConsoleComboBoxPtr   mCommandBox;
       MyGUI::EditPtr       mHistoryList;
       MyGUI::ButtonPtr     mSubmitButton;
 
