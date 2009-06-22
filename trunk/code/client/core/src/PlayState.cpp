@@ -154,7 +154,7 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
-   if (mGUI->isShowPointer())
+   if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
       /* fixme: should move this to game manager */
       mGUI->injectMouseMove(e);
@@ -169,7 +169,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGUI->isShowPointer())
+   if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
       mGUI->injectMousePress(e, id);
    }
@@ -177,7 +177,7 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGUI->isShowPointer())
+   if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
       mGUI->injectMouseRelease(e, id);
    }

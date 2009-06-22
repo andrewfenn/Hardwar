@@ -17,7 +17,6 @@
 */
 
 #include "BuildEditor.h"
-//#include "ItemBuilding.h"
 
 using namespace Client;
 
@@ -118,11 +117,7 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    renderTexture->getViewport(0)->setOverlaysEnabled(false);
    renderTexture->update(true);
 
-   MyGUI::StaticImage* lRenderPanel = mGUI->findWidget<MyGUI::StaticImage>(lPanelName);
-   lRenderPanel->setImageTexture(lPanelName);
-/*   MyGUI::ItemBox* lItemBox = mGUI->findWidget<MyGUI::ItemBox>("BuildingPanel");
-   lItemBox->addItem(new ItemBuilding(lPanelName));
-   lRenderPanel->setVisible(false);*/
+   mBoxMgr.addItem(new Client::ItemBox(lPanelName, lPanelName));
 
    renderTexture->setActive(false);
    renderTexture->removeAllViewports();
@@ -158,12 +153,25 @@ void BuildEditor::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFStri
    }
 }
 
+bool BuildEditor::isVisible()
+{
+   if (mBoxMgr.isIconActive())
+   {
+      return true;
+   }
+   return mShow;
+}
+
 void BuildEditor::update(unsigned long lTimeElapsed)
 {
    if (mShow && !mGUI->isShowPointer())
    {
-      mGUI->showPointer();
+      if (!mBoxMgr.isIconActive())
+      {
+         mGUI->showPointer();
+      }
    }
+   mBoxMgr.update();
 }
 
 void BuildEditor::toggleShow(bool lShow)

@@ -20,13 +20,14 @@
 #define __BuildEditor_H_
 
 #include <MyGUI.h>
-#include <OgreRoot.h>
+#include <Ogre.h>
 #include <libintl.h>
 #include <boost/filesystem.hpp>
 
 #include "GameSettings.h"
 #include "GameManager.h"
 #include "Console.h"
+#include "ItemBoxMgr.h"
 
 namespace Client
 {
@@ -53,6 +54,7 @@ public:
            A boolean value that either shows or hides the window.
    */
    void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
+   bool isVisible();
 private:
    Ogre::Root         *mRoot;
    Ogre::SceneManager *mSceneMgr;
@@ -61,6 +63,7 @@ private:
    void toggleShow(bool);
    void renderBuildingList();
    void renderMesh(Ogre::UTFString, Ogre::UTFString);
+   Client::ItemBoxMgr  mBoxMgr;
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
    MyGUI::WidgetPtr mMenuPanel;
