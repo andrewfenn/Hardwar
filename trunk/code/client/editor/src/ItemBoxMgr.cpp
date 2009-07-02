@@ -21,6 +21,7 @@ namespace Client
 {
    ItemBoxMgr::ItemBoxMgr()
    {
+      mPlaceMode = false;
    }
 
    ItemBoxMgr::~ItemBoxMgr()
@@ -33,25 +34,54 @@ namespace Client
       mListItemBox.push_back(_itembox);
    }
    
-   void ItemBoxMgr::clear()
+   void ItemBoxMgr::clear(void)
    {
       mListItemBox.clear();
    }
 
-   bool ItemBoxMgr::isIconActive()
+   bool ItemBoxMgr::isIconActive(void)
    {
-      for (VectorItemBox::iterator iter = mListItemBox.begin(); iter != mListItemBox.end(); ++iter)
+      for (mActive = mListItemBox.begin(); mActive != mListItemBox.end(); ++mActive)
       {
-         if ((*iter)->isActive())
+         if ((*mActive)->isActive())
          {
             return true;
          }
 		}
+      mPlaceMode = false;
       return false;
    }
 
-   void ItemBoxMgr::update()
+   bool ItemBoxMgr::isPlaceable(void)
    {
-      
+      return mPlaceMode;
+   }
+
+   Ogre::UTFString ItemBoxMgr::getMeshName(void)
+   {
+      return (*mActive)->getName();
+   }
+
+   MyGUI::IntPoint ItemBoxMgr::getPoint(void)
+   {
+      return mPoint;
+   }
+
+   void ItemBoxMgr::update(void)
+   {
+      mPlaceMode = false;
+      if (isIconActive())
+      {
+         mPoint = (*mActive)->getPoint();
+         mPoint.left += 40;
+         mPoint.top += 40;
+         if (!mPlaceMode)
+         {
+            if (mPoint.left > 360 || mPoint.top > 570)
+            {
+               mPlaceMode = true;
+            }
+         }
+      }
    }
 }

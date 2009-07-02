@@ -40,12 +40,19 @@ void PlayState::enter(void)
     * below because it is inside the model
     */
    mCamera->setPosition(Ogre::Vector3(43027.3, 1414.33, -30462.4));
-   mCamera->setNearClipDistance(5);
+   mCamera->setNearClipDistance( 0.2f );
 
    //mWorldNode = mSceneMgr->getRootSceneNode()->getSceneNode("world");
 
    mMouseRotX = mMouseRotY = 0;
    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
+
+	// create a lightsource
+	Light* light = mSceneMgr->createLight( "Sun" );
+	light->setType( Light::LT_DIRECTIONAL );
+	light->setDiffuseColour( ColourValue( .82, .81, .7 ) );
+	light->setSpecularColour( ColourValue( .82, .81, .7 ) );
+	light->setDirection( Vector3( 0, -1, 1 ) ); 
 
    mBuildEditor = new BuildEditor;
 }

@@ -37,16 +37,19 @@ namespace Client
              Is the name of the MyGUI::StaticImage panel where the image is
              being displayed to.
       */
-         ItemBox(Ogre::UTFString, Ogre::UTFString);
+         ItemBox(Ogre::UTFString, Ogre::UTFString, Ogre::UTFString);
          ~ItemBox();
          void moveItemBox(MyGUI::WidgetPtr, int, int);
          void releasedItemBox(MyGUI::WidgetPtr, int, int, MyGUI::MouseButton);
-         bool isActive();
+         MyGUI::IntPoint getPoint(void);
+         bool isActive(void);
+         Ogre::UTFString getName(void);
       private:
          MyGUI::StaticImage* mImage;
          MyGUI::IntCoord mOrigCoord;
          MyGUI::IntPoint mNewCoord;
          bool mDragged;
+         Ogre::UTFString mMeshName;
 	};
 }
 #endif // __ITEM_BOX_H__

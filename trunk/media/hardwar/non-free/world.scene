@@ -1,6 +1,6 @@
 <scene formatVersion="1.0" upAxis="y" unitsPerMeter="1" unitType="meters" minOgreVersion="1.4" author="OgreMax Scene Exporter by Derek Nedelman (www.ogremax.com)">
     <environment>
-        <colourAmbient r="1" g="1" b="1" />
+        <colourAmbient r="0" g="0" b="0" />
         <colourBackground r="0" g="0" b="0" />
     </environment>
     <nodes>

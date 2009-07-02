@@ -21,6 +21,7 @@
 
 #include <MyGUI.h>
 #include <Ogre.h>
+#include <OgreRay.h>
 #include <libintl.h>
 #include <boost/filesystem.hpp>
 
@@ -28,6 +29,7 @@
 #include "GameManager.h"
 #include "Console.h"
 #include "ItemBoxMgr.h"
+#include "CollisionTools.h"
 
 namespace Client
 {
@@ -67,6 +69,10 @@ private:
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
    MyGUI::WidgetPtr mMenuPanel;
+
+   bool mHasEditorObj;
+   Ogre::SceneNode* mEditorNode;
+   MOC::CollisionTools* mCollision;
 };
 
 }

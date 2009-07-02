@@ -24,6 +24,8 @@
 #include "ItemBox.h"
 #include <vector>
 
+#include "Console.h"
+
 namespace Client
 {
    class ItemBoxMgr
@@ -32,12 +34,18 @@ namespace Client
          ItemBoxMgr();
          ~ItemBoxMgr();
          void addItem(Client::ItemBox*);
-         void clear();
-         void update();
-         bool isIconActive();
+         void clear(void);
+         void update(void);
+         bool isIconActive(void);
+         bool isPlaceable(void);
+         Ogre::UTFString getMeshName(void);
+         MyGUI::IntPoint getPoint(void);
       private:
          typedef std::vector<Client::ItemBox*> VectorItemBox;
    		VectorItemBox mListItemBox;
+         VectorItemBox::iterator mActive;
+         bool mPlaceMode;
+         MyGUI::IntPoint mPoint;
    };
 }
 #endif // __ITEM_BOX_MGR_H__

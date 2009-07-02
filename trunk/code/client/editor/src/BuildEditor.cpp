@@ -22,9 +22,12 @@ using namespace Client;
 
 BuildEditor::BuildEditor(void)
 {
+   mHasEditorObj = false;
    mShow = false;
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("build_editor.layout");
+
+   mCollision = new MOC::CollisionTools(Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr"));
 
    mMenuBar = mGUI->findWidget<MyGUI::StaticImage>("BuildEditorMenuTop");
    mMenuBar->setVisible(false);
@@ -39,6 +42,8 @@ BuildEditor::BuildEditor(void)
    mRoot->createSceneManager(Ogre::ST_GENERIC,"EditorSceneMgr");
    mSceneMgr = mRoot->getSceneManager("EditorSceneMgr");
    mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
+
+
    renderBuildingList();
    toggleShow(true);
 }
@@ -46,6 +51,7 @@ BuildEditor::BuildEditor(void)
 BuildEditor::~BuildEditor(void)
 {
    /* TODO: unload build editor resources */
+   delete mCollision;
 }
 
 void BuildEditor::toggleMinimise(MyGUI::WidgetPtr lWidget)
@@ -117,7 +123,7 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    renderTexture->getViewport(0)->setOverlaysEnabled(false);
    renderTexture->update(true);
 
-   mBoxMgr.addItem(new Client::ItemBox(lPanelName, lPanelName));
+   mBoxMgr.addItem(new Client::ItemBox(lPanelName, lPanelName, lMesh));
 
    renderTexture->setActive(false);
    renderTexture->removeAllViewports();
@@ -172,6 +178,40 @@ void BuildEditor::update(unsigned long lTimeElapsed)
       }
    }
    mBoxMgr.update();
+
+   if (mHasEditorObj)
+   {
+      /* Kill scenenode */
+      mEditorNode->detachObject("EditorObject");
+      Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
+      Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
+      mHasEditorObj = false;
+   }
+
+   if (mBoxMgr.isPlaceable())
+   {
+      Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
+      unsigned long lTarget = 0;
+      float lDistance = -1.0f;
+
+      GameManager * lGameMgr = GameManager::getSingletonPtr();
+      lGameMgr->mViewport->update();
+      Ogre::Ray lmouseRay = lGameMgr->mCamera->getCameraToViewportRay(mBoxMgr.getPoint().left / Ogre::Real(lGameMgr->mViewport->getActualWidth()),
+                                                                      mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->mViewport->getActualHeight()));
+
+      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+      mEditorNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
+
+      if(mCollision->raycast(lmouseRay, lResult, lTarget, lDistance, 4))
+      {
+         /* The object we're placing hasn't been loaded yet. */
+         Ogre::Entity *ent = lSceneMgr->createEntity("EditorObject", mBoxMgr.getMeshName());
+         mEditorNode->attachObject(ent);
+         mEditorNode->setPosition(lResult);
+         mHasEditorObj = true;
+      }
+
+   }
 }
 
 void BuildEditor::toggleShow(bool lShow)

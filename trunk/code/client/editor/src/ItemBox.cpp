@@ -19,7 +19,7 @@
 
 namespace Client
 {
-   ItemBox::ItemBox(Ogre::UTFString _image, Ogre::UTFString _panel)
+   ItemBox::ItemBox(Ogre::UTFString _image, Ogre::UTFString _panel, Ogre::UTFString _meshName)
    {
       /* FIXME: Add checking to make sure both the image and panel exists */
       mImage = MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::StaticImage>(_panel);
@@ -28,6 +28,7 @@ namespace Client
       mImage->eventMouseButtonReleased = MyGUI::newDelegate(this, &ItemBox::releasedItemBox);
       mOrigCoord = mImage->getCoord();
       mDragged = false;
+      mMeshName = _meshName;
    }
 
    ItemBox::~ItemBox()
@@ -44,6 +45,16 @@ namespace Client
       MyGUI::Gui::getInstancePtr()->hidePointer();
    }
 
+   MyGUI::IntPoint ItemBox::getPoint(void)
+   {
+      return mNewCoord;
+   }
+
+   Ogre::UTFString ItemBox::getName(void)
+   {
+      return mMeshName;
+   }
+
    void ItemBox::releasedItemBox(MyGUI::WidgetPtr sender, int _left, int _top, MyGUI::MouseButton _id)
    {
       mImage->setCoord(mOrigCoord);
@@ -51,7 +62,7 @@ namespace Client
       MyGUI::Gui::getInstancePtr()->showPointer();
    }
 
-   bool ItemBox::isActive()
+   bool ItemBox::isActive(void)
    {
       return mDragged;
    }
