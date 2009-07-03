@@ -30,6 +30,7 @@
 #include "Console.h"
 #include "ItemBoxMgr.h"
 #include "CollisionTools.h"
+#include "DynamicLines.h"
 
 namespace Client
 {
@@ -73,6 +74,7 @@ private:
    bool mHasEditorObj;
    Ogre::SceneNode* mEditorNode;
    MOC::CollisionTools* mCollision;
+   DynamicLines *mlines;
 };
 
 }

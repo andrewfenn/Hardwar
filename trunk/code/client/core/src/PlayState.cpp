@@ -130,6 +130,9 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 
 void PlayState::keyReleased(const OIS::KeyEvent &e)
 {
+   if (e.key == OIS::KC_SYSRQ)
+      Console::getSingletonPtr()->executeCommand(Ogre::UTFString("cl_screenshot"));
+
    if (e.key == OIS::KC_GRAVE)
       mGameMgr->mConsole->toggleShow();
 

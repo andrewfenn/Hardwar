@@ -105,6 +105,8 @@ class Console
 	      return false;
       }
 
+      void executeCommand(const Ogre::UTFString, const Ogre::UTFString=Ogre::UTFString(""));
+
    private:
       void draw();
       /** This method is called whenever a character is typed into the console's

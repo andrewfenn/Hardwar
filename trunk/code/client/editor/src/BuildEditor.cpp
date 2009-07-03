@@ -43,6 +43,9 @@ BuildEditor::BuildEditor(void)
    mSceneMgr = mRoot->getSceneManager("EditorSceneMgr");
    mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
 
+   mlines = new DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
+   SceneNode *linesNode = mRoot->getSceneManager("GameSceneMgr")->getRootSceneNode()->createChildSceneNode("lines");
+   linesNode->attachObject(mlines);
 
    renderBuildingList();
    toggleShow(true);
@@ -195,21 +198,26 @@ void BuildEditor::update(unsigned long lTimeElapsed)
       float lDistance = -1.0f;
 
       GameManager * lGameMgr = GameManager::getSingletonPtr();
-      lGameMgr->mViewport->update();
       Ogre::Ray lmouseRay = lGameMgr->mCamera->getCameraToViewportRay(mBoxMgr.getPoint().left / Ogre::Real(lGameMgr->mViewport->getActualWidth()),
                                                                       mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->mViewport->getActualHeight()));
 
       Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
       mEditorNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
-
-      if(mCollision->raycast(lmouseRay, lResult, lTarget, lDistance, 4))
+      lSceneMgr->getRootSceneNode()->needUpdate();
+      if(mCollision->raycast(lmouseRay, lResult, lTarget, lDistance))
       {
          /* The object we're placing hasn't been loaded yet. */
-         Ogre::Entity *ent = lSceneMgr->createEntity("EditorObject", mBoxMgr.getMeshName());
-         mEditorNode->attachObject(ent);
+         Ogre::Entity *lent = lSceneMgr->createEntity("EditorObject", mBoxMgr.getMeshName());
+         mEditorNode->attachObject(lent);
+         lResult.y += lent->getBoundingBox().getSize().y*0.5;
          mEditorNode->setPosition(lResult);
          mHasEditorObj = true;
       }
+
+      mlines->clear();
+      mlines->addPoint(lGameMgr->mCamera->getPosition());
+      mlines->addPoint(lmouseRay.getPoint(1000000));
+      mlines->update();
 
    }
 }

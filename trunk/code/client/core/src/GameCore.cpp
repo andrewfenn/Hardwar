@@ -33,6 +33,8 @@ GameCore::GameCore(void)
    mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameCore::cmd_showFPS));
    mConsole->addCommand(Ogre::UTFString("cl_maxfps"), MyGUI::newDelegate(this, &GameCore::cmd_maxFPS));
    mConsole->addCommand(Ogre::UTFString("cl_shownet"), MyGUI::newDelegate(this, &GameCore::cmd_showNet));
+   mConsole->addCommand(Ogre::UTFString("cl_showboundingbox"), MyGUI::newDelegate(this, &GameCore::cmd_showBoundingBox));
+   mConsole->addCommand(Ogre::UTFString("cl_screenshot"), MyGUI::newDelegate(this, &GameCore::cmd_screenshot));
    mConsole->addCommand(Ogre::UTFString("rcon_password"), MyGUI::newDelegate(this, &GameCore::cmd_remoteConnect));
    mWaitTime = ceil(1000/mMaxFPS);
 }
@@ -81,6 +83,62 @@ void GameCore::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &val
          mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
       }
    }
+}
+
+void GameCore::cmd_showBoundingBox(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   bool show = false;
+   if (!MyGUI::utility::parseComplex(value, show))
+   {
+      if (!value.empty())
+      {
+         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+      }
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show bounding boxes (for debug purposes)"));
+   }
+   else
+   {
+      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
+      Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->showBoundingBoxes(show);
+      Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->getRootSceneNode()->showBoundingBox(show);
+   }
+}
+
+void GameCore::cmd_screenshot(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   Ogre::String filename;
+   if (!MyGUI::utility::parseComplex(value, filename))
+   {
+      if (!value.empty())
+      {
+         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+      }
+   }
+   /* FIXME: Should add regex here to stop the user from putting in stupid
+      directory locations */
+   /* TODO: Make the screenshot path configurable */
+   boost::filesystem::path lPath("./screenshots");
+   Ogre::StringUtil::trim(filename);
+   unsigned short total = 0;
+   if (filename.empty())
+   {
+      if (boost::filesystem::is_directory(lPath))
+      {
+         for (boost::filesystem::directory_iterator itr(lPath); itr!=boost::filesystem::directory_iterator(); ++itr)
+         {
+            Ogre::String temp = (Ogre::String) itr->path().leaf();
+            if (temp.substr(temp.length()-3, 3).compare("png") == 0)
+            {
+               total++;
+            }
+         }
+      }
+      filename = Ogre::UTFString("screenshot_")+Ogre::StringConverter::toString(total)+Ogre::UTFString(".png");
+   }
+
+   mConsole->addToConsole(mConsole->getConsoleFormat(), key, Ogre::UTFString("Taking Screenshot."));
+   filename = Ogre::UTFString("./screenshots/")+filename;
+   Ogre::Root::getSingletonPtr()->getAutoCreatedWindow()->writeContentsToFile(filename.c_str());
 }
 
 void GameCore::cmd_showNet(const Ogre::UTFString &key, const Ogre::UTFString &value)

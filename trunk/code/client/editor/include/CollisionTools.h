@@ -34,7 +34,8 @@ THE SOFTWARE.
 
 #ifdef ETM_TERRAIN
    #include "ETTerrainInfo.h"
-#endif
+#endif
+
 using namespace Ogre;
 
 namespace MOC

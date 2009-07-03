@@ -180,23 +180,29 @@ void Console::notifyCommandAccept(MyGUI::ComboBoxPtr sender, size_t index)
    mUsedCommands.push_back(command);
    mListPos = 0;
 
-	MapFunction::iterator iter = mFunctions.find(key);
+   executeCommand(key, value);
+
+	sender->setCaption("");
+}
+
+void Console::executeCommand(const Ogre::UTFString command, const Ogre::UTFString value)
+{
+   MapFunction::iterator iter = mFunctions.find(command);
 	if (iter != mFunctions.end())
    {
-		iter->second(key, value);
+		iter->second(command, value);
 	}
 	else
    {
 		if (eventConsoleUnknownCommand.empty())
       {
-			addToConsole(mStringUnknown + "'" + key + "'");
+			addToConsole(mStringUnknown + "'" + command + "'");
 		}
 		else
       {
-			eventConsoleUnknownCommand(key, value);
+			eventConsoleUnknownCommand(command, value);
 		}
 	}
-	sender->setCaption("");
 }
 
 void Console::addToConsole(const Ogre::UTFString & line)

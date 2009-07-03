@@ -19,8 +19,10 @@
 #ifndef __HW_GameCore_H_
 #define __HW_GameCore_H_
 
-#include <OgreRoot.h>
+#include <Ogre.h>
 #include <libintl.h>
+#include <iostream>
+#include <boost/filesystem.hpp>
 
 #include "Network.h"
 #include "Console.h"
@@ -38,7 +40,6 @@ namespace Client
                    The command name typed in the console.
             @param value
                    A boolean value that either shows or hides the window.
-            command.
             */
          void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
             /** This method is used by Client::Console to toggle the debug window that
@@ -47,7 +48,6 @@ namespace Client
                    The command name typed in the console.
             @param value
                    A boolean value that either shows or hides the window.
-            command.
             */
          void cmd_showNet(const Ogre::UTFString&, const Ogre::UTFString&);
             /** This method is used by Client::Console to change the FPS limit.
@@ -57,15 +57,30 @@ namespace Client
                    The command name typed in the console.
             @param value
                    An integer for the new FPS limit.
-            command.
             */
          void cmd_maxFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+            /** This method is used by Client::Console to show bounding boxes on
+                all 3d objects for debug purposes.
+            @param key
+                   The command name typed in the console.
+            @param value
+                   A boolean value that either shows or hides the boxes.
+            */
+         void cmd_showBoundingBox(const Ogre::UTFString&, const Ogre::UTFString&);
             /** This method is used by Client::Console to remotely log into the server.
             @param key
                    The command name typed in the console.
             @param value
                    The password typed into the console.
-            command.
+            */
+         void cmd_screenshot(const Ogre::UTFString&, const Ogre::UTFString&);
+            /** This method is used by Client::Console to take a screenshot
+            @remarks
+                   The filename value is optional.
+            @param key
+                   The command name typed in the console.
+            @param value
+                   A string value for the filename.
             */
          void cmd_remoteConnect(const Ogre::UTFString&, const Ogre::UTFString&);
             /** This method returns the delay time between render loops depending
