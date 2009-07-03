@@ -83,6 +83,7 @@ void Console::toggleShow()
       mGUI->showPointer();
       MyGUI::InputManager::getInstance().setKeyFocusWidget(mCommandBox);
    }
+   mGUIConsole->setEnabled(mShow);
 }
 
 void Console::notifySubmitButtonClick(MyGUI::WidgetPtr sender)
