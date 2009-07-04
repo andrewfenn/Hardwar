@@ -72,6 +72,7 @@ private:
    MyGUI::WidgetPtr mMenuPanel;
 
    bool mHasEditorObj;
+   bool mEditorObjCreated;
    Ogre::SceneNode* mEditorNode;
    MOC::CollisionTools* mCollision;
 };

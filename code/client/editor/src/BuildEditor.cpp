@@ -23,6 +23,7 @@ using namespace Client;
 BuildEditor::BuildEditor(void)
 {
    mHasEditorObj = false;
+   mEditorObjCreated = false;
    mShow = false;
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("build_editor.layout");
@@ -178,15 +179,6 @@ void BuildEditor::update(unsigned long lTimeElapsed)
    }
    mBoxMgr.update();
 
-   if (mHasEditorObj)
-   {
-      /* Kill scenenode */
-      mEditorNode->detachObject("EditorObject");
-      Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
-      Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
-      mHasEditorObj = false;
-   }
-
    if (mBoxMgr.isPlaceable())
    {
       Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
@@ -198,18 +190,38 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                                                                       mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->mViewport->getActualHeight()));
 
       Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-      mEditorNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
 
       Ogre::Entity* lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("world")->getAttachedObject("level"));
 
       if(mCollision->raycastEntityPolygons(lEntity, lmouseRay, lResult, lTarget,lDistance))
       {
-         /* The object we're placing hasn't been loaded yet. */
-         Ogre::Entity *lent = lSceneMgr->createEntity("EditorObject", mBoxMgr.getMeshName());
-         mEditorNode->attachObject(lent);
-         lResult.y += lent->getBoundingBox().getSize().y*0.5;
+         Ogre::Entity* lEntity;
+         if (mEditorObjCreated)
+         {
+            lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("EditorNode")->getAttachedObject("EditorObject"));
+         }
+         else
+         {
+            mEditorNode = lSceneMgr->getRootSceneNode()->createChildSceneNode("EditorNode");
+            /* The object we're placing hasn't been loaded yet. */
+            lEntity = lSceneMgr->createEntity("EditorObject", mBoxMgr.getMeshName());
+            mEditorNode->attachObject(lEntity);           
+            mEditorObjCreated = true;
+         }
+
+         lResult.y += lEntity->getBoundingBox().getSize().y*0.5;
          mEditorNode->setPosition(lResult);
-         mHasEditorObj = true;
+      }
+   }
+   else
+   {
+      if (mEditorObjCreated)
+      {
+         /* Kill scenenode */
+         mEditorNode->detachObject("EditorObject");
+         Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
+         Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
+         mEditorObjCreated = false;
       }
    }
 }
