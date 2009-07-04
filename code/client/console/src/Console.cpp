@@ -95,11 +95,11 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
 {
    size_t len = sender->getCaption().length();
 
-   MyGUI::ConsoleComboBoxPtr combo = sender->castType<MyGUI::ConsoleComboBox>();
+   /*MyGUI::ConsoleComboBoxPtr combo = sender->castType<MyGUI::ConsoleComboBox>();
    if (len > 0)
    {
 
-   }
+   }*/
    
    MyGUI::EditPtr edit = sender->castType<MyGUI::Edit>();
    if ((key == MyGUI::KeyCode::Backspace) && (len > 0))

@@ -60,6 +60,7 @@ class CollisionTools
    	float getTSMHeightAt(const float x, const float z);
    	bool raycastFromPoint(const Vector3 &point, const Vector3 &normal, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask = 0xFFFFFFFF);
    	bool raycast(const Ray &ray, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask = 0xFFFFFFFF);
+      bool raycastEntityPolygons(Entity* entity, const Ray ray, Vector3 &result, unsigned long &target,float &closest_distance);
 
    	void setHeightAdjust(const float heightadjust);
    	float getHeightAdjust(void);

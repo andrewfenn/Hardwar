@@ -20,13 +20,13 @@
 
 namespace MyGUI
 {
-   void ConsoleComboBox::onKeyButtonPressed(KeyCode _key, Char _char)
+/*   void ConsoleComboBox::onKeyButtonPressed(KeyCode _key, Char _char)
    {
       /* We don't want the cursor to move to the beginning of the text box
       if the arrow up key is pressed, so don't send the key presses */
-      if (_key != KeyCode::ArrowUp)
+  /*    if (_key != KeyCode::ArrowUp)
       {
          Base::onKeyButtonPressed(_key, _char);
       }
-   }
+   }*/
 }

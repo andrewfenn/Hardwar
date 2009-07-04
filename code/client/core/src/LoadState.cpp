@@ -83,8 +83,7 @@ void LoadState::update( unsigned long lTimeElapsed )
          /* load world */
          OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
          const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
-         Ogre::SceneNode* lWorldNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("world");
-         lOgreMax->Load(filename, mWindow, 0, mSceneMgr, lWorldNode);
+         lOgreMax->Load(filename, mWindow, 0, mSceneMgr, mSceneMgr->getRootSceneNode());
          
          this->changeState(PlayState::getSingletonPtr());
          }

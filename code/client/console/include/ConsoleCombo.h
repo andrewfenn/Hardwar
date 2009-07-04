@@ -39,7 +39,7 @@ namespace MyGUI
          virtual ~ConsoleComboBox(void) {}
          friend void show(ComboBox _combo);
       protected:
-         void onKeyButtonPressed(KeyCode _key, Char _char);
+      //   void onKeyButtonPressed(KeyCode _key, Char _char);
    };
 
    typedef ConsoleComboBox * ConsoleComboBoxPtr;

@@ -4,11 +4,11 @@
         <colourBackground r="0" g="0" b="0" />
     </environment>
     <nodes>
-        <node name="HardWar SH">
+        <node name="world">
             <scale x="100" y="100" z="100" />
             <position x="0" y="0" z="0" />
             <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="HardWar SH" id="1" meshFile="HardWar SH.mesh" castShadows="true" receiveShadows="true">
+            <entity name="level" id="1" meshFile="HardWar SH.mesh" castShadows="true" receiveShadows="true">
                 <subentities>
                     <subentity index="0" materialName="CRATERWALL" />
                     <subentity index="1" materialName="CRATERFLOOR" />
