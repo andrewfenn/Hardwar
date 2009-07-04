@@ -20,19 +20,35 @@
 #define __LEVEL_MGR_H_
 
 #include <Ogre.h>
+#include <sqlite3.h>
 
-class LevelManager
+#include "hwstructs.h"
+
+namespace Server
 {
-   public:
-      ~LevelManager(void);
-      LevelManager(void);
-      static LevelManager* getSingletonPtr(void);
+   class LevelManager
+   {
+      public:
+         ~LevelManager(void);
+         LevelManager(void);
+         static LevelManager* getSingletonPtr(void);
+         /** Load up our world.db file which contains building locations and other 
+             data which is used to get a game going.
+            @param name
+                   The filename being used which contains the level data.
+         */
+         bool loadData(Ogre::String);
+         /** Loads all the building data in the SQL file */
+         bool loadBuildings(void);
+         unsigned int numBuildings(void);
+      private:
+         sqlite3 *mSQLdb;
+         typedef std::multimap<unsigned int,HWBuilding> Building;
+         Building mBuildings;
 
-      bool loadData(Ogre::String);
-   private:
-      static LevelManager *mLevelManager;
-      LevelManager(const LevelManager&) { }
-      LevelManager & operator = (const LevelManager&);
-};
-
+         static LevelManager *mLevelManager;
+         LevelManager(const LevelManager&) { }
+         LevelManager & operator = (const LevelManager&);
+   };
+}
 #endif /* __LEVEL_MGR_H_ */

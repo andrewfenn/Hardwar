@@ -69,9 +69,11 @@ bool ServerMain::setupServer(int port, Ogre::String ip)
       return false;
    }
 
-   setupGame();
-
-   return true;
+   if (setupGame())
+   {
+      return true;
+   }
+   return false;
 }
 
 bool ServerMain::setupGame()
