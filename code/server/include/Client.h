@@ -24,6 +24,7 @@
 #include <boost/bind.hpp>
 #include <map>
 
+#include "Admin.h"
 #include "srvstructs.h"
 
 namespace Server
@@ -49,12 +50,15 @@ class Client
    private:
       void loop(void);
       bool sendMessage(const void*, size_t, enet_uint8, enet_uint32);
+      void processAdminReqs(void);
+      void nextPacket(void);
       bool mRunThread;
       ENetPeer* mPeer;
       clientStatus mConState;
-      typedef std::multimap<enet_uint8,ENetEvent> Message;
       Message mMessages;
+      Message::iterator mEvent;
       boost::thread mThread;
+      Admin *mAdmin;
 };
 }
 #endif /* __CLIENT_H_ */

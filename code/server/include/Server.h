@@ -26,11 +26,10 @@
 #include <boost/bind.hpp>
 #include "enet/enet.h"
 
-#include "WorldManager.h"
+#include "LevelManager.h"
 #include "FileManager.h"
 #include "srvstructs.h"
 #include "Client.h"
-#include "Admin.h"
 
 namespace Server
 {
@@ -46,18 +45,18 @@ class ServerMain
       ServerMain();
       ServerMain(Ogre::ConfigFile);
       ~ServerMain();
+      LevelManager        *mLvlMgr;
+
+      bool    setupServer(int, std::string);
+      bool    setupGame();
+      void    serverLoop();
    private:
       ENetHost            *mServer;
       typedef std::map<enet_uint16, Server::Client*> Clients;
       Clients             mPlayer;
       unsigned int        mPlayerCount;
       Ogre::ConfigFile    mConfig;
-      Admin               *mAdmin;
-//      WorldManager        *mWorldMgr;
 
-      bool    setupServer(int, std::string);
-      bool    setupGame();
-      void    serverLoop();
       void    clientLoop();
       void    createClient(ENetPeer*);
       bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);

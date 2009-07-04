@@ -22,7 +22,7 @@ using namespace Client;
 
 BuildEditor::BuildEditor(void)
 {
-   mHasEditorObj = false;
+   mEditorObjSelected = false;
    mEditorObjCreated = false;
    mShow = false;
    mGUI = MyGUI::Gui::getInstancePtr();
@@ -210,6 +210,10 @@ void BuildEditor::update(unsigned long lTimeElapsed)
          }
 
          lResult.y += lEntity->getBoundingBox().getSize().y*0.5;
+         /* We want ints because that's what is going in the db */
+         lResult.x = floor(lResult.x);
+         lResult.z = floor(lResult.z);
+         lResult.y = floor(lResult.y);
          mEditorNode->setPosition(lResult);
       }
    }
@@ -217,11 +221,24 @@ void BuildEditor::update(unsigned long lTimeElapsed)
    {
       if (mEditorObjCreated)
       {
-         /* Kill scenenode */
+         /* We have just let go of an object and placed it. */
+         Ogre::Vector3 lVector = mEditorNode->getPosition();
+         Console::getSingletonPtr()->addToConsole(Ogre::StringConverter::toString(lVector));
+
+         /* Kill the editor object */
          mEditorNode->detachObject("EditorObject");
          Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
          Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
          mEditorObjCreated = false;
+
+         /* Tell the server to place down a new building */
+         Network::getSingletonPtr()->message("addbuilding", strlen("addbuilding")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.x).c_str(), strlen(Ogre::StringConverter::toString(lVector.x).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+
+         /* Now automatically select the object we just placed */
+         mEditorObjSelected = true;
       }
    }
 }

@@ -24,6 +24,7 @@ Client::Client()
 {
    mRunThread = true;
    mConState = STATUS_CONNECTING;
+   mAdmin = false;
 }
 
 Client::~Client()
@@ -50,7 +51,6 @@ void Client::setPeer(ENetPeer* lpeer)
 
 void Client::loop(void)
 {
-   Message::iterator itEvent;
    Message lMessages;
 
    while(mRunThread)
@@ -61,18 +61,16 @@ void Client::loop(void)
          lMessages = mMessages;
          mMessages.clear();
 
-         for (itEvent=lMessages.begin(); itEvent != lMessages.end(); itEvent++)
+         for (mEvent=lMessages.begin(); mEvent != lMessages.end(); mEvent++)
          {
-            printf ("len:%u - value:%s - client:%d - channel %u.\n",
-                                (intptr_t) (*itEvent).second.packet->dataLength,
-                                         (char*) (*itEvent).second.packet->data,
-                                                          mPeer->incomingPeerID,
-                                                              (*itEvent).first);
-            switch((*itEvent).first)
+            switch((*mEvent).first)
             {
+               case SERVER_CHANNEL_ADMIN:
+                  processAdminReqs();
+               break;
                case SERVER_CHANNEL_GENERIC:
                   /* This channel of join requests and pings */
-                  if (strcmp((char*)(*itEvent).second.packet->data, "join") == 0)
+                  if (strcmp((char*)(*mEvent).second.packet->data, "join") == 0)
                   {
                      /* New client joined. Begin by sending back the connection status */
                      /* TODO: Check if server is full */
@@ -87,7 +85,7 @@ void Client::loop(void)
                break;
             }
             /* finished with the packet, destory it */
-            enet_packet_destroy((*itEvent).second.packet);
+            enet_packet_destroy((*mEvent).second.packet);
          }
       }
       else
@@ -95,6 +93,35 @@ void Client::loop(void)
          sleep(1);
       }
    }
+}
+
+void Client::processAdminReqs(void)
+{
+   if (mAdmin != NULL)
+   {
+      /* is logged in */
+      mAdmin->processRequest(mEvent);
+   }
+   else
+   {
+      char* lCommand = (char*)(*mEvent).second.packet->data;
+      if (strcmp(lCommand, "login") == 0)
+      {
+         nextPacket();
+         printf ("Hash is:%s\n", (char*) (*mEvent).second.packet->data);
+         /* FIXME: There is no password */
+         sendMessage("login", sizeof("login")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         sendMessage("1", 2, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         mAdmin = new Admin();
+      }
+   }
+}
+
+void Client::nextPacket(void)
+{
+   enet_packet_destroy((*mEvent).second.packet);
+   /* FIXME: This could screw up if the packet hasn't arrived yet */
+   mEvent++;   
 }
 
 bool Client::sendMessage(const void* msg, size_t size,

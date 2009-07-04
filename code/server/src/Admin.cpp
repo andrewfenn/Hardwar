@@ -22,81 +22,47 @@ using namespace Server;
 
 Admin::Admin()
 {
-   mRunThread = true;
+
 }
 
 Admin::~Admin()
 {
-   mRunThread = false;
+
 }
 
-void Admin::addMessage(const ENetEvent lEvent)
+void Admin::processRequest(Message::iterator &message)
 {
-   mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
-}
-
-void Admin::makeThread(void)
-{
-   /* creates a new thread */
-   boost::thread mThread(boost::bind(&Admin::loop, this));
-   return;
-}
-
-void Admin::stopThread(void)
-{
-   mRunThread = false;
-}
-
-void Admin::loop(void)
-{
-   Message::iterator itEvent;
-   Message lMessages;
-   while(mRunThread)
+   char* lstring = (char*)(*message).second.packet->data;
+   if (strcmp(lstring, "addbuilding") == 0)
    {
-      if (mMessages.size() > 0)
-      {
-         /* TODO: mutex lock before copying and deleting */
-         lMessages = mMessages;
-         mMessages.clear();
+      Ogre::Vector3 building;
 
-         for (itEvent=lMessages.begin(); itEvent != lMessages.end(); itEvent++)
-         {
-            printf ("len:%u - value:%s - client:%d - channel %u.\n",
-                                (intptr_t) (*itEvent).second.packet->dataLength,
-                                         (char*) (*itEvent).second.packet->data,
-                                         (*itEvent).second.peer->incomingPeerID,
-                                                              (*itEvent).first);
+      nextPacket(message);
+      lstring = (char*)(*message).second.packet->data;
+      building.x = Ogre::StringConverter::parseInt(lstring);
 
-            if (strcmp((char*)(*itEvent).second.packet->data, "login") == 0)
-            {
-               enet_packet_destroy((*itEvent).second.packet);
-               itEvent++;
-               printf ("Hash is:%s\n", (char*) (*itEvent).second.packet->data);
-               /* FIXME: There is no password */
-               sendMessage((*itEvent).second.peer, "login", sizeof("login")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-               sendMessage((*itEvent).second.peer, "1", 2, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-            }
-            
-            /* finished with the packet, destory it */
-            enet_packet_destroy((*itEvent).second.packet);
-         }
-      }
-      else
-      {
-         sleep(1);
-      }
+      nextPacket(message);
+      lstring = (char*)(*message).second.packet->data;
+      building.y = Ogre::StringConverter::parseInt(lstring);
+
+      nextPacket(message);
+      lstring = (char*)(*message).second.packet->data;
+      building.z = Ogre::StringConverter::parseInt(lstring);
+
+      printf("New Building: %s\n", (char*)Ogre::StringConverter::toString(building).c_str());
+   }
+   else
+   {
+      printf ("len:%u - value:%s - channel %u.\n",
+                                (intptr_t) (*message).second.packet->dataLength,
+                                         (char*) (*message).second.packet->data,
+                                                              (*message).first);
    }
 }
 
-bool Admin::sendMessage(ENetPeer *peer,const void* msg, size_t size, 
-                                       enet_uint8 channel, enet_uint32 priority)
+void Admin::nextPacket(Message::iterator &message)
 {
-   bool result = true;
-   ENetPacket * packet = enet_packet_create (msg, size, priority);
-
-   if (enet_peer_send(peer, channel, packet) <0)
-   {
-      result = false;
-   }
-   return result;
+   enet_packet_destroy((*message).second.packet);
+   /* FIXME: This could screw up if the packet hasn't arrived yet */
+   message++;
 }

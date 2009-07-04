@@ -36,8 +36,6 @@ ServerMain::ServerMain(Ogre::ConfigFile config)
 
 ServerMain::~ServerMain()
 {
-   mAdmin->stopThread();
-   delete mAdmin;
    enet_host_destroy(mServer);
    enet_deinitialize();
 }
@@ -80,19 +78,9 @@ bool ServerMain::setupGame()
 {
    bool result = true;
 
-   /* Start thread to process admin commands */
-   mAdmin = new Admin;
-   mAdmin->makeThread();
-   printf(gettext("Thread: Admin - started\n"));
-  /* mWorldMgr = new WorldManager;
-   result = mWorldMgr->loadWorldData(Ogre::String("world/default.db"));
+   mLvlMgr = new LevelManager;
+   result = mLvlMgr->loadData(Ogre::String("world/default.db"));
 
-   if (result == true)
-   {
-      mFileMgr = new FileManager;
-      mFileMgr->scanFiles();
-   }
-*/
    return result;
 }
 
@@ -125,9 +113,6 @@ void ServerMain::serverLoop()
             case ENET_EVENT_TYPE_RECEIVE:
                switch (lEvent.channelID)
                {
-                  case SERVER_CHANNEL_ADMIN:
-                        mAdmin->addMessage(lEvent);
-                  break;
                   default:
                      /* Any packets we recieve are added to the specific client that needs
                         them. They are then deleted in the thread after they have been

@@ -16,33 +16,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ADMIN_H_
-#define __ADMIN_H_
+#ifndef __LEVEL_MGR_H_
+#define __LEVEL_MGR_H_
 
-#include "enet/enet.h"
-#include <map>
 #include <Ogre.h>
 
-#include "srvstructs.h"
-
-namespace Server
-{
-   typedef std::multimap<enet_uint8,ENetEvent> Message;
-
-/** Admin
-        @remarks
-            Processes requests made by an admin
-    */
-class Admin
+class LevelManager
 {
    public:
-      Admin();
-      ~Admin();
-      void processRequest(Message::iterator&);
-      void nextPacket(Message::iterator &);
+      ~LevelManager(void);
+      LevelManager(void);
+      static LevelManager* getSingletonPtr(void);
+
+      bool loadData(Ogre::String);
    private:
-
+      static LevelManager *mLevelManager;
+      LevelManager(const LevelManager&) { }
+      LevelManager & operator = (const LevelManager&);
 };
-}
-#endif /* __ADMIN_H_ */
 
+#endif /* __LEVEL_MGR_H_ */
