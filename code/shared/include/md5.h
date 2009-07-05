@@ -33,7 +33,7 @@ documentation and/or software.
 #ifndef HW_MD5_H
 #define HW_MD5_H
 
-#include <string>
+#include <string.h>
 #include <iostream>
 
 
