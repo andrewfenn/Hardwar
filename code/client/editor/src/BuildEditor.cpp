@@ -45,7 +45,6 @@ BuildEditor::BuildEditor(void)
    mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
 
    renderBuildingList();
-   toggleShow(true);
 }
 
 BuildEditor::~BuildEditor(void)
