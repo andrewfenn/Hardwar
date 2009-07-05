@@ -110,6 +110,25 @@ bool LevelManager::loadBuildings(void)
    return lResult;
 }
 
+bool LevelManager::addBuilding(unsigned int crater, const Ogre::String mesh, 
+                               const Ogre::Vector3 position, 
+                               const Ogre::Vector3 rotation)
+{
+   HWBuilding lBuilding;
+   lBuilding.position = position;
+   lBuilding.rotation = rotation;
+   lBuilding.mesh = mesh;
+   mBuildings.insert(std::pair<unsigned int,HWBuilding>(crater, lBuilding));
+   printf("New Building - Position: %s - Rotation: %s - Mesh: %s\n",
+                              Ogre::StringConverter::toString(position).c_str(),
+                              Ogre::StringConverter::toString(rotation).c_str(),
+                              mesh.c_str());
+
+   /* Tell all new clients about the new building */
+   
+   return true;
+}
+
 LevelManager* LevelManager::getSingletonPtr(void)
 {
    if(!mLevelManager)

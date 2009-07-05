@@ -24,7 +24,6 @@ Client::Client()
 {
    mRunThread = true;
    mConState = STATUS_CONNECTING;
-   mAdmin = false;
 }
 
 Client::~Client()

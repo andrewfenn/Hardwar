@@ -26,7 +26,7 @@ ServerMain::ServerMain()
 ServerMain::ServerMain(Ogre::ConfigFile config)
 {
    mConfig = config;
-   if (setupServer(Ogre::StringConverter::parseInt(mConfig.getSetting("DefaultPort", "Network", "26500")),
+   if (setup(Ogre::StringConverter::parseInt(mConfig.getSetting("DefaultPort", "Network", "26500")),
                   mConfig.getSetting("LocalAddress", "Network", "127.0.0.1")) == 1)
    {
       /* setup number of avaliable clients */
@@ -40,11 +40,10 @@ ServerMain::~ServerMain()
    enet_deinitialize();
 }
 
-bool ServerMain::setupServer(int port, Ogre::String ip)
+bool ServerMain::setup(int port, Ogre::String ip)
 {
    ENetAddress address;
    mServer=NULL;
-   mPlayerCount = 0;
 
    if (enet_initialize() != 0)
    {
@@ -69,6 +68,9 @@ bool ServerMain::setupServer(int port, Ogre::String ip)
       return false;
    }
 
+   mClientMgr = ClientManager::getSingletonPtr();
+   mClientMgr->setHost(mServer);
+
    if (setupGame())
    {
       return true;
@@ -86,15 +88,6 @@ bool ServerMain::setupGame()
    return result;
 }
 
-void ServerMain::createClient(ENetPeer *lpeer)
-{
-   mPlayer[lpeer->incomingPeerID] = new Client();
-   mPlayer[lpeer->incomingPeerID]->setPeer(lpeer);
-   /* start new client thread */
-   mPlayer[lpeer->incomingPeerID]->makeThread();
-   printf(gettext("Thread: Client - %d - started\n"), lpeer->incomingPeerID);
-}
-
 void ServerMain::serverLoop()
 {
    bool serverRunning = true;
@@ -110,7 +103,7 @@ void ServerMain::serverLoop()
          switch (lEvent.type)
          {
             case ENET_EVENT_TYPE_CONNECT:
-               createClient(lEvent.peer);
+               mClientMgr->addClient(lEvent.peer);
             break;
             case ENET_EVENT_TYPE_RECEIVE:
                switch (lEvent.channelID)
@@ -119,15 +112,12 @@ void ServerMain::serverLoop()
                      /* Any packets we recieve are added to the specific client that needs
                         them. They are then deleted in the thread after they have been
                         used. */
-                        mPlayer[lEvent.peer->incomingPeerID]->addMessage(lEvent);
+                        mClientMgr->addMessage(lEvent);
                   break;
                }
             break;
             case ENET_EVENT_TYPE_DISCONNECT:
-               /* TODO: destory client's thread? */
-               delete mPlayer[lEvent.peer->incomingPeerID];
-               mPlayer.erase(lEvent.peer->incomingPeerID);
-               printf(gettext("Thread: Client - %d - killed\n"), lEvent.peer->incomingPeerID);
+               mClientMgr->removeClient(lEvent.peer);
             break;
             default:
             break;

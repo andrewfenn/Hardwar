@@ -16,34 +16,39 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ADMIN_H_
-#define __ADMIN_H_
+#ifndef __CLIENT_MANAGER_H_
+#define __CLIENT_MANAGER_H_
 
+#include "Client.h"
 #include "enet/enet.h"
-#include <map>
-#include <Ogre.h>
-
-#include "srvstructs.h"
-#include "LevelManager.h"
-#include "ClientManager.h"
 
 namespace Server
 {
-   typedef std::multimap<enet_uint8,ENetEvent> Message;
-
-   /** Admin
-           @remarks
-               Processes requests made by an admin
-       */
-   class Admin
+   class Client;
+   
+   class ClientManager
    {
       public:
-         Admin();
-         ~Admin();
-         void processRequest(Message::iterator&);
-         void nextPacket(Message::iterator &);
-         
+
+         void clientLoop(void);
+         void addClient(ENetPeer*);
+         void removeClient(ENetPeer*);
+         void addMessage(const ENetEvent);
+         void setHost(ENetHost*);
+         bool broadcastMsg(const void*, size_t, enet_uint8, enet_uint32);
+
+         ~ClientManager();
+         ClientManager();
+         static ClientManager* getSingletonPtr(void);
+      private:
+         typedef std::map<enet_uint16, Server::Client*> Clients;
+         Clients mPlayers;
+         ENetHost * mHost;
+
+         static ClientManager *mClientManager;
+         ClientManager(const ClientManager&) { }
+         ClientManager & operator = (const ClientManager&);
    };
 }
-#endif /* __ADMIN_H_ */
 
+#endif /* __CLIENT_MANAGER_H_ */

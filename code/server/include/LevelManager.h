@@ -40,6 +40,7 @@ namespace Server
          bool loadData(Ogre::String);
          /** Loads all the building data in the SQL file */
          bool loadBuildings(void);
+         bool addBuilding(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation=Ogre::Vector3::ZERO);
          unsigned int numBuildings(void);
       private:
          sqlite3 *mSQLdb;

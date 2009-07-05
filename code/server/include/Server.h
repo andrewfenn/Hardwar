@@ -22,45 +22,40 @@
 #include <Ogre.h>
 #include <string>
 #include <libintl.h>
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
 #include "enet/enet.h"
 
 #include "LevelManager.h"
 #include "FileManager.h"
 #include "srvstructs.h"
-#include "Client.h"
+#include "ClientManager.h"
 
 namespace Server
 {
-/** The Main Server Loop
-        @remarks
-            The Server::ServerMain class acts as a hub where messages being
-            received by Enet are relayed on to the different threads to be
-            processed.
-    */
-class ServerMain
-{
-   public:
-      ServerMain();
-      ServerMain(Ogre::ConfigFile);
-      ~ServerMain();
-      LevelManager        *mLvlMgr;
+   /** The Main Server Loop
+           @remarks
+               The Server::ServerMain class acts as a hub where messages being
+               received by Enet are relayed on to the different threads to be
+               processed.
+       */
+   class ServerMain
+   {
+      public:
+         ServerMain();
+         ServerMain(Ogre::ConfigFile);
+         ~ServerMain();
+         LevelManager *mLvlMgr;
 
-      bool    setupServer(int, std::string);
-      bool    setupGame();
-      void    serverLoop();
-   private:
-      ENetHost            *mServer;
-      typedef std::map<enet_uint16, Server::Client*> Clients;
-      Clients             mPlayer;
-      unsigned int        mPlayerCount;
-      Ogre::ConfigFile    mConfig;
+         bool    setup(int, std::string);
+         bool    setupGame();
+         void    serverLoop();
+         ClientManager* mClientMgr;
+      private:
+         ENetHost            *mServer;
+         unsigned int        mPlayerCount;
+         Ogre::ConfigFile    mConfig;
 
-      void    clientLoop();
-      void    createClient(ENetPeer*);
-      bool    message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
-};
+         bool message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
+   };
 }
 #endif /* __SERVER_H_ */
 

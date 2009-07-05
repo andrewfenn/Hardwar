@@ -91,8 +91,10 @@ class Network
       unsigned short    mRetryLimit;
       unsigned short    mTimeout;
 
-      static Network *mNetwork;
       typedef std::multimap<enet_uint8,ENetEvent> Message;
+      Message::iterator mitEvent;
+
+      static Network *mNetwork;
       Message mMessages;
       void addMessage(const ENetEvent);
 
@@ -106,6 +108,7 @@ class Network
       void threadLoopMessages(void);
       void threadLoopGame(void);
       void setConStatus(clientStatus);
+      void nextPacket(void);
 
       boost::thread mThread;
       bool mRunThread;

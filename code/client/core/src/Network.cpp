@@ -180,18 +180,16 @@ void Network::threadLoopMessages()
 
 void Network::threadLoopGame()
 {
-   Message::iterator itEvent;
-   for (itEvent=mMessages.begin(); itEvent != mMessages.end(); itEvent++)
+   for (mitEvent=mMessages.begin(); mitEvent != mMessages.end(); mitEvent++)
    {
-      switch((*itEvent).first)
+      switch((*mitEvent).first)
       {
          case SERVER_CHANNEL_ADMIN:
-            if (Ogre::UTFString((char*)(*itEvent).second.packet->data) == "login")
+            if (Ogre::UTFString((char*)(*mitEvent).second.packet->data) == "login")
             {
-               enet_packet_destroy((*itEvent).second.packet);
-               itEvent++;
+               nextPacket();
                Console* lConsole = Console::getSingletonPtr();
-               if (atoi((char*) (*itEvent).second.packet->data))
+               if (atoi((char*) (*mitEvent).second.packet->data))
                {
                   /* Login Successful */               
                   lConsole->addToConsole(lConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
@@ -204,10 +202,49 @@ void Network::threadLoopGame()
                }
             }
          break;
+         case SERVER_CHANNEL_GENERIC:
+            if (Ogre::String((char*)(*mitEvent).second.packet->data) == "addbuilding")
+            {
+               Ogre::Vector3 position;
+               Ogre::Vector3 rotation;
+               Ogre::String mesh;
+
+               /* position */
+               nextPacket();
+               position.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+               nextPacket();
+               position.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+               nextPacket();
+               position.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+
+               /* rotation */
+               nextPacket();
+               rotation.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+               nextPacket();
+               rotation.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+               nextPacket();
+               rotation.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+
+               /* get the mesh name */
+               nextPacket();
+               mesh = Ogre::String((char*)(*mitEvent).second.packet->data);
+
+               /* add the object */      
+               Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+               /* FIXME: Need to check the mesh exists first */
+               Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(position),mesh);
+               Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
+               lSceneNode->attachObject(lEntity);
+               lSceneNode->setPosition(position);
+               lSceneNode->setDirection(rotation);      
+            }
+         break;
          default:
+            Console* lConsole = Console::getSingletonPtr();
+            lConsole->addToConsole(Ogre::String((char*) (*mitEvent).second.packet->data));
          break;
       }
-      enet_packet_destroy((*itEvent).second.packet);
+      enet_packet_destroy((*mitEvent).second.packet);
    }
    mMessages.clear();
 }
@@ -302,6 +339,13 @@ bool Network::message(const void* msg, size_t size, enet_uint8 channel, enet_uin
 
    enet_host_flush(mNetHost);
    return result;
+}
+
+void Network::nextPacket(void)
+{
+   enet_packet_destroy((*mitEvent).second.packet);
+   /* FIXME: This could screw up if the packet hasn't arrived yet */
+   mitEvent++;
 }
 
 Network::~Network()

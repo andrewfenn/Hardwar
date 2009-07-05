@@ -204,7 +204,8 @@ void BuildEditor::update(unsigned long lTimeElapsed)
          {
             mEditorNode = lSceneMgr->getRootSceneNode()->createChildSceneNode("EditorNode");
             /* The object we're placing hasn't been loaded yet. */
-            lEntity = lSceneMgr->createEntity("EditorObject", mBoxMgr.getMeshName());
+            mEditorObjMeshName = mBoxMgr.getMeshName();
+            lEntity = lSceneMgr->createEntity("EditorObject", mEditorObjMeshName);
             mEditorNode->attachObject(lEntity);           
             mEditorObjCreated = true;
          }
@@ -223,7 +224,6 @@ void BuildEditor::update(unsigned long lTimeElapsed)
       {
          /* We have just let go of an object and placed it. */
          Ogre::Vector3 lVector = mEditorNode->getPosition();
-         Console::getSingletonPtr()->addToConsole(Ogre::StringConverter::toString(lVector));
 
          /* Kill the editor object */
          mEditorNode->detachObject("EditorObject");
@@ -236,6 +236,7 @@ void BuildEditor::update(unsigned long lTimeElapsed)
          Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.x).c_str(), strlen(Ogre::StringConverter::toString(lVector.x).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
          Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
          Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         Network::getSingletonPtr()->message(mEditorObjMeshName.c_str(), strlen(mEditorObjMeshName.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
 
          /* Now automatically select the object we just placed */
          mEditorObjSelected = true;
