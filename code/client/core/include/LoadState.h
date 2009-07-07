@@ -83,6 +83,8 @@ private:
     bool mReverse; /* use for GUI animation */
     unsigned long mGUICounter; /* keeps track of time between animation updates */
     MyGUI::StaticTextPtr  mStatusText;
+    bool mFilesLoaded;
+    bool mDownloads;
 };
 }
 #endif /* __LOADSTATE_H_ */

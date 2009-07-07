@@ -107,6 +107,7 @@ typedef struct {
 } Airlock;
 
 typedef struct {
+    unsigned int id;
     Ogre::String mesh;               /* mesh type */
     Ogre::Vector3 position;
     Ogre::Vector3 rotation;

@@ -60,12 +60,22 @@ void ClientManager::setHost(ENetHost* lHost)
    mHost = lHost;
 }
 
-bool ClientManager::broadcastMsg(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority)
+bool ClientManager::sendMsg(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority, ENetPeer *peer)
 {
    bool result = true;
-   ENetPacket * packet = enet_packet_create(msg, size, priority);
+   ENetPacket * packet = enet_packet_create (msg, size, priority);
 
-   enet_host_broadcast(mHost, channel, packet);
+   if (peer == NULL)
+   {
+      enet_host_broadcast(mHost, channel, packet);
+   }
+   else
+   {
+      if (enet_peer_send(peer, channel, packet) <0)
+      {
+         result = false;
+      }
+   }
    enet_host_flush(mHost);
    return result;
 }

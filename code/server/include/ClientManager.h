@@ -35,7 +35,8 @@ namespace Server
          void removeClient(ENetPeer*);
          void addMessage(const ENetEvent);
          void setHost(ENetHost*);
-         bool broadcastMsg(const void*, size_t, enet_uint8, enet_uint32);
+
+         bool sendMsg(const void*, size_t, enet_uint8, enet_uint32, ENetPeer* peer = NULL);
 
          ~ClientManager();
          ClientManager();

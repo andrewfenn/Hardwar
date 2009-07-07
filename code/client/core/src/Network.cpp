@@ -109,8 +109,6 @@ enet_uint32 Network::getTimeout(void)
 void Network::threadLoopConnect(void)
 {
    mRunThread = true;
-   ENetEvent lEvent;
-   clientStatus lStatus;
 
    while (mRunThread)
    {
@@ -130,29 +128,11 @@ void Network::threadLoopConnect(void)
                }
             }
          break;
-         case STATUS_LISTENING:
-         {
-            if (pollMessage(&lEvent))
-            {
-               switch (lEvent.type)
-               {
-                  case ENET_EVENT_TYPE_RECEIVE:
-                     memcpy(&lStatus, lEvent.packet->data, sizeof(lEvent.packet->data));
-                     setConStatus(lStatus);
-                     /* Clean up the packet now that we are done using it */
-                     enet_packet_destroy(lEvent.packet);
-                  break;
-                  default:
-                  break;
-               }
-            }
-         }
-         break;
-         case STATUS_CONNECTED:
-            threadLoopMessages();
-            threadLoopGame();
+         case STATUS_DISCONNECTED:
          break;
          default:
+            threadLoopMessages();
+            threadLoopGame();
          break;
       }
    }
@@ -203,41 +183,65 @@ void Network::threadLoopGame()
             }
          break;
          case SERVER_CHANNEL_GENERIC:
-            if (Ogre::String((char*)(*mitEvent).second.packet->data) == "addbuilding")
+            switch (mStatus)
             {
-               Ogre::Vector3 position;
-               Ogre::Vector3 rotation;
-               Ogre::String mesh;
+               case STATUS_INGAME:
+               case STATUS_DOWNLOADING:
+                  if (Ogre::String((char*)(*mitEvent).second.packet->data) == "addbuilding")
+                  {
+                     Ogre::Vector3 position;
+                     Ogre::Vector3 rotation;
+                     Ogre::String mesh;
 
-               /* position */
-               nextPacket();
-               position.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-               nextPacket();
-               position.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-               nextPacket();
-               position.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+                     /* position */
+                     nextPacket();
+                     position.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+                     nextPacket();
+                     position.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+                     nextPacket();
+                     position.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
 
-               /* rotation */
-               nextPacket();
-               rotation.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-               nextPacket();
-               rotation.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-               nextPacket();
-               rotation.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+                     /* rotation */
+                     nextPacket();
+                     rotation.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+                     nextPacket();
+                     rotation.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
+                     nextPacket();
+                     rotation.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
 
-               /* get the mesh name */
-               nextPacket();
-               mesh = Ogre::String((char*)(*mitEvent).second.packet->data);
+                     /* get the mesh name */
+                     nextPacket();
+                     mesh = Ogre::String((char*)(*mitEvent).second.packet->data);
 
-               /* add the object */      
-               Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-               /* FIXME: Need to check the mesh exists first */
-               Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(position),mesh);
-               Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
-               lSceneNode->attachObject(lEntity);
-               lSceneNode->setPosition(position);
-               lSceneNode->setDirection(rotation);      
-            }
+                     /* add the object */      
+                     Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+                     printf("Pos: %s, Rot: %s, Mesh: %s\n", Ogre::StringConverter::toString(position).c_str(), Ogre::StringConverter::toString(rotation).c_str(),mesh.c_str());
+
+                     try
+                     {
+                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(position), mesh);
+                        Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
+                        lSceneNode->attachObject(lEntity);
+                        lSceneNode->setPosition(position);
+                        lSceneNode->setDirection(rotation);
+                     }
+                     catch(Ogre::Exception& e)
+                     {
+                        Console::getSingletonPtr()->addToConsole(Console::getSingletonPtr()->getConsoleError(), "addbuilding", e.getFullDescription());
+                     }
+
+                     message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                  }
+               default:
+                  if (Ogre::String((char*)(*mitEvent).second.packet->data) == "constatus")
+                  {
+                     clientStatus lStatus;
+                     nextPacket();
+                     memcpy(&lStatus, (*mitEvent).second.packet->data, sizeof((*mitEvent).second.packet->data));
+                     setConStatus(lStatus);
+                  }
+               break;
+         }
          break;
          default:
             Console* lConsole = Console::getSingletonPtr();

@@ -32,16 +32,37 @@ void LoadState::enter( void )
    mCamera       = mGameMgr->mCamera;
    mViewport     = mGameMgr->mViewport;
 
+   mSceneMgr->clearScene();
+
    mGameMgr->mGUI->hidePointer();
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");
+
+   /* Pre load all building models - Not doing so makes the network thread crash 
+      when it tries to create buildings during connection.
+    */
+   boost::filesystem::path lPath("../media/models/hangers");
+	if (boost::filesystem::is_directory(lPath))
+   {
+	   for (boost::filesystem::directory_iterator itr(lPath); itr!=boost::filesystem::directory_iterator(); ++itr)
+      {
+	      Ogre::String temp = (Ogre::String) itr->path().leaf();
+	      if (temp.substr(temp.length()-4, 4).compare("mesh") == 0)
+         {
+            MeshManager::getSingleton().load((Ogre::String) itr->path().leaf(), "General");
+	      }
+	   }
+	}
+   
 
    mGameMgr->mNetwork->startThread();
    mGameMgr->mNetwork->connect();
 
    mGUIcount = 0;
    mReverse = false; /* for the load bar animation */
+   mFilesLoaded = false;
+   mDownloads = false;
 }
 
 /* Destory everything we created when entering */
@@ -78,15 +99,28 @@ void LoadState::update( unsigned long lTimeElapsed )
       case STATUS_LISTENING:
          mStatusText->setCaption(Ogre::String(gettext("Loading")));
       break;
-      case STATUS_CONNECTED:
+      case STATUS_FILECHECK:
          {
-         /* load world */
-         OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
-         const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
-         lOgreMax->Load(filename, mWindow, 0, mSceneMgr, mSceneMgr->getRootSceneNode());
-         
-         this->changeState(PlayState::getSingletonPtr());
+            if (!mFilesLoaded)
+            {
+               /* load world */
+               OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
+               const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
+               lOgreMax->Load(filename, mWindow, 0, mSceneMgr, mSceneMgr->getRootSceneNode());
+               mGameMgr->mNetwork->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+               mFilesLoaded = true;
+            }
          }
+      break;
+      case STATUS_DOWNLOADING:
+         if (!mDownloads)
+         {
+            mGameMgr->mNetwork->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+            mDownloads = true;
+         }
+      break;
+      case STATUS_INGAME:
+         this->changeState(PlayState::getSingletonPtr());
       break;
       case STATUS_DISCONNECTED:
          /* the connection has failed */

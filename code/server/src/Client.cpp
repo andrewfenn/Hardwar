@@ -24,6 +24,7 @@ Client::Client()
 {
    mRunThread = true;
    mConState = STATUS_CONNECTING;
+   mAdmin = 0;
 }
 
 Client::~Client()
@@ -51,6 +52,8 @@ void Client::setPeer(ENetPeer* lpeer)
 void Client::loop(void)
 {
    Message lMessages;
+   bool lStartedDownload = false;
+   Building::iterator lBuildIter;
 
    while(mRunThread)
    {
@@ -69,14 +72,50 @@ void Client::loop(void)
                break;
                case SERVER_CHANNEL_GENERIC:
                   /* This channel of join requests and pings */
-                  if (strcmp((char*)(*mEvent).second.packet->data, "join") == 0)
+                  switch(mConState)
                   {
-                     /* New client joined. Begin by sending back the connection status */
-                     /* TODO: Check if server is full */
-                     /* TODO: Check address isn't banned */
-                     /* TODO: Add file checking */
-                     mConState = STATUS_CONNECTED;
-                     sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                     case STATUS_DOWNLOADING:
+                        if (strcmp((char*)(*mEvent).second.packet->data, "ok") == 0)
+                        {
+                           if (!lStartedDownload)
+                           {
+                              lBuildIter = LevelManager::getSingletonPtr()->getBuildings();
+                              lStartedDownload = true;
+                           }
+                           
+                           if (LevelManager::getSingletonPtr()->end(lBuildIter))
+                           {
+                              mConState = STATUS_INGAME;
+                              sendMessage("constatus", strlen("constatus")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                              sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                           }
+                           else
+                           {
+                              LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second.mesh, (*lBuildIter).second.position, (*lBuildIter).second.rotation, mPeer);
+                              lBuildIter++;
+                           }
+                        }
+                     break;
+                     case STATUS_FILECHECK:
+                        /* TODO: Add file checking */
+                        if (strcmp((char*)(*mEvent).second.packet->data, "ok") == 0)
+                        {
+                           mConState = STATUS_DOWNLOADING;
+                           sendMessage("constatus", strlen("constatus")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                           sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                        }
+                     break;
+                     default:
+                        if (strcmp((char*)(*mEvent).second.packet->data, "join") == 0)
+                        {
+                           /* New client joined. Begin by sending back the connection status */
+                           /* TODO: Check if server is full */
+                           /* TODO: Check address isn't banned */
+                           mConState = STATUS_FILECHECK;
+                           sendMessage("constatus", strlen("constatus")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                           sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                        }
+                     break;
                   }
                break;
                case SERVER_CHANNEL_MOVEMENT:
@@ -96,7 +135,7 @@ void Client::loop(void)
 
 void Client::processAdminReqs(void)
 {
-   if (mAdmin != NULL)
+   if (mAdmin != 0)
    {
       /* is logged in */
       mAdmin->processRequest(mEvent);

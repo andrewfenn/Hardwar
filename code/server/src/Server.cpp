@@ -125,18 +125,3 @@ void ServerMain::serverLoop()
       }
    }
 }
-
-bool ServerMain::message(ENetPeer *peer,const void* msg, size_t size, 
-                                       enet_uint8 channel, enet_uint32 priority)
-{
-   bool result = true;
-   ENetPacket * packet = enet_packet_create (msg, size, priority);
-
-   if (enet_peer_send(peer, channel, packet) <0)
-   {
-      result = false;
-   }
-
-   enet_host_flush(mServer);
-   return result;
-}

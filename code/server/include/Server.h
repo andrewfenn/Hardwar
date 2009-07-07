@@ -53,8 +53,6 @@ namespace Server
          ENetHost            *mServer;
          unsigned int        mPlayerCount;
          Ogre::ConfigFile    mConfig;
-
-         bool message(ENetPeer*,const void*, size_t, enet_uint8, enet_uint32);
    };
 }
 #endif /* __SERVER_H_ */

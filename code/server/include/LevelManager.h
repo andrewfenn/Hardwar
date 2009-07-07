@@ -23,9 +23,12 @@
 #include <sqlite3.h>
 
 #include "hwstructs.h"
+#include "ClientManager.h"
 
 namespace Server
 {
+   typedef std::multimap<unsigned int,HWBuilding> Building;
+
    class LevelManager
    {
       public:
@@ -41,12 +44,15 @@ namespace Server
          /** Loads all the building data in the SQL file */
          bool loadBuildings(void);
          bool addBuilding(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation=Ogre::Vector3::ZERO);
+
+         Building::iterator getBuildings(void);
+         bool end(Building::iterator);
+
+         void sendBuildingData(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation, ENetPeer* lpeer = NULL);
          unsigned int numBuildings(void);
       private:
-         sqlite3 *mSQLdb;
-         typedef std::multimap<unsigned int,HWBuilding> Building;
          Building mBuildings;
-
+         sqlite3 *mSQLdb;
          static LevelManager *mLevelManager;
          LevelManager(const LevelManager&) { }
          LevelManager & operator = (const LevelManager&);

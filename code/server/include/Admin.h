@@ -25,7 +25,6 @@
 
 #include "srvstructs.h"
 #include "LevelManager.h"
-#include "ClientManager.h"
 
 namespace Server
 {

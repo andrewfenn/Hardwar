@@ -54,22 +54,6 @@ void Admin::processRequest(Message::iterator &message)
       mesh = Ogre::String((char*)(*message).second.packet->data);
 
       LevelManager::getSingletonPtr()->addBuilding((unsigned int)0, mesh, building);
-
-      ClientManager* lClientMgr = ClientManager::getSingletonPtr();
-      lClientMgr->broadcastMsg("addbuilding", sizeof("addbuilding")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-      /* position */
-      lClientMgr->broadcastMsg(Ogre::StringConverter::toString(building.x).c_str(), strlen(Ogre::StringConverter::toString(building.x).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-      lClientMgr->broadcastMsg(Ogre::StringConverter::toString(building.y).c_str(), strlen(Ogre::StringConverter::toString(building.y).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-      lClientMgr->broadcastMsg(Ogre::StringConverter::toString(building.z).c_str(), strlen(Ogre::StringConverter::toString(building.z).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-
-      /* Rotation (which is zero) */
-      lClientMgr->broadcastMsg(Ogre::String("0").c_str(), strlen(Ogre::String("0").c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-      lClientMgr->broadcastMsg(Ogre::String("0").c_str(), strlen(Ogre::String("0").c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-      lClientMgr->broadcastMsg(Ogre::String("0").c_str(), strlen(Ogre::String("0").c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-
-      /* mesh name */
-      lClientMgr->broadcastMsg(mesh.c_str(), strlen(mesh.c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-
    }
    else
    {

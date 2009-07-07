@@ -41,8 +41,8 @@ typedef enum {
     STATUS_DISCONNECTED = 0,
     STATUS_CONNECTING   = 0x0001, /* Joined server */
     STATUS_LISTENING    = 0x0002, /* Waiting for server response */
-    STATUS_CONNECTED    = 0x0003, /* Connected */
-    STATUS_FILECHECK    = 0x0004, /* Checking level files */
+    STATUS_FILECHECK    = 0x0003, /* Checking level files and loading */
+    STATUS_DOWNLOADING  = 0x0004, /* Downloading building data, etc */
     STATUS_LOBBY_NAME   = 0x0005, /* Server login screen */
     STATUS_LOBBY_CLASS  = 0x0006, /* picking character class */
     STATUS_INGAME       = 0x0007  /* playing in the game */

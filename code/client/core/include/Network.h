@@ -78,7 +78,7 @@ class Network
       void stopThread(void);
       /** Gets the client's connection status */
       clientStatus getConStatus(void);
-
+      void setConStatus(clientStatus);
       ENetHost*         mNetHost;
 
    private:
@@ -107,7 +107,6 @@ class Network
       void threadLoopConnect(void);
       void threadLoopMessages(void);
       void threadLoopGame(void);
-      void setConStatus(clientStatus);
       void nextPacket(void);
 
       boost::thread mThread;
