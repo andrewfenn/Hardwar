@@ -202,9 +202,9 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
    if (mRaySceneQuery != NULL)
    {
       // create a query object
-      mRaySceneQuery->setRay(ray);
       mRaySceneQuery->setSortByDistance(true);
       mRaySceneQuery->setQueryMask(queryMask);
+      mRaySceneQuery->setRay(ray);
       // execute the query, returns a vector of hits
       if (mRaySceneQuery->execute().size() <= 0)
       {

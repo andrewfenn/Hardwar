@@ -107,6 +107,11 @@ void LoadState::update( unsigned long lTimeElapsed )
                OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
                const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
                lOgreMax->Load(filename, mWindow, 0, mSceneMgr, mSceneMgr->getRootSceneNode());
+
+               /* turn it into static geometry */
+               Ogre::StaticGeometry *lStatic = mSceneMgr->createStaticGeometry("world");
+               lStatic->addSceneNode(mSceneMgr->getSceneNode("world"));
+               
                mGameMgr->mNetwork->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                mFilesLoaded = true;
             }

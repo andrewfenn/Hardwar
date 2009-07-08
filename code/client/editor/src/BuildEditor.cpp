@@ -23,6 +23,7 @@ using namespace Client;
 BuildEditor::BuildEditor(void)
 {
    mEditorObjSelected = false;
+   mSelected = 0;
    mEditorObjCreated = false;
    mShow = false;
    mGUI = MyGUI::Gui::getInstancePtr();
@@ -45,6 +46,7 @@ BuildEditor::BuildEditor(void)
    mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
 
    renderBuildingList();
+   toggleShow(true);
 }
 
 BuildEditor::~BuildEditor(void)
@@ -167,6 +169,62 @@ bool BuildEditor::isVisible()
    return mShow;
 }
 
+void BuildEditor::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+
+}
+
+void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+   if (id == OIS::MB_Left)
+   {
+      const OIS::MouseState &mouseState = e.state;
+
+      if (mouseState.X.abs > 360 || mouseState.Y.abs > 570)
+      {
+         Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
+         Ogre::Entity *lTarget = 0;
+         float lDistance = -1.0f;
+         
+
+         GameManager * lGameMgr = GameManager::getSingletonPtr();
+         Ogre::Ray lmouseRay = lGameMgr->mCamera->getCameraToViewportRay(mouseState.X.abs / Ogre::Real(lGameMgr->mViewport->getActualWidth()),
+                                                                         mouseState.Y.abs  / Ogre::Real(lGameMgr->mViewport->getActualHeight()));
+
+         Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+
+         if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance))
+         {
+            if (mEditorObjSelected)
+            {
+               mSelected->getParentSceneNode()->showBoundingBox(false);
+               mSelected->getParentSceneNode()->removeAndDestroyChild("Axes");
+               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("Axes");
+            }
+
+            Ogre::Entity *lEntity = lSceneMgr->createEntity("Axes", "axes.mesh");
+            Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axes");
+            lSceneNode->attachObject(lEntity);
+            lSceneNode->setScale(10,10,10);
+            lTarget->getParentSceneNode()->showBoundingBox(true);
+
+            mSelected = lTarget;
+            mEditorObjSelected = true;
+         }
+         else
+         {
+            if (mEditorObjSelected)
+            {
+               mSelected->getParentSceneNode()->showBoundingBox(false);
+               mSelected->getParentSceneNode()->removeAndDestroyChild("Axes");
+               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("Axes");
+               mEditorObjSelected = false;
+            }
+         }
+      }
+   }
+}
+
 void BuildEditor::update(unsigned long lTimeElapsed)
 {
    if (mShow && !mGUI->isShowPointer())
@@ -236,9 +294,6 @@ void BuildEditor::update(unsigned long lTimeElapsed)
          Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
          Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
          Network::getSingletonPtr()->message(mEditorObjMeshName.c_str(), strlen(mEditorObjMeshName.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-
-         /* Now automatically select the object we just placed */
-         mEditorObjSelected = true;
       }
    }
 }

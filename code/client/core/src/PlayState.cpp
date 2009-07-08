@@ -179,6 +179,7 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
    if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
+      mBuildEditor->mousePressed(e, id);
       mGUI->injectMousePress(e, id);
    }
 }
@@ -187,6 +188,7 @@ void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
    if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
+      mBuildEditor->mouseReleased(e, id);
       mGUI->injectMouseRelease(e, id);
    }
 }

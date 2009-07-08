@@ -57,6 +57,8 @@ public:
            A boolean value that either shows or hides the window.
    */
    void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
+   void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+   void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    bool isVisible();
 private:
    Ogre::Root         *mRoot;
@@ -70,6 +72,7 @@ private:
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
    MyGUI::WidgetPtr mMenuPanel;
+   Ogre::Entity * mSelected;
 
    bool mEditorObjSelected;
    Ogre::String mEditorObjMeshName;
