@@ -47,6 +47,10 @@ BuildEditor::BuildEditor(void)
 
    renderBuildingList();
    toggleShow(true);
+
+   mlines = new DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
+   SceneNode *linesNode = mRoot->getSceneManager("GameSceneMgr")->getRootSceneNode()->createChildSceneNode("lines");
+   linesNode->attachObject(mlines);
 }
 
 BuildEditor::~BuildEditor(void)
@@ -192,6 +196,11 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
                                                                          mouseState.Y.abs  / Ogre::Real(lGameMgr->mViewport->getActualHeight()));
 
          Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+         lSceneMgr->getRootSceneNode()->needUpdate();
+         mlines->clear();
+         mlines->addPoint(lGameMgr->mCamera->getPosition());
+         mlines->addPoint(lmouseRay.getPoint(1000000));
+         mlines->update();
 
          if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance))
          {

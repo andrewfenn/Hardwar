@@ -79,6 +79,7 @@ private:
    bool mEditorObjCreated;
    Ogre::SceneNode* mEditorNode;
    MOC::CollisionTools* mCollision;
+   DynamicLines *mlines;
 };
 
 }
