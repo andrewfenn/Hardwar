@@ -89,33 +89,22 @@ void GameManager::startGame( GameState *gameState )
    mRoot = new Ogre::Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
    #else
    /* Unix */
-   FILE *file;
-   if ((file = fopen ("/etc/OGRE/plugins.cfg","r")))
+   mRoot = new Ogre::Root("", "game.cfg", "./logs/ogre.log");
+
+   if (opendir ("/usr/lib/OGRE") != NULL)
    {
-      /* check for Debian plugins.cfg in /etc/OGRE/ */
-      fclose(file);
-      mRoot = new Ogre::Root("/etc/OGRE/plugins.cfg", "game.cfg", "./logs/ogre.log");
+      mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
+      mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
+   }
+   else if (opendir ("/usr/local/lib/OGRE") != NULL)
+   {
+      mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
+      mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
    }
    else
    {
-      /* Look for the plugins we want manually */
-      mRoot = new Ogre::Root("", "game.cfg", "./logs/ogre.log");
-
-      if (opendir ("/usr/lib/OGRE") != NULL)
-      {
-         mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
-         mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
-      }
-      else if (opendir ("/usr/local/lib/OGRE") != NULL)
-      {
-         mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
-         mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
-      }
-      else
-      {
-         /* Can't find where Ogre is, just start and hope for the best */
-         mRoot = new Ogre::Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
-      }
+      /* Can't find where Ogre is, just start and hope for the best */
+      mRoot = new Ogre::Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
    }
    #endif
 

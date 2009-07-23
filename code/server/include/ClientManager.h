@@ -21,6 +21,7 @@
 
 #include "Client.h"
 #include "enet/enet.h"
+#include <libintl.h>
 
 namespace Server
 {
