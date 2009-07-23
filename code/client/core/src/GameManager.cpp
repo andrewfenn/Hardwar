@@ -93,13 +93,15 @@ void GameManager::startGame( GameState *gameState )
 
    if (opendir ("/usr/lib/OGRE") != NULL)
    {
-      mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
       mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
+      mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
+      mRoot->loadPlugin("/usr/lib/OGRE/Plugin_CgProgramManager");
    }
    else if (opendir ("/usr/local/lib/OGRE") != NULL)
    {
-      mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
       mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
+      mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
+      mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_CgProgramManager");
    }
    else
    {
