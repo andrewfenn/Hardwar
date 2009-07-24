@@ -34,6 +34,7 @@ Client::~Client()
 
 void Client::addMessage(const ENetEvent lEvent)
 {
+   boost::mutex::scoped_lock scoped_lock(mEventMutex);
    mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
 }
 
@@ -59,7 +60,7 @@ void Client::loop(void)
    {
       if (mMessages.size() > 0)
       {
-         /* TODO: mutex lock before copying and deleting */
+         boost::mutex::scoped_lock scoped_lock(mEventMutex);
          lMessages = mMessages;
          mMessages.clear();
 

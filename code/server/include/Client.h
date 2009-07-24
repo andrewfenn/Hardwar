@@ -61,6 +61,7 @@ namespace Server
          
          Message mMessages;
          Message::iterator mEvent;
+         boost::mutex      mEventMutex;
          boost::thread mThread;
          Admin *mAdmin;
    };
