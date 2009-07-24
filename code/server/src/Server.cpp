@@ -43,7 +43,7 @@ ServerMain::~ServerMain()
 bool ServerMain::setup(int port, Ogre::String ip)
 {
    ENetAddress address;
-   mServer=NULL;
+   mServer=0;
 
    if (enet_initialize() != 0)
    {
@@ -61,7 +61,7 @@ bool ServerMain::setup(int port, Ogre::String ip)
                               32      /* allow up to 32 clients and/or outgoing connections */,
                                0      /* assume any amount of incoming bandwidth */,
                                0      /* assume any amount of outgoing bandwidth */);
-   if (mServer == NULL)
+   if (mServer == 0)
    {
       printf(gettext("An error occurred while trying to create an ENet server host.\n"));
       enet_deinitialize();
@@ -96,9 +96,8 @@ void ServerMain::serverLoop()
 
    while (serverRunning)
    {
-      enet_host_flush(mServer);
-      /* Wait up to 1000 milliseconds for an event. */
-      while (enet_host_service(mServer, &lEvent, 1000) > 0)
+      /* Wait up to 500 milliseconds for an event. */
+      while (enet_host_service(mServer, &lEvent, 500) > 0)
       {
          switch (lEvent.type)
          {
@@ -123,5 +122,6 @@ void ServerMain::serverLoop()
             break;
          }
       }
+      enet_host_flush(mServer);
    }
 }

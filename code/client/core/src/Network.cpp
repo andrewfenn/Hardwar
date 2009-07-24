@@ -67,7 +67,7 @@ void Network::connect(void)
 
 void Network::setConStatus(clientStatus lStatus)
 {
-   /* TODO: Add mutex */
+   boost::mutex::scoped_lock scoped_lock(mStatusMutex);
    mStatus = lStatus;
 }
 
@@ -78,7 +78,6 @@ unsigned short Network::getRetryAttempts(void)
 
 clientStatus Network::getConStatus(void)
 {
-   /* TODO: Add mutex */
    return mStatus;
 }
 
@@ -97,6 +96,7 @@ void Network::stopThread(void)
    {
       mStatus = STATUS_DISCONNECTED;
       mRunThread = false;
+      boost::mutex::scoped_lock scoped_lock(mStatusMutex);
       mThread.join();
    }
 }
@@ -112,6 +112,7 @@ void Network::threadLoopConnect(void)
 
    while (mRunThread)
    {
+      boost::mutex::scoped_lock scoped_lock(mStatusMutex);
       switch(mStatus)
       {
          case STATUS_CONNECTING:
@@ -164,6 +165,10 @@ void Network::threadLoopGame()
    {
       switch((*mitEvent).first)
       {
+         printf ("len:%u - value:%s - channel %u.\n",
+                                (intptr_t) (*mitEvent).second.packet->dataLength,
+                                         (char*) (*mitEvent).second.packet->data,
+                                                              (*mitEvent).first);
          case SERVER_CHANNEL_ADMIN:
             if (Ogre::UTFString((char*)(*mitEvent).second.packet->data) == "login")
             {
@@ -274,12 +279,11 @@ bool Network::connect(unsigned int port, std::string ip)
    ENetAddress address;
 
    /* TODO: Add config option to increase speed */
-   mNetHost = enet_host_create (NULL /* create a Network host */,
+   mNetHost = enet_host_create (0 /* create a Network host */,
                                        1 /* only allow 1 outgoing connection */,
-                    57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
-                     14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
-
-   if (mNetHost == NULL)
+                    0/*57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
+                     0/*14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
+   if (mNetHost == 0)
    {
       fprintf (stderr, gettext("An error occurred while trying to create an ENet Network host.\n"));
       return false;
@@ -334,9 +338,9 @@ bool Network::pollMessage(ENetEvent *pEvent)
 bool Network::message(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority)
 {
    bool result = true;
-   ENetPacket * packet = enet_packet_create (msg, size, priority);
+   ENetPacket * packet = enet_packet_create(msg, size, priority);
 
-   if (enet_peer_send(mPeer, channel, packet) <0)
+   if (enet_peer_send(mPeer, channel, packet) < 0)
    {
       result = false;
    }

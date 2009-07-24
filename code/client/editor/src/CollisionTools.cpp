@@ -30,14 +30,14 @@ namespace MOC {
 CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr, const ET::TerrainInfo* terrainInfo)
 {
 	mRaySceneQuery = sceneMgr->createRayQuery(Ogre::Ray());
-    if (NULL == mRaySceneQuery)
+    if (mRaySceneQuery == 0)
     {
       // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
       return;
     }
     mRaySceneQuery->setSortByDistance(true);
     
-    mTSMRaySceneQuery = NULL;
+    mTSMRaySceneQuery = 0;
     
 	mTerrainInfo = terrainInfo;
 	
@@ -50,7 +50,7 @@ CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr)
 	mSceneMgr = sceneMgr;
 	
 	mRaySceneQuery = mSceneMgr->createRayQuery(Ogre::Ray());
-    if (NULL == mRaySceneQuery)
+    if (mRaySceneQuery == 0)
     {
       // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
       return;
@@ -64,10 +64,10 @@ CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr)
 
 CollisionTools::~CollisionTools()
 {
-	if (mRaySceneQuery != NULL)
+	if (mRaySceneQuery != 0)
 		delete mRaySceneQuery;
 		
-	if (mTSMRaySceneQuery != NULL)
+	if (mTSMRaySceneQuery != 0)
 		delete mTSMRaySceneQuery;
 }
 
@@ -89,7 +89,7 @@ bool CollisionTools::collidesWithEntity(const Vector3& fromPoint, const Vector3&
 	float distToDest = normal.normalise();
 
 	Vector3 myResult(0, 0, 0);
-	Ogre::Entity* myObject = NULL;
+	Ogre::Entity* myObject = 0;
 	float distToColl = 0.0f;
 
 	if (raycastFromPoint(fromPointAdj, normal, myResult, (unsigned long&)myObject, distToColl, queryMask))
@@ -131,13 +131,13 @@ void CollisionTools::calculateY(SceneNode *n, const bool doTerrainCheck, const b
 	float y = pos.y;
 	
 	Vector3 myResult(0,0,0);
-	Ogre::Entity *myObject=NULL;
+	Ogre::Entity *myObject=0;
 	float distToColl = 0.0f;
 
 	float terrY = 0, colY = 0, colY2 = 0;
 
 	if( raycastFromPoint(Vector3(x,y,z),Vector3::NEGATIVE_UNIT_Y,myResult,(unsigned long&)myObject, distToColl, queryMask)){
-		if (myObject != NULL) {
+		if (myObject != 0) {
 			colY = myResult.y;
 		} else {
 			colY = -99999;
@@ -147,7 +147,7 @@ void CollisionTools::calculateY(SceneNode *n, const bool doTerrainCheck, const b
 	//if doGridCheck is on, repeat not to fall through small holes for example when crossing a hangbridge
 	if (doGridCheck) {		
 		if( raycastFromPoint(Vector3(x,y,z)+(n->getOrientation()*Vector3(0,0,gridWidth)),Vector3::NEGATIVE_UNIT_Y,myResult,(unsigned long&)myObject, distToColl, queryMask)){
-			if (myObject != NULL) {
+			if (myObject != 0) {
 				colY = myResult.y;
 			} else {
 				colY = -99999;
@@ -196,10 +196,10 @@ bool CollisionTools::raycastFromPoint(const Vector3 &point,
 
 bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask)
 {
-	target = NULL;
+	target = 0;
 
     // check we are initialised
-   if (mRaySceneQuery != NULL)
+   if (mRaySceneQuery != 0)
    {
       // create a query object
       mRaySceneQuery->setSortByDistance(true);
@@ -238,7 +238,7 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
         }
 
         // only check this result if its a hit against an entity
-        if ((query_result[qr_idx].movable != NULL)  &&
+        if ((query_result[qr_idx].movable != 0)  &&
             (query_result[qr_idx].movable->getMovableType().compare("Entity") == 0)) 
         {
             // get the entity to check

@@ -65,7 +65,7 @@ bool ClientManager::sendMsg(const void* msg, size_t size, enet_uint8 channel, en
    bool result = true;
    ENetPacket * packet = enet_packet_create (msg, size, priority);
 
-   if (peer == NULL)
+   if (peer == 0)
    {
       enet_host_broadcast(mHost, channel, packet);
    }

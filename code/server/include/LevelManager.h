@@ -48,7 +48,7 @@ namespace Server
          Building::iterator getBuildings(void);
          bool end(Building::iterator);
 
-         void sendBuildingData(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation, ENetPeer* lpeer = NULL);
+         void sendBuildingData(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation, ENetPeer* lpeer = 0);
          unsigned int numBuildings(void);
       private:
          Building mBuildings;

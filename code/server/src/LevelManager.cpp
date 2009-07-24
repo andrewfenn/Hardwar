@@ -92,7 +92,7 @@ bool LevelManager::loadBuildings(void)
 
    /* get all the buildings out the database */
    std::string sql = std::string("SELECT * FROM buildings");
-   sqlite3_prepare_v2(mSQLdb,sql.c_str(),sql.size(),&statement,NULL);
+   sqlite3_prepare_v2(mSQLdb,sql.c_str(),sql.size(),&statement,0);
    while((result = sqlite3_step(statement)) && !done) {
 	   switch (result) {
 		   case SQLITE_DONE:

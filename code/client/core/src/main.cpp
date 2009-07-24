@@ -131,7 +131,7 @@ int main( int argc, char **argv ) {
             catch ( Ogre::Exception& ex )
             {
                 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-                    MessageBox( NULL, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL );
+                    MessageBox(0, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
                 #else
                     std::cerr << "An exception has occured: " << ex.getFullDescription();
                 #endif            }            delete gameManager;

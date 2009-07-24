@@ -22,6 +22,7 @@
 #include <string>
 #include <stdio.h>
 #include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 #include <boost/bind.hpp>
 #include <libintl.h>
 #include "enet/enet.h"
@@ -87,6 +88,7 @@ class Network
       int               mPort;
       std::string       mAddress;
       clientStatus      mStatus;
+      boost::mutex      mStatusMutex;
       unsigned short    mConAttempts;
       unsigned short    mRetryLimit;
       unsigned short    mTimeout;
