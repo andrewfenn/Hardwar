@@ -56,8 +56,8 @@ void LoadState::enter( void )
 	}
    
 
-   mGameMgr->mNetwork->startThread();
-   mGameMgr->mNetwork->connect();
+   mGameMgr->getNetwork()->startThread();
+   mGameMgr->getNetwork()->connect();
 
    mGUIcount = 0;
    mReverse = false; /* for the load bar animation */
@@ -85,15 +85,15 @@ void LoadState::update( unsigned long lTimeElapsed )
 
    updateLoadbar();
 
-   switch(mGameMgr->mNetwork->getConStatus())
+   switch(mGameMgr->getNetwork()->getConStatus())
    {
       case STATUS_CONNECTING:
          mStatusText->setCaption(Ogre::String(gettext("Connecting")));
 
-         if (mGameMgr->mNetwork->getRetryAttempts() > 0)
+         if (mGameMgr->getNetwork()->getRetryAttempts() > 0)
          {
             mStatusText->setCaption(Ogre::UTFString(gettext("Retrying"))+Ogre::UTFString(" (")+
-                            Ogre::StringConverter::toString(mGameMgr->mNetwork->getRetryAttempts())+Ogre::UTFString(")"));
+                            Ogre::StringConverter::toString(mGameMgr->getNetwork()->getRetryAttempts())+Ogre::UTFString(")"));
          }
       break;
       case STATUS_LISTENING:
@@ -112,7 +112,7 @@ void LoadState::update( unsigned long lTimeElapsed )
                Ogre::StaticGeometry *lStatic = mSceneMgr->createStaticGeometry("world");
                lStatic->addSceneNode(mSceneMgr->getSceneNode("world"));
                
-               mGameMgr->mNetwork->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+               mGameMgr->getNetwork()->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                mFilesLoaded = true;
             }
          }
@@ -120,7 +120,7 @@ void LoadState::update( unsigned long lTimeElapsed )
       case STATUS_DOWNLOADING:
          if (!mDownloads)
          {
-            mGameMgr->mNetwork->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+            mGameMgr->getNetwork()->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
             mDownloads = true;
          }
       break;

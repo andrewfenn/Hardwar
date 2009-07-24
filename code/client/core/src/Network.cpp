@@ -275,14 +275,13 @@ bool Network::sendJoinRequest(void)
 
 bool Network::connect(unsigned int port, std::string ip)
 {
-   /* TODO: Add all print out messages to a log */
    ENetAddress address;
 
-   /* TODO: Add config option to increase speed */
+   /* TODO: Add config option to increase speed, set the 0 (unlimited) at the moment */
    mNetHost = enet_host_create (0 /* create a Network host */,
                                        1 /* only allow 1 outgoing connection */,
-                    0/*57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
-                     0/*14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
+                    57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
+                    14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
    if (mNetHost == 0)
    {
       fprintf (stderr, gettext("An error occurred while trying to create an ENet Network host.\n"));
@@ -301,7 +300,7 @@ bool Network::connect(unsigned int port, std::string ip)
    /* Initiate the connection */
    mPeer = enet_host_connect (mNetHost, &address, SERVER_MAX_CHANNELS);
 
-   if (!mPeer)
+   if (mPeer == 0)
    {
       fprintf(stderr, gettext("No available peers for initiating an ENet connection.\n"));
       return false;
@@ -310,7 +309,7 @@ bool Network::connect(unsigned int port, std::string ip)
    /* Wait up to n seconds for the connection attempt to succeed. */
    if (enet_host_service (mNetHost, & mEvent, mTimeout*1000) > 0 && mEvent.type == ENET_EVENT_TYPE_CONNECT)
    {
-      printf(gettext("Connection succeeded\n"));
+      printf(gettext("Connection succeeded.\n"));
       return true;
    }
    else
@@ -320,7 +319,7 @@ bool Network::connect(unsigned int port, std::string ip)
        * had run out without any significant event.
        */
       enet_peer_reset(mPeer);
-      printf(gettext("Connection failed\n"));
+      printf(gettext("Connection failed.\n"));
    }
 
    return false;
@@ -367,6 +366,5 @@ Network* Network::getSingletonPtr(void)
    {
       mNetwork = new Network();
    }
-
    return mNetwork;
 }

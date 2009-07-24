@@ -120,8 +120,8 @@ int main( int argc, char **argv ) {
         case 1: /* connect */
         {
             Client::GameManager *gameManager = Client::GameManager::getSingletonPtr();
-            gameManager->mNetwork->setPort(port);
-            gameManager->mNetwork->setAddress(address);
+            gameManager->getNetwork()->setPort(port);
+            gameManager->getNetwork()->setAddress(address);
             gameManager->mSinglePlayer = false;
 
             try

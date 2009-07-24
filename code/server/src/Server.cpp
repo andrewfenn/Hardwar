@@ -38,6 +38,8 @@ ServerMain::~ServerMain()
 {
    enet_host_destroy(mServer);
    enet_deinitialize();
+   if (mLvlMgr != 0)
+      delete mLvlMgr;
 }
 
 bool ServerMain::setup(int port, Ogre::String ip)

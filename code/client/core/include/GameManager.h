@@ -76,9 +76,9 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       void requestShutdown(void);
 
       static GameManager* getSingletonPtr(void);
+      Network*  getNetwork(void);
       MyGUI::Gui           *mGUI;
       Console              *mConsole;
-      Network              *mNetwork;
 
       Ogre::Camera         *mCamera;
       Ogre::SceneManager   *mSceneMgr;
@@ -92,6 +92,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       GameCore             *mGameCore;
       GameState            *mLoadState;
       GameState            *mPlayState;
+      Network              *mNetwork;
 
       OgreLogListener      *mOgreLogListener;
 

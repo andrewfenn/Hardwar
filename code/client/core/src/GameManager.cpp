@@ -244,6 +244,11 @@ void GameManager::setupResources(void)
    }
 }
 
+Network* GameManager::getNetwork(void)
+{
+   return mNetwork;
+}
+
 void GameManager::changeState(GameState *gameState)
 {
    /* cleanup the current state */
