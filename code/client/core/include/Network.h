@@ -88,7 +88,6 @@ class Network
       int               mPort;
       std::string       mAddress;
       clientStatus      mStatus;
-      boost::mutex      mStatusMutex;
       unsigned short    mConAttempts;
       unsigned short    mRetryLimit;
       unsigned short    mTimeout;

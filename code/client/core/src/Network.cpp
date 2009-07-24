@@ -34,7 +34,7 @@ Network::Network()
    GameSettings* lSettings = GameSettings::getSingletonPtr();
    mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkRetryLimit"));
    mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTimeout"));
-   mConAttempts = 0;
+   mConAttempts = 1;
 }
 
 bool Network::setPort(int port)
@@ -67,7 +67,6 @@ void Network::connect(void)
 
 void Network::setConStatus(clientStatus lStatus)
 {
-   boost::mutex::scoped_lock scoped_lock(mStatusMutex);
    mStatus = lStatus;
 }
 
@@ -96,7 +95,6 @@ void Network::stopThread(void)
    {
       mStatus = STATUS_DISCONNECTED;
       mRunThread = false;
-      boost::mutex::scoped_lock scoped_lock(mStatusMutex);
       mThread.join();
    }
 }
@@ -112,7 +110,6 @@ void Network::threadLoopConnect(void)
 
    while (mRunThread)
    {
-      boost::mutex::scoped_lock scoped_lock(mStatusMutex);
       switch(mStatus)
       {
          case STATUS_CONNECTING:
@@ -165,10 +162,6 @@ void Network::threadLoopGame()
    {
       switch((*mitEvent).first)
       {
-         printf ("len:%u - value:%s - channel %u.\n",
-                                (intptr_t) (*mitEvent).second.packet->dataLength,
-                                         (char*) (*mitEvent).second.packet->data,
-                                                              (*mitEvent).first);
          case SERVER_CHANNEL_ADMIN:
             if (Ogre::UTFString((char*)(*mitEvent).second.packet->data) == "login")
             {

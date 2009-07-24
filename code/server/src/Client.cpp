@@ -66,10 +66,6 @@ void Client::loop(void)
 
          for (mEvent=lMessages.begin(); mEvent != lMessages.end(); mEvent++)
          {
-            printf ("len:%u - value:%s - channel %u.\n",
-                                (intptr_t) (*mEvent).second.packet->dataLength,
-                                         (char*) (*mEvent).second.packet->data,
-                                                              (*mEvent).first);
             switch((*mEvent).first)
             {
                case SERVER_CHANNEL_ADMIN:
