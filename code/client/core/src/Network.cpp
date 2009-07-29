@@ -34,7 +34,7 @@ Network::Network()
    GameSettings* lSettings = GameSettings::getSingletonPtr();
    mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkRetryLimit"));
    mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTimeout"));
-   mConAttempts = 1;
+   mConAttempts = 0;
 }
 
 bool Network::setPort(int port)
@@ -119,10 +119,13 @@ void Network::threadLoopConnect(void)
             }
             else
             {
-               mConAttempts++;
-               if (mConAttempts > mRetryLimit)
+               if (mConAttempts >= mRetryLimit)
                {
                   setConStatus(STATUS_DISCONNECTED);
+               }
+               else
+               {
+                  mConAttempts++;
                }
             }
          break;
