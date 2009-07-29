@@ -29,37 +29,37 @@ namespace MOC {
 #ifdef ETM_TERRAIN
 CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr, const ET::TerrainInfo* terrainInfo)
 {
-	mRaySceneQuery = sceneMgr->createRayQuery(Ogre::Ray());
-    if (mRaySceneQuery == 0)
-    {
+   mRaySceneQuery = sceneMgr->createRayQuery(Ogre::Ray());
+   if (mRaySceneQuery == 0)
+   {
       // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
       return;
-    }
-    mRaySceneQuery->setSortByDistance(true);
-    
-    mTSMRaySceneQuery = 0;
-    
-	mTerrainInfo = terrainInfo;
-	
-	_heightAdjust = 0.0f;
+   }
+   mRaySceneQuery->setSortByDistance(true);
+
+   mTSMRaySceneQuery = 0;
+
+   mTerrainInfo = terrainInfo;
+
+   _heightAdjust = 0.0f;
 }
 #endif
 
 CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr)
 {
-	mSceneMgr = sceneMgr;
-	
-	mRaySceneQuery = mSceneMgr->createRayQuery(Ogre::Ray());
-    if (mRaySceneQuery == 0)
-    {
+   mSceneMgr = sceneMgr;
+
+   mRaySceneQuery = mSceneMgr->createRayQuery(Ogre::Ray());
+   if (mRaySceneQuery == 0)
+   {
       // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
       return;
-    }
-    mRaySceneQuery->setSortByDistance(true);
-    
-    mTSMRaySceneQuery =  mSceneMgr->createRayQuery(Ogre::Ray());
-    
-    _heightAdjust = 0.0f;    	
+   }
+   mRaySceneQuery->setSortByDistance(true);
+
+   mTSMRaySceneQuery =  mSceneMgr->createRayQuery(Ogre::Ray());
+
+   _heightAdjust = 0.0f;
 }
 
 CollisionTools::~CollisionTools()
@@ -83,99 +83,115 @@ bool CollisionTools::raycastFromCamera(RenderWindow* rw, Camera* camera, const O
 
 bool CollisionTools::collidesWithEntity(const Vector3& fromPoint, const Vector3& toPoint, const float collisionRadius, const float rayHeightLevel, const uint32 queryMask)
 {
-	Vector3 fromPointAdj(fromPoint.x, fromPoint.y + rayHeightLevel, fromPoint.z);
-	Vector3 toPointAdj(toPoint.x, toPoint.y + rayHeightLevel, toPoint.z);	
-	Vector3 normal = toPointAdj - fromPointAdj;
-	float distToDest = normal.normalise();
+   Vector3 fromPointAdj(fromPoint.x, fromPoint.y + rayHeightLevel, fromPoint.z);
+   Vector3 toPointAdj(toPoint.x, toPoint.y + rayHeightLevel, toPoint.z);
+   Vector3 normal = toPointAdj - fromPointAdj;
+   float distToDest = normal.normalise();
 
-	Vector3 myResult(0, 0, 0);
-	Ogre::Entity* myObject = 0;
-	float distToColl = 0.0f;
+   Vector3 myResult(0, 0, 0);
+   Ogre::Entity* myObject = 0;
+   float distToColl = 0.0f;
 
-	if (raycastFromPoint(fromPointAdj, normal, myResult, (unsigned long&)myObject, distToColl, queryMask))
-	{
-		distToColl -= collisionRadius; 
-		return (distToColl <= distToDest);
-	}
-	else
-	{
-		return false;
-	}
+   if (raycastFromPoint(fromPointAdj, normal, myResult, (unsigned long&)myObject, distToColl, queryMask))
+   {
+	   distToColl -= collisionRadius;
+	   return (distToColl <= distToDest);
+   }
+   else
+   {
+	   return false;
+   }
 }
 
-float CollisionTools::getTSMHeightAt(const float x, const float z) {
-	float y=0.0f;
+float CollisionTools::getTSMHeightAt(const float x, const float z)
+{
+   float y=0.0f;
+   static Ray updateRay;
 
-    static Ray updateRay;
-    
-    updateRay.setOrigin(Vector3(x,9999,z));
-    updateRay.setDirection(Vector3::NEGATIVE_UNIT_Y);
-    
-    mTSMRaySceneQuery->setRay(updateRay);
-    RaySceneQueryResult& qryResult = mTSMRaySceneQuery->execute();
-    
-    RaySceneQueryResult::iterator i = qryResult.begin();
-    if (i != qryResult.end() && i->worldFragment)
-    {
-        y=i->worldFragment->singleIntersection.y;           
-    }		
-	return y;
+   updateRay.setOrigin(Vector3(x,9999,z));
+   updateRay.setDirection(Vector3::NEGATIVE_UNIT_Y);
+
+   mTSMRaySceneQuery->setRay(updateRay);
+   RaySceneQueryResult& qryResult = mTSMRaySceneQuery->execute();
+
+   RaySceneQueryResult::iterator i = qryResult.begin();
+   if (i != qryResult.end() && i->worldFragment)
+   {
+      y=i->worldFragment->singleIntersection.y;
+   }
+   return y;
 }
 
 void CollisionTools::calculateY(SceneNode *n, const bool doTerrainCheck, const bool doGridCheck, const float gridWidth, const uint32 queryMask)
 {
-	Vector3 pos = n->getPosition();
-	
-	float x = pos.x;
-	float z = pos.z;
-	float y = pos.y;
-	
-	Vector3 myResult(0,0,0);
-	Ogre::Entity *myObject=0;
-	float distToColl = 0.0f;
+   Vector3 pos = n->getPosition();
 
-	float terrY = 0, colY = 0, colY2 = 0;
+   float x = pos.x;
+   float z = pos.z;
+   float y = pos.y;
 
-	if( raycastFromPoint(Vector3(x,y,z),Vector3::NEGATIVE_UNIT_Y,myResult,(unsigned long&)myObject, distToColl, queryMask)){
-		if (myObject != 0) {
-			colY = myResult.y;
-		} else {
-			colY = -99999;
-		}
-	}
-	
-	//if doGridCheck is on, repeat not to fall through small holes for example when crossing a hangbridge
-	if (doGridCheck) {		
-		if( raycastFromPoint(Vector3(x,y,z)+(n->getOrientation()*Vector3(0,0,gridWidth)),Vector3::NEGATIVE_UNIT_Y,myResult,(unsigned long&)myObject, distToColl, queryMask)){
-			if (myObject != 0) {
-				colY = myResult.y;
-			} else {
-				colY = -99999;
-			}	
-		}
-		if (colY<colY2) colY = colY2;
-	}
-	
-	// set the parameter to false if you are not using ETM or TSM
-	if (doTerrainCheck) {
-	
+   Vector3 myResult(0,0,0);
+   Ogre::Entity *myObject=0;
+   float distToColl = 0.0f;
+
+   float terrY = 0, colY = 0, colY2 = 0;
+
+   if(raycastFromPoint(Vector3(x,y,z),Vector3::NEGATIVE_UNIT_Y,myResult,(unsigned long&)myObject, distToColl, queryMask))
+   {
+      if (myObject != 0)
+      {
+         colY = myResult.y;
+      } else {
+         colY = -99999;
+      }
+   }
+
+   // if doGridCheck is on, repeat not to fall through small holes for example when crossing a hangbridge
+   if (doGridCheck)
+   {
+      if(raycastFromPoint(Vector3(x,y,z)+(n->getOrientation()*Vector3(0,0,gridWidth)),Vector3::NEGATIVE_UNIT_Y,myResult,(unsigned long&)myObject, distToColl, queryMask))
+      {
+         if (myObject != 0)
+         {
+            colY = myResult.y;
+         }
+         else
+         {
+            colY = -99999;
+         }	
+      }
+      if (colY<colY2) colY = colY2;
+   }
+
+   // set the parameter to false if you are not using ETM or TSM
+   if (doTerrainCheck)
+   {
+
 #ifdef ETM_TERRAIN
-		// ETM height value
-		terrY = mTerrainInfo->getHeightAt(x,z);
+      // ETM height value
+      terrY = mTerrainInfo->getHeightAt(x,z);
 #else	
-		// TSM height value
-		terrY = getTSMHeightAt(x,z);
+      // TSM height value
+      terrY = getTSMHeightAt(x,z);
 #endif
 
-		if(terrY < colY ) {
-			n->setPosition(x,colY+_heightAdjust,z);
-		} else {
-			n->setPosition(x,terrY+_heightAdjust,z);
-		}
-	} else {
-		if (!doTerrainCheck && colY == -99999) colY = y;
-		n->setPosition(x,colY+_heightAdjust,z);
-	}
+      if(terrY < colY)
+      {
+         n->setPosition(x,colY+_heightAdjust,z);
+      }
+      else
+      {
+         n->setPosition(x,terrY+_heightAdjust,z);
+      }
+   }
+   else
+   {
+      if (!doTerrainCheck && colY == -99999)
+      {
+         colY = y;
+      }
+      n->setPosition(x,colY+_heightAdjust,z);
+   }
 }
 
 // raycast from a point in to the scene.
@@ -186,8 +202,8 @@ bool CollisionTools::raycastFromPoint(const Vector3 &point,
 										Vector3 &result,unsigned long &target,float &closest_distance,
 										const uint32 queryMask)
 {
-    // create the ray to test
-    static Ogre::Ray ray;
+   // create the ray to test
+   static Ogre::Ray ray;
 	ray.setOrigin(point);
 	ray.setDirection(normal);
 
