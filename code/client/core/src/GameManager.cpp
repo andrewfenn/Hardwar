@@ -249,6 +249,16 @@ Network* GameManager::getNetwork(void)
    return mNetwork;
 }
 
+Ogre::Camera* GameManager::getCamera(void)
+{
+   return mCamera;
+}
+
+Ogre::Viewport* GameManager::getViewport(void)
+{
+   return mViewport;
+}
+
 void GameManager::changeState(GameState *gameState)
 {
    /* cleanup the current state */

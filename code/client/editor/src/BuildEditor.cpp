@@ -190,17 +190,12 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
          Ogre::Entity *lTarget = 0;
          float lDistance = -1.0f;
          
-
-         GameManager * lGameMgr = GameManager::getSingletonPtr();
-         Ogre::Ray lmouseRay = lGameMgr->mCamera->getCameraToViewportRay(mouseState.X.abs / Ogre::Real(lGameMgr->mViewport->getActualWidth()),
-                                                                         mouseState.Y.abs  / Ogre::Real(lGameMgr->mViewport->getActualHeight()));
+         Ogre::Camera* lCamera = GameManager::getSingletonPtr()->getCamera();
+         Ogre::Viewport* lViewport = GameManager::getSingletonPtr()->getViewport();
+         Ogre::Ray lmouseRay = lCamera->getCameraToViewportRay(mouseState.X.abs / Ogre::Real(lViewport->getActualWidth()),
+                                                             mouseState.Y.abs  / Ogre::Real(lViewport->getActualHeight()));
 
          Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-         lSceneMgr->getRootSceneNode()->needUpdate();
-         mlines->clear();
-         mlines->addPoint(lGameMgr->mCamera->getPosition());
-         mlines->addPoint(lmouseRay.getPoint(1000000));
-         mlines->update();
 
          if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance))
          {
@@ -208,17 +203,20 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
             {
                mSelected->getParentSceneNode()->showBoundingBox(false);
                mSelected->getParentSceneNode()->removeAndDestroyChild("Axes");
-               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("Axes");
+               lSceneMgr->destroyEntity("Axes");
             }
 
-            Ogre::Entity *lEntity = lSceneMgr->createEntity("Axes", "axes.mesh");
-            Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axes");
-            lSceneNode->attachObject(lEntity);
-            lSceneNode->setScale(10,10,10);
-            lTarget->getParentSceneNode()->showBoundingBox(true);
+            if (lTarget != 0)
+            {
+               Ogre::Entity *lEntity = lSceneMgr->createEntity("Axes", "axes.mesh");
+               Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axes");
+               lSceneNode->attachObject(lEntity);
+               lSceneNode->setScale(10,10,10);
+               lTarget->getParentSceneNode()->showBoundingBox(true);
 
-            mSelected = lTarget;
-            mEditorObjSelected = true;
+               mSelected = lTarget;
+               mEditorObjSelected = true;
+            }
          }
          else
          {
@@ -226,7 +224,7 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
             {
                mSelected->getParentSceneNode()->showBoundingBox(false);
                mSelected->getParentSceneNode()->removeAndDestroyChild("Axes");
-               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("Axes");
+               lSceneMgr->destroyEntity("Axes");
                mEditorObjSelected = false;
             }
          }

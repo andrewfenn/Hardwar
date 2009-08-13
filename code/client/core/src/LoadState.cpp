@@ -56,8 +56,9 @@ void LoadState::enter( void )
 	}
    
 
-   mGameMgr->getNetwork()->startThread();
    mGameMgr->getNetwork()->connect();
+   mGameMgr->getNetwork()->startThread();
+
 
    mGUIcount = 0;
    mReverse = false; /* for the load bar animation */
@@ -111,7 +112,7 @@ void LoadState::update( unsigned long lTimeElapsed )
                /* turn it into static geometry */
                Ogre::StaticGeometry *lStatic = mSceneMgr->createStaticGeometry("world");
                lStatic->addSceneNode(mSceneMgr->getSceneNode("world"));
-               
+
                mGameMgr->getNetwork()->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                mFilesLoaded = true;
             }

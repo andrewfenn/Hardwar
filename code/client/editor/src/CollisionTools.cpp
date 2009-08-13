@@ -213,26 +213,36 @@ bool CollisionTools::raycastFromPoint(const Vector3 &point,
 bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask)
 {
 	target = 0;
+   closest_distance = -1.0f;
+   Ogre::Vector3 closest_result;
+   Ogre::RaySceneQueryResultEntry result_entry;
+   Ogre::RaySceneQueryResult query_result;
 
-    // check we are initialised
-   if (mRaySceneQuery != 0)
+   Root::MovableObjectFactoryIterator factIt = Root::getSingleton().getMovableObjectFactoryIterator();
+   while(factIt.hasMoreElements())
    {
-      // create a query object
-      mRaySceneQuery->setSortByDistance(true);
-      mRaySceneQuery->setQueryMask(queryMask);
-      mRaySceneQuery->setRay(ray);
-      // execute the query, returns a vector of hits
-      if (mRaySceneQuery->execute().size() <= 0)
+      SceneManager::MovableObjectIterator objItA = mSceneMgr->getMovableObjectIterator(factIt.getNext()->getType());
+      while (objItA.hasMoreElements())
       {
-         // raycast did not hit an objects bounding box
-         return (false);
+         MovableObject* a = objItA.getNext();
+         // skip whole group if type doesn't match
+         if (!(a->getTypeFlags() & queryMask))
+            break;
+
+         if( (a->getQueryFlags() & queryMask) && a->isInScene())
+         {
+            // Do ray / box test
+            std::pair<bool, Real> result = ray.intersects(a->getWorldBoundingBox());
+
+            if (result.first)
+            {
+               result_entry.distance = result.second;
+               result_entry.movable = a;
+               query_result.push_back(result_entry);               
+            }
+         }
       }
    }
-   else
-   {
-      //LOG_ERROR << "Cannot raycast without RaySceneQuery instance" << ENDLOG;
-      return (false);
-   }   
 
     // at this point we have raycast to a series of different objects bounding boxes.
     // we need to test these different objects to see which is the first polygon hit.
@@ -240,9 +250,6 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
     // check all of the objects most of the time, but the worst case scenario is that
     // we need to test every triangle of every object.
     //Ogre::Real closest_distance = -1.0f;
-	 closest_distance = -1.0f;
-    Ogre::Vector3 closest_result;
-    Ogre::RaySceneQueryResult &query_result = mRaySceneQuery->getLastResults();
     for (size_t qr_idx = 0; qr_idx < query_result.size(); qr_idx++)
     {
         // stop checking if we have found a raycast hit that is closer
@@ -304,21 +311,21 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
 				target = (unsigned long)pentity;
                 closest_result = ray.getPoint(closest_distance);               
             }
-        }       
-    }
+        }
+   }
 
-    // return the result
-    if (closest_distance >= 0.0f)
-    {
-        // raycast success
-		result = closest_result;
-        return (true);
-    }
-    else
-    {
-        // raycast failed
-        return (false);
-    } 
+   // return the result
+   if (closest_distance >= 0.0f)
+   {
+      // raycast success
+      result = closest_result;
+      return (true);
+   }
+   else
+   {
+     // raycast failed
+     return (false);
+   }
 }
 
 bool CollisionTools::raycastEntityPolygons(Ogre::Entity* entity, const Ray ray, Vector3 &result, unsigned long &target,float &closest_distance)

@@ -80,8 +80,10 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       MyGUI::Gui           *mGUI;
       Console              *mConsole;
 
+      Ogre::Camera*  getCamera(void);
       Ogre::Camera         *mCamera;
       Ogre::SceneManager   *mSceneMgr;
+      Ogre::Viewport*   getViewport(void);
       Ogre::Viewport       *mViewport;
 
    private:

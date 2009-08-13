@@ -72,7 +72,7 @@ private:
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
    MyGUI::WidgetPtr mMenuPanel;
-   Ogre::Entity * mSelected;
+   Ogre::MovableObject * mSelected;
 
    bool mEditorObjSelected;
    Ogre::String mEditorObjMeshName;
