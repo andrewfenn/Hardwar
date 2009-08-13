@@ -29,8 +29,8 @@ void LoadState::enter( void )
    mGameMgr      = GameManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
    mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
-   mCamera       = mGameMgr->mCamera;
-   mViewport     = mGameMgr->mViewport;
+   mCamera       = mGameMgr->getCamera();
+   mViewport     = mGameMgr->getViewport();
 
    mSceneMgr->clearScene();
 

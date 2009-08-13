@@ -250,14 +250,14 @@ void BuildEditor::update(unsigned long lTimeElapsed)
       float lDistance = -1.0f;
 
       GameManager * lGameMgr = GameManager::getSingletonPtr();
-      Ogre::Ray lmouseRay = lGameMgr->mCamera->getCameraToViewportRay(mBoxMgr.getPoint().left / Ogre::Real(lGameMgr->mViewport->getActualWidth()),
-                                                                      mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->mViewport->getActualHeight()));
+      Ogre::Ray lmouseRay = lGameMgr->getCamera()->getCameraToViewportRay(mBoxMgr.getPoint().left / Ogre::Real(lGameMgr->getViewport()->getActualWidth()),
+                                                                      mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->getViewport()->getActualHeight()));
 
       Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
 
       Ogre::Entity* lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("world")->getAttachedObject("level"));
 
-      if(mCollision->raycastEntityPolygons(lEntity, lmouseRay, lResult, lTarget,lDistance))
+      if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance))
       {
          Ogre::Entity* lEntity;
          if (mEditorObjCreated)

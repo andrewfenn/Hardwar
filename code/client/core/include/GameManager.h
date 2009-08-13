@@ -81,10 +81,8 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       Console              *mConsole;
 
       Ogre::Camera*  getCamera(void);
-      Ogre::Camera         *mCamera;
       Ogre::SceneManager   *mSceneMgr;
       Ogre::Viewport*   getViewport(void);
-      Ogre::Viewport       *mViewport;
 
    private:
       Ogre::Root           *mRoot;
@@ -95,6 +93,8 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       GameState            *mLoadState;
       GameState            *mPlayState;
       Network              *mNetwork;
+      Ogre::Camera         *mCamera;
+      Ogre::Viewport       *mViewport;
 
       OgreLogListener      *mOgreLogListener;
 

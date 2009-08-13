@@ -30,8 +30,8 @@ void PlayState::enter(void)
    mWindow       = mRoot->getAutoCreatedWindow();
    mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
    mGUI          = MyGUI::Gui::getInstancePtr();
-   mCamera       = mGameMgr->mCamera;
-   mViewport     = mGameMgr->mViewport;
+   mCamera       = mGameMgr->getCamera();
+   mViewport     = mGameMgr->getViewport();
 
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
