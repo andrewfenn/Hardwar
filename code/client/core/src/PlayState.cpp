@@ -41,6 +41,7 @@ void PlayState::enter(void)
     */
    mCamera->setPosition(Ogre::Vector3(43027.3, 1414.33, -30462.4));
    mCamera->setNearClipDistance( 0.2f );
+   mCamera->setQueryFlags(0xFFFFFFFF);
 
    mMouseRotX = mMouseRotY = 0;
    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;

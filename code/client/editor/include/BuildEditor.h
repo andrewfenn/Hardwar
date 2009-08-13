@@ -22,6 +22,7 @@
 #include <MyGUI.h>
 #include <Ogre.h>
 #include <OgreRay.h>
+
 #include <libintl.h>
 #include <boost/filesystem.hpp>
 

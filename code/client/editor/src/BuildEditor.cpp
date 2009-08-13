@@ -208,14 +208,17 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
             if (lTarget != 0)
             {
-               Ogre::Entity *lEntity = lSceneMgr->createEntity("Axes", "axes.mesh");
-               Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axes");
-               lSceneNode->attachObject(lEntity);
-               lSceneNode->setScale(10,10,10);
-               lTarget->getParentSceneNode()->showBoundingBox(true);
+               if (lTarget->getParentSceneNode()->getName() != "world" && lTarget->getParentSceneNode()->getName() != "EditorNode")
+               {
+                  Ogre::Entity *lEntity = lSceneMgr->createEntity("Axes", "axes.mesh");
+                  Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axes");
+                  lSceneNode->attachObject(lEntity);
+                  lSceneNode->setScale(10,10,10);
+                  lTarget->getParentSceneNode()->showBoundingBox(true);
 
-               mSelected = lTarget;
-               mEditorObjSelected = true;
+                  mSelected = lTarget;
+                  mEditorObjSelected = true;
+               }
             }
          }
          else
@@ -254,10 +257,9 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                                                                       mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->getViewport()->getActualHeight()));
 
       Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-
       Ogre::Entity* lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("world")->getAttachedObject("level"));
 
-      if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance))
+      if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance, 0xFFFFFFFF))
       {
          Ogre::Entity* lEntity;
          if (mEditorObjCreated)
@@ -270,6 +272,7 @@ void BuildEditor::update(unsigned long lTimeElapsed)
             /* The object we're placing hasn't been loaded yet. */
             mEditorObjMeshName = mBoxMgr.getMeshName();
             lEntity = lSceneMgr->createEntity("EditorObject", mEditorObjMeshName);
+            lEntity->setQueryFlags(0x00000000);
             mEditorNode->attachObject(lEntity);           
             mEditorObjCreated = true;
          }
@@ -293,14 +296,18 @@ void BuildEditor::update(unsigned long lTimeElapsed)
          mEditorNode->detachObject("EditorObject");
          Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
          Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
+
          mEditorObjCreated = false;
 
-         /* Tell the server to place down a new building */
-         Network::getSingletonPtr()->message("addbuilding", strlen("addbuilding")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-         Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.x).c_str(), strlen(Ogre::StringConverter::toString(lVector.x).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-         Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-         Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-         Network::getSingletonPtr()->message(mEditorObjMeshName.c_str(), strlen(mEditorObjMeshName.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         if (!mBoxMgr.isIconActive())
+         {
+            /* Tell the server to place down a new building */
+            Network::getSingletonPtr()->message("addbuilding", strlen("addbuilding")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+            Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.x).c_str(), strlen(Ogre::StringConverter::toString(lVector.x).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+            Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+            Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+            Network::getSingletonPtr()->message(mEditorObjMeshName.c_str(), strlen(mEditorObjMeshName.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         }
       }
    }
 }

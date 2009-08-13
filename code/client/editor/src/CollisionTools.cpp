@@ -225,6 +225,7 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
       while (objItA.hasMoreElements())
       {
          MovableObject* a = objItA.getNext();
+
          // skip whole group if type doesn't match
          if (!(a->getTypeFlags() & queryMask))
             break;
