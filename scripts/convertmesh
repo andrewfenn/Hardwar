@@ -1,0 +1,7 @@
+#!/bin/bash
+
+shopt -s nullglob
+
+for file in *.xml
+   do OgreXMLConverter $file a/${file%.xml}
+done
