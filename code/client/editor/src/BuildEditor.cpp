@@ -45,7 +45,9 @@ BuildEditor::BuildEditor(void)
    mSceneMgr = mRoot->getSceneManager("EditorSceneMgr");
    mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
 
-   renderBuildingList();
+   generateBuildingList();
+
+   renderBuildingList(0);
    toggleShow(true);
 
    mlines = new DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
@@ -73,21 +75,22 @@ void BuildEditor::toggleMinimise(MyGUI::WidgetPtr lWidget)
    mMenuPanel->setVisible(mShow);
 }
 
-void BuildEditor::renderBuildingList(void)
+void BuildEditor::generateBuildingList(void)
 {
    boost::filesystem::path lPath("../media/models/hangers");
 	unsigned short x = 1;
    unsigned short y = 1;
+   unsigned short pageNum = 0;
 
+   /* Loop over all files in the directory and if they are .mesh place them in our building list. */
 	if (boost::filesystem::is_directory(lPath))
    {
 	   for (boost::filesystem::directory_iterator itr(lPath); itr!=boost::filesystem::directory_iterator(); ++itr)
       {
-	      Ogre::String temp = (Ogre::String) itr->path().leaf();
+	      Ogre::String temp = (Ogre::UTFString) itr->path().leaf();
 	      if (temp.substr(temp.length()-4, 4).compare("mesh") == 0)
          {
-            Ogre::UTFString lPanelName = Ogre::UTFString("RenderBox")+Ogre::StringConverter::toString(x)+"_"+Ogre::StringConverter::toString(y);
-	         renderMesh((Ogre::String) itr->path().leaf(), lPanelName);
+            mBuildingList[pageNum].push_back((Ogre::UTFString) itr->path().leaf());
             y++;
             if (y > 4)
             {
@@ -96,19 +99,49 @@ void BuildEditor::renderBuildingList(void)
             }
             if (x > 4)
             {
-               /* Build Editor is full so stop */
-               return;
+               /* See have so many buildings per page so that when we click the arrow buttons
+               on the UI we can go to another page. */
+               pageNum++;
+               x = 1;
+               y = 1;
             }
 	      }
 	   }
 	}
 }
 
+void BuildEditor::renderBuildingList(unsigned short pageNum)
+{
+   unsigned short x = 1;
+   unsigned short y = 1;
+   BuildingPage buildinglist = mBuildingList[pageNum];
+   BuildingPage::iterator buildingItr; 
+   for (buildingItr = buildinglist.begin(); buildingItr < buildinglist.end(); buildingItr++)
+   {
+      if (x > 4)
+      {
+         buildingItr = buildinglist.end();
+      }
+      else
+      {
+         std::cout << (Ogre::String)(*buildingItr) << std::endl;
+         Ogre::UTFString lPanelName = Ogre::UTFString("RenderBox")+Ogre::StringConverter::toString(x)+"_"+Ogre::StringConverter::toString(y);
+	      renderMesh((Ogre::String)(*buildingItr), lPanelName);
+      }
+      y++;
+      if (y > 4)
+      {
+         x++;
+         y=1;
+      }
+   }
+}
+
 void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString lPanelName)
 {
    /* FIXME: We could do this better by moving some of this over to renderBuildingList
       instead of adding and removing it over and over */
-   /* TODO: if entity exists, remove * */
+   /* TODO: check if entity exists and remove * */
    Ogre::SceneNode *lEditorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(lPanelName, Ogre::Vector3(0, 0, 0 ));   
    Ogre::Entity *lent = mSceneMgr->createEntity(lPanelName, lMesh);
    lent->setMaterialName("shader/diffuse");

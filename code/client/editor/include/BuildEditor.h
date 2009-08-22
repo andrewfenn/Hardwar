@@ -25,6 +25,7 @@
 
 #include <libintl.h>
 #include <boost/filesystem.hpp>
+#include <vector>
 
 #include "GameSettings.h"
 #include "GameManager.h"
@@ -67,7 +68,8 @@ private:
 
    bool mShow;
    void toggleShow(bool);
-   void renderBuildingList();
+   void generateBuildingList();
+   void renderBuildingList(unsigned short);
    void renderMesh(Ogre::UTFString, Ogre::UTFString);
    Client::ItemBoxMgr  mBoxMgr;
    MyGUI::Gui  *mGUI;
@@ -81,6 +83,9 @@ private:
    Ogre::SceneNode* mEditorNode;
    MOC::CollisionTools* mCollision;
    DynamicLines *mlines;
+   typedef std::vector<Ogre::UTFString> BuildingPage;
+   typedef std::map<unsigned short, BuildingPage> BuildingList;
+   BuildingList mBuildingList;
 };
 
 }

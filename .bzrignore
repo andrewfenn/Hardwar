@@ -25,3 +25,5 @@ trunk/bin/logs/ogre.log
 trunk/docs
 trunk/bin/logs/mygui.log
 trunk/code/shared/include/Config.h
+bin/logs/mygui.log
+bin/logs/ogre.log

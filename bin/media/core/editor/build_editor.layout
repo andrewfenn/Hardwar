@@ -21,10 +21,10 @@
     </Widget>
     <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuBottom">
         <Property key="Widget_Alpha" value="0.8"/>
-        <Widget type="Button" skin="ButtonLeft" position="16 16 24 24" layer="Back">
+        <Widget type="Button" skin="ButtonLeft" position="16 16 24 24" layer="Back" name="BuildEditorMenuPrevious">
             <Property key="Widget_InheritsAlpha" value="false"/>
         </Widget>
-        <Widget type="Button" skin="ButtonRight" position="358 16 24 24" layer="Back">
+        <Widget type="Button" skin="ButtonRight" position="358 16 24 24" layer="Back" name="BuildEditorMenuNext">
             <Property key="Widget_InheritsAlpha" value="false"/>
         </Widget>
         <Widget type="StaticImage" skin="StaticImage" position="40 60 70 70" layer="Back" name="RenderBox1_1">
