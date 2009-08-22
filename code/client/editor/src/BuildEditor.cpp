@@ -26,6 +26,7 @@ BuildEditor::BuildEditor(void)
    mSelected = 0;
    mEditorObjCreated = false;
    mShow = false;
+   mBuildingPage = 0;
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("build_editor.layout");
 
@@ -35,10 +36,19 @@ BuildEditor::BuildEditor(void)
    mMenuBar->setVisible(false);
    mMenuPanel = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuBottom");
    mMenuPanel->setVisible(false);
+
+   // Add console command
    Console::getSingletonPtr()->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditor::cmd_showEditor));
 
+   // Make the buttons function
    MyGUI::ButtonPtr lButton = mGUI->findWidget<MyGUI::Button>("EditorButtonMinimise");
    lButton->eventMouseButtonClick = MyGUI::newDelegate(this, &BuildEditor::toggleMinimise);
+
+   lButton = mGUI->findWidget<MyGUI::Button>("BuildEditorMenuNext");
+   lButton->eventMouseButtonClick = MyGUI::newDelegate(this, &BuildEditor::buttonNext);
+
+   lButton = mGUI->findWidget<MyGUI::Button>("BuildEditorMenuPrevious");
+   lButton->eventMouseButtonClick = MyGUI::newDelegate(this, &BuildEditor::buttonPrevious);
 
    mRoot = Ogre::Root::getSingletonPtr();
    mRoot->createSceneManager(Ogre::ST_GENERIC,"EditorSceneMgr");
@@ -75,6 +85,48 @@ void BuildEditor::toggleMinimise(MyGUI::WidgetPtr lWidget)
    mMenuPanel->setVisible(mShow);
 }
 
+void BuildEditor::buttonNext(MyGUI::WidgetPtr lWidget)
+{
+   if (mBuildingPage == mBuildingMaxPage)
+      return;
+
+   renderBuildingList(++mBuildingPage);
+}
+
+void BuildEditor::buttonPrevious(MyGUI::WidgetPtr lWidget)
+{
+   if (mBuildingPage == 0)
+      return;
+
+   renderBuildingList(--mBuildingPage);
+}
+
+void BuildEditor::checkUIButtons(void)
+{
+   MyGUI::ButtonPtr lButton;
+   lButton = mGUI->findWidget<MyGUI::Button>("BuildEditorMenuNext");
+   if (mBuildingPage == mBuildingMaxPage)
+   {
+      // hide next button
+      lButton->setVisible(false);
+   }
+   else
+   {
+      lButton->setVisible(true);
+   }
+
+   lButton = mGUI->findWidget<MyGUI::Button>("BuildEditorMenuPrevious");
+   if (mBuildingPage == 0)
+   {
+      // hide previous button
+      lButton->setVisible(false);
+   }
+   else
+   {
+      lButton->setVisible(true);
+   }
+}
+
 void BuildEditor::generateBuildingList(void)
 {
    boost::filesystem::path lPath("../media/models/hangers");
@@ -107,11 +159,20 @@ void BuildEditor::generateBuildingList(void)
             }
 	      }
 	   }
+      mBuildingMaxPage = pageNum;
 	}
 }
 
 void BuildEditor::renderBuildingList(unsigned short pageNum)
 {
+   try
+   {
+      // Remove existing icons in the UI
+      mBoxMgr.clear();
+      Ogre::ResourceGroupManager::getSingleton().destroyResourceGroup("BuildEditorIcons");
+   }
+   catch (Ogre::Exception e) { }
+
    unsigned short x = 1;
    unsigned short y = 1;
    BuildingPage buildinglist = mBuildingList[pageNum];
@@ -124,7 +185,6 @@ void BuildEditor::renderBuildingList(unsigned short pageNum)
       }
       else
       {
-         std::cout << (Ogre::String)(*buildingItr) << std::endl;
          Ogre::UTFString lPanelName = Ogre::UTFString("RenderBox")+Ogre::StringConverter::toString(x)+"_"+Ogre::StringConverter::toString(y);
 	      renderMesh((Ogre::String)(*buildingItr), lPanelName);
       }
@@ -135,13 +195,14 @@ void BuildEditor::renderBuildingList(unsigned short pageNum)
          y=1;
       }
    }
+   checkUIButtons();
 }
 
 void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString lPanelName)
 {
    /* FIXME: We could do this better by moving some of this over to renderBuildingList
       instead of adding and removing it over and over */
-   /* TODO: check if entity exists and remove * */
+   /* TODO: check if entity exists */
    Ogre::SceneNode *lEditorNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(lPanelName, Ogre::Vector3(0, 0, 0 ));   
    Ogre::Entity *lent = mSceneMgr->createEntity(lPanelName, lMesh);
    lent->setMaterialName("shader/diffuse");
@@ -151,7 +212,8 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
    lCamera->setPosition(Ogre::Vector3(0, 0+(lent->getBoundingBox().getSize().y*0.5), (lent->getBoundingBox().getSize().y)*1.2)+lent->getBoundingBox().getSize().z);
    lCamera->lookAt(Ogre::Vector3(0,0,0));
 
-   Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(lPanelName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+   Ogre::TextureManager::getSingleton().remove(lPanelName);
+   Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(lPanelName, "BuildEditorIcons",
                                   Ogre::TEX_TYPE_2D, 512, 512, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET );
    Ogre::RenderTexture *renderTexture = texture->getBuffer()->getRenderTarget();
 
@@ -163,6 +225,8 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
 
    mBoxMgr.addItem(new Client::ItemBox(lPanelName, lPanelName, lMesh));
 
+   mSceneMgr->destroyEntity(lPanelName);
+   lEditorNode->removeAndDestroyAllChildren();
    renderTexture->setActive(false);
    renderTexture->removeAllViewports();
    mSceneMgr->destroyAllCameras();
@@ -290,7 +354,6 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                                                                       mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->getViewport()->getActualHeight()));
 
       Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-      Ogre::Entity* lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("world")->getAttachedObject("level"));
 
       if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance, 0xFFFFFFFF))
       {

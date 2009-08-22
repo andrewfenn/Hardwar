@@ -33,7 +33,7 @@ namespace Client
 
    ItemBox::~ItemBox()
    {
-
+      mImage->deleteAllItems();
    }
 
    void ItemBox::moveItemBox(MyGUI::WidgetPtr sender, int _left, int _top)

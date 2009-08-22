@@ -49,6 +49,10 @@ public:
    void update(unsigned long);
    /** Shows or hides the editor panel, however keeps the top menu bar visible. */
    void toggleMinimise(MyGUI::WidgetPtr);
+   /** Tells the UI to display the next page of buildings in the menu */
+   void buttonNext(MyGUI::WidgetPtr);
+   /** Tells the UI to display the previous page of buildings in the menu */
+   void buttonPrevious(MyGUI::WidgetPtr);
    /** This method is used by Client::Console to show or hide the editor menu.
    @remarks
           The editor can only be accessed in the client has used rcon_password
@@ -68,9 +72,17 @@ private:
 
    bool mShow;
    void toggleShow(bool);
+   /** looks in the directory for all .mesh files and organises them into building pages
+   @remarks
+         A building page is an Ogre::String vector that can hold up to 16 mesh files names
+    */
    void generateBuildingList();
+   /** renders all the building icons in a building page and displays them in the UI */
    void renderBuildingList(unsigned short);
+   /** renders a picture of the mesh for placement in the UI */
    void renderMesh(Ogre::UTFString, Ogre::UTFString);
+   /** Checks which building page we're on and hide/shows the next/previous buttons */
+   void checkUIButtons(void);
    Client::ItemBoxMgr  mBoxMgr;
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
@@ -86,6 +98,8 @@ private:
    typedef std::vector<Ogre::UTFString> BuildingPage;
    typedef std::map<unsigned short, BuildingPage> BuildingList;
    BuildingList mBuildingList;
+   unsigned short mBuildingPage;
+   unsigned short mBuildingMaxPage;
 };
 
 }

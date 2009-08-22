@@ -27,6 +27,7 @@ namespace Client
    ItemBoxMgr::~ItemBoxMgr()
    {
       mListItemBox.clear();
+      mActive = mListItemBox.begin();
    }
 
    void ItemBoxMgr::addItem(Client::ItemBox* _itembox)
@@ -36,6 +37,13 @@ namespace Client
    
    void ItemBoxMgr::clear(void)
    {
+      /* We have to destory the objects like this, otherwise the destructor
+      is not called. However the item in the list remains so we need to clear
+      that too. If you find a better way of doing this let me know. */
+      for (mActive = mListItemBox.begin(); mActive != mListItemBox.end(); ++mActive)
+      {
+         delete (*mActive);
+		}
       mListItemBox.clear();
    }
 
