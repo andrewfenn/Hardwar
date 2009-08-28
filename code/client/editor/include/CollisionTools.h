@@ -61,7 +61,7 @@ class CollisionTools
    	bool raycastFromPoint(const Vector3 &point, const Vector3 &normal, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask = 0xFFFFFFFF);
    	bool raycast(const Ray &ray, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask = 0xFFFFFFFF);
       bool raycastEntityPolygons(Entity* entity, const Ray ray, Vector3 &result, unsigned long &target,float &closest_distance);
-
+      bool raycastSubEntityPolygons(SubEntity* subentity, const Ray &ray, Vector3 &result, float &closest_distance);
    	void setHeightAdjust(const float heightadjust);
    	float getHeightAdjust(void);
    private:
@@ -69,6 +69,14 @@ class CollisionTools
    	float _heightAdjust;
 
    	void GetMeshInformation(const Ogre::MeshPtr mesh,
+                                size_t &vertex_count,
+                                Ogre::Vector3* &vertices,
+                                size_t &index_count,
+                                unsigned long* &indices,
+                                const Ogre::Vector3 &position,
+                                const Ogre::Quaternion &orient,
+                                const Ogre::Vector3 &scale);
+      void GetMeshInformation(const Ogre::SubMesh* submesh,
                                 size_t &vertex_count,
                                 Ogre::Vector3* &vertices,
                                 size_t &index_count,

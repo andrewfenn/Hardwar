@@ -83,6 +83,14 @@ private:
    void renderMesh(Ogre::UTFString, Ogre::UTFString);
    /** Checks which building page we're on and hide/shows the next/previous buttons */
    void checkUIButtons(void);
+   /** Generates an Ogre::Ray from the viewport
+   @param x
+           The x value usually taken from mouse x value
+   @param y
+           The y value usually taken from mouse y value
+  */
+   Ogre::Ray makeRay(const unsigned int, const unsigned int);
+   void selectBuilding(const Ogre::Ray);
    Client::ItemBoxMgr  mBoxMgr;
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
