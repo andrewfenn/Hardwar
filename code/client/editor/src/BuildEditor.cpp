@@ -22,8 +22,6 @@ using namespace Client;
 
 BuildEditor::BuildEditor(void)
 {
-   mEditorObjSelected = false;
-   mSelected = 0;
    mEditorObjCreated = false;
    mShow = false;
    mBuildingPage = 0;
@@ -59,10 +57,6 @@ BuildEditor::BuildEditor(void)
 
    renderBuildingList(0);
    toggleShow(true);
-
-   mlines = new DynamicLines(Ogre::RenderOperation::OT_LINE_LIST);
-   SceneNode *linesNode = mRoot->getSceneManager("GameSceneMgr")->getRootSceneNode()->createChildSceneNode("lines");
-   linesNode->attachObject(mlines);
 }
 
 BuildEditor::~BuildEditor(void)
@@ -283,7 +277,7 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
       if (mouseState.X.abs > 360 || mouseState.Y.abs > 570)
       {
-         selectBuilding(makeRay(mouseState.X.abs, mouseState.Y.abs));
+         mAxis.selectBuilding(makeRay(mouseState.X.abs, mouseState.Y.abs));
       }
    }
 }
@@ -294,62 +288,6 @@ Ogre::Ray BuildEditor::makeRay(const unsigned int x, const unsigned int y)
    Ogre::Viewport* lViewport = GameManager::getSingletonPtr()->getViewport();
    return lCamera->getCameraToViewportRay(x / Ogre::Real(lViewport->getActualWidth()), 
                                           y / Ogre::Real(lViewport->getActualHeight()));
-}
-
-void BuildEditor::selectBuilding(const Ogre::Ray _ray)
-{
-   Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
-   Ogre::Entity *lTarget = 0;
-   float lDistance = -1.0f;
-
-   Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-
-   if(mCollision->raycast(_ray, lResult, (unsigned long&)lTarget, lDistance))
-   {
-      if (lTarget != 0)
-      {
-         if (lTarget->getParentSceneNode()->getName() != "world" && lTarget->getParentSceneNode()->getName() != "EditorNode")
-         {
-            if (lTarget->getParentSceneNode()->getName() == "Axis")
-            {
-               Ogre::Entity * lEntity = static_cast<Ogre::Entity*>(lTarget);
-               for(int i=0; i < lEntity->getNumSubEntities(); i++)
-               {
-                  if (mCollision->raycastSubEntityPolygons(lEntity->getSubEntity(i), _ray, lResult, lDistance))
-                  {
-                     std::cout << "SubEntity: " << lEntity->getSubEntity(i)->getMaterialName() << std::endl;
-                  }
-                  else
-                  {
-                     std::cout << "not found" << std::endl;
-                  }
-               }
-            }
-            else
-            {
-               if (mEditorObjSelected)
-               {
-                  mSelected->getParentSceneNode()->showBoundingBox(false);
-                  mSelected->getParentSceneNode()->removeAndDestroyChild("Axis");
-                  mEditorObjSelected = false;
-                  if (lSceneMgr->hasEntity("Axis"))
-                  {
-                     lSceneMgr->destroyEntity("Axis");
-                  }
-               }
-
-               Ogre::Entity *lEntity = lSceneMgr->createEntity("Axis", "axes.mesh");
-               Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axis");
-               lSceneNode->attachObject(lEntity);
-               lSceneNode->setScale(10,10,10);
-               lTarget->getParentSceneNode()->showBoundingBox(true);
-
-               mSelected = lTarget;
-               mEditorObjSelected = true;
-            }
-         }
-      } // !world && !editornode
-   } // collision
 }
 
 void BuildEditor::update(unsigned long lTimeElapsed)

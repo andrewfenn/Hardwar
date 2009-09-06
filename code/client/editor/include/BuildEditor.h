@@ -33,6 +33,7 @@
 #include "ItemBoxMgr.h"
 #include "CollisionTools.h"
 #include "DynamicLines.h"
+#include "EditorAxis.h"
 
 namespace Client
 {
@@ -90,24 +91,21 @@ private:
            The y value usually taken from mouse y value
   */
    Ogre::Ray makeRay(const unsigned int, const unsigned int);
-   void selectBuilding(const Ogre::Ray);
    Client::ItemBoxMgr  mBoxMgr;
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
    MyGUI::WidgetPtr mMenuPanel;
-   Ogre::MovableObject * mSelected;
 
-   bool mEditorObjSelected;
    Ogre::String mEditorObjMeshName;
    bool mEditorObjCreated;
    Ogre::SceneNode* mEditorNode;
    MOC::CollisionTools* mCollision;
-   DynamicLines *mlines;
    typedef std::vector<Ogre::UTFString> BuildingPage;
    typedef std::map<unsigned short, BuildingPage> BuildingList;
    BuildingList mBuildingList;
    unsigned short mBuildingPage;
    unsigned short mBuildingMaxPage;
+   EditorAxis mAxis;
 };
 
 }
