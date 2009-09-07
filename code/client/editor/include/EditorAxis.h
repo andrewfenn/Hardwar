@@ -34,10 +34,17 @@ class EditorAxis
       EditorAxis(void);
       ~EditorAxis(void);
       void selectBuilding(const Ogre::Ray);
+      Ogre::Entity* getSelectedAxis(void);
+      void clearSelectedAxis(void);
+      void moveBuilding(const Ogre::Ray);
    private:
+      void createAxis(Ogre::Entity*);
+      void destoryAxis(Ogre::MovableObject*);
       MOC::CollisionTools* mCollision;
       bool mEditorObjSelected;
       Ogre::MovableObject * mSelected;
+      void setSelectedAxis(Ogre::Entity*);
+      Ogre::Entity* mSelectedAxis;
 };
 }
 #endif /* __AxisEditor_H_ */

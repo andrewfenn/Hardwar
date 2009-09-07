@@ -266,19 +266,27 @@ bool BuildEditor::isVisible()
 
 void BuildEditor::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-
-}
-
-void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{
    if (id == OIS::MB_Left)
    {
       const OIS::MouseState &mouseState = e.state;
-
       if (mouseState.X.abs > 360 || mouseState.Y.abs > 570)
       {
          mAxis.selectBuilding(makeRay(mouseState.X.abs, mouseState.Y.abs));
       }
+   }
+}
+
+void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+   mAxis.clearSelectedAxis();
+}
+
+void BuildEditor::mouseMoved(const OIS::MouseEvent &e)
+{
+   if (mAxis.getSelectedAxis() != 0)
+   {
+      const OIS::MouseState &mouseState = e.state;
+      mAxis.moveBuilding(makeRay(mouseState.X.abs, mouseState.Y.abs));
    }
 }
 

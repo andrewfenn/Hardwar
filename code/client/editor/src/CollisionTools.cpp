@@ -214,7 +214,7 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
 {
 	target = 0;
    closest_distance = -1.0f;
-   Ogre::Vector3 closest_result;
+   Ogre::Vector3 closest_result = Ogre::Vector3::ZERO;
    Ogre::RaySceneQueryResultEntry result_entry;
    Ogre::RaySceneQueryResult query_result;
 

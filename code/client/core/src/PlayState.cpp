@@ -163,6 +163,11 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
+   if (mBuildEditor->isVisible())
+   {
+      mBuildEditor->mouseMoved(e);
+   }
+
    if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
       /* fixme: should move this to game manager */
