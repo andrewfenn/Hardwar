@@ -37,6 +37,7 @@ class EditorAxis
       Ogre::Entity* getSelectedAxis(void);
       void clearSelectedAxis(void);
       void moveBuilding(const Ogre::Ray);
+      void remove(void);
    private:
       void removeSelectedObj(void);
       void createAxis(Ogre::Entity*);

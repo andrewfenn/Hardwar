@@ -34,6 +34,11 @@ EditorAxis::~EditorAxis(void)
    delete mCollision;
 }
 
+void EditorAxis::remove(void)
+{
+   removeSelectedObj();
+}
+
 void EditorAxis::selectBuilding(const Ogre::Ray _ray)
 {
    Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
