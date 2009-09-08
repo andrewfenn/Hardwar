@@ -38,9 +38,7 @@ CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr, const ET::TerrainIn
    mRaySceneQuery->setSortByDistance(true);
 
    mTSMRaySceneQuery = 0;
-
    mTerrainInfo = terrainInfo;
-
    _heightAdjust = 0.0f;
 }
 #endif
@@ -56,9 +54,7 @@ CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr)
       return;
    }
    mRaySceneQuery->setSortByDistance(true);
-
    mTSMRaySceneQuery =  mSceneMgr->createRayQuery(Ogre::Ray());
-
    _heightAdjust = 0.0f;
 }
 
@@ -210,7 +206,7 @@ bool CollisionTools::raycastFromPoint(const Vector3 &point,
 	return raycast(ray, result, target, closest_distance, queryMask);
 }
 
-bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask)
+bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &target,float &closest_distance, const uint32 queryMask, bool lPolySort)
 {
 	target = 0;
    closest_distance = -1.0f;
@@ -227,10 +223,10 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
          MovableObject* a = objItA.getNext();
 
          // skip whole group if type doesn't match
-         if (!(a->getTypeFlags() & queryMask))
-            break;
+     /*    if (!(a->getTypeFlags() & queryMask))
+            break;*/
 
-         if( (a->getQueryFlags() & queryMask) && a->isInScene())
+         if( (a->getQueryFlags() == queryMask) && a->isInScene())
          {
             // Do ray / box test
             std::pair<bool, Real> result = ray.intersects(a->getWorldBoundingBox());
@@ -265,52 +261,63 @@ bool CollisionTools::raycast(const Ray &ray, Vector3 &result,unsigned long &targ
         if ((query_result[qr_idx].movable != 0)  &&
             (query_result[qr_idx].movable->getMovableType().compare("Entity") == 0)) 
         {
+
             // get the entity to check
-			Ogre::Entity *pentity = static_cast<Ogre::Entity*>(query_result[qr_idx].movable);		
-						
-            // mesh data to retrieve         
-            size_t vertex_count;
-            size_t index_count;
-            Ogre::Vector3 *vertices;
-            unsigned long *indices;
-
-            // get the mesh information
-			GetMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
-                              pentity->getParentNode()->_getDerivedPosition(),
-                              pentity->getParentNode()->_getDerivedOrientation(),
-                              pentity->getParentNode()->getScale());
-
-            // test for hitting individual triangles on the mesh
+   			Ogre::Entity *pentity = static_cast<Ogre::Entity*>(query_result[qr_idx].movable);
             bool new_closest_found = false;
-            for (int i = 0; i < static_cast<int>(index_count); i += 3)
-            {
-                // check for a hit against this triangle
-                std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
-                    vertices[indices[i+1]], vertices[indices[i+2]], true, false);
 
-                // if it was a hit check if its the closest
-                if (hit.first)
-                {
-                    if ((closest_distance < 0.0f) ||
-                        (hit.second < closest_distance))
-                    {
-                        // this is the closest so far, save it off
-                        closest_distance = hit.second;
-                        new_closest_found = true;
-                    }
-                }
+            if (lPolySort)
+            {               // mesh data to retrieve         
+               size_t vertex_count;
+               size_t index_count;
+               Ogre::Vector3 *vertices;
+               unsigned long *indices;
+
+               // get the mesh information
+   			   GetMeshInformation(pentity->getMesh(), vertex_count, vertices, index_count, indices,             
+                                 pentity->getParentNode()->_getDerivedPosition(),
+                                 pentity->getParentNode()->_getDerivedOrientation(),
+                                 pentity->getParentNode()->getScale());
+
+               // test for hitting individual triangles on the mesh
+               for (int i = 0; i < static_cast<int>(index_count); i += 3)
+               {
+                   // check for a hit against this triangle
+                   std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, vertices[indices[i]],
+                       vertices[indices[i+1]], vertices[indices[i+2]], true, false);
+
+                   // if it was a hit check if its the closest
+                   if (hit.first)
+                   {
+                       if ((closest_distance < 0.0f) ||
+                           (hit.second < closest_distance))
+                       {
+                           // this is the closest so far, save it off
+                           closest_distance = hit.second;
+                           new_closest_found = true;
+                       }
+                   }
+               }
+
+   			   // free the verticies and indicies memory
+               delete[] vertices;
+               delete[] indices;
             }
-
-			// free the verticies and indicies memory
-            delete[] vertices;
-            delete[] indices;
+            else
+            {
+               if (closest_distance < 0.0f || closest_distance > query_result[qr_idx].distance)
+               {
+                  new_closest_found = true;
+                  closest_distance = query_result[qr_idx].distance;
+               }
+            }
 
             // if we found a new closest raycast for this object, update the
             // closest_result before moving on to the next object.
             if (new_closest_found)
             {
-				target = (unsigned long)pentity;
-                closest_result = ray.getPoint(closest_distance);               
+				   target = (unsigned long)pentity;
+               closest_result = ray.getPoint(closest_distance);               
             }
         }
    }

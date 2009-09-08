@@ -26,6 +26,7 @@ EditorAxis::EditorAxis(void)
    mSelected = 0;
    mSelectedAxis = 0;
    mCollision = new MOC::CollisionTools(Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr"));
+   mAxisFlag = 100;
 }
 
 EditorAxis::~EditorAxis(void)
@@ -38,6 +39,12 @@ void EditorAxis::selectBuilding(const Ogre::Ray _ray)
    Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
    Ogre::Entity *lTarget = 0;
    float lDistance = -1.0f;
+
+   if(mCollision->raycast(_ray, lResult, (unsigned long&)lTarget, lDistance, mAxisFlag, false))
+   {
+      setSelectedAxis(lTarget);
+      return;
+   }
 
    if(mCollision->raycast(_ray, lResult, (unsigned long&)lTarget, lDistance))
    {
@@ -53,13 +60,7 @@ void EditorAxis::selectBuilding(const Ogre::Ray _ray)
             {
                if (lTarget->getName() != "AxisX" && lTarget->getName() != "AxisY" && lTarget->getName() != "AxisZ")
                {
-                  if (mEditorObjSelected)
-                  {
-                     destoryAxis(mSelected);
-                     mSelected->getParentSceneNode()->showBoundingBox(false);
-                     mSelected = 0;
-                     mEditorObjSelected = false;
-                  }
+                  removeSelectedObj();
 
                   createAxis(lTarget);
                   lTarget->getParentSceneNode()->showBoundingBox(true);
@@ -72,8 +73,23 @@ void EditorAxis::selectBuilding(const Ogre::Ray _ray)
                }
             }
          }
+         else
+         {
+            removeSelectedObj();
+         }
       } // !world && !editornode
    } // collision
+}
+
+void EditorAxis::removeSelectedObj(void)
+{
+   if (mEditorObjSelected)
+   {
+      destoryAxis(mSelected);
+      mSelected->getParentSceneNode()->showBoundingBox(false);
+      mSelected = 0;
+      mEditorObjSelected = false;
+   }
 }
 
 void EditorAxis::clearSelectedAxis(void)
@@ -94,15 +110,15 @@ void EditorAxis::moveBuilding(Ogre::Ray _ray)
    {
       if (mSelectedAxis->getName() == "AxisX")
       {
-         lPosition.x+=lResult.x;
+         lPosition.z = lResult.z;
       }
       else if (mSelectedAxis->getName() == "AxisY")
       {
-         lPosition.y+=lResult.y;
+         lPosition.x = lResult.x;
       }
       else if (mSelectedAxis->getName() == "AxisZ")
       {
-         lPosition.z+=lResult.z;
+         lPosition.y = lResult.y;
       }
       lNode->setPosition(lPosition);
    }
@@ -112,14 +128,23 @@ void EditorAxis::createAxis(Ogre::Entity * lTarget)
 {
    if (lTarget != 0)
    {
-      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+      Ogre::Real lboundsPadding = Ogre::MeshManager::getSingleton().getBoundsPaddingFactor();
+      Ogre::MeshManager::getSingleton().setBoundsPaddingFactor(1.0);
 
+      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
       Ogre::Entity *lEntityX = lSceneMgr->createEntity("AxisX", "axis.mesh");
       lEntityX->setMaterialName("Axis/X");
+      lEntityX->setQueryFlags(mAxisFlag);
+
       Ogre::Entity *lEntityY = lSceneMgr->createEntity("AxisY", "axis.mesh");
       lEntityY->setMaterialName("Axis/Y");
+      lEntityY->setQueryFlags(mAxisFlag);
+
       Ogre::Entity *lEntityZ = lSceneMgr->createEntity("AxisZ", "axis.mesh");
       lEntityZ->setMaterialName("Axis/Z");
+      lEntityZ->setQueryFlags(mAxisFlag);
+
+      Ogre::MeshManager::getSingleton().setBoundsPaddingFactor(lboundsPadding);
 
       Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axis");
 
