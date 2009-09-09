@@ -68,12 +68,12 @@ public:
    void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    void mouseMoved(const OIS::MouseEvent &e);
    bool isVisible();
+   void show(bool);
 private:
    Ogre::Root         *mRoot;
    Ogre::SceneManager *mSceneMgr;
 
    bool mShow;
-   void toggleShow(bool);
    /** looks in the directory for all .mesh files and organises them into building pages
    @remarks
          A building page is an Ogre::String vector that can hold up to 16 mesh files names
@@ -95,7 +95,8 @@ private:
    Client::ItemBoxMgr  mBoxMgr;
    MyGUI::Gui  *mGUI;
    MyGUI::StaticImagePtr mMenuBar;
-   MyGUI::WidgetPtr mMenuPanel;
+   MyGUI::WidgetPtr mMenuPanelAdd;
+   MyGUI::WidgetPtr mMenuPanelEdit;
 
    Ogre::String mEditorObjMeshName;
    bool mEditorObjCreated;

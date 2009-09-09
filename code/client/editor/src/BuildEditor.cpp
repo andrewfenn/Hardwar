@@ -32,8 +32,10 @@ BuildEditor::BuildEditor(void)
 
    mMenuBar = mGUI->findWidget<MyGUI::StaticImage>("BuildEditorMenuTop");
    mMenuBar->setVisible(false);
-   mMenuPanel = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuBottom");
-   mMenuPanel->setVisible(false);
+   mMenuPanelAdd = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuAdd");
+   mMenuPanelAdd->setVisible(false);
+   mMenuPanelEdit = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuEdit");
+   mMenuPanelEdit->setVisible(false);
 
    // Add console command
    Console::getSingletonPtr()->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditor::cmd_showEditor));
@@ -56,7 +58,7 @@ BuildEditor::BuildEditor(void)
    generateBuildingList();
 
    renderBuildingList(0);
-   toggleShow(true);
+   show(false);
 }
 
 BuildEditor::~BuildEditor(void)
@@ -77,7 +79,7 @@ void BuildEditor::toggleMinimise(MyGUI::WidgetPtr lWidget)
    {
       mShow = true;
    }
-   mMenuPanel->setVisible(mShow);
+   mMenuPanelAdd->setVisible(mShow);
 }
 
 void BuildEditor::buttonNext(MyGUI::WidgetPtr lWidget)
@@ -246,7 +248,7 @@ void BuildEditor::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFStri
       bool isAdmin = Ogre::StringConverter::parseBool(GameSettings::getSingletonPtr()->getOption("isAdmin"));
       if (isAdmin)
       {
-         toggleShow(show);
+         this->show(show);
          lConsole->addToConsole(lConsole->getConsoleSuccess(), key, Ogre::StringConverter::toString(show));
       }
       else
@@ -301,97 +303,110 @@ Ogre::Ray BuildEditor::makeRay(const unsigned int x, const unsigned int y)
 
 void BuildEditor::update(unsigned long lTimeElapsed)
 {
-   if (mShow && !mGUI->isShowPointer())
+   if (mShow)
    {
-      if (!mBoxMgr.isIconActive())
+      if (mAxis.objectSelected())
       {
-         mGUI->showPointer();
+         mMenuPanelAdd->setVisible(false);
+         mMenuPanelEdit->setVisible(true);
       }
-   }
-   mBoxMgr.update();
-
-   if (mBoxMgr.isPlaceable())
-   {
-      Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
-      unsigned long lTarget = 0;
-      float lDistance = -1.0f;
-
-      GameManager * lGameMgr = GameManager::getSingletonPtr();
-      Ogre::Ray lmouseRay = lGameMgr->getCamera()->getCameraToViewportRay(mBoxMgr.getPoint().left / Ogre::Real(lGameMgr->getViewport()->getActualWidth()),
-                                                                      mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->getViewport()->getActualHeight()));
-
-      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-
-      if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance, 0xFFFFFFFF))
+      else
       {
-         Ogre::Entity* lEntity;
-         if (mEditorObjCreated)
+         mMenuPanelAdd->setVisible(true);
+         mMenuPanelEdit->setVisible(false);
+
+         if (!mGUI->isShowPointer())
          {
-            lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("EditorNode")->getAttachedObject("EditorObject"));
+            if (!mBoxMgr.isIconActive())
+            {
+               mGUI->showPointer();
+            }
+         }
+         mBoxMgr.update();
+
+         if (mBoxMgr.isPlaceable())
+         {
+            Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
+            unsigned long lTarget = 0;
+            float lDistance = -1.0f;
+
+            GameManager * lGameMgr = GameManager::getSingletonPtr();
+            Ogre::Ray lmouseRay = lGameMgr->getCamera()->getCameraToViewportRay(mBoxMgr.getPoint().left / Ogre::Real(lGameMgr->getViewport()->getActualWidth()),
+                                                                            mBoxMgr.getPoint().top  / Ogre::Real(lGameMgr->getViewport()->getActualHeight()));
+
+            Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+
+            if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance, 0xFFFFFFFF))
+            {
+               Ogre::Entity* lEntity;
+               if (mEditorObjCreated)
+               {
+                  lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("EditorNode")->getAttachedObject("EditorObject"));
+               }
+               else
+               {
+                  mEditorNode = lSceneMgr->getRootSceneNode()->createChildSceneNode("EditorNode");
+                  /* The object we're placing hasn't been loaded yet. */
+                  mEditorObjMeshName = mBoxMgr.getMeshName();
+                  lEntity = lSceneMgr->createEntity("EditorObject", mEditorObjMeshName);
+                  lEntity->setQueryFlags(0x00000000);
+                  mEditorNode->attachObject(lEntity);
+                  mEditorObjCreated = true;
+               }
+
+               lResult.y += lEntity->getBoundingBox().getSize().y*0.5;
+               /* We want ints because that's what is going in the db */
+               lResult.x = floor(lResult.x);
+               lResult.z = floor(lResult.z);
+               lResult.y = floor(lResult.y);
+               mEditorNode->setPosition(lResult);
+            }
          }
          else
          {
-            mEditorNode = lSceneMgr->getRootSceneNode()->createChildSceneNode("EditorNode");
-            /* The object we're placing hasn't been loaded yet. */
-            mEditorObjMeshName = mBoxMgr.getMeshName();
-            lEntity = lSceneMgr->createEntity("EditorObject", mEditorObjMeshName);
-            lEntity->setQueryFlags(0x00000000);
-            mEditorNode->attachObject(lEntity);
-            mEditorObjCreated = true;
-         }
+            if (mEditorObjCreated)
+            {
+               /* We have just let go of an object and placed it. */
+               Ogre::Vector3 lVector = mEditorNode->getPosition();
 
-         lResult.y += lEntity->getBoundingBox().getSize().y*0.5;
-         /* We want ints because that's what is going in the db */
-         lResult.x = floor(lResult.x);
-         lResult.z = floor(lResult.z);
-         lResult.y = floor(lResult.y);
-         mEditorNode->setPosition(lResult);
-      }
-   }
-   else
-   {
-      if (mEditorObjCreated)
-      {
-         /* We have just let go of an object and placed it. */
-         Ogre::Vector3 lVector = mEditorNode->getPosition();
+               /* Kill the editor object */
+               mEditorNode->detachObject("EditorObject");
+               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
+               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
 
-         /* Kill the editor object */
-         mEditorNode->detachObject("EditorObject");
-         Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
-         Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
+               mEditorObjCreated = false;
 
-         mEditorObjCreated = false;
-
-         if (!mBoxMgr.isIconActive())
-         {
-            /* Tell the server to place down a new building */
-            Network::getSingletonPtr()->message("addbuilding", strlen("addbuilding")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-            Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.x).c_str(), strlen(Ogre::StringConverter::toString(lVector.x).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-            Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-            Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-            Network::getSingletonPtr()->message(mEditorObjMeshName.c_str(), strlen(mEditorObjMeshName.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+               if (!mBoxMgr.isIconActive())
+               {
+                  /* Tell the server to place down a new building */
+                  Network::getSingletonPtr()->message("addbuilding", strlen("addbuilding")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+                  Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.x).c_str(), strlen(Ogre::StringConverter::toString(lVector.x).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+                  Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+                  Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+                  Network::getSingletonPtr()->message(mEditorObjMeshName.c_str(), strlen(mEditorObjMeshName.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+               }
+            }
          }
       }
    }
 }
 
-void BuildEditor::toggleShow(bool lShow)
+void BuildEditor::show(bool lShow)
 {
-   Console* lConsole = Console::getSingletonPtr();
    if (!lShow)
    {
-      mShow = false;
-      mMenuPanel->setVisible(false);
+      /* Don't know which panel we're on so set them all hidden */
+      mMenuPanelAdd->setVisible(false);
+      mMenuPanelEdit->setVisible(false);
       mMenuBar->setVisible(false);
+      mAxis.remove();
+      mShow = false;
    }
    else
    {
-      if (lConsole->isVisible())
-      {
-         lConsole->toggleShow();
-      }
-      mShow = true;
-      mMenuPanel->setVisible(true);
+      mMenuPanelAdd->setVisible(true);
       mMenuBar->setVisible(true);
+      mShow = true;
+      mGUI->showPointer();
    }
 }

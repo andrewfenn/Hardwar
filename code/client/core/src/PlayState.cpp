@@ -135,6 +135,13 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
    if (e.key == OIS::KC_GRAVE)
       mGameMgr->mConsole->toggleShow();
 
+   if (e.key == OIS::KC_TAB)
+   {
+      mBuildEditor->show(!mBuildEditor->isVisible());
+      if (!mBuildEditor->isVisible())
+         mGUI->hidePointer();
+   }
+
    if (mGameMgr->mConsole->isVisible())
    {
       if (e.key == OIS::KC_ESCAPE)

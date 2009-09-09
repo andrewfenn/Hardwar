@@ -35,9 +35,18 @@ class EditorAxis
       ~EditorAxis(void);
       void selectBuilding(const Ogre::Ray);
       Ogre::Entity* getSelectedAxis(void);
+      /**
+         Clears the axis selected by the mouse pointer when moving buildings */
       void clearSelectedAxis(void);
+      /**
+         Moves a building to a specified point defined by the ray cast */
       void moveBuilding(const Ogre::Ray);
+      /**
+         Removes the axis from whatever building it is on */
       void remove(void);
+      /**
+         Reports if an object has been selected or not */
+      bool objectSelected(void);
    private:
       void removeSelectedObj(void);
       void createAxis(Ogre::Entity*);

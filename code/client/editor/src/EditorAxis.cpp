@@ -39,6 +39,11 @@ void EditorAxis::remove(void)
    removeSelectedObj();
 }
 
+bool EditorAxis::objectSelected(void)
+{
+   return mEditorObjSelected;
+}
+
 void EditorAxis::selectBuilding(const Ogre::Ray _ray)
 {
    Ogre::Vector3 lResult = Ogre::Vector3::ZERO;

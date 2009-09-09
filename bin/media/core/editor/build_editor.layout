@@ -19,7 +19,7 @@
             </Widget>
         </Widget>
     </Widget>
-    <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuBottom">
+    <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuAdd">
         <Property key="Widget_Alpha" value="0.8"/>
         <Widget type="Button" skin="ButtonLeft" position="16 16 24 24" layer="Back" name="BuildEditorMenuPrevious">
             <Property key="Widget_InheritsAlpha" value="false"/>
@@ -91,5 +91,8 @@
             <Property key="Widget_InheritsAlpha" value="false"/>
             <Property key="Widget_Visible" value="true"/>
         </Widget>
+    </Widget>
+    <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuEdit">
+      
     </Widget>
 </MyGUI>
