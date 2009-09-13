@@ -108,6 +108,10 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
    {
       mGUI->injectKeyPress(e);
    }
+   else if (mBuildEditor->isVisible())
+   {
+      mGUI->injectKeyPress(e);
+   }
    else
    {
       if (e.key == OIS::KC_W)
@@ -121,9 +125,6 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 
       if (e.key == OIS::KC_D)
          mKeydownRight = 1;
-
-      if(e.key == OIS::KC_B)
-         mSceneMgr->showBoundingBoxes(true);
    }
 }
 
@@ -139,15 +140,33 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
    {
       mBuildEditor->show(!mBuildEditor->isVisible());
       if (!mBuildEditor->isVisible())
+      {
          mGUI->hidePointer();
+      }
    }
 
    if (mGameMgr->mConsole->isVisible())
    {
       if (e.key == OIS::KC_ESCAPE)
+      {
          mGameMgr->mConsole->toggleShow();
-
-      mGUI->injectKeyRelease(e);
+      }
+      else
+      {
+         mGUI->injectKeyRelease(e);
+      }
+   }
+   else if (mBuildEditor->isVisible())
+   {
+      if (e.key == OIS::KC_ESCAPE)
+      {
+         mBuildEditor->show(false);
+         mGUI->hidePointer();
+      }
+      else
+      {
+         mGUI->injectKeyRelease(e);
+      }
    }
    else
    {

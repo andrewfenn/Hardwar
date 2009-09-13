@@ -39,6 +39,22 @@ void EditorAxis::remove(void)
    removeSelectedObj();
 }
 
+void EditorAxis::updateSelectedUI(void)
+{
+   MyGUI::EditPtr edit;
+   edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("TransX");
+   edit->eraseText(0, edit->getTextLength());
+   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().x));
+
+   edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("TransY");
+   edit->eraseText(0, edit->getTextLength());
+   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().y));
+
+   edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("TransZ");
+   edit->eraseText(0, edit->getTextLength());
+   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().z));
+}
+
 bool EditorAxis::objectSelected(void)
 {
    return mEditorObjSelected;
@@ -75,6 +91,7 @@ void EditorAxis::selectBuilding(const Ogre::Ray _ray)
                   createAxis(lTarget);
                   lTarget->getParentSceneNode()->showBoundingBox(true);
                   mSelected = lTarget;
+                  updateSelectedUI();
                   mEditorObjSelected = true;
                }
                else
@@ -130,7 +147,11 @@ void EditorAxis::moveBuilding(Ogre::Ray _ray)
       {
          lPosition.y = lResult.y;
       }
+      lPosition.x = ceil(lPosition.x);
+      lPosition.y = ceil(lPosition.y);
+      lPosition.z = ceil(lPosition.z);
       lNode->setPosition(lPosition);
+      updateSelectedUI();
    }
 }
 

@@ -20,6 +20,7 @@
 #define __AxisEditor_H_
 
 #include <Ogre.h>
+#include <MyGUI.h>
 #include "CollisionTools.h"
 
 namespace Client
@@ -47,6 +48,9 @@ class EditorAxis
       /**
          Reports if an object has been selected or not */
       bool objectSelected(void);
+      /**
+         Updates the information in the editor panel for a selected object */
+      void updateSelectedUI(void);
    private:
       void removeSelectedObj(void);
       void createAxis(Ogre::Entity*);
