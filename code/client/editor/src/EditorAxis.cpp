@@ -44,15 +44,15 @@ void EditorAxis::updateSelectedUI(void)
    MyGUI::EditPtr edit;
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("TransX");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().x));
+   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().z));
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("TransY");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().y));
+   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().x));
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("TransZ");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().z));
+   edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().y));
 }
 
 bool EditorAxis::objectSelected(void)

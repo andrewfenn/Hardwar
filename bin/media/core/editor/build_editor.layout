@@ -115,7 +115,6 @@
              <Property key="Widget_InheritsPick" value="true"/>
         </Widget>
 
-
          <Widget type="StaticImage" skin="StaticImage" position="40 148 24 24" layer="Back">
              <Property key="Widget_Alpha" value="0.3"/>
              <Property key="Widget_InheritsAlpha" value="false"/>
@@ -123,6 +122,39 @@
              <Property key="Widget_InheritsPick" value="true"/>
          </Widget>
         <Widget type="Edit" skin="Edit" position="60 150 90 24" layer="Back" name="TransZ">
+             <Property key="Widget_InheritsAlpha" value="false"/>
+             <Property key="Widget_InheritsPick" value="true"/>
+        </Widget>
+
+         <Widget type="StaticImage" skin="StaticImage" position="200 100 24 24" layer="Back">
+             <Property key="Widget_Alpha" value="0.3"/>
+             <Property key="Widget_InheritsAlpha" value="false"/>
+             <Property key="Image_Texture" value="axisX.png"/>
+             <Property key="Widget_InheritsPick" value="true"/>
+         </Widget>
+        <Widget type="Edit" skin="Edit" position="220 102 90 24" layer="Back" name="RotX">
+             <Property key="Widget_InheritsAlpha" value="false"/>
+             <Property key="Widget_InheritsPick" value="true"/>
+        </Widget>
+
+         <Widget type="StaticImage" skin="StaticImage" position="200 124 24 24" layer="Back">
+             <Property key="Widget_Alpha" value="0.3"/>
+             <Property key="Widget_InheritsAlpha" value="false"/>
+             <Property key="Image_Texture" value="axisY.png"/>
+             <Property key="Widget_InheritsPick" value="true"/>
+         </Widget>
+        <Widget type="Edit" skin="Edit" position="220 126 90 24" layer="Back" name="RotY">
+             <Property key="Widget_InheritsAlpha" value="false"/>
+             <Property key="Widget_InheritsPick" value="true"/>
+        </Widget>
+
+         <Widget type="StaticImage" skin="StaticImage" position="200 148 24 24" layer="Back">
+             <Property key="Widget_Alpha" value="0.3"/>
+             <Property key="Widget_InheritsAlpha" value="false"/>
+             <Property key="Image_Texture" value="axisZ.png"/>
+             <Property key="Widget_InheritsPick" value="true"/>
+         </Widget>
+        <Widget type="Edit" skin="Edit" position="220 150 90 24" layer="Back" name="RotZ">
              <Property key="Widget_InheritsAlpha" value="false"/>
              <Property key="Widget_InheritsPick" value="true"/>
         </Widget>
