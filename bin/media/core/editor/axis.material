@@ -7,7 +7,7 @@ material Axis/X
 			lighting off			depth_check off
 			depth_write off
 			cull_hardware none
-         depth_bias 4
+         separate_scene_blend one one_minus_dest_alpha one one
 
 			texture_unit
 			{
@@ -27,7 +27,7 @@ material Axis/Y
 			depth_check off
 			depth_write off
 			cull_hardware none
-         depth_bias 1
+         separate_scene_blend one one_minus_dest_alpha one one
 
 			texture_unit
 			{
@@ -47,7 +47,7 @@ material Axis/Z
 			depth_check off
 			depth_write off
 			cull_hardware none
-         depth_bias 2
+         separate_scene_blend one one_minus_dest_alpha one one
 
 			texture_unit
 			{

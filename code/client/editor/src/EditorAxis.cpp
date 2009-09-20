@@ -208,9 +208,6 @@ void EditorAxis::createAxis(Ogre::Entity * lTarget)
 {
    if (lTarget != 0)
    {
-      Ogre::Real lboundsPadding = Ogre::MeshManager::getSingleton().getBoundsPaddingFactor();
-      Ogre::MeshManager::getSingleton().setBoundsPaddingFactor(1.0);
-
       Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
       Ogre::Entity *lEntityX = lSceneMgr->createEntity("AxisX", "axis.mesh");
       lEntityX->setMaterialName("Axis/X");
@@ -224,21 +221,19 @@ void EditorAxis::createAxis(Ogre::Entity * lTarget)
       lEntityZ->setMaterialName("Axis/Z");
       lEntityZ->setQueryFlags(mAxisFlag);
 
-      Ogre::MeshManager::getSingleton().setBoundsPaddingFactor(lboundsPadding);
-
       Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axis");
 
       Ogre::SceneNode * lSceneNodeX = lSceneNode->createChildSceneNode("AxisX", Ogre::Vector3::ZERO, Ogre::Quaternion(0.5,0.5,0,0));
       lSceneNodeX->attachObject(lEntityX);
-      lSceneNodeX->setScale(100,100,100);
+      lSceneNodeX->setScale(200,200,200);
 
       Ogre::SceneNode * lSceneNodeY = lSceneNode->createChildSceneNode("AxisY", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0.5,0.5,0));
       lSceneNodeY->attachObject(lEntityY);
-      lSceneNodeY->setScale(100,100,100);
+      lSceneNodeY->setScale(200,200,200);
 
       Ogre::SceneNode * lSceneNodeZ = lSceneNode->createChildSceneNode("AxisZ", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0,0.5,0));
       lSceneNodeZ->attachObject(lEntityZ);
-      lSceneNodeZ->setScale(100,100,100);
+      lSceneNodeZ->setScale(200,200,200);
    }
 }
 
