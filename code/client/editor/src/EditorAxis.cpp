@@ -27,6 +27,7 @@ EditorAxis::EditorAxis(void)
    mSelectedAxis = 0;
    mCollision = new MOC::CollisionTools(Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr"));
    mAxisFlag = 100;
+   mCollisionFlag = 101;
 }
 
 EditorAxis::~EditorAxis(void)
@@ -121,11 +122,59 @@ void EditorAxis::removeSelectedObj(void)
 
 void EditorAxis::clearSelectedAxis(void)
 {
-   mSelectedAxis = 0;
+   Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+   mSelectedAxis = 0;   
+
+   if (lSceneMgr->hasEntity("collisonplane"))
+   {
+      lSceneMgr->getRootSceneNode()->removeAndDestroyChild("collisonplane");
+      lSceneMgr->destroyEntity("collisonplane");
+      MeshManager::getSingleton().remove("planeforcollision");
+   }
+}
+
+
+void EditorAxis::createPlane(void)
+{
+   Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+   Ogre::SceneNode * lNode = mSelected->getParentSceneNode();
+   Ogre::Vector3 lPosition = lNode->getPosition();
+
+   Ogre::Plane plane;
+   Ogre::Vector3 lUpVec;
+   if (mSelectedAxis->getName() == "AxisX" || mSelectedAxis->getName() == "AxisY")
+   {
+   	plane.normal = Vector3::UNIT_Y;
+      lUpVec = Vector3::UNIT_Z;
+   }
+   else
+   {
+   	plane.normal = Vector3::UNIT_X;
+      lUpVec = Vector3::UNIT_Y;
+   }
+
+	plane.d = 0;
+
+   Ogre::MeshManager::getSingleton().createPlane("planeforcollision",
+			Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane,
+			10000,10000,10,10,true,1,10,10, lUpVec);
+	Entity* lEntity = lSceneMgr->createEntity( "collisonplane", "planeforcollision" );
+	lEntity->setCastShadows(false);
+   lEntity->setQueryFlags(mCollisionFlag);
+   lEntity->setMaterialName("Editor/Grid");
+
+	Ogre::SceneNode* node = lSceneMgr->getRootSceneNode()->createChildSceneNode("collisonplane");
+   node->setPosition(lPosition);
+   node->attachObject(lEntity);
 }
 
 void EditorAxis::moveBuilding(Ogre::Ray _ray)
 {
+   Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+
+   if (!lSceneMgr->hasEntity("collisonplane"))
+      createPlane();
+
    Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
    Ogre::Entity *lTarget = 0;
    float lDistance = -1.0f;
@@ -133,7 +182,7 @@ void EditorAxis::moveBuilding(Ogre::Ray _ray)
    Ogre::SceneNode * lNode = mSelected->getParentSceneNode();
    Ogre::Vector3 lPosition = lNode->getPosition();
 
-   if(mCollision->raycast(_ray, lResult, (unsigned long&)lTarget, lDistance))
+   if(mCollision->raycast(_ray, lResult, (unsigned long&)lTarget, lDistance, mCollisionFlag, false))
    {
       if (mSelectedAxis->getName() == "AxisX")
       {

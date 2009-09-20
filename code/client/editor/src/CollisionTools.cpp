@@ -460,7 +460,7 @@ void CollisionTools::GetMeshInformation(const Ogre::MeshPtr mesh,
       // We only need to add the shared vertices once
       if(submesh->useSharedVertices)
       {
-         if( !added_shared )
+         if(!added_shared)
          {
             vertex_count += mesh->sharedVertexData->vertexCount;
             added_shared = true;

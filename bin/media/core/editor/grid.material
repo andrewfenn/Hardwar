@@ -1,0 +1,17 @@
+material Editor/Grid
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_check on
+			scene_blend alpha_blend
+
+			texture_unit
+			{
+				texture grid.png
+			}
+		}
+	}
+}

@@ -6,8 +6,10 @@ material Axis/X
 		{
 			lighting off
 			depth_check off
-			depth_write off
 			cull_hardware none
+         cull_software none
+         transparent_sorting off
+         depth_bias 100
 
 			texture_unit
 			{
@@ -25,8 +27,10 @@ material Axis/Y
 		{
 			lighting off
 			depth_check off
-			depth_write off
 			cull_hardware none
+         cull_software none
+         transparent_sorting off
+         depth_bias 100
 
 			texture_unit
 			{
@@ -44,8 +48,10 @@ material Axis/Z
 		{
 			lighting off
 			depth_check off
-			depth_write off
 			cull_hardware none
+         cull_software none
+         transparent_sorting off
+         depth_bias 100
 
 			texture_unit
 			{

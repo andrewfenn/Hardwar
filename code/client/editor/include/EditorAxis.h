@@ -54,6 +54,7 @@ class EditorAxis
    private:
       void removeSelectedObj(void);
       void createAxis(Ogre::Entity*);
+      void createPlane(void);
       void destoryAxis(Ogre::MovableObject*);
       MOC::CollisionTools* mCollision;
       bool mEditorObjSelected;
@@ -61,6 +62,7 @@ class EditorAxis
       void setSelectedAxis(Ogre::Entity*);
       Ogre::Entity* mSelectedAxis;
       Ogre::uint32 mAxisFlag;
+      Ogre::uint32 mCollisionFlag;
 };
 }
 #endif /* __AxisEditor_H_ */
