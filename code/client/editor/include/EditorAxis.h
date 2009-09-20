@@ -34,7 +34,13 @@ class EditorAxis
    public:
       EditorAxis(void);
       ~EditorAxis(void);
+      /**
+         Looks for any buildings that are in the ray and selects the closest
+      */
       void selectBuilding(const Ogre::Ray);
+      /**
+         Returns the axis that has been click dragged by the user
+      */
       Ogre::Entity* getSelectedAxis(void);
       /**
          Clears the axis selected by the mouse pointer when moving buildings */
