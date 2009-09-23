@@ -4,7 +4,8 @@ material Axis/X
 	{
 		pass
 		{
-			lighting off			depth_check off
+         lighting off
+			depth_check off
 			depth_write off
 			cull_hardware none
          separate_scene_blend one one_minus_dest_alpha one one
