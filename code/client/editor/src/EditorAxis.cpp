@@ -54,6 +54,20 @@ void EditorAxis::updateSelectedUI(void)
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("TransZ");
    edit->eraseText(0, edit->getTextLength());
    edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().y));
+
+   Ogre::Quaternion rot = mSelected->getParentNode()->getOrientation();
+
+   edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotX");
+   edit->eraseText(0, edit->getTextLength());
+   edit->addText(Ogre::StringConverter::toString(rot.x));
+
+   edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotY");
+   edit->eraseText(0, edit->getTextLength());
+   edit->addText(Ogre::StringConverter::toString(rot.y));
+
+   edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotZ");
+   edit->eraseText(0, edit->getTextLength());
+   edit->addText(Ogre::StringConverter::toString(rot.z));
 }
 
 bool EditorAxis::objectSelected(void)
@@ -142,15 +156,15 @@ void EditorAxis::createPlane(void)
 
    Ogre::Plane plane;
    Ogre::Vector3 lUpVec;
-   if (mSelectedAxis->getName() == "AxisX" || mSelectedAxis->getName() == "AxisY")
-   {
-   	plane.normal = Vector3::UNIT_Y;
-      lUpVec = Vector3::UNIT_Z;
-   }
-   else
+   if (mSelectedAxis->getName() == "AxisZ" || mSelectedAxis->getName() == "AxisRotZ")
    {
    	plane.normal = Vector3::UNIT_X;
       lUpVec = Vector3::UNIT_Y;
+   }
+   else
+   {
+   	plane.normal = Vector3::UNIT_Y;
+      lUpVec = Vector3::UNIT_Z;
    }
 
 	plane.d = 0;
@@ -221,19 +235,35 @@ void EditorAxis::createAxis(Ogre::Entity * lTarget)
       lEntityZ->setMaterialName("Axis/Z");
       lEntityZ->setQueryFlags(mAxisFlag);
 
+      Ogre::Entity *lEntityRotX = lSceneMgr->createEntity("AxisRotX", "axisrot.mesh");
+      lEntityRotX->setMaterialName("Axis/X");
+      lEntityRotX->setQueryFlags(mAxisFlag);
+
+      Ogre::Entity *lEntityRotZ = lSceneMgr->createEntity("AxisRotZ", "axisrot.mesh");
+      lEntityRotZ->setMaterialName("Axis/Z");
+      lEntityRotZ->setQueryFlags(mAxisFlag);
+
       Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axis");
 
       Ogre::SceneNode * lSceneNodeX = lSceneNode->createChildSceneNode("AxisX", Ogre::Vector3::ZERO, Ogre::Quaternion(0.5,0.5,0,0));
       lSceneNodeX->attachObject(lEntityX);
-      lSceneNodeX->setScale(200,200,200);
+      lSceneNodeX->setScale(1000,1000,1000);
 
       Ogre::SceneNode * lSceneNodeY = lSceneNode->createChildSceneNode("AxisY", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0.5,0.5,0));
       lSceneNodeY->attachObject(lEntityY);
-      lSceneNodeY->setScale(200,200,200);
+      lSceneNodeY->setScale(1000,1000,1000);
 
       Ogre::SceneNode * lSceneNodeZ = lSceneNode->createChildSceneNode("AxisZ", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0,0.5,0));
       lSceneNodeZ->attachObject(lEntityZ);
-      lSceneNodeZ->setScale(200,200,200);
+      lSceneNodeZ->setScale(1000,1000,1000);
+
+      Ogre::SceneNode * lSceneNodeRotX = lSceneNode->createChildSceneNode("AxisRotX", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0,0.5,0));
+      lSceneNodeRotX->attachObject(lEntityRotX);
+      lSceneNodeRotX->setScale(100,100,100);
+
+      Ogre::SceneNode * lSceneNodeRotZ = lSceneNode->createChildSceneNode("AxisRotZ", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0.5,0.5,0));
+      lSceneNodeRotZ->attachObject(lEntityRotZ);
+      lSceneNodeRotZ->setScale(100,100,100);
    }
 }
 
@@ -248,6 +278,10 @@ void EditorAxis::destoryAxis(Ogre::MovableObject* lMoveable)
       lSceneMgr->destroyEntity("AxisY");
    if (lSceneMgr->hasEntity("AxisZ"))
       lSceneMgr->destroyEntity("AxisZ");
+   if (lSceneMgr->hasEntity("AxisRotX"))
+      lSceneMgr->destroyEntity("AxisRotX");
+   if (lSceneMgr->hasEntity("AxisRotZ"))
+      lSceneMgr->destroyEntity("AxisRotZ");
 }
 
 void EditorAxis::setSelectedAxis(Ogre::Entity* lAxis)

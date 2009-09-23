@@ -158,6 +158,6 @@
              <Property key="Widget_InheritsAlpha" value="false"/>
              <Property key="Widget_InheritsPick" value="true"/>
         </Widget>
-
+        <Widget type="Button" skin="Button" position="16 0 40 40" layer="Back" name="ApplyChanges" />
     </Widget>
 </MyGUI>
