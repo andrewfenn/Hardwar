@@ -1,3 +1,23 @@
+material Axis/Selected
+{
+	technique
+	{
+		pass
+		{
+         lighting off
+			depth_check off
+			depth_write off
+			cull_hardware none
+         separate_scene_blend one one_minus_dest_alpha one one
+
+			texture_unit
+			{
+				texture axisSelected.png
+			}
+		}
+	}
+}
+
 material Axis/X
 {
 	technique

@@ -139,7 +139,23 @@ void EditorAxis::removeSelectedObj(void)
 void EditorAxis::clearSelectedAxis(void)
 {
    Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-   mSelectedAxis = 0;   
+   
+   if (mSelectedAxis)
+   {
+      if (mSelectedAxis->getName() == "AxisX" || mSelectedAxis->getName() == "AxisRotX")
+      {
+         mSelectedAxis->setMaterialName("Axis/X");
+      }
+      else if (mSelectedAxis->getName() == "AxisY" || mSelectedAxis->getName() == "AxisRotY")
+      {
+         mSelectedAxis->setMaterialName("Axis/Y");
+      }
+      else if (mSelectedAxis->getName() == "AxisZ" || mSelectedAxis->getName() == "AxisRotZ")
+      {
+         mSelectedAxis->setMaterialName("Axis/Z");
+      }
+   }
+   mSelectedAxis = 0;
 
    if (lSceneMgr->hasEntity("collisonplane"))
    {
@@ -322,6 +338,7 @@ void EditorAxis::destoryAxis(Ogre::MovableObject* lMoveable)
 
 void EditorAxis::setSelectedAxis(Ogre::Entity* lAxis)
 {
+   lAxis->setMaterialName("Axis/Selected");
    mSelectedAxis = lAxis;
 }
 
