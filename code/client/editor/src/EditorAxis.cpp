@@ -28,6 +28,7 @@ EditorAxis::EditorAxis(void)
    mCollision = new MOC::CollisionTools(Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr"));
    mAxisFlag = 100;
    mCollisionFlag = 101;
+   mRotAxisShown = false;
 }
 
 EditorAxis::~EditorAxis(void)
@@ -104,8 +105,7 @@ void EditorAxis::selectBuilding(const Ogre::Ray _ray)
                    lTarget->getName() != "AxisRotY" && lTarget->getName() != "AxisRotZ")
                {
                   removeSelectedObj();
-
-                  createAxis(lTarget);
+                  createPosAxis(lTarget);
                   lTarget->getParentSceneNode()->showBoundingBox(true);
                   mSelected = lTarget;
                   updateSelectedUI();
@@ -133,6 +133,7 @@ void EditorAxis::removeSelectedObj(void)
       mSelected->getParentSceneNode()->showBoundingBox(false);
       mSelected = 0;
       mEditorObjSelected = false;
+      mRotAxisShown = false;
    }
 }
 
@@ -254,73 +255,118 @@ void EditorAxis::moveBuilding(Ogre::Ray _ray)
    }
 }
 
-void EditorAxis::createAxis(Ogre::Entity * lTarget)
+void EditorAxis::createRotAxis(Ogre::Entity * lTarget)
 {
-   if (lTarget != 0)
+   if (lTarget == 0)
+      return;
+
+   destoryAxis(lTarget);
+
+   Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+   Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axis");
+
+   Ogre::Entity *lEntityRotX = lSceneMgr->createEntity("AxisRotX", "axisrot.mesh");
+   lEntityRotX->setMaterialName("Axis/X");
+   lEntityRotX->setQueryFlags(mAxisFlag);
+
+   Ogre::Entity *lEntityRotY = lSceneMgr->createEntity("AxisRotY", "axisrot.mesh");
+   lEntityRotY->setMaterialName("Axis/Y");
+   lEntityRotY->setQueryFlags(mAxisFlag);
+
+   Ogre::Entity *lEntityRotZ = lSceneMgr->createEntity("AxisRotZ", "axisrot.mesh");
+   lEntityRotZ->setMaterialName("Axis/Z");
+   lEntityRotZ->setQueryFlags(mAxisFlag);
+
+   Ogre::SceneNode * lSceneNodeRotX = lSceneNode->createChildSceneNode("AxisRotX", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0,0.5,0));
+   lSceneNodeRotX->attachObject(lEntityRotX);
+   lSceneNodeRotX->setScale(100,100,100);
+   lSceneNodeRotX->setInheritOrientation(false);
+
+   Ogre::SceneNode * lSceneNodeRotY = lSceneNode->createChildSceneNode("AxisRotY", Ogre::Vector3::ZERO, Ogre::Quaternion(0.5,0.5,0,0));
+   lSceneNodeRotY->attachObject(lEntityRotY);
+   lSceneNodeRotY->setScale(100,100,100);
+   lSceneNodeRotY->setInheritOrientation(false);
+
+   Ogre::SceneNode * lSceneNodeRotZ = lSceneNode->createChildSceneNode("AxisRotZ", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0.5,0.5,0));
+   lSceneNodeRotZ->attachObject(lEntityRotZ);
+   lSceneNodeRotZ->setScale(100,100,100);
+   lSceneNodeRotZ->setInheritOrientation(false);   
+}
+
+void EditorAxis::createPosAxis(Ogre::Entity * lTarget)
+{
+   if (lTarget == 0)
+      return;
+
+   destoryAxis(lTarget);
+
+   Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+   Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axis");
+
+   Ogre::Entity *lEntityX = lSceneMgr->createEntity("AxisX", "axis.mesh");
+   lEntityX->setMaterialName("Axis/X");
+   lEntityX->setQueryFlags(mAxisFlag);
+
+   Ogre::Entity *lEntityY = lSceneMgr->createEntity("AxisY", "axis.mesh");
+   lEntityY->setMaterialName("Axis/Y");
+   lEntityY->setQueryFlags(mAxisFlag);
+
+   Ogre::Entity *lEntityZ = lSceneMgr->createEntity("AxisZ", "axis.mesh");
+   lEntityZ->setMaterialName("Axis/Z");
+   lEntityZ->setQueryFlags(mAxisFlag);
+
+   Ogre::SceneNode * lSceneNodeX = lSceneNode->createChildSceneNode("AxisX", Ogre::Vector3::ZERO, Ogre::Quaternion(0.5,0.5,0,0));
+   lSceneNodeX->attachObject(lEntityX);
+   lSceneNodeX->setScale(1000,1000,1000);
+   lSceneNodeX->setInheritOrientation(false);
+
+   Ogre::SceneNode * lSceneNodeY = lSceneNode->createChildSceneNode("AxisY", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0.5,0.5,0));
+   lSceneNodeY->attachObject(lEntityY);
+   lSceneNodeY->setScale(1000,1000,1000);
+   lSceneNodeY->setInheritOrientation(false);
+
+   Ogre::SceneNode * lSceneNodeZ = lSceneNode->createChildSceneNode("AxisZ", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0,0.5,0));
+   lSceneNodeZ->attachObject(lEntityZ);
+   lSceneNodeZ->setScale(1000,1000,1000);
+   lSceneNodeZ->setInheritOrientation(false);
+}
+
+bool EditorAxis::isRotAxis(void)
+{
+   return mRotAxisShown;
+}
+
+void EditorAxis::showRotAxis(bool show)
+{
+   Ogre::Entity* lEnt = (Ogre::Entity*) mSelected;
+
+   if (lEnt == 0)
+      return;
+
+   if (show)
    {
-      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-      Ogre::Entity *lEntityX = lSceneMgr->createEntity("AxisX", "axis.mesh");
-      lEntityX->setMaterialName("Axis/X");
-      lEntityX->setQueryFlags(mAxisFlag);
-
-      Ogre::Entity *lEntityY = lSceneMgr->createEntity("AxisY", "axis.mesh");
-      lEntityY->setMaterialName("Axis/Y");
-      lEntityY->setQueryFlags(mAxisFlag);
-
-      Ogre::Entity *lEntityZ = lSceneMgr->createEntity("AxisZ", "axis.mesh");
-      lEntityZ->setMaterialName("Axis/Z");
-      lEntityZ->setQueryFlags(mAxisFlag);
-
-      Ogre::Entity *lEntityRotX = lSceneMgr->createEntity("AxisRotX", "axisrot.mesh");
-      lEntityRotX->setMaterialName("Axis/X");
-      lEntityRotX->setQueryFlags(mAxisFlag);
-
-      Ogre::Entity *lEntityRotY = lSceneMgr->createEntity("AxisRotY", "axisrot.mesh");
-      lEntityRotY->setMaterialName("Axis/Y");
-      lEntityRotY->setQueryFlags(mAxisFlag);
-
-      Ogre::Entity *lEntityRotZ = lSceneMgr->createEntity("AxisRotZ", "axisrot.mesh");
-      lEntityRotZ->setMaterialName("Axis/Z");
-      lEntityRotZ->setQueryFlags(mAxisFlag);
-
-      Ogre::SceneNode * lSceneNode = lTarget->getParentSceneNode()->createChildSceneNode("Axis");
-
-      Ogre::SceneNode * lSceneNodeX = lSceneNode->createChildSceneNode("AxisX", Ogre::Vector3::ZERO, Ogre::Quaternion(0.5,0.5,0,0));
-      lSceneNodeX->attachObject(lEntityX);
-      lSceneNodeX->setScale(1000,1000,1000);
-      lSceneNodeX->setInheritOrientation(false);
-
-      Ogre::SceneNode * lSceneNodeY = lSceneNode->createChildSceneNode("AxisY", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0.5,0.5,0));
-      lSceneNodeY->attachObject(lEntityY);
-      lSceneNodeY->setScale(1000,1000,1000);
-      lSceneNodeY->setInheritOrientation(false);
-
-      Ogre::SceneNode * lSceneNodeZ = lSceneNode->createChildSceneNode("AxisZ", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0,0.5,0));
-      lSceneNodeZ->attachObject(lEntityZ);
-      lSceneNodeZ->setScale(1000,1000,1000);
-      lSceneNodeZ->setInheritOrientation(false);
-
-      Ogre::SceneNode * lSceneNodeRotX = lSceneNode->createChildSceneNode("AxisRotX", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0,0.5,0));
-      lSceneNodeRotX->attachObject(lEntityRotX);
-      lSceneNodeRotX->setScale(100,100,100);
-      lSceneNodeRotX->setInheritOrientation(false);
-
-      Ogre::SceneNode * lSceneNodeRotY = lSceneNode->createChildSceneNode("AxisRotY", Ogre::Vector3::ZERO, Ogre::Quaternion(0.5,0.5,0,0));
-      lSceneNodeRotY->attachObject(lEntityRotY);
-      lSceneNodeRotY->setScale(100,100,100);
-      lSceneNodeRotY->setInheritOrientation(false);
-
-      Ogre::SceneNode * lSceneNodeRotZ = lSceneNode->createChildSceneNode("AxisRotZ", Ogre::Vector3::ZERO, Ogre::Quaternion(0,0.5,0.5,0));
-      lSceneNodeRotZ->attachObject(lEntityRotZ);
-      lSceneNodeRotZ->setScale(100,100,100);
-      lSceneNodeRotZ->setInheritOrientation(false);
+      createRotAxis(lEnt);
    }
+   else
+   {
+      createPosAxis(lEnt);
+   }
+   mRotAxisShown = show;
 }
 
 void EditorAxis::destoryAxis(Ogre::MovableObject* lMoveable)
 {
    Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-   lMoveable->getParentSceneNode()->removeAndDestroyChild("Axis");
+
+   try
+   {
+      lMoveable->getParentSceneNode()->removeAndDestroyChild("Axis");
+   }
+   catch(Ogre::Exception e)
+   {
+      /* Axis doesn't exist */
+      return;
+   }
 
    if (lSceneMgr->hasEntity("AxisX"))
       lSceneMgr->destroyEntity("AxisX");

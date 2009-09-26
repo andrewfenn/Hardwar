@@ -57,13 +57,46 @@ class EditorAxis
       /**
          Updates the information in the editor panel for a selected object */
       void updateSelectedUI(void);
+      /**
+         Toggles which axis to show. The position axis or rotation axis
+         @param show
+            If set to true it will show the rotation axis, otherwise the
+         position axis is shown.
+      */
+      void showRotAxis(bool);
+      /**
+         Returns if the axis shown is the Rotation axis.
+         @remarks
+            If true the rotation axis is shown. If false then the
+         position axis is currently displayed. If this function is
+         called while an object isn't selected it will return false.
+      */
+      bool isRotAxis(void);
    private:
       void removeSelectedObj(void);
-      void createAxis(Ogre::Entity*);
+      /**
+         Creates the position axis on the selected entity
+         @param Entity
+            The object to attach the axis to
+         @remarks
+            This function assumes that you have called destoryAxis
+         before calling this one
+      */
+      void createPosAxis(Ogre::Entity*);
+      /**
+         Creates the rotation axis on the selected entity
+         @param Entity
+            The object to attach the axis to
+         @remarks
+            This function assumes that you have called destoryAxis
+         before calling this one
+      */
+      void createRotAxis(Ogre::Entity*);
       void createPlane(void);
       void destoryAxis(Ogre::MovableObject*);
       MOC::CollisionTools* mCollision;
       bool mEditorObjSelected;
+      bool mRotAxisShown;
       Ogre::MovableObject * mSelected;
       void setSelectedAxis(Ogre::Entity*);
       Ogre::Entity* mSelectedAxis;

@@ -66,6 +66,7 @@ public:
    void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
    void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+   void keyReleased(const OIS::KeyEvent &e);
    void mouseMoved(const OIS::MouseEvent &e);
    bool isVisible();
    void show(bool);

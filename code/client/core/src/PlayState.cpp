@@ -166,6 +166,7 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
       else
       {
          mGUI->injectKeyRelease(e);
+         mBuildEditor->keyReleased(e);
       }
    }
    else

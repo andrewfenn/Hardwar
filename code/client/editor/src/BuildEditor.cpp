@@ -293,6 +293,14 @@ void BuildEditor::mouseMoved(const OIS::MouseEvent &e)
    }
 }
 
+void BuildEditor::keyReleased(const OIS::KeyEvent &e)
+{
+   if (e.key == OIS::KC_LSHIFT)
+   {
+      mAxis.showRotAxis(!mAxis.isRotAxis());
+   }
+}
+
 Ogre::Ray BuildEditor::makeRay(const unsigned int x, const unsigned int y)
 {
    Ogre::Camera* lCamera = GameManager::getSingletonPtr()->getCamera();
