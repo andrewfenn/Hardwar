@@ -23,6 +23,7 @@ using namespace Server;
 Client::Client()
 {
    mRunThread = true;
+   mThreadRunning = false;
    mConState = STATUS_CONNECTING;
    mAdmin = 0;
 }
@@ -30,19 +31,29 @@ Client::Client()
 Client::~Client()
 {
    mRunThread = false;
+   mThread.join();
 }
 
 void Client::addMessage(const ENetEvent lEvent)
 {
-   boost::mutex::scoped_lock scoped_lock(mEventMutex);
-   mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
+   if (mRunThread)
+   {
+      boost::mutex::scoped_lock lMutex(mEventMutex);
+      mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
+   }
 }
 
-void Client::makeThread(void)
+void Client::addThread(void)
 {
    /* creates a new thread */
    boost::thread mThread(boost::bind(&Client::loop, this));
    return;
+}
+
+void Client::removeThread(void)
+{
+   mRunThread = false;
+   mThread.join();
 }
 
 void Client::setPeer(ENetPeer* lpeer)
@@ -50,19 +61,30 @@ void Client::setPeer(ENetPeer* lpeer)
    mPeer = lpeer;
 }
 
+Message Client::getMessages(void)
+{
+   Message lMessages;
+   if (mRunThread)
+   {
+      boost::mutex::scoped_lock lMutex(mEventMutex);
+      lMessages = mMessages;
+      mMessages.clear();
+   }
+   return lMessages;
+}
+
 void Client::loop(void)
 {
    Message lMessages;
    bool lStartedDownload = false;
    Building::iterator lBuildIter;
+   mThreadRunning = true;
 
    while(mRunThread)
    {
       if (mMessages.size() > 0)
       {
-         boost::mutex::scoped_lock scoped_lock(mEventMutex);
-         lMessages = mMessages;
-         mMessages.clear();
+         lMessages = getMessages();
 
          for (mEvent=lMessages.begin(); mEvent != lMessages.end(); mEvent++)
          {
@@ -132,6 +154,7 @@ void Client::loop(void)
          sleep(1);
       }
    }
+   mThreadRunning = false;
 }
 
 void Client::processAdminReqs(void)

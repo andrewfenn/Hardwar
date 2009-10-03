@@ -37,18 +37,18 @@ void ClientManager::addClient(ENetPeer *lpeer)
    mPlayers[lpeer->incomingPeerID] = new Client();
    mPlayers[lpeer->incomingPeerID]->setPeer(lpeer);
    /* start new client thread */
-   mPlayers[lpeer->incomingPeerID]->makeThread();
+   mPlayers[lpeer->incomingPeerID]->addThread();
    printf(gettext("Thread: Client - %d - started\n"), lpeer->incomingPeerID);
 }
 
 void ClientManager::removeClient(ENetPeer *lpeer)
 {
-   /* TODO: destory client's thread? */
+   mPlayers[lpeer->incomingPeerID]->removeThread();
    delete mPlayers[lpeer->incomingPeerID];
+   mPlayers[lpeer->incomingPeerID] = 0;
    mPlayers.erase(lpeer->incomingPeerID);
    printf(gettext("Thread: Client - %d - killed\n"), lpeer->incomingPeerID);
 }
-
 
 void ClientManager::addMessage(const ENetEvent lEvent)
 {

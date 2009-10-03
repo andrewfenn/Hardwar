@@ -47,7 +47,9 @@ namespace Server
              processed. */
          void addMessage(const ENetEvent);
          /** Starts a new thread which processes a client's messages. */
-         void makeThread(void);
+         void addThread(void);
+         /** Stops and removes the thread */
+         void removeThread(void);
          /** Sets the unique peer ID given to the client by Enet */
          void setPeer(ENetPeer*);
       private:
@@ -55,13 +57,15 @@ namespace Server
          bool sendMessage(const void*, size_t, enet_uint8, enet_uint32);
          void processAdminReqs(void);
          void nextPacket(void);
+         Message getMessages(void);
          bool mRunThread;
+         bool mThreadRunning;
          ENetPeer* mPeer;
          clientStatus mConState;
          
          Message mMessages;
          Message::iterator mEvent;
-         boost::mutex      mEventMutex;
+         boost::mutex mEventMutex;
          boost::thread mThread;
          Admin *mAdmin;
    };
