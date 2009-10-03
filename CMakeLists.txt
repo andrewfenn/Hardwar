@@ -1,15 +1,16 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-
-#Change PROJECT_NAME to the name of your project
-PROJECT(Hardwar)
+cmake_minimum_required(VERSION 2.6)
+project(Hardwar)
+cmake_policy(SET CMP0003 NEW)
 
 # project version
 SET( ${PROJECT_NAME}_MAJOR_VERSION 0 )
 SET( ${PROJECT_NAME}_MINOR_VERSION 1 )
 SET( ${PROJECT_NAME}_PATCH_LEVEL 4 )
 
-SET( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
-                          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
+SET( CMAKE_MODULE_PATH   "${CMAKE_MODULE_PATH}"
+                         "${Hardwar_SOURCE_DIR}/cmake/modules"
+                         "${Hardwar_SOURCE_DIR}/cmake/scripts"
+ )
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
@@ -32,6 +33,14 @@ FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/code/*.cpp)
 SOURCE_GROUP("Hardwar" FILES ${folder_source})
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/code/shared/include/Config.h)
+
+# Set compiler specific build flags
+if (CMAKE_COMPILER_IS_GNUCXX)
+  add_definitions(-msse)
+endif ()
+if (MSVC)
+  add_definitions(/fp:fast)
+endif ()
 
 INCLUDE_DIRECTORIES(
          ${CMAKE_CURRENT_SOURCE_DIR}/code/client/core/include
@@ -88,6 +97,8 @@ FOREACH(Package ${Required_Packages})
       MESSAGE(STATUS "${Package} not found")
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
+
+FIND_PACKAGE(Boost COMPONENTS filesystem thread thread-mt REQUIRED)
 
 IF (MSVC_IDE)
 	TARGET_LINK_LIBRARIES(hardwar boost_filesystem-*)
