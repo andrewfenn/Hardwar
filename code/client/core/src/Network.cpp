@@ -85,7 +85,7 @@ void Network::startThread(void)
    if (!mRunThread)
    {
       /* create a new thread */
-      boost::thread mThread(boost::bind(&Network::threadLoopConnect, this));
+      mThread = boost::thread(boost::bind(&Network::threadLoopConnect, this));
    }
 }
 

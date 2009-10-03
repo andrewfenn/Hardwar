@@ -47,12 +47,14 @@ void ClientManager::removeClient(ENetPeer *lpeer)
    delete mPlayers[lpeer->incomingPeerID];
    mPlayers[lpeer->incomingPeerID] = 0;
    mPlayers.erase(lpeer->incomingPeerID);
-   printf(gettext("Thread: Client - %d - killed\n"), lpeer->incomingPeerID);
 }
 
 void ClientManager::addMessage(const ENetEvent lEvent)
 {
-   mPlayers[lEvent.peer->incomingPeerID]->addMessage(lEvent);
+   if (mPlayers[lEvent.peer->incomingPeerID] != 0)
+   {
+      mPlayers[lEvent.peer->incomingPeerID]->addMessage(lEvent);
+   }
 }
 
 void ClientManager::setHost(ENetHost* lHost)

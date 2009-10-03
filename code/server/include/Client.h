@@ -26,6 +26,7 @@
 #include "srvstructs.h"
 #include "Admin.h"
 #include "ClientManager.h"
+#include "ThreadController.h"
 
 namespace Server
 {
@@ -58,14 +59,17 @@ namespace Server
          void processAdminReqs(void);
          void nextPacket(void);
          Message getMessages(void);
-         bool mRunThread;
-         bool mThreadRunning;
+
+         ThreadController mThreadController;
+
          ENetPeer* mPeer;
          clientStatus mConState;
-         
+         int mtest;
+
          Message mMessages;
          Message::iterator mEvent;
-         boost::mutex mEventMutex;
+         mutable boost::mutex mEventMutex;
+
          boost::thread mThread;
          Admin *mAdmin;
    };
