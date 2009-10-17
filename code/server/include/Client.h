@@ -23,7 +23,7 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
-#include "srvstructs.h"
+#include "DataPacket.h"
 #include "Admin.h"
 #include "ClientManager.h"
 #include "ThreadController.h"
@@ -55,8 +55,8 @@ namespace Server
          void setPeer(ENetPeer*);
       private:
          void loop(void);
-         bool sendMessage(const void*, size_t, enet_uint8, enet_uint32);
-         void processAdminReqs(void);
+         bool sendMessage(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
+         void processAdminReqs(dataPacket lPacket);
          void nextPacket(void);
          Message getMessages(void);
 

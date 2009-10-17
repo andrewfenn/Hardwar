@@ -25,6 +25,7 @@
 
 #include "srvstructs.h"
 #include "LevelManager.h"
+#include "DataPacket.h"
 
 namespace Server
 {
@@ -39,8 +40,7 @@ namespace Server
       public:
          Admin();
          ~Admin();
-         void processRequest(Message::iterator&);
-         void nextPacket(Message::iterator &);
+         void processRequest(dataPacket lPacket);
          
    };
 }

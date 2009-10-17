@@ -30,16 +30,16 @@ Network::Network()
    mPort = 26500;
    mAddress = std::string("127.0.0.1");
    mRunThread = false;
-   mStatus = STATUS_DISCONNECTED;
+   mStatus = status_disconnected;
    GameSettings* lSettings = GameSettings::getSingletonPtr();
    mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkRetryLimit"));
    mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTimeout"));
    mConAttempts = 0;
 }
 
-bool Network::setPort(int port)
+bool Network::setPort(const int port)
 {
-   if (mStatus == STATUS_DISCONNECTED)
+   if (mStatus == status_disconnected)
    {
       mPort = port;
       return true;
@@ -47,9 +47,9 @@ bool Network::setPort(int port)
    return false;
 }
 
-bool Network::setAddress(std::string address)
+bool Network::setAddress(const std::string address)
 {
-   if (mStatus == STATUS_DISCONNECTED)
+   if (mStatus == status_disconnected)
    {
       mAddress = address;
       return true;
@@ -61,11 +61,11 @@ void Network::connect(void)
 {
    if (mPort > 0 && !mAddress.empty())
    {
-      setConStatus(STATUS_CONNECTING);
+      setConStatus(status_connecting);
    }
 }
 
-void Network::setConStatus(clientStatus lStatus)
+void Network::setConStatus(const clientStatus lStatus)
 {
    mStatus = lStatus;
 }
@@ -93,7 +93,7 @@ void Network::stopThread(void)
 {
    if (mRunThread)
    {
-      mStatus = STATUS_DISCONNECTED;
+      mStatus = status_disconnected;
       mRunThread = false;
       mThread.join();
    }
@@ -112,16 +112,16 @@ void Network::threadLoopConnect(void)
    {
       switch(mStatus)
       {
-         case STATUS_CONNECTING:
+         case status_connecting:
             if (sendJoinRequest())
             {
-               setConStatus(STATUS_LISTENING);
+               setConStatus(status_listening);
             }
             else
             {
                if (mConAttempts >= mRetryLimit)
                {
-                  setConStatus(STATUS_DISCONNECTED);
+                  setConStatus(status_disconnected);
                }
                else
                {
@@ -129,7 +129,7 @@ void Network::threadLoopConnect(void)
                }
             }
          break;
-         case STATUS_DISCONNECTED:
+         case status_disconnected:
          break;
          default:
             threadLoopMessages();
@@ -161,18 +161,23 @@ void Network::threadLoopMessages()
 
 void Network::threadLoopGame()
 {
-   for (mitEvent=mMessages.begin(); mitEvent != mMessages.end(); mitEvent++)
+   ENetEvent lEvent;
+   Message lMessages = getMessages();
+   for (mitEvent=lMessages.begin(); mitEvent != lMessages.end(); mitEvent++)
    {
+      lEvent = (*mitEvent).second;
+      dataPacket lReceivedPacket = dataPacket(lEvent.packet->data, lEvent.packet->dataLength);
       switch((*mitEvent).first)
       {
          case SERVER_CHANNEL_ADMIN:
-            if (Ogre::UTFString((char*)(*mitEvent).second.packet->data) == "login")
+            if (lReceivedPacket.getMessage() == admin_login)
             {
-               nextPacket();
                Console* lConsole = Console::getSingletonPtr();
-               if (atoi((char*) (*mitEvent).second.packet->data))
+               packetMessage msg;
+               memcpy(&msg, lReceivedPacket.getContents(), sizeof(packetMessage));
+               if (msg == accepted)
                {
-                  /* Login Successful */               
+                  /* Login Successful */
                   lConsole->addToConsole(lConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
                   GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));
                }
@@ -186,59 +191,54 @@ void Network::threadLoopGame()
          case SERVER_CHANNEL_GENERIC:
             switch (mStatus)
             {
-               case STATUS_INGAME:
-               case STATUS_DOWNLOADING:
-                  if (Ogre::String((char*)(*mitEvent).second.packet->data) == "addbuilding")
+               case status_ingame:
+               case status_downloading:
+                  if (lReceivedPacket.getMessage() == add_building)
                   {
-                     Ogre::Vector3 position;
-                     Ogre::Vector3 rotation;
-                     Ogre::String mesh;
-
-                     /* position */
-                     nextPacket();
-                     position.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-                     nextPacket();
-                     position.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-                     nextPacket();
-                     position.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-
-                     /* rotation */
-                     nextPacket();
-                     rotation.x = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-                     nextPacket();
-                     rotation.y = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-                     nextPacket();
-                     rotation.z = Ogre::StringConverter::parseInt((char*)(*mitEvent).second.packet->data);
-
-                     /* get the mesh name */
-                     nextPacket();
-                     mesh = Ogre::String((char*)(*mitEvent).second.packet->data);
+                     HWBuilding lBuilding;
+                     memcpy(&lBuilding, lReceivedPacket.getContents(), sizeof(HWBuilding));
 
                      /* add the object */      
                      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-                     printf("Pos: %s, Rot: %s, Mesh: %s\n", Ogre::StringConverter::toString(position).c_str(), Ogre::StringConverter::toString(rotation).c_str(),mesh.c_str());
+                     printf("Pos: %s, Rot: %s, Mesh: %s\n", Ogre::StringConverter::toString(lBuilding.position).c_str(), Ogre::StringConverter::toString(lBuilding.rotation).c_str(),lBuilding.mesh.c_str());
+
+                     bool isAdded = false;
 
                      try
                      {
-                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(position), mesh);
+                        /* We create an entity with the name of the buildings position. This means two buildings can't exist
+                        in the same position. */
+                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(lBuilding.position), lBuilding.mesh);
                         Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
                         lSceneNode->attachObject(lEntity);
-                        lSceneNode->setPosition(position);
-                        lSceneNode->setDirection(rotation);
+                        lSceneNode->setPosition(lBuilding.position);
+                        lSceneNode->setDirection(lBuilding.rotation);
+                        isAdded = true;
                      }
                      catch(Ogre::Exception& e)
                      {
                         Console::getSingletonPtr()->addToConsole(Console::getSingletonPtr()->getConsoleError(), "addbuilding", e.getFullDescription());
                      }
 
-                     message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                     dataPacket lPacket = dataPacket(add_building);
+                     packetMessage lMsg;
+                     if (isAdded)
+                     {
+                        lMsg = accepted;
+                     }
+                     else
+                     {
+                        lMsg = rejected;
+                     }
+
+                     lPacket.append(&lMsg, sizeof(packetMessage));
+                     message(lPacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                   }
                default:
-                  if (Ogre::String((char*)(*mitEvent).second.packet->data) == "constatus")
+                  if (lReceivedPacket.getMessage() == status_changed)
                   {
                      clientStatus lStatus;
-                     nextPacket();
-                     memcpy(&lStatus, (*mitEvent).second.packet->data, sizeof((*mitEvent).second.packet->data));
+                     memcpy(&lStatus, lReceivedPacket.getContents(), sizeof(clientStatus));
                      setConStatus(lStatus);
                   }
                break;
@@ -251,19 +251,28 @@ void Network::threadLoopGame()
       }
       enet_packet_destroy((*mitEvent).second.packet);
    }
-   mMessages.clear();
 }
 
 void Network::addMessage(const ENetEvent lEvent)
 {
+   boost::mutex::scoped_lock lMutex(mMessageMutex);
    mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
+}
+
+Message Network::getMessages(void)
+{
+   boost::mutex::scoped_lock lMutex(mMessageMutex);
+   Message lMessages = mMessages;
+   mMessages.clear();
+   return lMessages;
 }
 
 bool Network::sendJoinRequest(void)
 {
    if (connect(mPort, mAddress))
    {
-      message("join", strlen("join")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+      dataPacket packet = dataPacket(join_game);
+      message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
       return true;
    }
    return false;
@@ -294,7 +303,7 @@ bool Network::connect(unsigned int port, std::string ip)
    address.port = port;
 
    /* Initiate the connection */
-   mPeer = enet_host_connect (mNetHost, &address, SERVER_MAX_CHANNELS);
+   mPeer = enet_host_connect(mNetHost, &address, SERVER_MAX_CHANNELS);
 
    if (mPeer == 0)
    {
@@ -330,25 +339,17 @@ bool Network::pollMessage(ENetEvent *pEvent)
    return false;
 }
 
-bool Network::message(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority)
+bool Network::message(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
 {
    bool result = true;
-   ENetPacket * packet = enet_packet_create(msg, size, priority);
+   ENetPacket * packet = enet_packet_create(data.getContents(), data.size(), priority);
 
    if (enet_peer_send(mPeer, channel, packet) < 0)
    {
       result = false;
    }
-
    enet_host_flush(mNetHost);
    return result;
-}
-
-void Network::nextPacket(void)
-{
-   enet_packet_destroy((*mitEvent).second.packet);
-   /* FIXME: This could screw up if the packet hasn't arrived yet */
-   mitEvent++;
 }
 
 Network::~Network()

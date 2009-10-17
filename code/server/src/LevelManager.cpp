@@ -125,43 +125,26 @@ bool LevelManager::loadBuildings(void)
    return lResult;
 }
 
-bool LevelManager::addBuilding(unsigned int crater, const Ogre::String mesh, 
-                               const Ogre::Vector3 position, 
-                               const Ogre::Vector3 rotation)
+bool LevelManager::addBuilding(const unsigned int crater, const HWBuilding building)
 {
-   HWBuilding lBuilding;
-   lBuilding.position = position;
-   lBuilding.rotation = rotation;
-   lBuilding.mesh = mesh;
-   mBuildings.insert(std::pair<unsigned int,HWBuilding>(crater, lBuilding));
+   mBuildings.insert(std::pair<unsigned int,HWBuilding>(crater, building));
    printf("New Building - Position: %s - Rotation: %s - Mesh: %s\n",
-                              Ogre::StringConverter::toString(position).c_str(),
-                              Ogre::StringConverter::toString(rotation).c_str(),
-                              mesh.c_str());
+                              Ogre::StringConverter::toString(building.position).c_str(),
+                              Ogre::StringConverter::toString(building.rotation).c_str(),
+                              building.mesh.c_str());
 
 
-   sendBuildingData(crater, mesh, position, rotation);
+   sendBuildingData(crater, building);
    return true;
 }
 
-void LevelManager::sendBuildingData(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation, ENetPeer* lpeer)
+void LevelManager::sendBuildingData(unsigned int crater, const HWBuilding building, ENetPeer* lpeer)
 {
    ClientManager* lClientMgr = ClientManager::getSingletonPtr();
 
-   /* Tell all new clients about the new building */
-   lClientMgr->sendMsg("addbuilding", sizeof("addbuilding")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-   /* position */
-   lClientMgr->sendMsg(Ogre::StringConverter::toString(position.x).c_str(), strlen(Ogre::StringConverter::toString(position.x).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-   lClientMgr->sendMsg(Ogre::StringConverter::toString(position.y).c_str(), strlen(Ogre::StringConverter::toString(position.y).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-   lClientMgr->sendMsg(Ogre::StringConverter::toString(position.z).c_str(), strlen(Ogre::StringConverter::toString(position.z).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-
-   /* Rotation (which is zero) */
-   lClientMgr->sendMsg(Ogre::StringConverter::toString(rotation.x).c_str(), strlen(Ogre::StringConverter::toString(rotation.x).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-   lClientMgr->sendMsg(Ogre::StringConverter::toString(rotation.y).c_str(), strlen(Ogre::StringConverter::toString(rotation.y).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-   lClientMgr->sendMsg(Ogre::StringConverter::toString(rotation.z).c_str(), strlen(Ogre::StringConverter::toString(rotation.z).c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-
-   /* mesh name */
-   lClientMgr->sendMsg(mesh.c_str(), strlen(mesh.c_str())+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
+   dataPacket packet = dataPacket(add_building);
+   packet.append(&building, sizeof(HWBuilding));
+   lClientMgr->sendMsg(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
 }
 
 LevelManager* LevelManager::getSingletonPtr(void)

@@ -107,10 +107,9 @@ typedef struct {
 } Airlock;
 
 typedef struct {
-    unsigned int id;
-    Ogre::String mesh;               /* mesh type */
     Ogre::Vector3 position;
     Ogre::Vector3 rotation;
+    Ogre::String mesh;               /* mesh type */
 } HWBuilding;
 
 #endif /* __HW_STRUCTS_H_ */

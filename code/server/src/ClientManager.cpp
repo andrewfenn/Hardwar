@@ -62,10 +62,10 @@ void ClientManager::setHost(ENetHost* lHost)
    mHost = lHost;
 }
 
-bool ClientManager::sendMsg(const void* msg, size_t size, enet_uint8 channel, enet_uint32 priority, ENetPeer *peer)
+bool ClientManager::sendMsg(dataPacket data, enet_uint8 channel, enet_uint32 priority, ENetPeer *peer)
 {
    bool result = true;
-   ENetPacket * packet = enet_packet_create (msg, size, priority);
+   ENetPacket * packet = enet_packet_create(data.getContents(), data.size(), priority);
 
    if (peer == 0)
    {

@@ -24,7 +24,7 @@ LoadState* LoadState::mLoadState;
 
 void LoadState::enter( void )
 {
-   mRoot            = Ogre::Root::getSingletonPtr();
+   mRoot         = Ogre::Root::getSingletonPtr();
 
    mGameMgr      = GameManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
@@ -88,7 +88,7 @@ void LoadState::update( unsigned long lTimeElapsed )
 
    switch(mGameMgr->getNetwork()->getConStatus())
    {
-      case STATUS_CONNECTING:
+      case status_connecting:
          mStatusText->setCaption(Ogre::String(gettext("Connecting")));
 
          if (mGameMgr->getNetwork()->getRetryAttempts() > 0)
@@ -97,10 +97,10 @@ void LoadState::update( unsigned long lTimeElapsed )
                             Ogre::StringConverter::toString(mGameMgr->getNetwork()->getRetryAttempts())+Ogre::UTFString(")"));
          }
       break;
-      case STATUS_LISTENING:
+      case status_listening:
          mStatusText->setCaption(Ogre::String(gettext("Loading")));
       break;
-      case STATUS_FILECHECK:
+      case status_filecheck:
          {
             if (!mFilesLoaded)
             {
@@ -112,23 +112,24 @@ void LoadState::update( unsigned long lTimeElapsed )
                /* turn it into static geometry */
                Ogre::StaticGeometry *lStatic = mSceneMgr->createStaticGeometry("world");
                lStatic->addSceneNode(mSceneMgr->getSceneNode("world"));
-
-               mGameMgr->getNetwork()->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+               dataPacket packet = dataPacket(accepted);
+               mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                mFilesLoaded = true;
             }
          }
       break;
-      case STATUS_DOWNLOADING:
+      case status_downloading:
          if (!mDownloads)
          {
-            mGameMgr->getNetwork()->message("ok", strlen("ok")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+            dataPacket packet = dataPacket(accepted);
+            mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
             mDownloads = true;
          }
       break;
-      case STATUS_INGAME:
+      case status_ingame:
          this->changeState(PlayState::getSingletonPtr());
       break;
-      case STATUS_DISCONNECTED:
+      case status_disconnected:
          /* the connection has failed */
          killLoadbar();
       break;
@@ -177,10 +178,8 @@ void LoadState::updateLoadbar(void)
          mReverse = true;
       }
 
-      lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
-                                                          Ogre::UTFString("dot")+
-                                       Ogre::StringConverter::toString(mGUIcount)
-                                                                               );
+      lstatusImage = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage>
+                     (Ogre::UTFString("dot")+Ogre::StringConverter::toString(mGUIcount));
       coord = lstatusImage->getCoord();
       lstatusImage->setCoord(coord.left-3, coord.top -3, coord.width +5, coord.height +5);
    }

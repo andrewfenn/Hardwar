@@ -43,12 +43,12 @@ namespace Server
          bool loadData(Ogre::String);
          /** Loads all the building data in the SQL file */
          bool loadBuildings(void);
-         bool addBuilding(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation=Ogre::Vector3::ZERO);
+         bool addBuilding(const unsigned int crater, const HWBuilding);
 
          Building::iterator getBuildings(void);
          bool end(Building::iterator);
 
-         void sendBuildingData(unsigned int crater, const Ogre::String mesh, const Ogre::Vector3 position, const Ogre::Vector3 rotation, ENetPeer* lpeer = 0);
+         void sendBuildingData(unsigned int crater, const HWBuilding building, ENetPeer* lpeer = 0);
          unsigned int numBuildings(void);
       private:
          Building mBuildings;

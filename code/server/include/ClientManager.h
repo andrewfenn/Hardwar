@@ -37,7 +37,7 @@ namespace Server
          void addMessage(const ENetEvent);
          void setHost(ENetHost*);
 
-         bool sendMsg(const void*, size_t, enet_uint8, enet_uint32, ENetPeer* peer = 0);
+         bool sendMsg(dataPacket, enet_uint8, enet_uint32, ENetPeer* peer = 0);
 
          ~ClientManager();
          ClientManager();

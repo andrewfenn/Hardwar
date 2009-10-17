@@ -375,7 +375,9 @@ void BuildEditor::update(unsigned long lTimeElapsed)
             if (mEditorObjCreated)
             {
                /* We have just let go of an object and placed it. */
-               Ogre::Vector3 lVector = mEditorNode->getPosition();
+               HWBuilding lBuilding;
+               lBuilding.position = mEditorNode->getPosition();
+               lBuilding.mesh = mEditorObjMeshName;
 
                /* Kill the editor object */
                mEditorNode->detachObject("EditorObject");
@@ -387,11 +389,9 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                if (!mBoxMgr.isIconActive())
                {
                   /* Tell the server to place down a new building */
-                  Network::getSingletonPtr()->message("addbuilding", strlen("addbuilding")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-                  Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.x).c_str(), strlen(Ogre::StringConverter::toString(lVector.x).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-                  Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.y).c_str(), strlen(Ogre::StringConverter::toString(lVector.y).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-                  Network::getSingletonPtr()->message(Ogre::StringConverter::toString(lVector.z).c_str(), strlen(Ogre::StringConverter::toString(lVector.z).c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-                  Network::getSingletonPtr()->message(mEditorObjMeshName.c_str(), strlen(mEditorObjMeshName.c_str())+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+                  dataPacket lPacket = dataPacket(add_building);
+                  lPacket.append(&lBuilding, sizeof(HWBuilding));
+                  GameManager::getSingletonPtr()->getNetwork()->message(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
                }
             }
          }

@@ -21,7 +21,6 @@
 #define __THREAD_CONTROL_H_
 
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/xtime.hpp>
 #include <boost/thread/thread.hpp>
 
 class ThreadController

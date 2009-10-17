@@ -30,43 +30,19 @@ Admin::~Admin()
 
 }
 
-void Admin::processRequest(Message::iterator &message)
+void Admin::processRequest(dataPacket lPacket)
 {
-   char* lstring = (char*)(*message).second.packet->data;
-   if (strcmp(lstring, "addbuilding") == 0)
+   switch(lPacket.getMessage())
    {
-      Ogre::Vector3 building;
-      Ogre::String mesh;
-
-      nextPacket(message);
-      lstring = (char*)(*message).second.packet->data;
-      building.x = Ogre::StringConverter::parseInt(lstring);
-
-      nextPacket(message);
-      lstring = (char*)(*message).second.packet->data;
-      building.y = Ogre::StringConverter::parseInt(lstring);
-
-      nextPacket(message);
-      lstring = (char*)(*message).second.packet->data;
-      building.z = Ogre::StringConverter::parseInt(lstring);
-
-      nextPacket(message);
-      mesh = Ogre::String((char*)(*message).second.packet->data);
-
-      LevelManager::getSingletonPtr()->addBuilding((unsigned int)0, mesh, building);
+      case add_building:
+         {
+            HWBuilding building;
+            std::memcpy(&building, lPacket.getContents(), sizeof(HWBuilding));
+            LevelManager::getSingletonPtr()->addBuilding((unsigned int)0, building);
+         }
+      break;
+      default:
+         std::cout << "PacketMessage: " << lPacket.getMessage() << " data: " << lPacket.getContents() << std::endl;
+      break;
    }
-   else
-   {
-      printf ("len:%u - value:%s - channel %u.\n",
-                                (intptr_t) (*message).second.packet->dataLength,
-                                         (char*) (*message).second.packet->data,
-                                                              (*message).first);
-   }
-}
-
-void Admin::nextPacket(Message::iterator &message)
-{
-   enet_packet_destroy((*message).second.packet);
-   /* FIXME: This could screw up if the packet hasn't arrived yet */
-   message++;
 }

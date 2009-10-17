@@ -32,20 +32,33 @@
 #define SERVER_CHANNEL_ADMIN     2
 
 typedef enum {
-    NONE = 0,
-    HAS_FTP_ADDRESS         = 0x0001, /* Send the client to download somewhere else */
-    DOWNLOAD_FROM_SERVER    = 0x0002  /* Download level files from the server */
+    none = 0,
+    has_ftp_address         = 1, /* Send the client to download somewhere else */
+    download_from_server    = 2  /* Download level files from the server */
 } serverDldMethod;
 
 typedef enum {
-    STATUS_DISCONNECTED = 0,
-    STATUS_CONNECTING   = 0x0001, /* Joined server */
-    STATUS_LISTENING    = 0x0002, /* Waiting for server response */
-    STATUS_FILECHECK    = 0x0003, /* Checking level files and loading */
-    STATUS_DOWNLOADING  = 0x0004, /* Downloading building data, etc */
-    STATUS_LOBBY_NAME   = 0x0005, /* Server login screen */
-    STATUS_LOBBY_CLASS  = 0x0006, /* picking character class */
-    STATUS_INGAME       = 0x0007  /* playing in the game */
+    status_disconnected = 0,
+    status_connecting   = 1, /* Joined server */
+    status_listening    = 2, /* Waiting for server response */
+    status_filecheck    = 3, /* Checking level files and loading */
+    status_downloading  = 4, /* Downloading building data, etc */
+    status_lobby_name   = 5, /* Server login screen */
+    status_lobby_class  = 6, /* picking character class */
+    status_ingame       = 7  /* playing in the game */
 } clientStatus;
+
+typedef enum
+{
+   movement       = 0,
+   accepted       = 1, /* Response to some command */
+   rejected       = 2, /* Response to some command */
+   join_game      = 3, /* Request to join game */
+   status_changed = 4, /* Changed client status */
+
+   add_building   = 50, /* Attempt to add a building */
+
+   admin_login    = 100  /* Attempt to login as admin */
+} packetMessage;
 
 #endif /* __SRVSTRUCTS_H_ */

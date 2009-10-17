@@ -22,7 +22,7 @@ using namespace Server;
 
 Client::Client()
 {
-   mConState = STATUS_CONNECTING;
+   mConState = status_connecting;
    mAdmin = 0;
 }
 
@@ -66,6 +66,8 @@ Message Client::getMessages(void)
 void Client::loop(void)
 {
    Message lMessages;
+   dataPacket lReceivedPacket;
+   dataPacket lResponsePacket;
    bool lStartedDownload = false;
    Building::iterator lBuildIter;
 
@@ -77,66 +79,77 @@ void Client::loop(void)
 
          for (mEvent=lMessages.begin(); mEvent != lMessages.end(); mEvent++)
          {
+            lReceivedPacket = dataPacket((*mEvent).second.packet->data, (*mEvent).second.packet->dataLength);
             switch((*mEvent).first)
             {
-               case SERVER_CHANNEL_ADMIN:
-                  processAdminReqs();
-               break;
-               case SERVER_CHANNEL_GENERIC:
-                  /* This channel of join requests and pings */
-                  switch(mConState)
-                  {
-                     case STATUS_DOWNLOADING:
-                        if (strcmp((char*)(*mEvent).second.packet->data, "ok") == 0)
-                        {
-                           if (!lStartedDownload)
-                           {
-                              lBuildIter = LevelManager::getSingletonPtr()->getBuildings();
-                              lStartedDownload = true;
-                           }
-                           
-                           if (LevelManager::getSingletonPtr()->end(lBuildIter))
-                           {
-                              mConState = STATUS_INGAME;
-                              sendMessage("constatus", strlen("constatus")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                              sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                           }
-                           else
-                           {
-                              LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second.mesh, (*lBuildIter).second.position, (*lBuildIter).second.rotation, mPeer);
-                              lBuildIter++;
-                           }
-                        }
-                     break;
-                     case STATUS_FILECHECK:
-                        /* TODO: Add file checking */
-                        if (strcmp((char*)(*mEvent).second.packet->data, "ok") == 0)
-                        {
-                           mConState = STATUS_DOWNLOADING;
-                           sendMessage("constatus", strlen("constatus")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                           sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                        }
-                     break;
-                     default:
-                        if (strcmp((char*)(*mEvent).second.packet->data, "join") == 0)
-                        {
-                           /* New client joined. Begin by sending back the connection status */
-                           /* TODO: Check if server is full */
-                           /* TODO: Check address isn't banned */
-                           mConState = STATUS_FILECHECK;
-                           sendMessage("constatus", strlen("constatus")+1, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                           sendMessage(&mConState, sizeof(mConState), SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                        }
-                     break;
-                  }
-               break;
                case SERVER_CHANNEL_MOVEMENT:
                   /* This channel is for movement */
                break;
-            }
+               default:
+                  /* Since we're mostly getting movement updates we construct our
+                     switch this way for speed. */
+                  switch((*mEvent).first)
+                  {
+                     case SERVER_CHANNEL_ADMIN:
+                        processAdminReqs(lReceivedPacket);
+                     break;
+                     case SERVER_CHANNEL_GENERIC:
+                        /* This channel of join requests and pings */
+                        switch(mConState)
+                        {
+                           case status_downloading:
+                              if (lReceivedPacket.getMessage() == accepted)
+                              {
+                                 if (!lStartedDownload)
+                                 {
+                                    lBuildIter = LevelManager::getSingletonPtr()->getBuildings();
+                                    lStartedDownload = true;
+                                 }
+                                 
+                                 if (LevelManager::getSingletonPtr()->end(lBuildIter))
+                                 {
+                                    mConState = status_ingame;
+                                    lResponsePacket = dataPacket(status_changed);
+                                    lResponsePacket.append(&mConState, sizeof(clientStatus));
+                                    sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                                 }
+                                 else
+                                 {
+                                    LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
+                                    lBuildIter++;
+                                 }
+                              }
+                           break;
+                           case status_filecheck:
+                              /* TODO: Add file checking */
+                              if (lReceivedPacket.getMessage() == accepted)
+                              {
+                                 mConState = status_downloading;
+                                 lResponsePacket = dataPacket(status_changed);
+                                 lResponsePacket.append(&mConState, sizeof(clientStatus));
+                                 sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                              }
+                           break;
+                           default:
+                              if (lReceivedPacket.getMessage() == join_game)
+                              {
+                                 /* New client joined. Begin by sending back the connection status */
+                                 /* TODO: Check if server is full */
+                                 /* TODO: Check address isn't banned */
+                                 mConState = status_filecheck;
+                                 lResponsePacket = dataPacket(status_changed);
+                                 lResponsePacket.append(&mConState, sizeof(clientStatus));
+                                 sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);                        
+                              }
+                           break;
+                        }
+                     break;
+                  } /* end second switch */
+               break;
+            } /* end first switch */            
             /* finished with the packet, destory it */
             enet_packet_destroy((*mEvent).second.packet);
-         }
+         } /* end for packet loop */
       }
       else
       {
@@ -146,23 +159,25 @@ void Client::loop(void)
    printf(gettext("Thread: Client - %d - terminated\n"), mPeer->incomingPeerID);
 }
 
-void Client::processAdminReqs(void)
+void Client::processAdminReqs(dataPacket lPacket)
 {
    if (mAdmin != 0)
    {
       /* is logged in */
-      mAdmin->processRequest(mEvent);
+      mAdmin->processRequest(lPacket);
    }
    else
    {
-      char* lCommand = (char*)(*mEvent).second.packet->data;
-      if (strcmp(lCommand, "login") == 0)
+      if (lPacket.getMessage() == admin_login)
       {
-         nextPacket();
-         printf ("Hash is:%s\n", (char*) (*mEvent).second.packet->data);
+         Ogre::String hash = Ogre::String((char*)lPacket.getContents());
+         hash.substr(hash.length()-1);
          /* FIXME: There is no password */
-         sendMessage("login", sizeof("login")+1, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-         sendMessage("1", 2, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         packetMessage response = accepted;
+
+         dataPacket lPacket = dataPacket(admin_login);
+         lPacket.append(&response, sizeof(packetMessage));
+         sendMessage(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
          mAdmin = new Admin();
       }
    }
@@ -175,11 +190,10 @@ void Client::nextPacket(void)
    mEvent++;   
 }
 
-bool Client::sendMessage(const void* msg, size_t size,
-                                       enet_uint8 channel, enet_uint32 priority)
+bool Client::sendMessage(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
 {
    bool result = true;
-   ENetPacket * packet = enet_packet_create(msg, size, priority);
+   ENetPacket * packet = enet_packet_create(data.getContents(), data.size(), priority);
    if (enet_peer_send(mPeer, channel, packet) < 0)
    {
       result = false;

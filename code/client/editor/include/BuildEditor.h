@@ -35,6 +35,9 @@
 #include "DynamicLines.h"
 #include "EditorAxis.h"
 
+#include "hwstructs.h"
+#include "srvstructs.h"
+
 namespace Client
 {
 /** The Build Editor

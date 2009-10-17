@@ -22,12 +22,12 @@
 #include <string>
 #include <stdio.h>
 #include <boost/thread.hpp>
-#include <boost/thread/mutex.hpp>
 #include <boost/bind.hpp>
 #include <libintl.h>
 #include "enet/enet.h"
 
-#include "srvstructs.h"
+#include "DataPacket.h"
+#include "hwstructs.h"
 #include "Console.h"
 #include "GameSettings.h"
 
@@ -38,6 +38,8 @@ namespace Client
             The Client::Network class manages a thread which deals with 
             connecting and dealing with data sent from the server.
     */
+typedef std::multimap<enet_uint8,ENetEvent> Message;
+
 class Network
 {
    public:
@@ -52,34 +54,32 @@ class Network
          @param address
                 The IP address of the server
       */
-      bool setAddress(std::string);
+      bool setAddress(const std::string);
       /** Sets the port address of the server to connect to
          @param address
                 The port address of the server
       */
-      bool setPort(int);
+      bool setPort(const int);
       enet_uint32 getTimeout(void);
       /** Gets the number of times a connection has failed */
       unsigned short getRetryAttempts(void);
       /** Sends a message to the server
          @param data
                 The data being sent
-         @param size
-                The size of the data
          @param channel
                 An Enet specific variable. Which channel the data is being sent 
                 on.
          @param priority
                 An Enet specific variable.
       */
-      bool message(const void*, size_t, enet_uint8, enet_uint32);
+      bool message(dataPacket data, const enet_uint8, const enet_uint32);
       /** Starts the network thread */
       void startThread(void);
       /** Stops the network thread */
       void stopThread(void);
       /** Gets the client's connection status */
       clientStatus getConStatus(void);
-      void setConStatus(clientStatus);
+      void setConStatus(const clientStatus);
       ENetHost*         mNetHost;
 
    private:
@@ -92,12 +92,13 @@ class Network
       unsigned short    mRetryLimit;
       unsigned short    mTimeout;
 
-      typedef std::multimap<enet_uint8,ENetEvent> Message;
       Message::iterator mitEvent;
 
       static Network *mNetwork;
       Message mMessages;
+      mutable boost::mutex mMessageMutex;
       void addMessage(const ENetEvent);
+      Message getMessages(void);
 
       Network(void);
       Network(const Network&) { }
@@ -108,7 +109,6 @@ class Network
       void threadLoopConnect(void);
       void threadLoopMessages(void);
       void threadLoopGame(void);
-      void nextPacket(void);
 
       boost::thread mThread;
       bool mRunThread;
