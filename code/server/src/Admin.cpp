@@ -36,8 +36,19 @@ void Admin::processRequest(dataPacket lPacket)
    {
       case add_building:
          {
-            HWBuilding building;
-            std::memcpy(&building, lPacket.getContents(), sizeof(HWBuilding));
+            Hardwar::Building building;
+            Ogre::Vector3 point;
+            Ogre::String string;
+
+            lPacket.move(&point, sizeof(Ogre::Vector3));
+            building.setPosition(point);
+
+            lPacket.move(&point, sizeof(Ogre::Vector3));
+            building.setRotation(point);
+
+            lPacket.moveString(string, lPacket.size());
+            building.setMeshName(string);
+
             LevelManager::getSingletonPtr()->addBuilding((unsigned int)0, building);
          }
       break;

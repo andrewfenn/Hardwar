@@ -35,7 +35,7 @@
 #include "DynamicLines.h"
 #include "EditorAxis.h"
 
-#include "hwstructs.h"
+#include "Building.h"
 #include "srvstructs.h"
 
 namespace Client

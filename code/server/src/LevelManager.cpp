@@ -88,7 +88,8 @@ bool LevelManager::loadBuildings(void)
    bool lResult = true;
    bool done = false;
    sqlite3_stmt* statement;
-   HWBuilding lBuilding;
+   Hardwar::Building lBuilding;
+   Ogre::Vector3 point;
 
    /* get all the buildings out the database */
    std::string sql = std::string("SELECT * FROM buildings");
@@ -100,18 +101,20 @@ bool LevelManager::loadBuildings(void)
 		   break;
 		   case SQLITE_ROW:
 			   /* get mesh name */
-			   lBuilding.mesh = Ogre::String((const char * )
-                                              sqlite3_column_text(statement,2));
+			   lBuilding.setMeshName(Ogre::String((const char*) sqlite3_column_text(statement,2)));
 			   /* get position */
-			   lBuilding.position.x = sqlite3_column_double(statement,3);
-			   lBuilding.position.y = sqlite3_column_double(statement,4);
-			   lBuilding.position.z = sqlite3_column_double(statement,5);
-			   /* get rotation */
-			   lBuilding.rotation.x = sqlite3_column_double(statement,6);
-			   lBuilding.rotation.y = sqlite3_column_double(statement,7);
-			   lBuilding.rotation.z = sqlite3_column_double(statement,8);
+			   point.x = sqlite3_column_double(statement,3);
+			   point.y = sqlite3_column_double(statement,4);
+			   point.z = sqlite3_column_double(statement,5);
+            lBuilding.setPosition(point);
 
-            mBuildings.insert(std::pair<unsigned int,HWBuilding>(sqlite3_column_int(statement,1), lBuilding));
+			   /* get rotation */
+			   point.x = sqlite3_column_double(statement,6);
+			   point.y = sqlite3_column_double(statement,7);
+			   point.z = sqlite3_column_double(statement,8);
+            lBuilding.setRotation(point);
+
+            mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(sqlite3_column_int(statement,1), lBuilding));
 		   break;
 	   }
    }	
@@ -125,25 +128,33 @@ bool LevelManager::loadBuildings(void)
    return lResult;
 }
 
-bool LevelManager::addBuilding(const unsigned int crater, const HWBuilding building)
+bool LevelManager::addBuilding(const unsigned int crater, Hardwar::Building building)
 {
-   mBuildings.insert(std::pair<unsigned int,HWBuilding>(crater, building));
+   mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(crater, building));
+
+   Ogre::Vector3 pos, rot;
+   Ogre::String mesh;
+   pos = building.getPosition();
+   rot = building.getRotation();
+   mesh = building.getMeshName();
    printf("New Building - Position: %s - Rotation: %s - Mesh: %s\n",
-                              Ogre::StringConverter::toString(building.position).c_str(),
-                              Ogre::StringConverter::toString(building.rotation).c_str(),
-                              building.mesh.c_str());
+                              Ogre::StringConverter::toString(pos).c_str(),
+                              Ogre::StringConverter::toString(rot).c_str(),
+                              mesh.c_str());
 
 
    sendBuildingData(crater, building);
    return true;
 }
 
-void LevelManager::sendBuildingData(unsigned int crater, const HWBuilding building, ENetPeer* lpeer)
+void LevelManager::sendBuildingData(unsigned int crater, Hardwar::Building building, ENetPeer* lpeer)
 {
    ClientManager* lClientMgr = ClientManager::getSingletonPtr();
 
    dataPacket packet = dataPacket(add_building);
-   packet.append(&building, sizeof(HWBuilding));
+   packet.append(&building.getPosition(), sizeof(Ogre::Vector3));
+   packet.append(&building.getRotation(), sizeof(Ogre::Vector3));
+   packet.appendString(building.getMeshName());
    lClientMgr->sendMsg(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
 }
 

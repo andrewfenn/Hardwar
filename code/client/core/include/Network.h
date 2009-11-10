@@ -27,7 +27,7 @@
 #include "enet/enet.h"
 
 #include "DataPacket.h"
-#include "hwstructs.h"
+#include "Building.h"
 #include "Console.h"
 #include "GameSettings.h"
 

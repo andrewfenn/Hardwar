@@ -170,8 +170,9 @@ void Client::processAdminReqs(dataPacket lPacket)
    {
       if (lPacket.getMessage() == admin_login)
       {
-         Ogre::String hash = Ogre::String((char*)lPacket.getContents());
-         hash.substr(hash.length()-1);
+         Ogre::String hash;
+         lPacket.moveString(hash, lPacket.size());
+         std::cout << hash << std::endl;
          /* FIXME: There is no password */
          packetMessage response = accepted;
 

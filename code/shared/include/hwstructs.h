@@ -106,11 +106,5 @@ typedef struct {
     Ogre::Vector3 rotation;         /* rotation of the door */
 } Airlock;
 
-typedef struct {
-    Ogre::Vector3 position;
-    Ogre::Vector3 rotation;
-    Ogre::String mesh;               /* mesh type */
-} HWBuilding;
-
 #endif /* __HW_STRUCTS_H_ */
 

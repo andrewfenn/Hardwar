@@ -19,6 +19,7 @@
 #ifndef __DATAPACKET_H_
 #define __DATAPACKET_H_
 
+#include <Ogre.h>
 #include "srvstructs.h"
 
 class dataPacket
@@ -31,6 +32,11 @@ class dataPacket
          append(&header, sizeof(packetMessage));
       }
 
+      /**
+         Creates a new packet from an existing packets data.
+      @remarks
+         This function is mostly used for extracting data from a recieved packet.
+      */
       dataPacket(void* data, unsigned int len)
       {
          mBuffer.clear();
@@ -46,6 +52,9 @@ class dataPacket
          mBuffer.erase(mBuffer.begin(), mBuffer.begin()+sizeof(packetMessage));
       }
 
+      /**
+         Adds more data into the packet.
+      */
      	void append(const void* mem, int len)
 	   {
 		   int i;
@@ -56,16 +65,60 @@ class dataPacket
          }
 	   }
 
+      /**
+         Adds more data into the packet, specifically for strings.
+      */
+      void appendString(const Ogre::String string)
+      {
+         append(string.c_str(), string.length());
+      }
+
+      /**
+         Returns an enum identifiying what the packet is for.
+      */
       packetMessage getMessage(void)
       {
          return mMessage;
       }
 
+      /**
+         Returns a pointer to the beginning to the packet data.
+      */
       unsigned char* getContents(void)
       {
          return &mBuffer[0];
       }
 
+      /**
+         Moves memory from the packet into the container specified.
+      @remarks
+         Once the data has been moved it is deleted from the packet.
+      */
+      void move(void* mem, size_t size)
+      {
+         if (size <= mBuffer.size())
+         {
+            std::memcpy(mem, &mBuffer[0], size);
+            mBuffer.erase(mBuffer.begin(), mBuffer.begin()+size);
+         }
+      }
+
+      /**
+         Moves memory from the packet into the string.
+      @remarkes
+         This function is similar to move however specifically for strings
+      */
+      void moveString(Ogre::String &string, size_t size)
+      {
+         if (size <= mBuffer.size())
+         {
+            string = Ogre::String((char*)&mBuffer[0], size);
+         }
+      }
+
+      /**
+         Returns the current size of the packet data.
+      */
       size_t size(void)
       {
          return mBuffer.size();

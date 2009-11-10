@@ -22,12 +22,12 @@
 #include <Ogre.h>
 #include <sqlite3.h>
 
-#include "hwstructs.h"
+#include "Building.h"
 #include "ClientManager.h"
 
 namespace Server
 {
-   typedef std::multimap<unsigned int,HWBuilding> Building;
+   typedef std::multimap<unsigned int,Hardwar::Building> Building;
 
    class LevelManager
    {
@@ -43,12 +43,12 @@ namespace Server
          bool loadData(Ogre::String);
          /** Loads all the building data in the SQL file */
          bool loadBuildings(void);
-         bool addBuilding(const unsigned int crater, const HWBuilding);
+         bool addBuilding(const unsigned int crater, Hardwar::Building);
 
          Building::iterator getBuildings(void);
          bool end(Building::iterator);
 
-         void sendBuildingData(unsigned int crater, const HWBuilding building, ENetPeer* lpeer = 0);
+         void sendBuildingData(unsigned int crater, Hardwar::Building building, ENetPeer* lpeer = 0);
          unsigned int numBuildings(void);
       private:
          Building mBuildings;

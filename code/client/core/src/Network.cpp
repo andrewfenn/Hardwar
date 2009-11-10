@@ -174,7 +174,7 @@ void Network::threadLoopGame()
             {
                Console* lConsole = Console::getSingletonPtr();
                packetMessage msg;
-               memcpy(&msg, lReceivedPacket.getContents(), sizeof(packetMessage));
+               lReceivedPacket.move(&msg, sizeof(packetMessage));
                if (msg == accepted)
                {
                   /* Login Successful */
@@ -195,12 +195,22 @@ void Network::threadLoopGame()
                case status_downloading:
                   if (lReceivedPacket.getMessage() == add_building)
                   {
-                     HWBuilding lBuilding;
-                     memcpy(&lBuilding, lReceivedPacket.getContents(), sizeof(HWBuilding));
+                     Hardwar::Building building;
+                     Ogre::Vector3 point;
+                     Ogre::String mesh;
+
+                     lReceivedPacket.move(&point, sizeof(Ogre::Vector3));
+                     building.setPosition(point);
+
+                     lReceivedPacket.move(&point, sizeof(Ogre::Vector3));
+                     building.setRotation(point);
+
+                     lReceivedPacket.moveString(mesh, lReceivedPacket.size());
+                     building.setMeshName(mesh);
 
                      /* add the object */      
                      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-                     printf("Pos: %s, Rot: %s, Mesh: %s\n", Ogre::StringConverter::toString(lBuilding.position).c_str(), Ogre::StringConverter::toString(lBuilding.rotation).c_str(),lBuilding.mesh.c_str());
+                     printf("Pos: %s, Rot: %s\n", Ogre::StringConverter::toString(building.getPosition()).c_str(), Ogre::StringConverter::toString(building.getRotation()).c_str());
 
                      bool isAdded = false;
 
@@ -208,11 +218,11 @@ void Network::threadLoopGame()
                      {
                         /* We create an entity with the name of the buildings position. This means two buildings can't exist
                         in the same position. */
-                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(lBuilding.position), lBuilding.mesh);
+                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(building.getPosition()), building.getMeshName());
                         Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
                         lSceneNode->attachObject(lEntity);
-                        lSceneNode->setPosition(lBuilding.position);
-                        lSceneNode->setDirection(lBuilding.rotation);
+                        lSceneNode->setPosition(building.getPosition());
+                        lSceneNode->setDirection(building.getRotation());
                         isAdded = true;
                      }
                      catch(Ogre::Exception& e)
@@ -238,7 +248,7 @@ void Network::threadLoopGame()
                   if (lReceivedPacket.getMessage() == status_changed)
                   {
                      clientStatus lStatus;
-                     memcpy(&lStatus, lReceivedPacket.getContents(), sizeof(clientStatus));
+                     lReceivedPacket.move(&lStatus, sizeof(clientStatus));
                      setConStatus(lStatus);
                   }
                break;

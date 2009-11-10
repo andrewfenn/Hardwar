@@ -180,7 +180,7 @@ void GameCore::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTFStri
    {
       dataPacket packet = dataPacket(admin_login);
       lString = md5(lString.c_str());
-      packet.append(lString.c_str(), lString.length());
+      packet.appendString(lString);
       Network::getSingletonPtr()->message(packet, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
       /* reponse is dealt with in the Network thread */
    }

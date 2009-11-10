@@ -375,9 +375,9 @@ void BuildEditor::update(unsigned long lTimeElapsed)
             if (mEditorObjCreated)
             {
                /* We have just let go of an object and placed it. */
-               HWBuilding lBuilding;
-               lBuilding.position = mEditorNode->getPosition();
-               lBuilding.mesh = mEditorObjMeshName;
+               Hardwar::Building building;
+               building.setPosition(mEditorNode->getPosition());
+               building.setMeshName(mEditorObjMeshName);
 
                /* Kill the editor object */
                mEditorNode->detachObject("EditorObject");
@@ -388,9 +388,19 @@ void BuildEditor::update(unsigned long lTimeElapsed)
 
                if (!mBoxMgr.isIconActive())
                {
+                  Ogre::Vector3 point;
+
                   /* Tell the server to place down a new building */
                   dataPacket lPacket = dataPacket(add_building);
-                  lPacket.append(&lBuilding, sizeof(HWBuilding));
+
+                  point = building.getPosition();
+                  lPacket.append(&point, sizeof(Ogre::Vector3));
+
+                  point = building.getRotation();
+                  lPacket.append(&point, sizeof(Ogre::Vector3));
+
+                  lPacket.appendString(building.getMeshName());
+
                   GameManager::getSingletonPtr()->getNetwork()->message(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
                }
             }

@@ -99,9 +99,4 @@ FOREACH(Package ${Required_Packages})
 ENDFOREACH(Package)
 
 FIND_PACKAGE(Boost COMPONENTS filesystem thread thread-mt REQUIRED)
-
-IF (MSVC_IDE)
-	TARGET_LINK_LIBRARIES(hardwar boost_filesystem-*)
-ELSE (MSVC_IDE) # UNIX
-	TARGET_LINK_LIBRARIES(hardwar boost_filesystem boost_thread)
-ENDIF (MSVC_IDE)
+TARGET_LINK_LIBRARIES(hardwar ${Boost_LIBRARIES})
