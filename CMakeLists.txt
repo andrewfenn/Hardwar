@@ -50,13 +50,7 @@ INCLUDE_DIRECTORIES(
          ${CMAKE_CURRENT_SOURCE_DIR}/code/shared/include
 )
 
-IF (NOT WIN32) # Unix
-    # Add compiler warnings
-    ADD_DEFINITIONS("-Wall -Wunused -ansi -O2 -ggdb3")
-ELSE(NOT WIN32)
-    # Windows
-    ADD_DEFINITIONS("-Wall -Wunused -ansi -O2 -g3")
-ENDIF (NOT WIN32)
+ADD_DEFINITIONS("-Wall -Wunused -O2 -g3")
 
 IF (MSVC_IDE)
 	IF (EXISTS $ENV{OGRE_HOME})
