@@ -1,9 +1,7 @@
-
-
 NOTE: You need the following versions or higher
 
 - Ogre3D - 1.6.0 or later
-- CEGUI - 0.6.0 or later
+- MyGUI - 2.2.2 or 2.2.3
 - OIS - 1.2 or later
 
 
@@ -11,20 +9,18 @@ NOTE: You need the following versions or higher
             How to build on unix
 ######################################################################################################
 
-You're going to the following dependencies.
+You're going to need the following dependencies.
 
-Ogre3d - 1.6.0 - http://www.ogre3d.org/
-CEGUI - 0.6.0 - http://www.cegui.org.uk/
-OIS - 1.2.0 - http://sourceforge.net/projects/wgois
-Boost Filesystem - http://www.boost.org/doc/libs/1_36_0/libs/filesystem/doc/ind ex.htm
+You can not use Ogre3d in Ubuntu or Debian, it's too old (apart from Karmic). You're only option is to compile from source Ogre3d, MyGUI and OIS.
 
-You can not use Ogre3d in Ubuntu or Debian, it's too old. You're only option is to compile from source Ogre3d, CEGUI and OIS.
-
-To compile:
-cd trunk/
+To compile the game:
 cmake .
 make
 
+To run the game:
+cd bin/
+./hardwar --server
+./hardwar --connect
 
 ######################################################################################################
             How to build on windows
