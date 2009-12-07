@@ -344,12 +344,12 @@ void BuildEditor::update(unsigned long lTimeElapsed)
 
             Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
 
-            if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance, 0xFFFFFFFF))
+            if(mCollision->raycast(lmouseRay, lResult, (unsigned long&)lTarget, lDistance))
             {
                Ogre::Entity* lEntity;
                if (mEditorObjCreated)
                {
-                  lEntity = static_cast<Ogre::Entity*>(lSceneMgr->getSceneNode("EditorNode")->getAttachedObject("EditorObject"));
+                  lEntity = (Ogre::Entity*) lSceneMgr->getSceneNode("EditorNode")->getAttachedObject("EditorObject");
                }
                else
                {
@@ -362,8 +362,20 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                   mEditorObjCreated = true;
                }
 
+               if (lTarget != 0)
+               {
+                  Ogre::Entity* lTarg;
+                  lTarg = (Ogre::Entity*)lTarget;
+                  /* If we're positioned over a building then place our placing object over the top of it */
+                  if (Ogre::StringUtil::startsWith(lTarg->getName(), Ogre::String("Building"), false))
+                  {
+                     lResult = lTarg->getParentSceneNode()->getPosition();
+                     lResult.y += lTarg->getBoundingBox().getSize().y;
+                  }
+               }
+
                lResult.y += lEntity->getBoundingBox().getSize().y*0.5;
-               /* We want ints because that's what is going in the db */
+               /* We want ints because that's what is going over the network */
                lResult.x = floor(lResult.x);
                lResult.z = floor(lResult.z);
                lResult.y = floor(lResult.y);
@@ -396,7 +408,7 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                   point = building.getPosition();
                   lPacket.append(&point, sizeof(Ogre::Vector3));
 
-                  point = building.getRotation();
+                  point = Ogre::Vector3::ZERO;
                   lPacket.append(&point, sizeof(Ogre::Vector3));
 
                   lPacket.appendString(building.getMeshName());

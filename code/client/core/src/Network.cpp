@@ -218,7 +218,7 @@ void Network::threadLoopGame()
                      {
                         /* We create an entity with the name of the buildings position. This means two buildings can't exist
                         in the same position. */
-                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::StringConverter::toString(building.getPosition()), building.getMeshName());
+                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::String("Building/")+Ogre::StringConverter::toString(building.getPosition()), building.getMeshName());
                         Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
                         lSceneNode->attachObject(lEntity);
                         lSceneNode->setPosition(building.getPosition());
