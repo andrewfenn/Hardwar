@@ -50,7 +50,7 @@
             <rotation qx="0" qy="0" qz="0" qw="1" />
             <entity name="__WATER" id="9" meshFile="__WATER.mesh" castShadows="true" receiveShadows="true">
                 <subentities>
-                    <subentity index="0" materialName="NoMaterial" />
+                    <subentity index="0" materialName="Ocean2_Cg" />
                 </subentities>
             </entity>
         </node>
