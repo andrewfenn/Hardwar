@@ -20,14 +20,11 @@
 
 using namespace Server;
 
-LevelManager* LevelManager::mLevelManager;
-
-LevelManager::LevelManager(void)
+LevelManager::LevelManager()
 {
-
 }
 
-LevelManager::~LevelManager(void)
+LevelManager::~LevelManager()
 {
    if(mSQLdb)
    {
@@ -35,10 +32,10 @@ LevelManager::~LevelManager(void)
 	}
 }
 
-bool LevelManager::loadData(const Ogre::String name)
+bool LevelManager::loadData(Ogre::String name)
 {
    int result;
-   result = sqlite3_open(name.c_str(), &mSQLdb);
+   result = sqlite3_open_v2(name.c_str(), &mSQLdb, SQLITE_OPEN_NOMUTEX, 0);
    if(result)
    {
       /* couldn't load the file */
@@ -155,14 +152,4 @@ void LevelManager::sendBuildingData(unsigned int crater, Hardwar::Building build
    packet.append(&building.getRotation(), sizeof(Ogre::Vector3));
    packet.appendString(building.getMeshName());
    lClientMgr->sendMsg(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-}
-
-LevelManager* LevelManager::getSingletonPtr(void)
-{
-   if(!mLevelManager)
-   {
-      mLevelManager = new LevelManager();
-   }
-
-   return mLevelManager;
 }

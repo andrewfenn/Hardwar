@@ -21,6 +21,7 @@
 
 #include <Ogre.h>
 #include <sqlite3.h>
+#include <stdio.h>
 #include <libintl.h>
 #include "enet/enet.h"
 
@@ -34,15 +35,14 @@ namespace Server
    class LevelManager
    {
       public:
-         ~LevelManager(void);
-         LevelManager(void);
-         static LevelManager* getSingletonPtr(void);
+         LevelManager();
+         ~LevelManager();
          /** Load up our world.db file which contains building locations and other 
              data which is used to get a game going.
             @param name
                    The filename being used which contains the level data.
          */
-         bool loadData(const Ogre::String);
+         bool loadData(Ogre::String);
          /** Loads all the building data in the SQL file */
          bool loadBuildings(void);
          bool addBuilding(const unsigned int crater, Hardwar::Building);
@@ -55,9 +55,6 @@ namespace Server
       private:
          sqlite3 *mSQLdb;
          Building mBuildings;
-         static LevelManager *mLevelManager;
-         LevelManager(const LevelManager&) { }
-         LevelManager & operator = (const LevelManager&);
    };
 }
 #endif /* __LEVEL_MGR_H_ */

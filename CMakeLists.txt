@@ -33,7 +33,7 @@ if (MSVC)
   add_definitions(/fp:fast)
 endif ()
 
-ADD_DEFINITIONS("-Wall -Wunused -O2 -g3")
+ADD_DEFINITIONS("-Wall -Wunused -O0 -g3")
 
 IF (MSVC_IDE)
 	IF (EXISTS $ENV{OGRE_HOME})

@@ -49,7 +49,7 @@ void Admin::processRequest(dataPacket lPacket)
             lPacket.moveString(string, lPacket.size());
             building.setMeshName(string);
 
-            LevelManager::getSingletonPtr()->addBuilding((unsigned int)0, building);
+          //  LevelManager::getSingletonPtr()->addBuilding((unsigned int)0, building);
          }
       break;
       default:

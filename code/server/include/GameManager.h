@@ -36,8 +36,8 @@ namespace Server
          bool setup();
 
          static GameManager* getSingletonPtr();
-      private:
 
+      private:
          LevelManager mLvlMgr;
          Ogre::ConfigFile mConfig;
 

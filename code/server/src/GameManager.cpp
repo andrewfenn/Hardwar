@@ -33,7 +33,8 @@ namespace Server
 
    bool GameManager::setup()
    {
-      return mLvlMgr.loadData(Ogre::String("world/default.db"));
+      mLvlMgr.loadData(Ogre::String("world/default.db"));
+      return true;
    }
 
    GameManager* GameManager::getSingletonPtr(void)

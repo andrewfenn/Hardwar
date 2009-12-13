@@ -98,7 +98,7 @@ void Client::loop(void)
                         switch(mConState)
                         {
                            case status_downloading:
-                              if (lReceivedPacket.getMessage() == accepted)
+                 /*             if (lReceivedPacket.getMessage() == accepted)
                               {
                                  if (!lStartedDownload)
                                  {
@@ -118,7 +118,7 @@ void Client::loop(void)
                                     LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
                                     lBuildIter++;
                                  }
-                              }
+                              }*/
                            break;
                            case status_filecheck:
                               /* TODO: Add file checking */
