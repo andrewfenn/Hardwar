@@ -21,7 +21,6 @@
 #include "GameManager.h"
 #include "PlayState.h"
 #include "LoadState.h"
-#include "Server.h"
 #include "Config.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -46,105 +45,29 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
 int main( int argc, char **argv ) {
 #endif
 
-    std::string cmdvar;
-    int cmd = 0;
+   std::string cmdvar;
 
-    Ogre::ConfigFile lconfig;
-    lconfig.load(GAME_SETTINGS_FILE);
+   Ogre::ConfigFile lconfig;
+   lconfig.load(GAME_SETTINGS_FILE);
 
-    Ogre::String address = lconfig.getSetting("LocalAddress", "Network");
-    unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("DefaultPort", "Network"));
+   Ogre::String address = lconfig.getSetting("LocalAddress", "Network");
+   unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("DefaultPort", "Network"));
 
-    /* FIXME: Horrible, use regular expression */
-    for (int i=1; i < argc; i++)
-    {
-        cmdvar = std::string(argv[i]);
-        if (cmdvar.substr(0, 2).compare("--") == 0)
-        {
-            cmdvar = cmdvar.substr(2, cmdvar.length()-2);
+   Client::GameManager *gameManager = Client::GameManager::getSingletonPtr();
+   gameManager->getNetwork()->setPort(port);
+   gameManager->getNetwork()->setAddress(address);
+   gameManager->mSinglePlayer = false;
 
-            if (cmdvar.compare("help") == 0)
-            {
-                printf(gettext("usage: hardwar [--connect[-ip|-port]] [--server[port]]\n\n"));
-                printf(gettext("The full list of commands are:\n"));
-                printf(gettext("\tconnect\t\tConnects to server running the same version.\n"));
-                printf(gettext("\tserver\t\tStarts up a dedicated server running the game.\n"));
-                printf(gettext("\thelp\t\tDisplays this help text.\n"));
-            }
-            else if (cmdvar.compare("connect") == 0)
-            {
-                cmd = 1;   
-            }
-            else if (cmdvar.compare("server") == 0)
-            {
-                cmd = 2;
-            }
-        } else {
-            switch (cmd)
-            {
-                default:
-                break;
-                case 1: /* connect */
-                case 2: /* server */
-                    if (cmdvar.compare("-ip") == 0)
-                    {
-                        if (i+1 < argc)
-                        {
-                            i++;
-                            address = std::string(argv[i]);
-                        }
-                        else
-                        {
-                            printf("Invalid commandline arguments\n");
-                        }
-                    }
-                    else if (cmdvar.compare("-port") == 0)
-                    {
-                        if (i+1 < argc)
-                        {
-                            i++;
-                            port = atoi(argv[i]);
-                        }
-                        else
-                        {
-                            printf("Invalid commandline arguments\n");
-                        }
-                    }
-                break;
-            }
-        }
-    }
-
-    switch(cmd)
-    {
-        case 1: /* connect */
-        {
-            Client::GameManager *gameManager = Client::GameManager::getSingletonPtr();
-            gameManager->getNetwork()->setPort(port);
-            gameManager->getNetwork()->setAddress(address);
-            gameManager->mSinglePlayer = false;
-
-            try
-            {                /* Initialise the game and switch to the first state */
-                gameManager->startGame(Client::LoadState::getSingletonPtr());
-            }
-            catch ( Ogre::Exception& ex )
-            {
-                #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-                    MessageBox(0, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-                #else
-                    std::cerr << "An exception has occured: " << ex.getFullDescription();
-                #endif            }            delete gameManager;
-        }
-        break;
-        case 2: /* server */
-        {
-            Server::ServerMain server = Server::ServerMain(lconfig);
-        }
-        break;
-        default:
-            /* start game normally */
-        break;
-    }
-    return 0;
+   try
+   {      /* Initialise the game and switch to the first state */
+      gameManager->startGame(Client::LoadState::getSingletonPtr());
+   }
+   catch ( Ogre::Exception& ex )
+   {
+      #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        MessageBox(0, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+      #else
+        std::cerr << "An exception has occured: " << ex.getFullDescription();
+      #endif   }   delete gameManager;
+   return 0;
 }

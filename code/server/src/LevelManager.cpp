@@ -35,16 +35,15 @@ LevelManager::~LevelManager(void)
 	}
 }
 
-bool LevelManager::loadData(Ogre::String name)
+bool LevelManager::loadData(const Ogre::String name)
 {
    int result;
-
    result = sqlite3_open(name.c_str(), &mSQLdb);
    if(result)
    {
       /* couldn't load the file */
-      fprintf(stderr, "'%s' could not be opened.\n", name.c_str());
-      fprintf(stderr, "SQLite Error: %s\n", sqlite3_errmsg(mSQLdb));
+      std::cout << name.c_str() << gettext(" could not be opened.") << std::endl;
+      std::cout << gettext("SQLite Error: ") << sqlite3_errmsg(mSQLdb) << std::endl;
 
       sqlite3_close(mSQLdb);
       return false;
@@ -52,12 +51,12 @@ bool LevelManager::loadData(Ogre::String name)
 
    if (loadBuildings())
    {
-      printf("Loaded buildings: %d\n", numBuildings());
+      std::cout << gettext("Loaded buildings: ") << numBuildings() << std::endl;
       return true;
    }
    else
    {
-      fprintf(stderr, "Problem loading buildings\n");
+      std::cout << gettext("Problem loading buildings") << std::endl;
    }
    return false;
 }
@@ -122,7 +121,7 @@ bool LevelManager::loadBuildings(void)
    result = sqlite3_finalize(statement);
    if(result != SQLITE_OK )
    {
-      fprintf(stderr, "SQLite Error: %s\n", sqlite3_errmsg(mSQLdb));
+      std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;
       lResult = false;
    }
    return lResult;

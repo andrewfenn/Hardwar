@@ -24,10 +24,9 @@
 #include <libintl.h>
 #include "enet/enet.h"
 
-#include "LevelManager.h"
-#include "FileManager.h"
 #include "srvstructs.h"
 #include "ClientManager.h"
+#include "GameManager.h"
 
 namespace Server
 {
@@ -36,19 +35,19 @@ namespace Server
                The Server::ServerMain class acts as a hub where messages being
                received by Enet are relayed on to the different threads to be
                processed.
-       */
+    */
    class ServerMain
    {
       public:
          ServerMain();
          ServerMain(Ogre::ConfigFile);
          ~ServerMain();
-         LevelManager *mLvlMgr;
 
          bool    setup(int, std::string);
          bool    setupGame();
          void    serverLoop();
          ClientManager* mClientMgr;
+         GameManager* mGameMgr;
       private:
          ENetHost            *mServer;
          unsigned int        mPlayerCount;
@@ -56,4 +55,3 @@ namespace Server
    };
 }
 #endif /* __SERVER_H_ */
-

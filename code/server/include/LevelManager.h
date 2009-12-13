@@ -21,6 +21,8 @@
 
 #include <Ogre.h>
 #include <sqlite3.h>
+#include <libintl.h>
+#include "enet/enet.h"
 
 #include "Building.h"
 #include "ClientManager.h"
@@ -40,7 +42,7 @@ namespace Server
             @param name
                    The filename being used which contains the level data.
          */
-         bool loadData(Ogre::String);
+         bool loadData(const Ogre::String);
          /** Loads all the building data in the SQL file */
          bool loadBuildings(void);
          bool addBuilding(const unsigned int crater, Hardwar::Building);
@@ -51,8 +53,8 @@ namespace Server
          void sendBuildingData(unsigned int crater, Hardwar::Building building, ENetPeer* lpeer = 0);
          unsigned int numBuildings(void);
       private:
-         Building mBuildings;
          sqlite3 *mSQLdb;
+         Building mBuildings;
          static LevelManager *mLevelManager;
          LevelManager(const LevelManager&) { }
          LevelManager & operator = (const LevelManager&);
