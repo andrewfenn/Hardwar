@@ -20,14 +20,11 @@
 
 namespace Server
 {
-   ServerMain::ServerMain() { }
-
    ServerMain::ServerMain(Ogre::ConfigFile config)
    {
       if (setup(Ogre::StringConverter::parseInt(mConfig.getSetting("DefaultPort", "Network", "26500")),
                      mConfig.getSetting("LocalAddress", "Network", "127.0.0.1")) == 1)
       {
-         mGameMgr = GameManager::getSingletonPtr();
          mGameMgr->setConfig(config);
          serverLoop();
       }

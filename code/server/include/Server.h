@@ -39,7 +39,6 @@ namespace Server
    class ServerMain
    {
       public:
-         ServerMain();
          ServerMain(Ogre::ConfigFile);
          ~ServerMain();
 

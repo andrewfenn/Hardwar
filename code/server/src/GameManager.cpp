@@ -20,8 +20,6 @@
 
 namespace Server
 {
-   GameManager* GameManager::mGameManager;
-
    GameManager::GameManager(void) { }
 
    GameManager::~GameManager(void) { }
@@ -37,13 +35,4 @@ namespace Server
       return true;
    }
 
-   GameManager* GameManager::getSingletonPtr(void)
-   {
-      if(!mGameManager)
-      {
-         mGameManager = new GameManager();
-      }
-
-      return mGameManager;
-   }
 } /* namespace Server */
