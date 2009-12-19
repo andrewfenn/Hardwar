@@ -36,20 +36,14 @@ namespace Server
          void removeClient(ENetPeer*);
          void addMessage(const ENetEvent);
          void setHost(ENetHost*);
-
-         bool sendMsg(dataPacket, enet_uint8, enet_uint32, ENetPeer* peer = 0);
+         bool send(dataPacket, enet_uint8, enet_uint32, ENetPeer* peer = 0);
 
          ~ClientManager();
          ClientManager();
-         static ClientManager* getSingletonPtr(void);
       private:
          typedef std::map<enet_uint16, Server::Client*> Clients;
          Clients mPlayers;
          ENetHost * mHost;
-
-         static ClientManager *mClientManager;
-         ClientManager(const ClientManager&) { }
-         ClientManager & operator = (const ClientManager&);
    };
 }
 

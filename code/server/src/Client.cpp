@@ -111,7 +111,7 @@ void Client::loop(void)
                                     mConState = status_ingame;
                                     lResponsePacket = dataPacket(status_changed);
                                     lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                    sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                                    send(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                                  }
                                  else
                                  {
@@ -127,7 +127,7 @@ void Client::loop(void)
                                  mConState = status_downloading;
                                  lResponsePacket = dataPacket(status_changed);
                                  lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                 sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                                 send(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                               }
                            break;
                            default:
@@ -139,7 +139,7 @@ void Client::loop(void)
                                  mConState = status_filecheck;
                                  lResponsePacket = dataPacket(status_changed);
                                  lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                 sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);                        
+                                 send(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);                        
                               }
                            break;
                         }
@@ -178,20 +178,13 @@ void Client::processAdminReqs(dataPacket lPacket)
 
          dataPacket lPacket = dataPacket(admin_login);
          lPacket.append(&response, sizeof(packetMessage));
-         sendMessage(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         send(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
          mAdmin = new Admin();
       }
    }
 }
 
-void Client::nextPacket(void)
-{
-   enet_packet_destroy((*mEvent).second.packet);
-   /* FIXME: This could screw up if the packet hasn't arrived yet */
-   mEvent++;   
-}
-
-bool Client::sendMessage(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
+bool Client::send(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
 {
    bool result = true;
    ENetPacket * packet = enet_packet_create(data.getContents(), data.size(), priority);

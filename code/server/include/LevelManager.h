@@ -26,7 +26,6 @@
 #include "enet/enet.h"
 
 #include "Building.h"
-#include "ClientManager.h"
 
 namespace Server
 {
@@ -50,7 +49,7 @@ namespace Server
          Building::iterator getBuildings(void);
          bool end(Building::iterator);
 
-         void sendBuildingData(unsigned int crater, Hardwar::Building building, ENetPeer* lpeer = 0);
+         //void sendBuildingData(unsigned int crater, Hardwar::Building building, ENetPeer* lpeer = 0);
          unsigned int numBuildings(void);
       private:
          sqlite3 *mSQLdb;

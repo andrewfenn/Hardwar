@@ -64,7 +64,6 @@ namespace Server
          return false;
       }
 
-      mClientMgr = ClientManager::getSingletonPtr();
       mClientMgr->setHost(mServer);
 
       return mGameMgr->setup();
@@ -103,8 +102,15 @@ namespace Server
                default:
                break;
             }
+
+            processEvents();
          }
          enet_host_flush(mServer);
       }
+   }
+
+   void ServerMain::processEvents()
+   {
+//      mClientMgr->getEvents();
    }
 } /* namespace Server */

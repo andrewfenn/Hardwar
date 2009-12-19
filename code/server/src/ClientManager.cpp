@@ -20,16 +20,12 @@
 
 using namespace Server;
 
-ClientManager* ClientManager::mClientManager;
-
 ClientManager::~ClientManager(void)
 {
-
 }
 
 ClientManager::ClientManager(void)
 {
-
 }
 
 void ClientManager::addClient(ENetPeer *lpeer)
@@ -62,7 +58,7 @@ void ClientManager::setHost(ENetHost* lHost)
    mHost = lHost;
 }
 
-bool ClientManager::sendMsg(dataPacket data, enet_uint8 channel, enet_uint32 priority, ENetPeer *peer)
+bool ClientManager::send(dataPacket data, enet_uint8 channel, enet_uint32 priority, ENetPeer *peer)
 {
    bool result = true;
    ENetPacket * packet = enet_packet_create(data.getContents(), data.size(), priority);
@@ -80,14 +76,4 @@ bool ClientManager::sendMsg(dataPacket data, enet_uint8 channel, enet_uint32 pri
    }
    enet_host_flush(mHost);
    return result;
-}
-
-ClientManager* ClientManager::getSingletonPtr(void)
-{
-   if(!mClientManager)
-   {
-      mClientManager = new ClientManager();
-   }
-
-   return mClientManager;
 }

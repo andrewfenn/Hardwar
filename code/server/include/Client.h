@@ -53,11 +53,11 @@ namespace Server
          void removeThread(void);
          /** Sets the unique peer ID given to the client by Enet */
          void setPeer(ENetPeer*);
+         /** Sends a packet of data to the client */
+         bool send(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
       private:
          void loop(void);
-         bool sendMessage(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
          void processAdminReqs(dataPacket lPacket);
-         void nextPacket(void);
          Message getMessages(void);
 
          ThreadController mThreadController;

@@ -42,15 +42,16 @@ namespace Server
          ServerMain(Ogre::ConfigFile);
          ~ServerMain();
 
-         bool    setup(int, std::string);
-         bool    setupGame();
-         void    serverLoop();
-         ClientManager* mClientMgr;
-         GameManager* mGameMgr;
+         bool setup(int, std::string);
+         bool setupGame();
+         void serverLoop();
+         void processEvents();
       private:
          ENetHost            *mServer;
          unsigned int        mPlayerCount;
          Ogre::ConfigFile    mConfig;
+         ClientManager* mClientMgr;
+         GameManager* mGameMgr;
    };
 }
 #endif /* __SERVER_H_ */

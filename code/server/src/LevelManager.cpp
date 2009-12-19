@@ -139,10 +139,11 @@ bool LevelManager::addBuilding(const unsigned int crater, Hardwar::Building buil
                               mesh.c_str());
 
 
-   sendBuildingData(crater, building);
+//   sendBuildingData(crater, building);
    return true;
 }
 
+/*
 void LevelManager::sendBuildingData(unsigned int crater, Hardwar::Building building, ENetPeer* lpeer)
 {
    ClientManager* lClientMgr = ClientManager::getSingletonPtr();
@@ -152,4 +153,4 @@ void LevelManager::sendBuildingData(unsigned int crater, Hardwar::Building build
    packet.append(&building.getRotation(), sizeof(Ogre::Vector3));
    packet.appendString(building.getMeshName());
    lClientMgr->sendMsg(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-}
+}*/
