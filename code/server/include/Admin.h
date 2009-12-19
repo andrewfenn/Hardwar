@@ -24,8 +24,8 @@
 #include <Ogre.h>
 
 #include "srvstructs.h"
-#include "LevelManager.h"
 #include "DataPacket.h"
+#include "Building.h"
 
 namespace Server
 {

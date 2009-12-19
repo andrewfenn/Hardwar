@@ -16,23 +16,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GameManager.h"
+#ifndef __ZONE_MGR_H_
+#define __ZONE_MGR_H_
+
+#include <Ogre.h>
+#include <sqlite3.h>
+#include <vector>
+#include <libintl.h>
+
+#include "Zone.h"
 
 namespace Server
 {
-   GameManager::GameManager(void) { }
+   typedef std::vector<Zone> Zones;
 
-   GameManager::~GameManager(void) { }
-
-   void GameManager::setConfig(Ogre::ConfigFile config)
+   class ZoneManager
    {
-      mConfig = config;
-   }
+      public:
+         ZoneManager();
+         bool loadData(Ogre::String name);
+         ~ZoneManager();
+      private:
+         sqlite3 *mSQLdb;
+         Zones mZones;
 
-   bool GameManager::setup()
-   {
-      mLvlMgr.loadData(Ogre::String("world/default.db"));
-      return true;
-   }
-
-} /* namespace Server */
+         bool loadBuildings();
+   };
+}
+#endif /* __ZONE_MGR_H_ */

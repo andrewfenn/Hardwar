@@ -64,7 +64,6 @@ namespace Server
 
          ENetPeer* mPeer;
          clientStatus mConState;
-         int mtest;
 
          Message mMessages;
          Message::iterator mEvent;

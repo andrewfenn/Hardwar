@@ -26,7 +26,7 @@
 
 #include "srvstructs.h"
 #include "ClientManager.h"
-#include "GameManager.h"
+#include "ZoneManager.h"
 
 namespace Server
 {
@@ -51,7 +51,7 @@ namespace Server
          unsigned int        mPlayerCount;
          Ogre::ConfigFile    mConfig;
          ClientManager* mClientMgr;
-         GameManager* mGameMgr;
+         ZoneManager* mZoneMgr;
    };
 }
 #endif /* __SERVER_H_ */

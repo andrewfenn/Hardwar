@@ -51,7 +51,6 @@ void Client::removeThread(void)
 void Client::setPeer(ENetPeer* lpeer)
 {
    mPeer = lpeer;
-   mtest = mPeer->incomingPeerID;
 }
 
 Message Client::getMessages(void)
@@ -69,7 +68,6 @@ void Client::loop(void)
    dataPacket lReceivedPacket;
    dataPacket lResponsePacket;
    bool lStartedDownload = false;
-   Building::iterator lBuildIter;
 
    while(!mThreadController.hasStopped())
    {

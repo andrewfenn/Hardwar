@@ -25,7 +25,6 @@ namespace Server
       if (setup(Ogre::StringConverter::parseInt(mConfig.getSetting("DefaultPort", "Network", "26500")),
                      mConfig.getSetting("LocalAddress", "Network", "127.0.0.1")) == 1)
       {
-         mGameMgr->setConfig(config);
          serverLoop();
       }
    }
@@ -66,7 +65,7 @@ namespace Server
 
       mClientMgr->setHost(mServer);
 
-      return mGameMgr->setup();
+      return true;
    }
 
    void ServerMain::serverLoop()

@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,15 +16,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "LevelManager.h"
+#include "ZoneManager.h"
 
 using namespace Server;
 
-LevelManager::LevelManager()
+ZoneManager::ZoneManager()
 {
+   mZones.push_back(Zone());
 }
 
-LevelManager::~LevelManager()
+ZoneManager::~ZoneManager()
 {
    if(mSQLdb)
    {
@@ -32,7 +33,7 @@ LevelManager::~LevelManager()
 	}
 }
 
-bool LevelManager::loadData(Ogre::String name)
+bool ZoneManager::loadData(Ogre::String name)
 {
    int result;
    result = sqlite3_open_v2(name.c_str(), &mSQLdb, SQLITE_OPEN_NOMUTEX, 0);
@@ -40,15 +41,14 @@ bool LevelManager::loadData(Ogre::String name)
    {
       /* couldn't load the file */
       std::cout << name.c_str() << gettext(" could not be opened.") << std::endl;
-      std::cout << gettext("SQLite Error: ") << sqlite3_errmsg(mSQLdb) << std::endl;
-
+      std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;
       sqlite3_close(mSQLdb);
       return false;
    }
 
    if (loadBuildings())
    {
-      std::cout << gettext("Loaded buildings: ") << numBuildings() << std::endl;
+      std::cout << gettext("Loaded buildings") << std::endl;
       return true;
    }
    else
@@ -58,27 +58,7 @@ bool LevelManager::loadData(Ogre::String name)
    return false;
 }
 
-Building::iterator LevelManager::getBuildings(void)
-{
-   Building::iterator lBuilding = mBuildings.begin();
-   return lBuilding;
-}
-
-bool LevelManager::end(Building::iterator lIter)
-{
-   if (lIter != mBuildings.end())
-   {
-      return false;
-   }
-   return true;
-}
-
-unsigned int LevelManager::numBuildings(void)
-{
-   return mBuildings.size();
-}
-
-bool LevelManager::loadBuildings(void)
+bool ZoneManager::loadBuildings(void)
 {
    int result;
    bool lResult = true;
@@ -110,7 +90,7 @@ bool LevelManager::loadBuildings(void)
 			   point.z = sqlite3_column_double(statement,8);
             lBuilding.setRotation(point);
 
-            mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(sqlite3_column_int(statement,1), lBuilding));
+            mZones.at(sqlite3_column_int(statement,1)).addBuilding(sqlite3_column_int(statement,0), lBuilding);
 		   break;
 	   }
    }	
@@ -123,34 +103,3 @@ bool LevelManager::loadBuildings(void)
    }
    return lResult;
 }
-
-bool LevelManager::addBuilding(const unsigned int crater, Hardwar::Building building)
-{
-   mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(crater, building));
-
-   Ogre::Vector3 pos, rot;
-   Ogre::String mesh;
-   pos = building.getPosition();
-   rot = building.getRotation();
-   mesh = building.getMeshName();
-   printf("New Building - Position: %s - Rotation: %s - Mesh: %s\n",
-                              Ogre::StringConverter::toString(pos).c_str(),
-                              Ogre::StringConverter::toString(rot).c_str(),
-                              mesh.c_str());
-
-
-//   sendBuildingData(crater, building);
-   return true;
-}
-
-/*
-void LevelManager::sendBuildingData(unsigned int crater, Hardwar::Building building, ENetPeer* lpeer)
-{
-   ClientManager* lClientMgr = ClientManager::getSingletonPtr();
-
-   dataPacket packet = dataPacket(add_building);
-   packet.append(&building.getPosition(), sizeof(Ogre::Vector3));
-   packet.append(&building.getRotation(), sizeof(Ogre::Vector3));
-   packet.appendString(building.getMeshName());
-   lClientMgr->sendMsg(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE, lpeer);
-}*/
