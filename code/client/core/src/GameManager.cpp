@@ -309,40 +309,76 @@ void GameManager::requestShutdown(void)
 bool GameManager::keyPressed(const OIS::KeyEvent &e)
 {
    /* Call keyPressed of current state */
-   mStates.back()->keyPressed( e );
-
+   if (mConsole->isVisible() && e.key != OIS::KC_GRAVE)
+   {
+      mGUI->injectKeyPress(e);
+   }
+   else
+   {
+      mStates.back()->keyPressed( e );
+   }
    return true;
 }
 
 bool GameManager::keyReleased(const OIS::KeyEvent &e)
 {
-   /* call keyReleased of current state */
-   mStates.back()->keyReleased(e);
+   if (e.key == OIS::KC_SYSRQ)
+   {
+      mConsole->executeCommand(Ogre::UTFString("cl_screenshot"));
+   }
+   else if (e.key == OIS::KC_GRAVE)
+   {
+      mConsole->toggleShow();
+   }
+   else
+   {
+      /* call keyReleased of current state */
+      mStates.back()->keyReleased(e);
+   }
 
    return true;
 }
 
 bool GameManager::mouseMoved(const OIS::MouseEvent &e)
 {
-   /* call mouseMoved of current state */
-   mStates.back()->mouseMoved( e );
-
+   if (mConsole->isVisible())
+   {
+      /* fixme: should move this to game manager */
+      mGUI->injectMouseMove(e);
+   }
+   else
+   {
+      /* call mouseMoved of current state */
+      mStates.back()->mouseMoved(e);
+   }
    return true;
 }
 
 bool GameManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   /* Call mousePressed of current state */
-   mStates.back()->mousePressed( e, id );
-
+   if (mConsole->isVisible())
+   {
+      mGUI->injectMousePress(e, id);
+   }
+   else
+   {
+      /* Call mousePressed of current state */
+      mStates.back()->mousePressed( e, id );
+   }
    return true;
 }
 
 bool GameManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   /* Call mouseReleased of current state */
-   mStates.back()->mouseReleased( e, id );
-
+   if (mConsole->isVisible())
+   {
+      mGUI->injectMouseRelease(e, id);
+   }
+   else
+   {
+      /* Call mouseReleased of current state */
+      mStates.back()->mouseReleased( e, id );
+   }
    return true;
 }
 

@@ -104,11 +104,7 @@ void PlayState::update(unsigned long lTimeElapsed)
 
 void PlayState::keyPressed(const OIS::KeyEvent &e)
 {
-   if (mGameMgr->mConsole->isVisible() && e.key != OIS::KC_GRAVE)
-   {
-      mGUI->injectKeyPress(e);
-   }
-   else if (mBuildEditor->isVisible())
+   if (mBuildEditor->isVisible())
    {
       mGUI->injectKeyPress(e);
    }
@@ -130,12 +126,6 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 
 void PlayState::keyReleased(const OIS::KeyEvent &e)
 {
-   if (e.key == OIS::KC_SYSRQ)
-      Console::getSingletonPtr()->executeCommand(Ogre::UTFString("cl_screenshot"));
-
-   if (e.key == OIS::KC_GRAVE)
-      mGameMgr->mConsole->toggleShow();
-
    if (e.key == OIS::KC_TAB)
    {
       mBuildEditor->show(!mBuildEditor->isVisible());
@@ -195,12 +185,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
       mBuildEditor->mouseMoved(e);
    }
 
-   if (mGUI->isShowPointer() || mBuildEditor->isVisible())
-   {
-      /* fixme: should move this to game manager */
-      mGUI->injectMouseMove(e);
-   }
-   else
+   if (!mBuildEditor->isVisible())
    {
       const OIS::MouseState &mouseState = e.state;
       mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
@@ -213,7 +198,6 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
    if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
       mBuildEditor->mousePressed(e, id);
-      mGUI->injectMousePress(e, id);
    }
 }
 
@@ -222,7 +206,6 @@ void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
    if (mGUI->isShowPointer() || mBuildEditor->isVisible())
    {
       mBuildEditor->mouseReleased(e, id);
-      mGUI->injectMouseRelease(e, id);
    }
 }
 

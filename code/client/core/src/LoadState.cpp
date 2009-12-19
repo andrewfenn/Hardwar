@@ -71,6 +71,7 @@ void LoadState::exit( void )
 {
    /* Delete what we loaded */
    MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
+   delete &mLayout;
 }
 
 void LoadState::pause(void)

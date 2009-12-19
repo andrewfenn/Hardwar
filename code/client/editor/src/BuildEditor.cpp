@@ -63,6 +63,7 @@ BuildEditor::BuildEditor(void)
 
 BuildEditor::~BuildEditor(void)
 {
+   mBoxMgr.clear();
    /* TODO: unload build editor resources */
    delete mCollision;
 }
@@ -374,7 +375,7 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                   }
                }
 
-               lResult.y += lEntity->getBoundingBox().getSize().y*0.5;
+//               lResult.y += lEntity->getBoundingBox().getSize().y*0.5;
                /* We want ints because that's what is going over the network */
                lResult.x = floor(lResult.x);
                lResult.z = floor(lResult.z);

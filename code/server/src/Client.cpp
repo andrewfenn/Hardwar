@@ -69,6 +69,7 @@ void Client::loop(void)
    dataPacket lReceivedPacket;
    dataPacket lResponsePacket;
    bool lStartedDownload = false;
+   bool lFinishedDownload = false;
    Building::iterator lBuildIter;
 
    while(!mThreadController.hasStopped())
@@ -98,25 +99,55 @@ void Client::loop(void)
                         switch(mConState)
                         {
                            case status_downloading:
-                              if (lReceivedPacket.getMessage() == accepted)
+                              if (!lFinishedDownload)
                               {
                                  if (!lStartedDownload)
                                  {
-                                    lBuildIter = LevelManager::getSingletonPtr()->getBuildings();
-                                    lStartedDownload = true;
-                                 }
-                                 
-                                 if (LevelManager::getSingletonPtr()->end(lBuildIter))
-                                 {
-                                    mConState = status_ingame;
-                                    lResponsePacket = dataPacket(status_changed);
-                                    lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                    sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                                    if (LevelManager::getSingletonPtr()->numBuildings() > 0)
+                                    {
+                                       lBuildIter = LevelManager::getSingletonPtr()->getBuildings();
+                                       lStartedDownload = true;
+                                       LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
+                                       lBuildIter++;
+                                    }
+                                    else
+                                    {
+                                       mConState = status_ingame;
+                                       lResponsePacket = dataPacket(status_changed);
+                                       lResponsePacket.append(&mConState, sizeof(clientStatus));
+                                       sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                                       lFinishedDownload = true;
+                                    }
                                  }
                                  else
                                  {
-                                    LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
-                                    lBuildIter++;
+                                    if (lReceivedPacket.getMessage() == accepted)
+                                    {                                                
+                                       if (LevelManager::getSingletonPtr()->end(lBuildIter))
+                                       {
+                                          mConState = status_ingame;
+                                          lResponsePacket = dataPacket(status_changed);
+                                          lResponsePacket.append(&mConState, sizeof(clientStatus));
+                                          sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                                          lFinishedDownload = true;
+                                       }
+                                       else
+                                       {
+                                          LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
+                                          lBuildIter++;
+                                       }
+                                    }
+                                    else if (lReceivedPacket.getMessage() == rejected)
+                                    {
+                                       lBuildIter--;
+                                       LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
+                                    }
+                                    else
+                                    {
+                                       /* Something screwed up. Send the list again */
+                                       lStartedDownload = false;
+                                       std::cout << "Error Occured. Resending the building list." << std::endl;
+                                    }
                                  }
                               }
                            break;

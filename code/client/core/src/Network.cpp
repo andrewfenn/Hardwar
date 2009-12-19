@@ -195,6 +195,7 @@ void Network::threadLoopGame()
                case status_downloading:
                   if (lReceivedPacket.getMessage() == add_building)
                   {
+                     Console::getSingletonPtr()->addToConsole("Add Building Request");
                      Hardwar::Building building;
                      Ogre::Vector3 point;
                      Ogre::String mesh;
@@ -210,7 +211,7 @@ void Network::threadLoopGame()
 
                      /* add the object */      
                      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-                     printf("Pos: %s, Rot: %s\n", Ogre::StringConverter::toString(building.getPosition()).c_str(), Ogre::StringConverter::toString(building.getRotation()).c_str());
+                     Console::getSingletonPtr()->addToConsole(Ogre::String("Pos:")+Ogre::StringConverter::toString(building.getPosition()).c_str()+Ogre::String(", Rot: ")+Ogre::StringConverter::toString(building.getRotation()).c_str()+"\n");
 
                      bool isAdded = false;
 
@@ -234,15 +235,18 @@ void Network::threadLoopGame()
                      packetMessage lMsg;
                      if (isAdded)
                      {
+                        Console::getSingletonPtr()->addToConsole("Building Added");
                         lMsg = accepted;
                      }
                      else
                      {
+                        Console::getSingletonPtr()->addToConsole("Building Rejected");
                         lMsg = rejected;
                      }
 
                      lPacket.append(&lMsg, sizeof(packetMessage));
                      message(lPacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                     Console::getSingletonPtr()->addToConsole("Sending Reply");
                   }
                default:
                   if (lReceivedPacket.getMessage() == status_changed)

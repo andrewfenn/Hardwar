@@ -27,6 +27,7 @@
 #include "Admin.h"
 #include "ClientManager.h"
 #include "ThreadController.h"
+#include "LevelManager.h"
 
 namespace Server
 {

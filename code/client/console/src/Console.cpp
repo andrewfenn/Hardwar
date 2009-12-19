@@ -52,7 +52,9 @@ Console::Console()
 }
 
 Console::~Console()
-{}
+{
+   delete mConsole;
+}
 
 bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate* function)
 {
