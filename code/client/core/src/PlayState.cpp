@@ -104,12 +104,6 @@ void PlayState::update(unsigned long lTimeElapsed)
 
 void PlayState::keyPressed(const OIS::KeyEvent &e)
 {
-   if (mBuildEditor->isVisible())
-   {
-      mGUI->injectKeyPress(e);
-   }
-   else
-   {
       if (e.key == OIS::KC_W)
          mKeydownUp = 1;
 
@@ -121,7 +115,6 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 
       if (e.key == OIS::KC_D)
          mKeydownRight = 1;
-   }
 }
 
 void PlayState::keyReleased(const OIS::KeyEvent &e)
@@ -141,10 +134,6 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
       {
          mGameMgr->mConsole->toggleShow();
       }
-      else
-      {
-         mGUI->injectKeyRelease(e);
-      }
    }
    else if (mBuildEditor->isVisible())
    {
@@ -155,7 +144,6 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
       }
       else
       {
-         mGUI->injectKeyRelease(e);
          mBuildEditor->keyReleased(e);
       }
    }

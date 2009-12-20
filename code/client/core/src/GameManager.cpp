@@ -309,14 +309,16 @@ void GameManager::requestShutdown(void)
 
 bool GameManager::keyPressed(const OIS::KeyEvent &e)
 {
-   /* Call keyPressed of current state */
-   if (mConsole->isVisible() && e.key != OIS::KC_GRAVE)
+   if (e.key == OIS::KC_GRAVE)
    {
-      mGUI->injectKeyPress(e);
+      return true;
    }
-   else
+
+   mGUI->injectKeyPress(e);
+
+   if (!mConsole->isVisible())
    {
-      mStates.back()->keyPressed( e );
+      mStates.back()->keyPressed(e);
    }
    return true;
 }
@@ -331,25 +333,22 @@ bool GameManager::keyReleased(const OIS::KeyEvent &e)
    {
       mConsole->toggleShow();
    }
-   else
+
+   mGUI->injectKeyRelease(e);
+
+   if (!mConsole->isVisible())
    {
-      /* call keyReleased of current state */
       mStates.back()->keyReleased(e);
    }
-
    return true;
 }
 
 bool GameManager::mouseMoved(const OIS::MouseEvent &e)
 {
-   if (mConsole->isVisible())
+   mGUI->injectMouseMove(e);
+
+   if (!mConsole->isVisible())
    {
-      /* fixme: should move this to game manager */
-      mGUI->injectMouseMove(e);
-   }
-   else
-   {
-      /* call mouseMoved of current state */
       mStates.back()->mouseMoved(e);
    }
    return true;
@@ -357,13 +356,10 @@ bool GameManager::mouseMoved(const OIS::MouseEvent &e)
 
 bool GameManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mConsole->isVisible())
+   mGUI->injectMousePress(e, id);
+
+   if (!mConsole->isVisible())
    {
-      mGUI->injectMousePress(e, id);
-   }
-   else
-   {
-      /* Call mousePressed of current state */
       mStates.back()->mousePressed( e, id );
    }
    return true;
@@ -371,14 +367,11 @@ bool GameManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 bool GameManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mConsole->isVisible())
+   mGUI->injectMouseRelease(e, id);
+
+   if (!mConsole->isVisible())
    {
-      mGUI->injectMouseRelease(e, id);
-   }
-   else
-   {
-      /* Call mouseReleased of current state */
-      mStates.back()->mouseReleased( e, id );
+      mStates.back()->mouseReleased(e, id);
    }
    return true;
 }
