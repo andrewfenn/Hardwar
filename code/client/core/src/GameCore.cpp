@@ -23,7 +23,7 @@ using namespace Client;
 GameCore::GameCore(void)
 {
    Ogre::ConfigFile lconfig;
-   lconfig.load(GAME_SETTINGS_FILE);
+   lconfig.load("settings.cfg");
 
    mMaxFPS  = Ogre::StringConverter::parseInt(lconfig.getSetting("MaxFPS", "Game", "60"));
    mShowFPS = Ogre::StringConverter::parseBool(lconfig.getSetting("ShowFPS", "Debug", "false"));

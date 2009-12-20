@@ -21,7 +21,6 @@
 #include "GameManager.h"
 #include "PlayState.h"
 #include "LoadState.h"
-#include "Config.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 char **GetArgvCommandLine(int *argc)
