@@ -66,6 +66,7 @@ IF (NOT {$boost_thread-mt_FOUND})
 ENDIF (NOT {$boost_thread-mt_FOUND})
 
 FIND_PACKAGE(Boost COMPONENTS filesystem REQUIRED)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
 add_subdirectory(code/client)
 add_subdirectory(code/server)
