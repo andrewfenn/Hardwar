@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,10 +32,17 @@ namespace Server
       public:
 
          void clientLoop(void);
-         void addClient(ENetPeer*);
-         void removeClient(ENetPeer*);
-         void addMessage(const ENetEvent);
+         /** Add a new player to the client list. */
+         void add(ENetPeer*);
+         /** Get a player currently connected */
+         Client* get(ENetPeer*);
+         /** Remove a player for the list */
+         void remove(ENetPeer*);
+         /** Add a message in the client's event list */
+         void message(const ENetEvent);
+         /** Sets the enet host for server communication */
          void setHost(ENetHost*);
+         /** send a packet of data to a specific client or set the peer to 0 for broadcasting */
          bool send(dataPacket, enet_uint8, enet_uint32, ENetPeer* peer = 0);
 
          ~ClientManager();

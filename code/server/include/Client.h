@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "Admin.h"
 #include "ClientManager.h"
 #include "ThreadController.h"
+#include "Zone.h"
 
 namespace Server
 {
@@ -55,10 +56,21 @@ namespace Server
          void setPeer(ENetPeer*);
          /** Sends a packet of data to the client */
          bool send(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
+         /** Sends a packet of data to the client then waits for an accepted response
+            @return false if client sends rejected message
+         */
+         bool sendAndWait(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
+         /** Add more buildings to send to the client */
+         void addBuildings(Buildings list);
       private:
-         void loop(void);
+         void loop();
          void processAdminReqs(dataPacket lPacket);
-         Message getMessages(void);
+
+         void changeStatus(const clientStatus status);
+         void processConnecting();
+         void processFilecheck();
+         void processDownloading();
+         Message getMessages();
 
          ThreadController mThreadController;
 
@@ -66,11 +78,13 @@ namespace Server
          clientStatus mConState;
 
          Message mMessages;
-         Message::iterator mEvent;
          mutable boost::mutex mEventMutex;
 
          boost::thread mThread;
          Admin *mAdmin;
+
+         /** Buildings to send to the player */
+         Buildings mBuildings;
    };
 }
 #endif /* __CLIENT_H_ */

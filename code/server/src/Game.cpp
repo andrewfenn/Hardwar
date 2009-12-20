@@ -16,32 +16,50 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ZONE_MGR_H_
-#define __ZONE_MGR_H_
+#include "Game.h"
 
-#include <Ogre.h>
-#include <sqlite3.h>
-#include <vector>
-#include <libintl.h>
+using namespace Server;
 
-#include "Zone.h"
-
-namespace Server
+Game::Game()
 {
-   typedef std::vector<Zone> Zones;
-
-   class ZoneManager
-   {
-      public:
-         ZoneManager();
-         bool loadData(Ogre::String name);
-         Buildings getAllBuildings();
-         ~ZoneManager();
-      private:
-         sqlite3 *mSQLdb;
-         Zones mZones;
-
-         bool loadBuildings();
-   };
 }
-#endif /* __ZONE_MGR_H_ */
+
+bool Game::setup(Ogre::ConfigFile config, ENetHost* host)
+{
+   mConfig = config;
+   mClientMgr.setHost(host);
+   if (!mZoneMgr.loadData(mConfig.getSetting("Database", "Game", "./world/default.db")))
+   {
+      return false;
+   }
+   return true;
+}
+
+ClientManager* Game::getClientMgr()
+{
+   return &mClientMgr;
+}
+
+void Game::addClient(ENetPeer* peer)
+{
+   mClientMgr.add(peer);
+   Client* client = mClientMgr.get(peer);
+   if (client)
+   {
+     client->addBuildings(mZoneMgr.getAllBuildings());
+   }
+}
+
+void Game::removeClient(ENetPeer* peer)
+{
+   mClientMgr.remove(peer);
+}
+
+void Game::process()
+{
+
+}
+
+Game::~Game()
+{
+}

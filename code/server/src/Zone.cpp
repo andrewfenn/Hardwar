@@ -28,9 +28,9 @@ Zone::~Zone()
 {
 }
 
-Building::iterator Zone::getBuildings(void)
+Buildings Zone::getBuildings(void)
 {
-   return mBuildings.begin();
+   return mBuildings;
 }
 
 unsigned int Zone::numBuildings(void)

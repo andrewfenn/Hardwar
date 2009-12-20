@@ -59,4 +59,12 @@ namespace Hardwar
    {
       mMesh = mesh;
    }
+
+   dataPacket Building::serialize(dataPacket packet)
+   {
+      packet.append(&mPosition, sizeof(Ogre::Vector3));
+      packet.append(&mRotation, sizeof(Ogre::Vector3));
+      packet.appendString(mMesh);
+      return packet;
+   }
 }

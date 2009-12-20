@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ ClientManager::ClientManager(void)
 {
 }
 
-void ClientManager::addClient(ENetPeer *lpeer)
+void ClientManager::add(ENetPeer *lpeer)
 {
    mPlayers[lpeer->incomingPeerID] = new Client();
    mPlayers[lpeer->incomingPeerID]->setPeer(lpeer);
@@ -37,7 +37,16 @@ void ClientManager::addClient(ENetPeer *lpeer)
    printf(gettext("Thread: Client - %d - started\n"), lpeer->incomingPeerID);
 }
 
-void ClientManager::removeClient(ENetPeer *lpeer)
+Client* ClientManager::get(ENetPeer *lpeer)
+{
+   if (mPlayers[lpeer->incomingPeerID] != 0)
+   {
+      return mPlayers[lpeer->incomingPeerID];
+   }
+   return 0;
+}
+
+void ClientManager::remove(ENetPeer *lpeer)
 {
    mPlayers[lpeer->incomingPeerID]->removeThread();
    delete mPlayers[lpeer->incomingPeerID];
@@ -45,7 +54,7 @@ void ClientManager::removeClient(ENetPeer *lpeer)
    mPlayers.erase(lpeer->incomingPeerID);
 }
 
-void ClientManager::addMessage(const ENetEvent lEvent)
+void ClientManager::message(const ENetEvent lEvent)
 {
    if (mPlayers[lEvent.peer->incomingPeerID] != 0)
    {

@@ -58,7 +58,21 @@ bool ZoneManager::loadData(Ogre::String name)
    return false;
 }
 
-bool ZoneManager::loadBuildings(void)
+Buildings ZoneManager::getAllBuildings()
+{
+   Buildings master;
+   for (Zones::iterator zone=mZones.begin(); zone != mZones.end(); zone++)
+   {
+      Buildings list = zone->getBuildings();
+      for (Buildings::iterator building=list.begin(); building != list.end(); building++)
+      {
+         master.insert(std::pair<unsigned int,Hardwar::Building>(building->first, building->second));
+      }
+   }
+   return master;
+}
+
+bool ZoneManager::loadBuildings()
 {
    int result;
    bool lResult = true;

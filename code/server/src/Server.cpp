@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -63,8 +63,10 @@ namespace Server
          return false;
       }
 
-      mClientMgr->setHost(mServer);
-
+      if (!mGame.setup(mConfig, mServer))
+      {
+         return false;
+      }
       return true;
    }
 
@@ -82,7 +84,7 @@ namespace Server
             switch (lEvent.type)
             {
                case ENET_EVENT_TYPE_CONNECT:
-                  mClientMgr->addClient(lEvent.peer);
+                  mGame.addClient(lEvent.peer);
                break;
                case ENET_EVENT_TYPE_RECEIVE:
                   switch (lEvent.channelID)
@@ -91,25 +93,25 @@ namespace Server
                         /* Any packets we recieve are added to the specific client that needs
                            them. They are then deleted in the thread after they have been
                            used. */
-                           mClientMgr->addMessage(lEvent);
+                           mGame.getClientMgr()->message(lEvent);
                      break;
                   }
                break;
                case ENET_EVENT_TYPE_DISCONNECT:
-                  mClientMgr->removeClient(lEvent.peer);
+                  mGame.removeClient(lEvent.peer);
                break;
                default:
                break;
             }
 
-            processEvents();
+            process();
          }
          enet_host_flush(mServer);
       }
    }
 
-   void ServerMain::processEvents()
+   void ServerMain::process()
    {
-//      mClientMgr->getEvents();
+      mGame.process();
    }
 } /* namespace Server */

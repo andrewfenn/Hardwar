@@ -21,6 +21,8 @@
 
 #include <Ogre.h>
 
+#include "DataPacket.h"
+
 namespace Hardwar
 {
    class Building
@@ -34,6 +36,7 @@ namespace Hardwar
          void setPosition(const Ogre::Vector3);
          void setRotation(const Ogre::Vector3);
          void setMeshName(const Ogre::String);
+         dataPacket serialize(dataPacket);
       private:
          Ogre::Vector3 mPosition;
          Ogre::Vector3 mRotation;

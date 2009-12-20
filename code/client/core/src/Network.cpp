@@ -245,11 +245,18 @@ void Network::threadLoopGame()
                      message(lPacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                   }
                default:
-                  if (lReceivedPacket.getMessage() == status_changed)
                   {
-                     clientStatus lStatus;
-                     lReceivedPacket.move(&lStatus, sizeof(clientStatus));
-                     setConStatus(lStatus);
+                     if (lReceivedPacket.getMessage() == status_changed)
+                     {
+                        clientStatus lStatus;
+                        lReceivedPacket.move(&lStatus, sizeof(clientStatus));
+                        setConStatus(lStatus);
+
+                        dataPacket packet = dataPacket(lReceivedPacket.getMessage());
+                        packetMessage msg = accepted;
+                        packet.append(&msg, sizeof(packetMessage));
+                        message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                     }
                   }
                break;
          }

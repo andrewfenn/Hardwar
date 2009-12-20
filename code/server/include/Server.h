@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,8 +25,7 @@
 #include "enet/enet.h"
 
 #include "srvstructs.h"
-#include "ClientManager.h"
-#include "ZoneManager.h"
+#include "Game.h"
 
 namespace Server
 {
@@ -45,13 +44,12 @@ namespace Server
          bool setup(int, std::string);
          bool setupGame();
          void serverLoop();
-         void processEvents();
+         void process();
       private:
          ENetHost            *mServer;
          unsigned int        mPlayerCount;
          Ogre::ConfigFile    mConfig;
-         ClientManager* mClientMgr;
-         ZoneManager* mZoneMgr;
+         Game mGame;
    };
 }
 #endif /* __SERVER_H_ */

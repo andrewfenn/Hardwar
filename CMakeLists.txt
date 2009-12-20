@@ -27,13 +27,13 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 # Set compiler specific build flags
 if (CMAKE_COMPILER_IS_GNUCXX)
-  add_definitions(-msse)
+  add_definitions(-msse -Wunused -g3)
 endif ()
 if (MSVC)
   add_definitions(/fp:fast)
 endif ()
 
-ADD_DEFINITIONS("-Wall -Wunused -O0 -g3")
+ADD_DEFINITIONS("-Wall -O0")
 
 IF (MSVC_IDE)
 	IF (EXISTS $ENV{OGRE_HOME})

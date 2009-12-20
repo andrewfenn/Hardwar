@@ -28,7 +28,7 @@
 
 namespace Server
 {
-   typedef std::multimap<unsigned int,Hardwar::Building> Building;
+   typedef std::multimap<unsigned int,Hardwar::Building> Buildings;
 
    class Zone
    {
@@ -36,10 +36,10 @@ namespace Server
          Zone();
          ~Zone();
          bool addBuilding(const unsigned int id, Hardwar::Building);
-         Building::iterator getBuildings(void);
+         Buildings getBuildings(void);
          unsigned int numBuildings(void);
       private:
-         Building mBuildings;
+         Buildings mBuildings;
    };
 }
 #endif /* __ZONE_H_ */

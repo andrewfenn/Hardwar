@@ -16,32 +16,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ZONE_MGR_H_
-#define __ZONE_MGR_H_
+#ifndef __GAME_H_
+#define __GAME_H_
 
-#include <Ogre.h>
-#include <sqlite3.h>
-#include <vector>
 #include <libintl.h>
+#include <Ogre.h>
 
-#include "Zone.h"
+#include "ClientManager.h"
+#include "ZoneManager.h"
 
 namespace Server
 {
-   typedef std::vector<Zone> Zones;
-
-   class ZoneManager
+   class Game
    {
       public:
-         ZoneManager();
-         bool loadData(Ogre::String name);
-         Buildings getAllBuildings();
-         ~ZoneManager();
+         Game();
+         ~Game();
+         bool setup(Ogre::ConfigFile, ENetHost*);
+         void process();
+         ClientManager* getClientMgr();
+         void addClient(ENetPeer* peer);
+         void removeClient(ENetPeer* peer);
       private:
-         sqlite3 *mSQLdb;
-         Zones mZones;
-
-         bool loadBuildings();
+         ClientManager    mClientMgr;
+         ZoneManager      mZoneMgr;
+         Ogre::ConfigFile mConfig;
    };
 }
-#endif /* __ZONE_MGR_H_ */
+#endif /* __GAME_H_ */

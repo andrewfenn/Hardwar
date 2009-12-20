@@ -57,6 +57,7 @@ typedef enum
    status_changed = 4, /* Changed client status */
 
    add_building   = 50, /* Attempt to add a building */
+   get_building_list = 51, /* get all buildings in the client's list */
 
    admin_login    = 100  /* Attempt to login as admin */
 } packetMessage;

@@ -1,6 +1,6 @@
-exec ./hardwar
+exec ./client
 set height 0
-run --connect
+run
 bt
 c
 quit
