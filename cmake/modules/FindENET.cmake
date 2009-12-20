@@ -3,7 +3,7 @@ SET( ENET_DEFINITIONS "")
 ##
 # You're going to have to edit this file if you intend to use it for your own project
 ##
-SET( ENET_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet )
+SET( ENET_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dependencies/enet )
  
 IF( EXISTS ${ENET_INCLUDE_DIR} )
     SET( ENET_FOUND TRUE )

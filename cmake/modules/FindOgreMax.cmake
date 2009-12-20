@@ -3,7 +3,7 @@ SET( OgreMax_DEFINITIONS "" )
 ##
 # You're going to have to edit this file if you intend to use it for your own project
 ##
-SET( OgreMax_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OgreMax )
+SET( OgreMax_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dependencies/OgreMax )
  
 IF( EXISTS ${OgreMax_INCLUDE_DIR} )
     SET( OgreMax_FOUND TRUE )

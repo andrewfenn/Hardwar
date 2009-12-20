@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008-2009  Andrew Fenn
+    Copyright (C) 2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,40 +16,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __SERVER_H_
-#define __SERVER_H_
+#ifndef __ZONE_H_
+#define __ZONE_H_
 
 #include <Ogre.h>
-#include <string>
+#include <sqlite3.h>
+#include <stdio.h>
 #include <libintl.h>
-#include "enet/enet.h"
 
-#include "srvstructs.h"
-#include "Game.h"
+#include "Building.h"
 
 namespace Server
 {
-   /** The Main Server Loop
-           @remarks
-               The Server::ServerMain class acts as a hub where messages being
-               received by Enet are relayed on to the different threads to be
-               processed.
-    */
-   class ServerMain
+   /** A zone is an outside player area. */
+   class Zone
    {
       public:
-         ServerMain(Ogre::ConfigFile);
-         ~ServerMain();
-
-         bool setup(int, std::string);
-         bool setupGame();
-         void serverLoop();
-         void process();
+         Zone();
+         ~Zone();
+         bool addBuilding(Hardwar::Building);
+         std::vector<Hardwar::Building> getBuildings(void);
+         unsigned int numBuildings(void);
       private:
-         ENetHost            *mServer;
-         unsigned int        mPlayerCount;
-         Ogre::ConfigFile    mConfig;
-         Game mGame;
+         std::vector<Hardwar::Building> mBuildings;
    };
 }
-#endif /* __SERVER_H_ */
+#endif /* __ZONE_H_ */

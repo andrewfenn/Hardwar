@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,10 +22,11 @@
 #include "enet/enet.h"
 #include <map>
 #include <Ogre.h>
+#include <libintl.h>
 
 #include "srvstructs.h"
-#include "LevelManager.h"
 #include "DataPacket.h"
+#include "Building.h"
 
 namespace Server
 {
@@ -41,7 +42,15 @@ namespace Server
          Admin();
          ~Admin();
          void processRequest(dataPacket lPacket);
-         
+         /** Get any buildings this admin added.
+            @remarks Any buildings in this list are deleted when calling this method
+          */
+         Hardwar::Buildings getBuildings();
+      private:
+         /** Buildings to add to the game */
+         Hardwar::Buildings mBuildings;
+
+         void addBuilding(Hardwar::Building);
    };
 }
 #endif /* __ADMIN_H_ */

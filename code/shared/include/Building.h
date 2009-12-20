@@ -21,6 +21,8 @@
 
 #include <Ogre.h>
 
+#include "DataPacket.h"
+
 namespace Hardwar
 {
    class Building
@@ -34,11 +36,15 @@ namespace Hardwar
          void setPosition(const Ogre::Vector3);
          void setRotation(const Ogre::Vector3);
          void setMeshName(const Ogre::String);
+         dataPacket serialize(dataPacket);
+         void unserialize(dataPacket);
       private:
          Ogre::Vector3 mPosition;
          Ogre::Vector3 mRotation;
          Ogre::String  mMesh;
    };
+
+   typedef std::multimap<unsigned int,Building> Buildings;
 }
 
 #endif /* __BUILDING_H_ */

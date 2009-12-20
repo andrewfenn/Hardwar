@@ -71,7 +71,6 @@ void LoadState::exit( void )
 {
    /* Delete what we loaded */
    MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
-   delete &mLayout;
 }
 
 void LoadState::pause(void)
@@ -116,19 +115,24 @@ void LoadState::update( unsigned long lTimeElapsed )
                dataPacket packet = dataPacket(accepted);
                mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                mFilesLoaded = true;
+               delete lOgreMax;
             }
          }
       break;
       case status_downloading:
-         if (!mDownloads)
          {
-            dataPacket packet = dataPacket(accepted);
-            mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-            mDownloads = true;
+            if (!mDownloads)
+            {
+               dataPacket packet = dataPacket(get_building_list);
+               mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+               mDownloads = true;
+            }
          }
       break;
       case status_ingame:
-         this->changeState(PlayState::getSingletonPtr());
+         {
+            this->changeState(PlayState::getSingletonPtr());
+         }
       break;
       case status_disconnected:
          /* the connection has failed */

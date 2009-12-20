@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,11 @@ Client::Client()
 
 Client::~Client()
 {
+   if (mAdmin)
+   {
+      delete mAdmin;
+      mAdmin = 0;
+   }
 }
 
 void Client::addMessage(const ENetEvent lEvent)
@@ -51,7 +56,14 @@ void Client::removeThread(void)
 void Client::setPeer(ENetPeer* lpeer)
 {
    mPeer = lpeer;
-   mtest = mPeer->incomingPeerID;
+}
+
+void Client::addBuildings(Hardwar::Buildings list)
+{
+   for (Hardwar::Buildings::iterator building=list.begin(); building != list.end(); building++)
+   {
+      mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(building->first, building->second));
+   }
 }
 
 Message Client::getMessages(void)
@@ -65,129 +77,137 @@ Message Client::getMessages(void)
 
 void Client::loop(void)
 {
-   Message lMessages;
-   dataPacket lReceivedPacket;
-   dataPacket lResponsePacket;
-   bool lStartedDownload = false;
-   bool lFinishedDownload = false;
-   Building::iterator lBuildIter;
-
    while(!mThreadController.hasStopped())
    {
       if (mMessages.size() > 0)
       {
-         lMessages = getMessages();
-
-         for (mEvent=lMessages.begin(); mEvent != lMessages.end(); mEvent++)
+         switch(mConState)
          {
-            lReceivedPacket = dataPacket((*mEvent).second.packet->data, (*mEvent).second.packet->dataLength);
-            switch((*mEvent).first)
-            {
-               case SERVER_CHANNEL_MOVEMENT:
-                  /* This channel is for movement */
-               break;
-               default:
-                  /* Since we're mostly getting movement updates we construct our
-                     switch this way for speed. */
-                  switch((*mEvent).first)
-                  {
-                     case SERVER_CHANNEL_ADMIN:
-                        processAdminReqs(lReceivedPacket);
-                     break;
-                     case SERVER_CHANNEL_GENERIC:
-                        /* This channel of join requests and pings */
-                        switch(mConState)
-                        {
-                           case status_downloading:
-                              if (!lFinishedDownload)
-                              {
-                                 if (!lStartedDownload)
-                                 {
-                                    if (LevelManager::getSingletonPtr()->numBuildings() > 0)
-                                    {
-                                       lBuildIter = LevelManager::getSingletonPtr()->getBuildings();
-                                       lStartedDownload = true;
-                                       LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
-                                       lBuildIter++;
-                                    }
-                                    else
-                                    {
-                                       mConState = status_ingame;
-                                       lResponsePacket = dataPacket(status_changed);
-                                       lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                       sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                                       lFinishedDownload = true;
-                                    }
-                                 }
-                                 else
-                                 {
-                                    if (lReceivedPacket.getMessage() == accepted)
-                                    {                                                
-                                       if (LevelManager::getSingletonPtr()->end(lBuildIter))
-                                       {
-                                          mConState = status_ingame;
-                                          lResponsePacket = dataPacket(status_changed);
-                                          lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                          sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                                          lFinishedDownload = true;
-                                       }
-                                       else
-                                       {
-                                          LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
-                                          lBuildIter++;
-                                       }
-                                    }
-                                    else if (lReceivedPacket.getMessage() == rejected)
-                                    {
-                                       lBuildIter--;
-                                       LevelManager::getSingletonPtr()->sendBuildingData((unsigned int)0,(*lBuildIter).second, mPeer);
-                                    }
-                                    else
-                                    {
-                                       /* Something screwed up. Send the list again */
-                                       lStartedDownload = false;
-                                       std::cout << "Error Occured. Resending the building list." << std::endl;
-                                    }
-                                 }
-                              }
-                           break;
-                           case status_filecheck:
-                              /* TODO: Add file checking */
-                              if (lReceivedPacket.getMessage() == accepted)
-                              {
-                                 mConState = status_downloading;
-                                 lResponsePacket = dataPacket(status_changed);
-                                 lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                 sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                              }
-                           break;
-                           default:
-                              if (lReceivedPacket.getMessage() == join_game)
-                              {
-                                 /* New client joined. Begin by sending back the connection status */
-                                 /* TODO: Check if server is full */
-                                 /* TODO: Check address isn't banned */
-                                 mConState = status_filecheck;
-                                 lResponsePacket = dataPacket(status_changed);
-                                 lResponsePacket.append(&mConState, sizeof(clientStatus));
-                                 sendMessage(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);                        
-                              }
-                           break;
-                        }
-                     break;
-                  } /* end second switch */
-               break;
-            } /* end first switch */            
-            /* finished with the packet, destory it */
-            enet_packet_destroy((*mEvent).second.packet);
-         } /* end for packet loop */
+            case status_connecting:
+               processConnecting();
+            break;
+            case status_filecheck:
+               processFilecheck();
+            break;
+            case status_downloading:
+               processDownloading();
+            break;
+            case status_ingame:
+               processInGame();
+            break;
+            default:
+            break;
+         }
       }
       else
       {
          sleep(1);
       }
    }
-   printf(gettext("Thread: Client - %d - terminated\n"), mPeer->incomingPeerID);
+   std::cout << gettext("Thread: Client") << " - " << mPeer->incomingPeerID << " " << gettext("terminated") << std::endl;
+}
+
+void Client::changeStatus(const clientStatus status)
+{
+   mConState = status;
+   dataPacket lResponsePacket = dataPacket(status_changed);
+   lResponsePacket.append(&mConState, sizeof(clientStatus));
+   sendAndWait(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+}
+
+void Client::processConnecting()
+{
+   Message lMessages = getMessages();
+   dataPacket lReceivedPacket;
+   for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
+   {
+      lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
+      if (lReceivedPacket.getMessage() == join_game)
+      {
+         /* New client joined. Begin by sending back the connection status */
+         /* TODO: Check if server is full */
+         /* TODO: Check address isn't banned */
+         changeStatus(status_filecheck);
+      }
+      /* destory the packet */
+      enet_packet_destroy((*lEventItr).second.packet);
+   }
+}
+
+void Client::processFilecheck()
+{
+   Message lMessages = getMessages();
+   dataPacket lReceivedPacket;
+   for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
+   {
+      lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
+      if (lReceivedPacket.getMessage() == accepted)
+      {
+         changeStatus(status_downloading);
+      }
+      /* destory the packet */
+      enet_packet_destroy((*lEventItr).second.packet);
+   }
+}
+
+void Client::processDownloading()
+{
+   Message lMessages = getMessages();
+   dataPacket lReceivedPacket;
+   dataPacket lResponsePacket;
+   bool rejected = false;
+   bool requested = false;
+
+   for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
+   {
+      lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
+      if (lReceivedPacket.getMessage() == get_building_list && !requested)
+      {
+         requested = true;
+
+         for (Hardwar::Buildings::iterator building=mBuildings.begin(); building != mBuildings.end(); building++)
+         {
+            lResponsePacket = dataPacket(add_building);
+            lResponsePacket = building->second.serialize(lResponsePacket);
+            if (!sendAndWait(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE))
+            {
+               if (rejected == true)
+               {
+                  // rejected the same building twice
+                  /* TODO: Kill client */
+               }
+               else
+               {
+                  building--;
+                  rejected = true;
+               }
+            }
+            else
+            {
+               rejected = false;
+            }
+         }
+         changeStatus(status_ingame);
+      }
+      /* destory the packet */
+      enet_packet_destroy((*lEventItr).second.packet);
+   }
+}
+
+void Client::processInGame()
+{
+   Message lMessages = getMessages();
+   dataPacket lReceivedPacket;
+   dataPacket lResponsePacket;
+
+   for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
+   {
+      lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
+
+      processAdminReqs(lReceivedPacket);
+      /* destory the packet */
+      enet_packet_destroy((*lEventItr).second.packet);
+   }
 }
 
 void Client::processAdminReqs(dataPacket lPacket)
@@ -209,20 +229,30 @@ void Client::processAdminReqs(dataPacket lPacket)
 
          dataPacket lPacket = dataPacket(admin_login);
          lPacket.append(&response, sizeof(packetMessage));
-         sendMessage(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-         mAdmin = new Admin();
+         send(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         if (!mAdmin)
+         {
+            mAdmin = new Admin();
+         }
       }
    }
 }
 
-void Client::nextPacket(void)
+bool Client::isAdmin()
 {
-   enet_packet_destroy((*mEvent).second.packet);
-   /* FIXME: This could screw up if the packet hasn't arrived yet */
-   mEvent++;   
+   if (!mAdmin)
+   {
+      return false;
+   }
+   return true;
 }
 
-bool Client::sendMessage(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
+Admin* Client::getAdmin()
+{
+   return mAdmin;
+}
+
+bool Client::send(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
 {
    bool result = true;
    ENetPacket * packet = enet_packet_create(data.getContents(), data.size(), priority);
@@ -231,4 +261,45 @@ bool Client::sendMessage(dataPacket data, const enet_uint8 channel, const enet_u
       result = false;
    }
    return result;
+}
+
+bool Client::sendAndWait(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
+{
+   Message lMessages;
+   dataPacket lReceivedPacket;
+   packetMessage message;
+   send(data, channel, priority);
+   unsigned short count = 0;
+
+   while(!accepted)
+   {
+      count++;
+      sleep(1);
+      lMessages = getMessages();
+      for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
+      {
+         lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
+         if (lReceivedPacket.getMessage() == data.getMessage())
+         {
+            lReceivedPacket.move(&message, sizeof(packetMessage));
+            if (message == accepted)
+            {
+               return true;
+            }
+            else
+            {
+               std::cout << gettext("Message rejected while in connection state") << ": " << mConState << std::endl;
+               return false;
+            }
+         }
+         enet_packet_destroy((*lEventItr).second.packet);
+      }
+ 
+      if (count > 10)
+      {
+         std::cout << gettext("Waiting failed while in connection state") << ": " << mConState << std::endl;
+         break;
+      }
+   }
+   return false;
 }

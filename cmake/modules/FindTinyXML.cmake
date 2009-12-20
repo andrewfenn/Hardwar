@@ -3,7 +3,7 @@ SET( TinyXML_DEFINITIONS "")
 ##
 # You're going to have to edit this file if you intend to use it for your own project
 ##
-SET( TinyXML_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML )
+SET( TinyXML_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dependencies/TinyXML )
  
 IF( EXISTS ${TinyXML_INCLUDE_DIR} )
     SET( TinyXML_FOUND TRUE )

@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,9 +18,7 @@
 
 #include <OgreException.h>
 
-#include "GameManager.h"
-#include "PlayState.h"
-#include "LoadState.h"
+#include "Server.h"
 #include "Config.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -45,29 +43,15 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
 int main( int argc, char **argv ) {
 #endif
 
-   std::string cmdvar;
+    std::string cmdvar;
+    int cmd = 0;
 
-   Ogre::ConfigFile lconfig;
-   lconfig.load(GAME_SETTINGS_FILE);
+    Ogre::ConfigFile lconfig;
+    lconfig.load("server.cfg");
 
-   Ogre::String address = lconfig.getSetting("LocalAddress", "Network");
-   unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("DefaultPort", "Network"));
+    Ogre::String address = lconfig.getSetting("LocalAddress", "Network");
+    unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("DefaultPort", "Network"));
 
-   Client::GameManager *gameManager = Client::GameManager::getSingletonPtr();
-   gameManager->getNetwork()->setPort(port);
-   gameManager->getNetwork()->setAddress(address);
-   gameManager->mSinglePlayer = false;
-
-   try
-   {      /* Initialise the game and switch to the first state */
-      gameManager->startGame(Client::LoadState::getSingletonPtr());
-   }
-   catch ( Ogre::Exception& ex )
-   {
-      #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        MessageBox(0, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-      #else
-        std::cerr << "An exception has occured: " << ex.getFullDescription();
-      #endif   }   delete gameManager;
-   return 0;
+    Server::ServerMain server = Server::ServerMain(lconfig);
+    return 0;
 }

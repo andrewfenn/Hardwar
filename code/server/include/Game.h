@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008-2009  Andrew Fenn
+    Copyright (C) 2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,40 +16,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __SERVER_H_
-#define __SERVER_H_
+#ifndef __GAME_H_
+#define __GAME_H_
 
-#include <Ogre.h>
-#include <string>
 #include <libintl.h>
-#include "enet/enet.h"
+#include <Ogre.h>
 
-#include "srvstructs.h"
-#include "Game.h"
+#include "ClientManager.h"
+#include "ZoneManager.h"
 
 namespace Server
 {
-   /** The Main Server Loop
-           @remarks
-               The Server::ServerMain class acts as a hub where messages being
-               received by Enet are relayed on to the different threads to be
-               processed.
-    */
-   class ServerMain
+   class Game
    {
       public:
-         ServerMain(Ogre::ConfigFile);
-         ~ServerMain();
-
-         bool setup(int, std::string);
-         bool setupGame();
-         void serverLoop();
+         Game();
+         ~Game();
+         bool setup(Ogre::ConfigFile, ENetHost*);
          void process();
+         ClientManager* getClientMgr();
+         void addClient(ENetPeer* peer);
+         void removeClient(ENetPeer* peer);
       private:
-         ENetHost            *mServer;
-         unsigned int        mPlayerCount;
-         Ogre::ConfigFile    mConfig;
-         Game mGame;
+         ClientManager    mClientMgr;
+         ZoneManager      mZoneMgr;
+         Ogre::ConfigFile mConfig;
    };
 }
-#endif /* __SERVER_H_ */
+#endif /* __GAME_H_ */

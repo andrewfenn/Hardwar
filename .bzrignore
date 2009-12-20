@@ -29,3 +29,5 @@ bin/logs/mygui.log
 bin/logs/ogre.log
 ./docs
 ./bin/screenshots/screenshot_0.png
+bin/client
+bin/server

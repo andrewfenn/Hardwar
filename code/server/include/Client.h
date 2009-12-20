@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include "Admin.h"
 #include "ClientManager.h"
 #include "ThreadController.h"
-#include "LevelManager.h"
+#include "Building.h"
 
 namespace Server
 {
@@ -54,25 +54,40 @@ namespace Server
          void removeThread(void);
          /** Sets the unique peer ID given to the client by Enet */
          void setPeer(ENetPeer*);
+         /** Sends a packet of data to the client */
+         bool send(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
+         /** Sends a packet of data to the client then waits for an accepted response
+            @return false if client sends rejected message
+         */
+         bool sendAndWait(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
+         /** Add more buildings to send to the client */
+         void addBuildings(Hardwar::Buildings list);
+         bool isAdmin();
+         Admin* getAdmin();
       private:
-         void loop(void);
-         bool sendMessage(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
+         void loop();
+
+         void changeStatus(const clientStatus status);
+         void processConnecting();
+         void processFilecheck();
+         void processDownloading();
+         void processInGame();
          void processAdminReqs(dataPacket lPacket);
-         void nextPacket(void);
-         Message getMessages(void);
+         Message getMessages();
 
          ThreadController mThreadController;
 
          ENetPeer* mPeer;
          clientStatus mConState;
-         int mtest;
 
          Message mMessages;
-         Message::iterator mEvent;
          mutable boost::mutex mEventMutex;
 
          boost::thread mThread;
          Admin *mAdmin;
+
+         /** Buildings to send to the player */
+         Hardwar::Buildings mBuildings;
    };
 }
 #endif /* __CLIENT_H_ */

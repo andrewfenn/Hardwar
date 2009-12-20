@@ -21,7 +21,8 @@
 #include "LoadState.h"
 #include "GameManager.h"
 
-using namespace Client;
+namespace Client
+{
 
 GameManager* GameManager::mGameManager;
 
@@ -185,9 +186,9 @@ void GameManager::startGame( GameState *gameState )
          /* render the next frame */
          mRoot->renderOneFrame();
          mGameCore->update(lTimeSinceLastFrame);
-         mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/1000);
          lDelay = 0;
       }
+      mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/1000);
       mConsole->update();
       /* Deal with platform specific issues */
       Ogre::WindowEventUtilities::messagePump();
@@ -392,3 +393,4 @@ GameManager* GameManager::getSingletonPtr(void)
    return mGameManager;
 }
 
+} /* namespace Client */

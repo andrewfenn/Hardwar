@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,23 +37,24 @@ void Admin::processRequest(dataPacket lPacket)
       case add_building:
          {
             Hardwar::Building building;
-            Ogre::Vector3 point;
-            Ogre::String string;
-
-            lPacket.move(&point, sizeof(Ogre::Vector3));
-            building.setPosition(point);
-
-            lPacket.move(&point, sizeof(Ogre::Vector3));
-            building.setRotation(point);
-
-            lPacket.moveString(string, lPacket.size());
-            building.setMeshName(string);
-
-            LevelManager::getSingletonPtr()->addBuilding((unsigned int)0, building);
+            building.unserialize(lPacket);
+            addBuilding(building);
          }
       break;
       default:
-         std::cout << "PacketMessage: " << lPacket.getMessage() << " data: " << lPacket.getContents() << std::endl;
+         std::cout << gettext("Undefined Admin Message: ") << lPacket.getMessage() << std::endl;
       break;
    }
+}
+
+Hardwar::Buildings Admin::getBuildings()
+{
+   Hardwar::Buildings list = mBuildings;
+   mBuildings.clear();
+   return list;
+}
+
+void Admin::addBuilding(Hardwar::Building building)
+{
+   mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(0, building));
 }

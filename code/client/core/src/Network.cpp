@@ -197,24 +197,13 @@ void Network::threadLoopGame()
                   {
                      Console::getSingletonPtr()->addToConsole("Add Building Request");
                      Hardwar::Building building;
-                     Ogre::Vector3 point;
-                     Ogre::String mesh;
-
-                     lReceivedPacket.move(&point, sizeof(Ogre::Vector3));
-                     building.setPosition(point);
-
-                     lReceivedPacket.move(&point, sizeof(Ogre::Vector3));
-                     building.setRotation(point);
-
-                     lReceivedPacket.moveString(mesh, lReceivedPacket.size());
-                     building.setMeshName(mesh);
+                     building.unserialize(lReceivedPacket);
 
                      /* add the object */      
                      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
                      Console::getSingletonPtr()->addToConsole(Ogre::String("Pos:")+Ogre::StringConverter::toString(building.getPosition()).c_str()+Ogre::String(", Rot: ")+Ogre::StringConverter::toString(building.getRotation()).c_str()+"\n");
 
                      bool isAdded = false;
-
                      try
                      {
                         /* We create an entity with the name of the buildings position. This means two buildings can't exist
@@ -230,30 +219,33 @@ void Network::threadLoopGame()
                      {
                         Console::getSingletonPtr()->addToConsole(Console::getSingletonPtr()->getConsoleError(), "addbuilding", e.getFullDescription());
                      }
-
-                     dataPacket lPacket = dataPacket(add_building);
-                     packetMessage lMsg;
+                     dataPacket lPacket;
                      if (isAdded)
                      {
                         Console::getSingletonPtr()->addToConsole("Building Added");
-                        lMsg = accepted;
+                        lPacket = dataPacket(accepted);
                      }
                      else
                      {
                         Console::getSingletonPtr()->addToConsole("Building Rejected");
-                        lMsg = rejected;
+                        lPacket = dataPacket(rejected);
                      }
-
-                     lPacket.append(&lMsg, sizeof(packetMessage));
                      message(lPacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                      Console::getSingletonPtr()->addToConsole("Sending Reply");
                   }
                default:
-                  if (lReceivedPacket.getMessage() == status_changed)
                   {
-                     clientStatus lStatus;
-                     lReceivedPacket.move(&lStatus, sizeof(clientStatus));
-                     setConStatus(lStatus);
+                     if (lReceivedPacket.getMessage() == status_changed)
+                     {
+                        clientStatus lStatus;
+                        lReceivedPacket.move(&lStatus, sizeof(clientStatus));
+                        setConStatus(lStatus);
+
+                        dataPacket packet = dataPacket(lReceivedPacket.getMessage());
+                        packetMessage msg = accepted;
+                        packet.append(&msg, sizeof(packetMessage));
+                        message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+                     }
                   }
                break;
          }

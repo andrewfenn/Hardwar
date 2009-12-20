@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright (C) 2008-2009  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,112 +18,99 @@
 
 #include "Server.h"
 
-using namespace Server;
-
-ServerMain::ServerMain()
-{ }
-
-ServerMain::ServerMain(Ogre::ConfigFile config)
+namespace Server
 {
-   mConfig = config;
-   if (setup(Ogre::StringConverter::parseInt(mConfig.getSetting("DefaultPort", "Network", "26500")),
-                  mConfig.getSetting("LocalAddress", "Network", "127.0.0.1")) == 1)
+   ServerMain::ServerMain(Ogre::ConfigFile config)
    {
-      /* setup number of avaliable clients */
-      serverLoop();
-   }
-}
-
-ServerMain::~ServerMain()
-{
-   enet_host_destroy(mServer);
-   enet_deinitialize();
-   if (mLvlMgr != 0)
-      delete mLvlMgr;
-}
-
-bool ServerMain::setup(int port, Ogre::String ip)
-{
-   ENetAddress address;
-   mServer=0;
-
-   if (enet_initialize() != 0)
-   {
-      printf(gettext("Unable to initialize the network library.\n"));
-      return false;
+      if (setup(Ogre::StringConverter::parseInt(mConfig.getSetting("DefaultPort", "Network", "26500")),
+                     mConfig.getSetting("LocalAddress", "Network", "127.0.0.1")) == 1)
+      {
+         serverLoop();
+      }
    }
 
-   address.host = ENET_HOST_ANY;
-   address.port = port;
-
-   printf(gettext("Starting server\n"));
-   printf(gettext("Port: %d\n"), port);
-
-   mServer = enet_host_create (&address /* the address to bind the server host to */, 
-                              32      /* allow up to 32 clients and/or outgoing connections */,
-                               0      /* assume any amount of incoming bandwidth */,
-                               0      /* assume any amount of outgoing bandwidth */);
-   if (mServer == 0)
+   ServerMain::~ServerMain()
    {
-      printf(gettext("An error occurred while trying to create an ENet server host.\n"));
+      enet_host_destroy(mServer);
       enet_deinitialize();
-      return false;
    }
 
-   mClientMgr = ClientManager::getSingletonPtr();
-   mClientMgr->setHost(mServer);
-
-   if (setupGame())
+   bool ServerMain::setup(int port, Ogre::String ip)
    {
+      ENetAddress address;
+      mServer=0;
+
+      if (enet_initialize() != 0)
+      {
+         std::cout << gettext("Unable to initialize the network library.") << std::endl;
+         return false;
+      }
+
+      address.host = ENET_HOST_ANY;
+      address.port = port;
+
+      std::cout << gettext("Starting server") << std::endl;
+      std::cout << gettext("Port:") << port << std::endl;
+
+      mServer = enet_host_create (&address /* the address to bind the server host to */, 
+                                 32      /* allow up to 32 clients and/or outgoing connections */,
+                                  0      /* assume any amount of incoming bandwidth */,
+                                  0      /* assume any amount of outgoing bandwidth */);
+      if (mServer == 0)
+      {
+         std::cout << gettext("An error occurred while trying to create an ENet server host.") << std::endl;
+         enet_deinitialize();
+         return false;
+      }
+
+      if (!mGame.setup(mConfig, mServer))
+      {
+         return false;
+      }
       return true;
    }
-   return false;
-}
 
-bool ServerMain::setupGame()
-{
-   bool result = true;
-
-   mLvlMgr = new LevelManager;
-   result = mLvlMgr->loadData(Ogre::String("world/default.db"));
-
-   return result;
-}
-
-void ServerMain::serverLoop()
-{
-   bool serverRunning = true;
-   printf(gettext("Server running..\n"));
-   ENetEvent lEvent;
-
-   while (serverRunning)
+   void ServerMain::serverLoop()
    {
-      /* Wait up to 500 milliseconds for an event. */
-      while (enet_host_service(mServer, &lEvent, 500) > 0)
+      bool serverRunning = true;
+      std::cout << gettext("Server running..") << std::endl;
+      ENetEvent lEvent;
+
+      while (serverRunning)
       {
-         switch (lEvent.type)
+         process();
+         /* Wait up to 500 milliseconds for an event. */
+         while (enet_host_service(mServer, &lEvent, 500) > 0)
          {
-            case ENET_EVENT_TYPE_CONNECT:
-               mClientMgr->addClient(lEvent.peer);
-            break;
-            case ENET_EVENT_TYPE_RECEIVE:
-               switch (lEvent.channelID)
-               {
-                  default:
-                     /* Any packets we recieve are added to the specific client that needs
-                        them. They are then deleted in the thread after they have been
-                        used. */
-                        mClientMgr->addMessage(lEvent);
-                  break;
-               }
-            break;
-            case ENET_EVENT_TYPE_DISCONNECT:
-               mClientMgr->removeClient(lEvent.peer);
-            break;
-            default:
-            break;
+            switch (lEvent.type)
+            {
+               case ENET_EVENT_TYPE_CONNECT:
+                  mGame.addClient(lEvent.peer);
+               break;
+               case ENET_EVENT_TYPE_RECEIVE:
+                  switch (lEvent.channelID)
+                  {
+                     default:
+                        /* Any packets we recieve are added to the specific client that needs
+                           them. They are then deleted in the thread after they have been
+                           used. */
+                           mGame.getClientMgr()->message(lEvent);
+                     break;
+                  }
+               break;
+               case ENET_EVENT_TYPE_DISCONNECT:
+                  mGame.removeClient(lEvent.peer);
+               break;
+               default:
+               break;
+            }
          }
+         enet_host_flush(mServer);
       }
-      enet_host_flush(mServer);
    }
-}
+
+   void ServerMain::process()
+   {
+      mGame.process();
+   }
+} /* namespace Server */
