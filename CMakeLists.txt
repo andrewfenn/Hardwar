@@ -27,13 +27,11 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 # Set compiler specific build flags
 if (CMAKE_COMPILER_IS_GNUCXX)
-  add_definitions(-msse -Wunused -g3)
+  add_definitions(-msse -Wunused -g3 -O3 -Wall)
 endif ()
 if (MSVC)
   add_definitions(/fp:fast)
 endif ()
-
-ADD_DEFINITIONS("-Wall -O3")
 
 IF (MSVC_IDE)
 	IF (EXISTS $ENV{OGRE_HOME})
@@ -43,7 +41,7 @@ IF (MSVC_IDE)
 		LINK_DIRECTORIES(${OGRESDK}/lib)
 	ENDIF(EXISTS $ENV{OGRE_HOME})
 
-	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /ZI /EHsc /SUBSYSTEM:WINDOWS /ENTRY:\"main\"")
+	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /ZI /EHsc")
 	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Od /Gm /Gy /fp:fast /ZI")
 
 	SET(CMAKE_CXX_FLAGS "${PLATFORM_C_FLAGS}")
