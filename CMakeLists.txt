@@ -59,7 +59,13 @@ FOREACH(Package ${Required_Packages})
   ENDIF(${Package}_FOUND)
 ENDFOREACH(Package)
 
-FIND_PACKAGE(Boost COMPONENTS filesystem thread thread-mt REQUIRED)
+FIND_PACKAGE(Boost QUIET COMPONENTS thread-mt)
+IF (NOT {$boost_thread-mt_FOUND})
+   MESSAGE(STATUS "Could not find Boost thread-mt. Trying Boost thread")
+   FIND_PACKAGE(Boost COMPONENTS thread REQUIRED)
+ENDIF (NOT {$boost_thread-mt_FOUND})
+
+FIND_PACKAGE(Boost COMPONENTS filesystem REQUIRED)
 
 add_subdirectory(code/client)
 add_subdirectory(code/server)

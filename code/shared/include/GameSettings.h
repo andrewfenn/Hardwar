@@ -22,7 +22,6 @@
 #include <map>
 
 #include "Ogre.h"
-#include "Config.h"
 
 
 /** The GameSettings class

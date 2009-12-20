@@ -48,7 +48,7 @@ int main( int argc, char **argv ) {
    std::string cmdvar;
 
    Ogre::ConfigFile lconfig;
-   lconfig.load(GAME_SETTINGS_FILE);
+   lconfig.load("settings.cfg");
 
    Ogre::String address = lconfig.getSetting("LocalAddress", "Network");
    unsigned int port = Ogre::StringConverter::parseInt(lconfig.getSetting("DefaultPort", "Network"));
