@@ -23,7 +23,7 @@ GameSettings* GameSettings::mGameSettings;
 GameSettings::GameSettings(void)
 {
    Ogre::ConfigFile lconfig;
-   lconfig.load(GAME_SETTINGS_FILE);
+   lconfig.load("settings.cfg");
 
    setOption("NetworkRetryLimit", lconfig.getSetting("RetryLimit", "Network", "5"));
    setOption("NetworkTimeout", lconfig.getSetting("Timeout", "Network", "5"));
