@@ -28,6 +28,11 @@ Client::Client()
 
 Client::~Client()
 {
+   if (mAdmin)
+   {
+      delete mAdmin;
+      mAdmin = 0;
+   }
 }
 
 void Client::addMessage(const ENetEvent lEvent)
@@ -53,9 +58,9 @@ void Client::setPeer(ENetPeer* lpeer)
    mPeer = lpeer;
 }
 
-void Client::addBuildings(Buildings list)
+void Client::addBuildings(Hardwar::Buildings list)
 {
-   for (Buildings::iterator building=list.begin(); building != list.end(); building++)
+   for (Hardwar::Buildings::iterator building=list.begin(); building != list.end(); building++)
    {
       mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(building->first, building->second));
    }
@@ -87,10 +92,12 @@ void Client::loop(void)
             case status_downloading:
                processDownloading();
             break;
+            case status_ingame:
+               processInGame();
+            break;
             default:
             break;
          }
-         /* finished with the packet, destory it */
       }
       else
       {
@@ -122,6 +129,7 @@ void Client::processConnecting()
          /* TODO: Check address isn't banned */
          changeStatus(status_filecheck);
       }
+      /* destory the packet */
       enet_packet_destroy((*lEventItr).second.packet);
    }
 }
@@ -137,6 +145,8 @@ void Client::processFilecheck()
       {
          changeStatus(status_downloading);
       }
+      /* destory the packet */
+      enet_packet_destroy((*lEventItr).second.packet);
    }
 }
 
@@ -153,10 +163,9 @@ void Client::processDownloading()
       lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
       if (lReceivedPacket.getMessage() == get_building_list && !requested)
       {
-         enet_packet_destroy((*lEventItr).second.packet);
          requested = true;
 
-         for (Buildings::iterator building=mBuildings.begin(); building != mBuildings.end(); building++)
+         for (Hardwar::Buildings::iterator building=mBuildings.begin(); building != mBuildings.end(); building++)
          {
             lResponsePacket = dataPacket(add_building);
             lResponsePacket = building->second.serialize(lResponsePacket);
@@ -180,10 +189,24 @@ void Client::processDownloading()
          }
          changeStatus(status_ingame);
       }
-      else
-      {
-         enet_packet_destroy((*lEventItr).second.packet);
-      }
+      /* destory the packet */
+      enet_packet_destroy((*lEventItr).second.packet);
+   }
+}
+
+void Client::processInGame()
+{
+   Message lMessages = getMessages();
+   dataPacket lReceivedPacket;
+   dataPacket lResponsePacket;
+
+   for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
+   {
+      lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
+
+      processAdminReqs(lReceivedPacket);
+      /* destory the packet */
+      enet_packet_destroy((*lEventItr).second.packet);
    }
 }
 
@@ -207,9 +230,26 @@ void Client::processAdminReqs(dataPacket lPacket)
          dataPacket lPacket = dataPacket(admin_login);
          lPacket.append(&response, sizeof(packetMessage));
          send(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-         mAdmin = new Admin();
+         if (!mAdmin)
+         {
+            mAdmin = new Admin();
+         }
       }
    }
+}
+
+bool Client::isAdmin()
+{
+   if (!mAdmin)
+   {
+      return false;
+   }
+   return true;
+}
+
+Admin* Client::getAdmin()
+{
+   return mAdmin;
 }
 
 bool Client::send(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
@@ -248,17 +288,18 @@ bool Client::sendAndWait(dataPacket data, const enet_uint8 channel, const enet_u
             }
             else
             {
+               std::cout << gettext("Message rejected while in connection state") << ": " << mConState << std::endl;
                return false;
             }
          }
+         enet_packet_destroy((*lEventItr).second.packet);
       }
  
       if (count > 10)
       {
+         std::cout << gettext("Waiting failed while in connection state") << ": " << mConState << std::endl;
          break;
       }
    }
-
-   std::cout << "Waiting Failed on message: " << data.getMessage() << " while in connection state: " << mConState << std::endl;
    return false;
 }

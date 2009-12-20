@@ -28,18 +28,17 @@
 
 namespace Server
 {
-   typedef std::multimap<unsigned int,Hardwar::Building> Buildings;
-
+   /** A zone is an outside player area. */
    class Zone
    {
       public:
          Zone();
          ~Zone();
-         bool addBuilding(const unsigned int id, Hardwar::Building);
-         Buildings getBuildings(void);
+         bool addBuilding(Hardwar::Building);
+         std::vector<Hardwar::Building> getBuildings(void);
          unsigned int numBuildings(void);
       private:
-         Buildings mBuildings;
+         std::vector<Hardwar::Building> mBuildings;
    };
 }
 #endif /* __ZONE_H_ */

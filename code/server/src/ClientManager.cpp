@@ -67,6 +67,11 @@ void ClientManager::setHost(ENetHost* lHost)
    mHost = lHost;
 }
 
+Clients* ClientManager::list()
+{
+   return &mPlayers;
+}
+
 bool ClientManager::send(dataPacket data, enet_uint8 channel, enet_uint32 priority, ENetPeer *peer)
 {
    bool result = true;

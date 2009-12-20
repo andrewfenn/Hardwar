@@ -26,7 +26,8 @@
 namespace Server
 {
    class Client;
-   
+   typedef std::map<enet_uint16, Server::Client*> Clients;
+
    class ClientManager
    {
       public:
@@ -36,6 +37,8 @@ namespace Server
          void add(ENetPeer*);
          /** Get a player currently connected */
          Client* get(ENetPeer*);
+         /** Get the list of clients connected */
+         Clients* list();
          /** Remove a player for the list */
          void remove(ENetPeer*);
          /** Add a message in the client's event list */
@@ -44,11 +47,9 @@ namespace Server
          void setHost(ENetHost*);
          /** send a packet of data to a specific client or set the peer to 0 for broadcasting */
          bool send(dataPacket, enet_uint8, enet_uint32, ENetPeer* peer = 0);
-
          ~ClientManager();
          ClientManager();
       private:
-         typedef std::map<enet_uint16, Server::Client*> Clients;
          Clients mPlayers;
          ENetHost * mHost;
    };

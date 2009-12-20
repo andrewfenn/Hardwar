@@ -25,6 +25,7 @@
 #include <libintl.h>
 
 #include "Zone.h"
+#include "Building.h"
 
 namespace Server
 {
@@ -35,7 +36,9 @@ namespace Server
       public:
          ZoneManager();
          bool loadData(Ogre::String name);
-         Buildings getAllBuildings();
+         Hardwar::Buildings getAllBuildings();
+         /** gets the zone. If no zone exists it is created */
+         Zone* get(unsigned int);
          ~ZoneManager();
       private:
          sqlite3 *mSQLdb;

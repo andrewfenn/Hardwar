@@ -27,7 +27,7 @@
 #include "Admin.h"
 #include "ClientManager.h"
 #include "ThreadController.h"
-#include "Zone.h"
+#include "Building.h"
 
 namespace Server
 {
@@ -61,15 +61,18 @@ namespace Server
          */
          bool sendAndWait(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
          /** Add more buildings to send to the client */
-         void addBuildings(Buildings list);
+         void addBuildings(Hardwar::Buildings list);
+         bool isAdmin();
+         Admin* getAdmin();
       private:
          void loop();
-         void processAdminReqs(dataPacket lPacket);
 
          void changeStatus(const clientStatus status);
          void processConnecting();
          void processFilecheck();
          void processDownloading();
+         void processInGame();
+         void processAdminReqs(dataPacket lPacket);
          Message getMessages();
 
          ThreadController mThreadController;
@@ -84,7 +87,7 @@ namespace Server
          Admin *mAdmin;
 
          /** Buildings to send to the player */
-         Buildings mBuildings;
+         Hardwar::Buildings mBuildings;
    };
 }
 #endif /* __CLIENT_H_ */

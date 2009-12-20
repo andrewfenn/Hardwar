@@ -28,7 +28,7 @@ Zone::~Zone()
 {
 }
 
-Buildings Zone::getBuildings(void)
+std::vector<Hardwar::Building> Zone::getBuildings(void)
 {
    return mBuildings;
 }
@@ -38,9 +38,9 @@ unsigned int Zone::numBuildings(void)
    return mBuildings.size();
 }
 
-bool Zone::addBuilding(const unsigned int id, Hardwar::Building building)
+bool Zone::addBuilding(Hardwar::Building building)
 {
-   mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(id, building));
+   mBuildings.push_back(building);
 
    Ogre::Vector3 pos, rot;
    Ogre::String mesh;
@@ -48,7 +48,7 @@ bool Zone::addBuilding(const unsigned int id, Hardwar::Building building)
    rot = building.getRotation();
    mesh = building.getMeshName();
    /* FIXME: Remove the printf after debugging */
-   printf("New Building - Position: %s - Rotation: %s - Mesh: %s\n",
+   printf("Zone: New Building - Position: %s - Rotation: %s - Mesh: %s\n",
                               Ogre::StringConverter::toString(pos).c_str(),
                               Ogre::StringConverter::toString(rot).c_str(),
                               mesh.c_str());

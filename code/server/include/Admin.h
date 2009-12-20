@@ -22,6 +22,7 @@
 #include "enet/enet.h"
 #include <map>
 #include <Ogre.h>
+#include <libintl.h>
 
 #include "srvstructs.h"
 #include "DataPacket.h"
@@ -41,7 +42,15 @@ namespace Server
          Admin();
          ~Admin();
          void processRequest(dataPacket lPacket);
-         
+         /** Get any buildings this admin added.
+            @remarks Any buildings in this list are deleted when calling this method
+          */
+         Hardwar::Buildings getBuildings();
+      private:
+         /** Buildings to add to the game */
+         Hardwar::Buildings mBuildings;
+
+         void addBuilding(Hardwar::Building);
    };
 }
 #endif /* __ADMIN_H_ */

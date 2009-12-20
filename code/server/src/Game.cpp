@@ -57,7 +57,25 @@ void Game::removeClient(ENetPeer* peer)
 
 void Game::process()
 {
+   Admin* admin;
+   Clients* clients = mClientMgr.list();
+   for (Clients::iterator client=clients->begin(); client != clients->end(); client++)
+   {
+      if (client->second->isAdmin())
+      {
+         /* Add any buildings that an admin has placed down. */
+         admin = client->second->getAdmin();
+         Hardwar::Buildings buildings = admin->getBuildings();
 
+         for (Hardwar::Buildings::iterator building=buildings.begin(); building != buildings.end(); building++)
+         {
+            mZoneMgr.get(building->first)->addBuilding(building->second);
+            dataPacket packet = dataPacket(add_building);
+            packet = building->second.serialize(packet);
+            mClientMgr.send(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+         }
+      }
+   }
 }
 
 Game::~Game()

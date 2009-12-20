@@ -196,24 +196,13 @@ void Network::threadLoopGame()
                   if (lReceivedPacket.getMessage() == add_building)
                   {
                      Hardwar::Building building;
-                     Ogre::Vector3 point;
-                     Ogre::String mesh;
-
-                     lReceivedPacket.move(&point, sizeof(Ogre::Vector3));
-                     building.setPosition(point);
-
-                     lReceivedPacket.move(&point, sizeof(Ogre::Vector3));
-                     building.setRotation(point);
-
-                     lReceivedPacket.moveString(mesh, lReceivedPacket.size());
-                     building.setMeshName(mesh);
+                     building.unserialize(lReceivedPacket);
 
                      /* add the object */      
                      Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
                      printf("Pos: %s, Rot: %s\n", Ogre::StringConverter::toString(building.getPosition()).c_str(), Ogre::StringConverter::toString(building.getRotation()).c_str());
 
                      bool isAdded = false;
-
                      try
                      {
                         /* We create an entity with the name of the buildings position. This means two buildings can't exist
@@ -229,19 +218,15 @@ void Network::threadLoopGame()
                      {
                         Console::getSingletonPtr()->addToConsole(Console::getSingletonPtr()->getConsoleError(), "addbuilding", e.getFullDescription());
                      }
-
-                     dataPacket lPacket = dataPacket(add_building);
-                     packetMessage lMsg;
+                     dataPacket lPacket;
                      if (isAdded)
                      {
-                        lMsg = accepted;
+                        lPacket = dataPacket(accepted);
                      }
                      else
                      {
-                        lMsg = rejected;
+                        lPacket = dataPacket(rejected);
                      }
-
-                     lPacket.append(&lMsg, sizeof(packetMessage));
                      message(lPacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                   }
                default:

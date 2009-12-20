@@ -58,16 +58,19 @@ bool ZoneManager::loadData(Ogre::String name)
    return false;
 }
 
-Buildings ZoneManager::getAllBuildings()
+Hardwar::Buildings ZoneManager::getAllBuildings()
 {
-   Buildings master;
+   Hardwar::Buildings master;
+   unsigned int zoneCount = 0;
    for (Zones::iterator zone=mZones.begin(); zone != mZones.end(); zone++)
    {
-      Buildings list = zone->getBuildings();
-      for (Buildings::iterator building=list.begin(); building != list.end(); building++)
+      std::vector<Hardwar::Building> list = zone->getBuildings();
+      std::vector<Hardwar::Building>::iterator building;
+      for (building=list.begin(); building != list.end(); building++)
       {
-         master.insert(std::pair<unsigned int,Hardwar::Building>(building->first, building->second));
+         master.insert(std::pair<unsigned int,Hardwar::Building>(zoneCount, (*building)));
       }
+      zoneCount++;
    }
    return master;
 }
@@ -104,7 +107,7 @@ bool ZoneManager::loadBuildings()
 			   point.z = sqlite3_column_double(statement,8);
             lBuilding.setRotation(point);
 
-            mZones.at(sqlite3_column_int(statement,1)).addBuilding(sqlite3_column_int(statement,0), lBuilding);
+            get(sqlite3_column_int(statement,1))->addBuilding(lBuilding);
 		   break;
 	   }
    }	
@@ -112,8 +115,13 @@ bool ZoneManager::loadBuildings()
    result = sqlite3_finalize(statement);
    if(result != SQLITE_OK )
    {
-      std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;
+      std::cout << "SQLite error: " << sqlite3_errmsg(mSQLdb) << std::endl;
       lResult = false;
    }
    return lResult;
+}
+
+Zone* ZoneManager::get(unsigned int zone)
+{
+   return &mZones.at(zone);
 }

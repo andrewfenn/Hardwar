@@ -67,4 +67,11 @@ namespace Hardwar
       packet.appendString(mMesh);
       return packet;
    }
+
+   void Building::unserialize(dataPacket packet)
+   {
+      packet.move(&mPosition, sizeof(Ogre::Vector3));
+      packet.move(&mRotation, sizeof(Ogre::Vector3));
+      packet.moveString(mMesh, packet.size());
+   }
 }

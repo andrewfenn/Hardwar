@@ -78,6 +78,7 @@ namespace Server
 
       while (serverRunning)
       {
+         process();
          /* Wait up to 500 milliseconds for an event. */
          while (enet_host_service(mServer, &lEvent, 500) > 0)
          {
@@ -103,8 +104,6 @@ namespace Server
                default:
                break;
             }
-
-            process();
          }
          enet_host_flush(mServer);
       }
