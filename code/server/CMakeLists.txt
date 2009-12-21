@@ -31,3 +31,9 @@ LINK_DIRECTORIES(${SQLITE_LIB_DIR})
 
 FIND_PACKAGE(Boost COMPONENTS filesystem thread REQUIRED)
 TARGET_LINK_LIBRARIES(server ${Boost_LIBRARIES})
+
+IF (MSVC)
+	MESSAGE(STATUS "Using GetText in dependencies")
+	INCLUDE_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/include)
+	LINK_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/lib)
+ENDIF(MSVC)

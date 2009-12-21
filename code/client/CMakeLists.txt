@@ -36,3 +36,8 @@ ENDFOREACH(Package)
 
 TARGET_LINK_LIBRARIES(client ${Boost_LIBRARIES})
 
+IF (MSVC)
+	MESSAGE(STATUS "Using GetText in dependencies")
+	INCLUDE_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/include)
+	LINK_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/lib)
+ENDIF(MSVC)
