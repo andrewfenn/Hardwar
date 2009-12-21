@@ -36,7 +36,7 @@ GameCore::GameCore(void)
    mConsole->addCommand(Ogre::UTFString("cl_showboundingbox"), MyGUI::newDelegate(this, &GameCore::cmd_showBoundingBox));
    mConsole->addCommand(Ogre::UTFString("cl_screenshot"), MyGUI::newDelegate(this, &GameCore::cmd_screenshot));
    mConsole->addCommand(Ogre::UTFString("rcon_password"), MyGUI::newDelegate(this, &GameCore::cmd_remoteConnect));
-   mWaitTime = ceil(1000/mMaxFPS);
+   mWaitTime = ceil((float)1000/mMaxFPS);
 }
 
 void GameCore::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
@@ -78,7 +78,7 @@ void GameCore::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &val
    {
       if (newfps > 25)
       {
-         mWaitTime = ceil(1000/newfps);
+         mWaitTime = ceil((float)1000/newfps);
          mMaxFPS = newfps;
          mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
       }
