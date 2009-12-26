@@ -112,7 +112,7 @@ void Client::changeStatus(const clientStatus status)
    mConState = status;
    dataPacket lResponsePacket = dataPacket(status_changed);
    lResponsePacket.append(&mConState, sizeof(clientStatus));
-   sendAndWait(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+   send(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
 }
 
 void Client::processConnecting()
@@ -155,7 +155,6 @@ void Client::processDownloading()
    Message lMessages = getMessages();
    dataPacket lReceivedPacket;
    dataPacket lResponsePacket;
-   bool rejected = false;
    bool requested = false;
 
    for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
@@ -169,23 +168,7 @@ void Client::processDownloading()
          {
             lResponsePacket = dataPacket(add_building);
             lResponsePacket = building->second.serialize(lResponsePacket);
-            if (!sendAndWait(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE))
-            {
-               if (rejected == true)
-               {
-                  // rejected the same building twice
-                  /* TODO: Kill client */
-               }
-               else
-               {
-                  building--;
-                  rejected = true;
-               }
-            }
-            else
-            {
-               rejected = false;
-            }
+            send(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
          }
          changeStatus(status_ingame);
       }
@@ -261,45 +244,4 @@ bool Client::send(dataPacket data, const enet_uint8 channel, const enet_uint32 p
       result = false;
    }
    return result;
-}
-
-bool Client::sendAndWait(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
-{
-   Message lMessages;
-   dataPacket lReceivedPacket;
-   packetMessage message;
-   send(data, channel, priority);
-   unsigned short count = 0;
-
-   while(!accepted)
-   {
-      count++;
-      sleep(1);
-      lMessages = getMessages();
-      for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
-      {
-         lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
-         if (lReceivedPacket.getMessage() == data.getMessage())
-         {
-            lReceivedPacket.move(&message, sizeof(packetMessage));
-            if (message == accepted)
-            {
-               return true;
-            }
-            else
-            {
-               std::cout << gettext("Message rejected while in connection state") << ": " << mConState << std::endl;
-               return false;
-            }
-         }
-         enet_packet_destroy((*lEventItr).second.packet);
-      }
- 
-      if (count > 10)
-      {
-         std::cout << gettext("Waiting failed while in connection state") << ": " << mConState << std::endl;
-         break;
-      }
-   }
-   return false;
 }

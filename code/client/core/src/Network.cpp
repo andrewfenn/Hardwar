@@ -67,6 +67,7 @@ void Network::connect(void)
 
 void Network::setConStatus(const clientStatus lStatus)
 {
+   Console::getSingletonPtr()->addToConsole("Changing state: "+Ogre::StringConverter::toString(lStatus));
    mStatus = lStatus;
 }
 
@@ -223,15 +224,11 @@ void Network::threadLoopGame()
                      if (isAdded)
                      {
                         Console::getSingletonPtr()->addToConsole("Building Added");
-                        lPacket = dataPacket(accepted);
                      }
                      else
                      {
-                        Console::getSingletonPtr()->addToConsole("Building Rejected");
-                        lPacket = dataPacket(rejected);
+                        Console::getSingletonPtr()->addToConsole("Building Add Error");
                      }
-                     message(lPacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-                     Console::getSingletonPtr()->addToConsole("Sending Reply");
                   }
                default:
                   {
@@ -240,11 +237,6 @@ void Network::threadLoopGame()
                         clientStatus lStatus;
                         lReceivedPacket.move(&lStatus, sizeof(clientStatus));
                         setConStatus(lStatus);
-
-                        dataPacket packet = dataPacket(lReceivedPacket.getMessage());
-                        packetMessage msg = accepted;
-                        packet.append(&msg, sizeof(packetMessage));
-                        message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                      }
                   }
                break;
