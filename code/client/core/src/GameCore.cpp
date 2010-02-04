@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright © 2008-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ GameCore::GameCore(void)
    mConsole->addCommand(Ogre::UTFString("cl_showboundingbox"), MyGUI::newDelegate(this, &GameCore::cmd_showBoundingBox));
    mConsole->addCommand(Ogre::UTFString("cl_screenshot"), MyGUI::newDelegate(this, &GameCore::cmd_screenshot));
    mConsole->addCommand(Ogre::UTFString("rcon_password"), MyGUI::newDelegate(this, &GameCore::cmd_remoteConnect));
+   mConsole->addCommand(Ogre::UTFString("sv_save"), MyGUI::newDelegate(this, &GameCore::cmd_remoteSave));
    mWaitTime = ceil((float)1000/mMaxFPS);
 }
 
@@ -183,6 +184,31 @@ void GameCore::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTFStri
       packet.appendString(lString);
       Network::getSingletonPtr()->message(packet, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
       /* reponse is dealt with in the Network thread */
+   }
+}
+
+void GameCore::cmd_remoteSave(const Ogre::UTFString &key, const Ogre::UTFString &value)
+{
+   bool save = false;
+   if (Ogre::StringConverter::parseBool(GameSettings::getSingletonPtr()->getOption("isAdmin")))
+   {
+      if (!MyGUI::utility::parseComplex(value, save))
+      {
+         if (!value.empty())
+         {
+            mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         }
+         mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Saves world related data on the server side."));
+      }
+      else
+      {
+         dataPacket packet = dataPacket(save_world_data);
+         Network::getSingletonPtr()->message(packet, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+      }
+   }
+   else
+   {
+      mConsole->addToConsole(mConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
    }
 }
 

@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright © 2008-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -254,7 +254,7 @@ void BuildEditor::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFStri
       }
       else
       {
-         lConsole->addToConsole(lConsole->getConsoleError(), key, Ogre::UTFString(gettext("Not logged in as admin. (use rcon_password)")));
+         lConsole->addToConsole(lConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
       }
    }
 }
@@ -270,6 +270,7 @@ bool BuildEditor::isVisible()
 
 void BuildEditor::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+   mGUI->injectMousePress(e, id);
    if (id == OIS::MB_Left)
    {
       const OIS::MouseState &mouseState = e.state;
@@ -282,11 +283,13 @@ void BuildEditor::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+   mGUI->injectMouseRelease(e, id);
    mAxis.clearSelectedAxis();
 }
 
 void BuildEditor::mouseMoved(const OIS::MouseEvent &e)
 {
+   mGUI->injectMouseMove(e);
    if (mAxis.getSelectedAxis() != 0 && mShow)
    {
       const OIS::MouseState &mouseState = e.state;
@@ -440,4 +443,7 @@ void BuildEditor::show(bool lShow)
       mShow = true;
       mGUI->showPointer();
    }
+   mMenuBar->setEnabled(mShow);
+   mMenuPanelEdit->setEnabled(mShow);
+   mMenuPanelAdd->setEnabled(mShow);
 }

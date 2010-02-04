@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2009  Andrew Fenn
+    Copyright © 2009-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ namespace Server
       public:
          ZoneManager();
          bool loadData(Ogre::String name);
+         void saveWorld();
          Hardwar::Buildings getAllBuildings();
          /** gets the zone. If no zone exists it is created */
          Zone* get(unsigned int);
@@ -43,8 +44,9 @@ namespace Server
       private:
          sqlite3 *mSQLdb;
          Zones mZones;
-
+         Ogre::String mFilename;
          bool loadBuildings();
+         bool openDatabase(Ogre::String name);
    };
 }
 #endif /* __ZONE_MGR_H_ */

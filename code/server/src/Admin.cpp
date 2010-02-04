@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008-2009  Andrew Fenn
+    Copyright © 2008-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,10 +36,11 @@ void Admin::processRequest(dataPacket lPacket)
    {
       case add_building:
          {
-            Hardwar::Building building;
-            building.unserialize(lPacket);
-            addBuilding(building);
+            addBuilding(lPacket);
          }
+      break;
+      case save_world_data:
+         requestSave();
       break;
       default:
          std::cout << gettext("Undefined Admin Message: ") << lPacket.getMessage() << std::endl;
@@ -54,7 +55,21 @@ Hardwar::Buildings Admin::getBuildings()
    return list;
 }
 
-void Admin::addBuilding(Hardwar::Building building)
+void Admin::addBuilding(dataPacket lPacket)
 {
+   Hardwar::Building building;
+   building.unserialize(lPacket);
    mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(0, building));
+}
+
+bool Admin::getWorldSaveReq()
+{
+   bool wantsave = mWantsWorldSave;
+   mWantsWorldSave = false;
+   return wantsave;
+}
+
+void Admin::requestSave()
+{
+   mWantsWorldSave = true;   
 }

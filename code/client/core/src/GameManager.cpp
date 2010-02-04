@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright © 2008-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -186,10 +186,10 @@ void GameManager::startGame( GameState *gameState )
          /* render the next frame */
          mRoot->renderOneFrame();
          mGameCore->update(lTimeSinceLastFrame);
+         mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/100);
+         mConsole->update();
          lDelay = 0;
       }
-      mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/1000);
-      mConsole->update();
       /* Deal with platform specific issues */
       Ogre::WindowEventUtilities::messagePump();
    }
@@ -314,9 +314,10 @@ bool GameManager::keyPressed(const OIS::KeyEvent &e)
       return true;
    }
 
-   mGUI->injectKeyPress(e);
-
-   if (!mConsole->isVisible())
+   if (mConsole->isActive())
+   {      mGUI->injectKeyPress(e);
+   }
+   else
    {
       mStates.back()->keyPressed(e);
    }
@@ -334,10 +335,10 @@ bool GameManager::keyReleased(const OIS::KeyEvent &e)
       mConsole->toggleShow();
    }
 
-   mGUI->injectKeyRelease(e);
-
-   if (!mConsole->isVisible())
+   if (mConsole->isActive())
    {
+      mGUI->injectKeyRelease(e);
+   } else {
       mStates.back()->keyReleased(e);
    }
    return true;
@@ -345,10 +346,10 @@ bool GameManager::keyReleased(const OIS::KeyEvent &e)
 
 bool GameManager::mouseMoved(const OIS::MouseEvent &e)
 {
-   mGUI->injectMouseMove(e);
-
-   if (!mConsole->isVisible())
+   if (mConsole->isActive())
    {
+      mGUI->injectMouseMove(e);
+   } else {
       mStates.back()->mouseMoved(e);
    }
    return true;
@@ -356,10 +357,10 @@ bool GameManager::mouseMoved(const OIS::MouseEvent &e)
 
 bool GameManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   mGUI->injectMousePress(e, id);
-
-   if (!mConsole->isVisible())
+   if (mConsole->isActive())
    {
+      mGUI->injectMousePress(e, id);
+   } else {
       mStates.back()->mousePressed( e, id );
    }
    return true;
@@ -367,10 +368,10 @@ bool GameManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 bool GameManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   mGUI->injectMouseRelease(e, id);
-
-   if (!mConsole->isVisible())
+   if (mConsole->isActive())
    {
+      mGUI->injectMouseRelease(e, id);
+   } else {
       mStates.back()->mouseReleased(e, id);
    }
    return true;

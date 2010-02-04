@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2009  Andrew Fenn
+    Copyright © 2009-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ typedef enum
 
    add_building   = 50, /* Attempt to add a building */
    get_building_list = 51, /* get all buildings in the client's list */
+   save_world_data = 60, /* Save server side world related data */
 
    admin_login    = 100  /* Attempt to login as admin */
 } packetMessage;

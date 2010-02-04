@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2009  Andrew Fenn
+    Copyright © 2009-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,23 +58,43 @@ void Game::removeClient(ENetPeer* peer)
 void Game::process()
 {
    Admin* admin;
+   Client * player;
    Clients* clients = mClientMgr.list();
+   bool worldSave = false;
    for (Clients::iterator client=clients->begin(); client != clients->end(); client++)
    {
-      if (client->second->isAdmin())
+      player = client->second;
+      if (player->isAdmin())
       {
-         /* Add any buildings that an admin has placed down. */
-         admin = client->second->getAdmin();
-         Hardwar::Buildings buildings = admin->getBuildings();
+         admin = player->getAdmin();
 
-         for (Hardwar::Buildings::iterator building=buildings.begin(); building != buildings.end(); building++)
+         /* Add any buildings that an admin has placed down. */
+         processBuildingReqs(admin);
+
+         /* Check if the save command was issued */
+         if (admin->getWorldSaveReq())
          {
-            mZoneMgr.get(building->first)->addBuilding(building->second);
-            dataPacket packet = dataPacket(add_building);
-            packet = building->second.serialize(packet);
-            mClientMgr.send(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+            worldSave = true;
          }
       }
+   }
+
+   if (worldSave)
+   {
+      mZoneMgr.saveWorld();
+   }
+}
+
+void Game::processBuildingReqs(Admin* admin)
+{
+   Hardwar::Buildings buildings = admin->getBuildings();
+
+   for (Hardwar::Buildings::iterator building=buildings.begin(); building != buildings.end(); building++)
+   {
+      mZoneMgr.get(building->first)->addBuilding(building->second);
+      dataPacket packet = dataPacket(add_building);
+      packet = building->second.serialize(packet);
+      mClientMgr.send(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
    }
 }
 

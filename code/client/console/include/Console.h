@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright © 2008-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,6 +52,8 @@ class Console
       void update();
       /** The method returns if the console is visible on the screen */
       bool isVisible();
+      /** The method returns if the console is active (has keyboard focus) */
+      bool isActive();
       /** The method adds a command to the console.
       @param name
              The name of the console which is typed by the user.

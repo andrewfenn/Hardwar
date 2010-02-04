@@ -41,6 +41,7 @@ namespace Server
          ClientManager    mClientMgr;
          ZoneManager      mZoneMgr;
          Ogre::ConfigFile mConfig;
+         void processBuildingReqs(Admin*);
    };
 }
 #endif /* __GAME_H_ */

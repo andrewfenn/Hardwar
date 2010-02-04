@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright © 2008-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,13 +67,6 @@ namespace Client
                    A boolean value that either shows or hides the boxes.
             */
          void cmd_showBoundingBox(const Ogre::UTFString&, const Ogre::UTFString&);
-            /** This method is used by Client::Console to remotely log into the server.
-            @param key
-                   The command name typed in the console.
-            @param value
-                   The password typed into the console.
-            */
-         void cmd_screenshot(const Ogre::UTFString&, const Ogre::UTFString&);
             /** This method is used by Client::Console to take a screenshot
             @remarks
                    The filename value is optional.
@@ -81,8 +74,22 @@ namespace Client
                    The command name typed in the console.
             @param value
                    A string value for the filename.
+            */            
+         void cmd_screenshot(const Ogre::UTFString&, const Ogre::UTFString&);
+            /** This method is used by Client::Console to remotely log into the server.
+            @param key
+                   The command name typed in the console.
+            @param value
+                   The password typed into the console.
             */
          void cmd_remoteConnect(const Ogre::UTFString&, const Ogre::UTFString&);
+            /** This method is used by Client::Console to remotely save world data on the server side.
+            @param key
+                   The command name typed in the console.
+            @param value
+                   Bool true or false.
+            */
+         void cmd_remoteSave(const Ogre::UTFString&, const Ogre::UTFString&);
             /** This method returns the delay time between render loops depending
                 upon what the max FPS limit is set to. */
          unsigned short getDelayTime(void);

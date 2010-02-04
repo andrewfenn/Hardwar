@@ -1,10 +1,6 @@
-/* MD5
- converted to C++ class by Frank Thilo (thilo@unix-ag.org)
- for bzflag (http://www.bzflag.org)
+/*
+   Converted to C++ class by Frank Thilo (thilo@unix-ag.org)
 
-   based on:
-
-   md5.h and md5.c
    reference implementation of RFC 1321
 
    Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
@@ -36,17 +32,6 @@ documentation and/or software.
 #include <string.h>
 #include <iostream>
 
-
-// a small class for calculating MD5 hashes of strings or byte arrays
-// it is not meant to be fast or secure
-//
-// usage: 1) feed it blocks of uchars with update()
-//      2) finalize()
-//      3) get hexdigest() string
-//      or
-//      MD5(std::string).hexdigest()
-//
-// assumes that char is 8 bit and int is 32 bit
 class MD5
 {
 public:

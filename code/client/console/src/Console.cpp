@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright (C) 2008  Andrew Fenn
+    Copyright © 2008-2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ Console::Console()
 
    mSubmitButton->setCaption(Ogre::UTFString(gettext("submit")));
    mGUIConsole->setVisible(false);
+   mGUIConsole->setEnabled(false);
 }
 
 Console::~Console()
@@ -74,7 +75,7 @@ void Console::toggleShow()
    {
       mShow = false;
       MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(0, 100, true);
-      MyGUI::ControllerManager::getInstance().addItem(mGUIConsole, controller);
+      MyGUI::ControllerManager::getInstance().addItem(mGUIConsole, controller);  
       mGUI->hidePointer();
    }
    else
@@ -223,6 +224,11 @@ void Console::addToConsole(const Ogre::UTFString & line)
 bool Console::isVisible()
 {
    return mShow;
+}
+
+bool Console::isActive()
+{
+   return mGUIConsole->isEnabled();
 }
 
 void Console::update()

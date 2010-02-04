@@ -3,6 +3,7 @@ MOC - Minimal Ogre Collision v 1.0 beta
 The MIT License
 
 Copyright (c) 2008 MouseVolcano (Thomas Gradl, Esa Kylli, Erik Biermann, Karolina Sefyrin)
+Copyright © 2009-2010 Andrew Fenn
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
