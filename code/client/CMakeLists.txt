@@ -9,6 +9,7 @@ SET(Required_Packages
    MyGUI
    TinyXML
    OgreMax
+   SQLITE
 )
 
 # searches for all .cpp and .h files

@@ -22,7 +22,7 @@ using namespace Server;
 
 Admin::Admin()
 {
-
+   mWantsWorldSave = false;
 }
 
 Admin::~Admin()

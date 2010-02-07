@@ -82,14 +82,19 @@ void ZoneManager::saveWorld()
       6) rename created file to old file name
       7) delete old file
    */
-   sqlite3_exec(mSQLdb, "DELETE * FROM buildings", 0, 0, 0);
+   int error;
+
+   error = sqlite3_exec(mSQLdb, "DELETE FROM buildings WHERE 1=1", 0, 0, 0);
+   if (error != SQLITE_DONE)
+   {
+      std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;         
+   }
 
    std::string sql = std::string("INSERT INTO buildings \
                (`id`,`crater`,`mesh`,`position_x`,`position_y`, \
                `position_z`,`rotation_x`,`rotation_y`,`rotation_z`) \
                VALUES(NULL, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)");
    sqlite3_stmt* statement;
-
    for (Hardwar::Buildings::iterator building=buildings.begin(); building != buildings.end(); building++)
    {
       zone = building->first;
@@ -97,6 +102,7 @@ void ZoneManager::saveWorld()
       pos = hanger.getPosition();
       rot = hanger.getRotation();
 
+      sqlite3_prepare_v2(mSQLdb, sql.c_str(), sql.size(), &statement, 0);
       sqlite3_bind_int(statement, 1, zone);
       sqlite3_bind_text(statement, 2, hanger.getMeshName().c_str(), hanger.getMeshName().length(), 0);
       sqlite3_bind_int(statement, 3, pos.x);
@@ -105,10 +111,14 @@ void ZoneManager::saveWorld()
       sqlite3_bind_int(statement, 6, rot.z);
       sqlite3_bind_int(statement, 7, rot.z);
       sqlite3_bind_int(statement, 8, rot.z);
-      sqlite3_prepare_v2(mSQLdb, sql.c_str(), sql.size(), &statement, 0);
-      sqlite3_step(statement);
+      error = sqlite3_step(statement);
+      if (error != SQLITE_DONE)
+      {
+         std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;         
+      }
+      sqlite3_reset(statement);
    }
-
+   sqlite3_finalize(statement);
    std::cout << gettext("Saved buildings") << ":" << buildings.size() << std::endl; 
 }
 
