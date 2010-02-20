@@ -36,8 +36,9 @@ ZoneManager::~ZoneManager()
 bool ZoneManager::openDatabase(Ogre::String name)
 {
    int result;
-   result = sqlite3_open_v2(name.c_str(), &mSQLdb, SQLITE_OPEN_NOMUTEX, 0);
-   if(result)
+	int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+   result = sqlite3_open_v2(name.c_str(), &mSQLdb, flags, 0);
+   if(result != SQLITE_OK)
    {
       /* couldn't load the file */
       std::cout << name.c_str() << gettext(" could not be opened.") << std::endl;
@@ -83,17 +84,18 @@ void ZoneManager::saveWorld()
       7) delete old file
    */
    int error;
+   char * errorMsg;
 
-   error = sqlite3_exec(mSQLdb, "DELETE FROM buildings WHERE 1=1", 0, 0, 0);
-   if (error != SQLITE_DONE)
+   error = sqlite3_exec(mSQLdb, "DELETE FROM buildings WHERE 1=1;", 0, 0, &errorMsg);
+   if (error != SQLITE_OK)
    {
-      std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;         
+      std::cout << "SQLite Error: " << errorMsg << std::endl;
    }
 
    std::string sql = std::string("INSERT INTO buildings \
                (`id`,`crater`,`mesh`,`position_x`,`position_y`, \
                `position_z`,`rotation_x`,`rotation_y`,`rotation_z`) \
-               VALUES(NULL, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)");
+               VALUES(NULL, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);");
    sqlite3_stmt* statement;
    for (Hardwar::Buildings::iterator building=buildings.begin(); building != buildings.end(); building++)
    {
