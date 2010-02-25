@@ -55,6 +55,8 @@ BuildEditor::BuildEditor(void)
    mSceneMgr = mRoot->getSceneManager("EditorSceneMgr");
    mSceneMgr->setAmbientLight(Ogre::ColourValue(1,1,1));
 
+   Ogre::ResourceGroupManager::getSingletonPtr()->createResourceGroup("BuildEditorIcons");
+
    generateBuildingList();
 
    renderBuildingList(0);
@@ -63,6 +65,8 @@ BuildEditor::BuildEditor(void)
 
 BuildEditor::~BuildEditor(void)
 {
+   Ogre::ResourceGroupManager::getSingletonPtr()->destroyResourceGroup("BuildEditorIcons");
+
    mBoxMgr.clear();
    /* TODO: unload build editor resources */
    delete mCollision;
@@ -167,7 +171,7 @@ void BuildEditor::renderBuildingList(unsigned short pageNum)
    {
       // Remove existing icons in the UI
       mBoxMgr.clear();
-      Ogre::ResourceGroupManager::getSingleton().destroyResourceGroup("BuildEditorIcons");
+      Ogre::ResourceGroupManager::getSingletonPtr()->clearResourceGroup("BuildEditorIcons");
    }
    catch (Ogre::Exception e) { }
 
@@ -223,10 +227,11 @@ void BuildEditor::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFString 
 
    mBoxMgr.addItem(new Client::ItemBox(lPanelName, lPanelName, lMesh));
 
-   mSceneMgr->destroyEntity(lPanelName);
-   lEditorNode->removeAndDestroyAllChildren();
    renderTexture->setActive(false);
    renderTexture->removeAllViewports();
+
+   mSceneMgr->destroyEntity(lPanelName);
+   lEditorNode->removeAndDestroyAllChildren();
    mSceneMgr->destroyAllCameras();
    mSceneMgr->destroySceneNode(lPanelName);
 }

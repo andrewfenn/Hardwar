@@ -87,9 +87,10 @@ void ZoneManager::saveWorld()
    char * errorMsg;
 
    error = sqlite3_exec(mSQLdb, "DELETE FROM buildings WHERE 1=1;", 0, 0, &errorMsg);
-   if (error != SQLITE_OK)
+   if (error != SQLITE_DONE)
    {
       std::cout << "SQLite Error: " << errorMsg << std::endl;
+      sqlite3_close(mSQLdb);
    }
 
    std::string sql = std::string("INSERT INTO buildings \
@@ -113,10 +114,12 @@ void ZoneManager::saveWorld()
       sqlite3_bind_int(statement, 6, rot.z);
       sqlite3_bind_int(statement, 7, rot.z);
       sqlite3_bind_int(statement, 8, rot.z);
-      error = sqlite3_step(statement);
-      if (error != SQLITE_DONE)
+
+      if (sqlite3_step(statement) != SQLITE_DONE)
       {
-         std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;         
+         std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;
+         sqlite3_finalize(statement);
+         sqlite3_close(mSQLdb);
       }
       sqlite3_reset(statement);
    }
@@ -155,6 +158,7 @@ bool ZoneManager::loadBuildings()
    if (SQLITE_OK != sqlite3_prepare_v2(mSQLdb, sql.c_str(), -1, &statement, 0))
    {
       std::cout << "SQLite error: " << sqlite3_errmsg(mSQLdb) << std::endl;
+      sqlite3_finalize(statement);
       return false;
    }
 
