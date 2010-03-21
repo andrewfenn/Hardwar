@@ -1243,7 +1243,11 @@ bool OgreMaxUtilities::SetDefaultLighting(SceneManager* sceneManager, UpAxis upA
 bool OgreMaxUtilities::IsInternalResourceGroup(const String& resourceGroupName)
 {
     return 
+        #if (OGRE_VERSION_MAJOR == 1) && (OGRE_VERSION_MINOR > 6)
+        resourceGroupName == ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME ||
+        #else
         resourceGroupName == ResourceGroupManager::BOOTSTRAP_RESOURCE_GROUP_NAME ||
+        #endif
         resourceGroupName == ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME ||
         resourceGroupName == ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME;
 }
