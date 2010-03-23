@@ -1,12 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout">
-    <Widget type="StaticImage" skin="StaticImage" position="176 288 256 232" layer="Back">
-        <Property key="Image_Texture" value="load_bkg_hint.zworks.png"/>
-    </Widget>
     <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1.19922 1" align="Left Top" layer="Back">
         <Property key="Image_Texture" value="load.zworks.png"/>
         <Property key="Widget_Show" value="true"/>
-        <Widget type="StaticImage" skin="StaticImage" position_real="0 0.796424 0.833062 0.198074" align="Left Bottom" layer="Back">
+        <Widget type="StaticImage" skin="StaticImage" position_real="0 0.796424 0.833062 0.208074" align="Left Bottom" layer="Back">
             <Property key="Image_Texture" value="load_bkg_hint.zworks.png"/>
         </Widget>
         <Widget type="StaticImage" skin="StaticImage" position_real="0.279316 0.339752 0.281759 0.167813" align="Center" layer="Back">
