@@ -85,7 +85,7 @@ namespace Client
          mPoint.top += 40;
          if (!mPlaceMode)
          {
-            if (mPoint.left > 360 || mPoint.top > 570)
+            if (mPoint.left > 370 || mPoint.top > 570)
             {
                mPlaceMode = true;
             }

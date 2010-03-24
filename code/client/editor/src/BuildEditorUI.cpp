@@ -222,7 +222,7 @@ bool BuildEditorUI::isVisible()
    return mShow;
 }
 
-bool BuildEditorUI::hasActiveIcon()
+bool BuildEditorUI::hasPlaceableIcon()
 {
    return mBoxMgr.isPlaceable();
 }

@@ -70,7 +70,7 @@ private:
            The y value usually taken from mouse y value
   */
    Ogre::Ray makeRay(const unsigned int, const unsigned int);
-
+   void destroyEditorObj();
    Ogre::String mEditorObjMeshName;
    /** When true an object has been created and is about to be placed on the level. */
    bool mEditorObjCreated;

@@ -72,6 +72,20 @@ void BuildEditor::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+   if (mEditorObjCreated && mUI.hasPlaceableIcon())
+   {
+      /* We have just let go of an object and placed it. */
+      Hardwar::Building building;
+      building.setPosition(mEditorNode->getPosition());
+      building.setMeshName(mEditorObjMeshName);
+
+      /* Tell the server to place down a new building */
+      dataPacket lPacket = dataPacket(add_building);
+      lPacket = building.serialize(lPacket);
+
+      GameManager::getSingletonPtr()->getNetwork()->message(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+   }
+
    mUI.mouseReleased(e, id);
 
    if (mAxis.axisSelected())
@@ -129,7 +143,7 @@ void BuildEditor::update(unsigned long lTimeElapsed)
       else
       {
          mUI.showEditPane(false);
-         if (mUI.hasActiveIcon())
+         if (mUI.hasPlaceableIcon())
          {
             Ogre::Vector3 lResult = Ogre::Vector3::ZERO;
             unsigned long lTarget = 0;
@@ -182,32 +196,20 @@ void BuildEditor::update(unsigned long lTimeElapsed)
          {
             if (mEditorObjCreated)
             {
-               /* We have just let go of an object and placed it. */
-               Hardwar::Building building;
-               building.setPosition(mEditorNode->getPosition());
-               building.setMeshName(mEditorObjMeshName);
-
-               /* Kill the editor object */
-               mEditorNode->detachObject("EditorObject");
-               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
-               Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
-
-               mEditorObjCreated = false;
-
-               if (!mUI.hasActiveIcon())
-               {
-                  Ogre::Vector3 point;
-
-                  /* Tell the server to place down a new building */
-                  dataPacket lPacket = dataPacket(add_building);
-                  lPacket = building.serialize(lPacket);
-
-                  GameManager::getSingletonPtr()->getNetwork()->message(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
-               }
+               destroyEditorObj();
             }
          }
       }
    }
+}
+
+void BuildEditor::destroyEditorObj()
+{
+   /* Destroy the editor object */
+   mEditorNode->detachObject("EditorObject");
+   Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroyEntity("EditorObject");
+   Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->destroySceneNode(mEditorNode);
+   mEditorObjCreated = false;
 }
 
 void BuildEditor::show(bool lShow)

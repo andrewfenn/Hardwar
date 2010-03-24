@@ -63,7 +63,7 @@ namespace Client
          /** This method returns if the editor is visible. */
          bool isVisible();
          /** This method returns if there is an icon that is being placed on the screen. */
-         bool hasActiveIcon();
+         bool hasPlaceableIcon();
          /** This method returns the active icon's coords if an active icon exists. */
          MyGUI::IntPoint getIconCoords();
          /** This method returns the active icon's mesh name. */
