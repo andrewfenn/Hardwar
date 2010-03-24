@@ -34,12 +34,16 @@ namespace Client
          ItemBoxMgr();
          ~ItemBoxMgr();
          void addItem(Client::ItemBox*);
-         void clear(void);
-         void update(void);
-         bool isIconActive(void);
-         bool isPlaceable(void);
-         Ogre::UTFString getMeshName(void);
-         MyGUI::IntPoint getPoint(void);
+         void clear();
+         void update();
+         /** This method is used to determine if an icon is being moved by the user. */
+         bool isIconActive();
+         /** This method is used to determine if an icon is moved off its panel. */
+         bool isPlaceable();
+         /** This method returns the active icon's mesh name. */
+         Ogre::UTFString getMeshName();
+         /** This method returns the active icon's coords if an active icon exists. */
+         MyGUI::IntPoint getPoint();
       private:
          typedef std::vector<Client::ItemBox*> VectorItemBox;
    		VectorItemBox mListItemBox;

@@ -19,21 +19,17 @@
 #ifndef __BuildEditor_H_
 #define __BuildEditor_H_
 
-#include <MyGUI.h>
 #include <Ogre.h>
 #include <OgreRay.h>
 
 #include <libintl.h>
-#include <boost/filesystem.hpp>
-#include <vector>
 
-#include "GameSettings.h"
 #include "GameManager.h"
 #include "Console.h"
-#include "ItemBoxMgr.h"
 #include "CollisionTools.h"
 #include "DynamicLines.h"
 #include "EditorAxis.h"
+#include "BuildEditorUI.h"
 
 #include "Building.h"
 #include "srvstructs.h"
@@ -49,24 +45,8 @@ class BuildEditor
 {
 public:
    BuildEditor();
-   ~BuildEditor(void);
+   ~BuildEditor();
    void update(unsigned long);
-   /** Shows or hides the editor panel, however keeps the top menu bar visible. */
-   void toggleMinimise(MyGUI::WidgetPtr);
-   /** Tells the UI to display the next page of buildings in the menu */
-   void buttonNext(MyGUI::WidgetPtr);
-   /** Tells the UI to display the previous page of buildings in the menu */
-   void buttonPrevious(MyGUI::WidgetPtr);
-   /** This method is used by Client::Console to show or hide the editor menu.
-   @remarks
-          The editor can only be accessed in the client has used rcon_password
-          to login to the server and gain admin privileges.
-   @param key
-          The command name typed in the console.
-   @param value
-           A boolean value that either shows or hides the window.
-   */
-   void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
    void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    void keyReleased(const OIS::KeyEvent &e);
@@ -76,19 +56,13 @@ public:
 private:
    Ogre::Root         *mRoot;
    Ogre::SceneManager *mSceneMgr;
+   Ogre::SceneNode    *mEditorNode;
 
-   bool mShow;
    /** looks in the directory for all .mesh files and organises them into building pages
    @remarks
          A building page is an Ogre::String vector that can hold up to 16 mesh files names
     */
    void generateBuildingList();
-   /** renders all the building icons in a building page and displays them in the UI */
-   void renderBuildingList(unsigned short);
-   /** renders a picture of the mesh for placement in the UI */
-   void renderMesh(Ogre::UTFString, Ogre::UTFString);
-   /** Checks which building page we're on and hide/shows the next/previous buttons */
-   void checkUIButtons(void);
    /** Generates an Ogre::Ray from the viewport
    @param x
            The x value usually taken from mouse x value
@@ -96,22 +70,12 @@ private:
            The y value usually taken from mouse y value
   */
    Ogre::Ray makeRay(const unsigned int, const unsigned int);
-   Client::ItemBoxMgr  mBoxMgr;
-   MyGUI::Gui  *mGUI;
-   MyGUI::StaticImagePtr mMenuBar;
-   MyGUI::WidgetPtr mMenuPanelAdd;
-   MyGUI::WidgetPtr mMenuPanelEdit;
 
    Ogre::String mEditorObjMeshName;
    bool mEditorObjCreated;
-   Ogre::SceneNode* mEditorNode;
    MOC::CollisionTools* mCollision;
-   typedef std::vector<Ogre::UTFString> BuildingPage;
-   typedef std::map<unsigned short, BuildingPage> BuildingList;
-   BuildingList mBuildingList;
-   unsigned short mBuildingPage;
-   unsigned short mBuildingMaxPage;
    EditorAxis mAxis;
+   BuildEditorUI mUI;
 };
 
 }
