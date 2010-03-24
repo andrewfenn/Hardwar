@@ -76,8 +76,17 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
    if (mAxis.axisSelected())
    {
-      // TODO: Building possibly moved, update location
-      
+      // Building possibly moved, update location
+      Ogre::MovableObject* lObj = mAxis.getSelectedObj();
+
+      if (lObj)
+      {
+         Ogre::SceneNode * lNode = lObj->getParentSceneNode();
+         Ogre::Vector3 lPosition = lNode->getPosition();
+         Ogre::Quaternion lRotation = lNode->getOrientation();
+         Ogre::String lName = lNode->getName();
+      }
+
       mAxis.clearSelectedAxis();
    }
 }
@@ -191,14 +200,7 @@ void BuildEditor::update(unsigned long lTimeElapsed)
 
                   /* Tell the server to place down a new building */
                   dataPacket lPacket = dataPacket(add_building);
-
-                  point = building.getPosition();
-                  lPacket.append(&point, sizeof(Ogre::Vector3));
-
-                  point = Ogre::Vector3::ZERO;
-                  lPacket.append(&point, sizeof(Ogre::Vector3));
-
-                  lPacket.appendString(building.getMeshName());
+                  lPacket = building.serialize(lPacket);
 
                   GameManager::getSingletonPtr()->getNetwork()->message(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
                }

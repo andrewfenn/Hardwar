@@ -76,6 +76,11 @@ class EditorAxis
          called while an object isn't selected it will return false.
       */
       bool isRotAxis();
+      /**
+         Returns the building selected by the editor if one is
+         selected.
+      */
+      Ogre::MovableObject* getSelectedObj();
    private:
       void removeSelectedObj();
       /**

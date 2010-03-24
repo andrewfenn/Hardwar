@@ -21,7 +21,10 @@
 namespace Hardwar
 {
 
-   Building::Building() { }
+   Building::Building() {
+      mPosition = Ogre::Vector3::ZERO;
+      mRotation = Ogre::Vector3::ZERO;
+   }
 
    Building::Building(const Ogre::Vector3 position, const Ogre::Vector3 rotation, const Ogre::String mesh)
    {
@@ -38,6 +41,9 @@ namespace Hardwar
    void Building::setPosition(const Ogre::Vector3 position)
    {
       mPosition = position;
+      mPosition.x = Ogre::Math::Floor(mPosition.x);
+      mPosition.y = Ogre::Math::Floor(mPosition.y);
+      mPosition.z = Ogre::Math::Floor(mPosition.z);
    }
 
    const Ogre::Vector3 Building::getRotation(void)
@@ -48,6 +54,9 @@ namespace Hardwar
    void Building::setRotation(const Ogre::Vector3 rotation)
    {
       mRotation = rotation;
+      mRotation.x = Ogre::Math::Floor(mRotation.x);
+      mRotation.y = Ogre::Math::Floor(mRotation.y);
+      mRotation.z = Ogre::Math::Floor(mRotation.z);
    }
 
    const Ogre::String Building::getMeshName(void)

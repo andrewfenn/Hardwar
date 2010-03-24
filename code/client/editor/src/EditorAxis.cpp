@@ -261,6 +261,11 @@ void EditorAxis::moveBuilding(Ogre::Ray _ray)
    }
 }
 
+Ogre::MovableObject* EditorAxis::getSelectedObj()
+{
+   return mSelected;
+}
+
 void EditorAxis::createRotAxis(Ogre::Entity * lTarget)
 {
    if (lTarget == 0)
