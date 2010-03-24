@@ -23,7 +23,7 @@ using namespace Client;
 BuildEditor::BuildEditor(void)
 {
    mCollision = new MOC::CollisionTools(Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr"));
-   mEditorObjCreated = false;
+   mEditorObjCreated = mEditorObjEditing = false;
    mRoot = Ogre::Root::getSingletonPtr();
    generateBuildingList();
 }
@@ -73,7 +73,13 @@ void BuildEditor::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
    mUI.mouseReleased(e, id);
-   mAxis.clearSelectedAxis();
+
+   if (mAxis.axisSelected())
+   {
+      // TODO: Building possibly moved, update location
+      
+      mAxis.clearSelectedAxis();
+   }
 }
 
 void BuildEditor::mouseMoved(const OIS::MouseEvent &e)
@@ -157,9 +163,9 @@ void BuildEditor::update(unsigned long lTimeElapsed)
                }
 
                /* We want ints because that's what is going over the network */
-               lResult.x = floor(lResult.x);
-               lResult.z = floor(lResult.z);
-               lResult.y = floor(lResult.y);
+               lResult.x = Ogre::Math::Floor(lResult.x);
+               lResult.z = Ogre::Math::Floor(lResult.z);
+               lResult.y = Ogre::Math::Floor(lResult.y);
                mEditorNode->setPosition(lResult);
             }
          }

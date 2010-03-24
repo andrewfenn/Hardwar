@@ -32,31 +32,35 @@ namespace Client
 class EditorAxis
 {
    public:
-      EditorAxis(void);
-      ~EditorAxis(void);
+      EditorAxis();
+      ~EditorAxis();
+
       /**
-         Looks for any buildings that are in the ray and selects the closest
+         Looks for any buildings that are in the ray and selects the closest.
       */
       void selectBuilding(const Ogre::Ray);
       /**
          Returns the axis that has been click dragged by the user
       */
-      Ogre::Entity* getSelectedAxis(void);
+      Ogre::Entity* getSelectedAxis();
       /**
          Clears the axis selected by the mouse pointer when moving buildings */
-      void clearSelectedAxis(void);
+      void clearSelectedAxis();
       /**
          Moves a building to a specified point defined by the ray cast */
       void moveBuilding(const Ogre::Ray);
       /**
          Removes the axis from whatever building it is on */
-      void remove(void);
+      void remove();
       /**
          Reports if an object has been selected or not */
-      bool objectSelected(void);
+      bool objectSelected();
+      /**
+         Reports if an axis has been selected or not */
+      bool axisSelected();
       /**
          Updates the information in the editor panel for a selected object */
-      void updateSelectedUI(void);
+      void updateSelectedUI();
       /**
          Toggles which axis to show. The position axis or rotation axis
          @param show
@@ -71,9 +75,9 @@ class EditorAxis
          position axis is currently displayed. If this function is
          called while an object isn't selected it will return false.
       */
-      bool isRotAxis(void);
+      bool isRotAxis();
    private:
-      void removeSelectedObj(void);
+      void removeSelectedObj();
       /**
          Creates the position axis on the selected entity
          @param Entity
@@ -92,10 +96,11 @@ class EditorAxis
          before calling this one
       */
       void createRotAxis(Ogre::Entity*);
-      void createPlane(void);
+      void createPlane();
       void destoryAxis(Ogre::MovableObject*);
       MOC::CollisionTools* mCollision;
       bool mEditorObjSelected;
+      bool mEditorAxisSelected;
       bool mRotAxisShown;
       Ogre::MovableObject * mSelected;
       void setSelectedAxis(Ogre::Entity*);

@@ -72,7 +72,10 @@ private:
    Ogre::Ray makeRay(const unsigned int, const unsigned int);
 
    Ogre::String mEditorObjMeshName;
+   /** When true an object has been created and is about to be placed on the level. */
    bool mEditorObjCreated;
+   /** When true a pre-existing building is being edited (moved). */
+   bool mEditorObjEditing;
    MOC::CollisionTools* mCollision;
    EditorAxis mAxis;
    BuildEditorUI mUI;

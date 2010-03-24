@@ -22,7 +22,7 @@ using namespace Client;
 
 EditorAxis::EditorAxis(void)
 {
-   mEditorObjSelected = false;
+   mEditorObjSelected = mEditorAxisSelected = false;
    mSelected = 0;
    mSelectedAxis = 0;
    mCollision = new MOC::CollisionTools(Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr"));
@@ -71,9 +71,14 @@ void EditorAxis::updateSelectedUI(void)
    edit->addText(Ogre::StringConverter::toString(2*Math::ACos(rot.z)));
 }
 
-bool EditorAxis::objectSelected(void)
+bool EditorAxis::objectSelected()
 {
    return mEditorObjSelected;
+}
+
+bool EditorAxis::axisSelected()
+{
+   return mEditorAxisSelected;
 }
 
 void EditorAxis::selectBuilding(const Ogre::Ray _ray)
@@ -141,7 +146,7 @@ void EditorAxis::clearSelectedAxis(void)
 {
    Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
    
-   if (mSelectedAxis)
+   if (mEditorAxisSelected)
    {
       if (mSelectedAxis->getName() == "AxisX" || mSelectedAxis->getName() == "AxisRotX")
       {
@@ -164,6 +169,7 @@ void EditorAxis::clearSelectedAxis(void)
       lSceneMgr->destroyEntity("collisonplane");
       MeshManager::getSingleton().remove("planeforcollision");
    }
+   mEditorAxisSelected = false;
 }
 
 
@@ -225,17 +231,17 @@ void EditorAxis::moveBuilding(Ogre::Ray _ray)
    {
       if (mSelectedAxis->getName() == "AxisX")
       {
-         lPosition.z = Ogre::Math::Ceil(lResult.z);
+         lPosition.z = Ogre::Math::Floor(lResult.z);
          lNode->setPosition(lPosition);
       }
       else if (mSelectedAxis->getName() == "AxisY")
       {
-         lPosition.x = Ogre::Math::Ceil(lResult.x);
+         lPosition.x = Ogre::Math::Floor(lResult.x);
          lNode->setPosition(lPosition);
       }
       else if (mSelectedAxis->getName() == "AxisZ")
       {
-         lPosition.y = Ogre::Math::Ceil(lResult.y);
+         lPosition.y = Ogre::Math::Floor(lResult.y);
          lNode->setPosition(lPosition);
       }
       else if (mSelectedAxis->getName() == "AxisRotX")
@@ -386,6 +392,7 @@ void EditorAxis::setSelectedAxis(Ogre::Entity* lAxis)
 {
    lAxis->setMaterialName("Axis/Selected");
    mSelectedAxis = lAxis;
+   mEditorAxisSelected = true;
 }
 
 Ogre::Entity* EditorAxis::getSelectedAxis(void)
