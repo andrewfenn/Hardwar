@@ -35,9 +35,10 @@ void Admin::processRequest(dataPacket lPacket)
    switch(lPacket.getMessage())
    {
       case add_building:
-         {
             addBuilding(lPacket);
-         }
+      break;
+      case edit_building:
+            editBuilding(lPacket);
       break;
       case save_world_data:
          requestSave();
@@ -56,6 +57,13 @@ Hardwar::Buildings Admin::getBuildings()
 }
 
 void Admin::addBuilding(dataPacket lPacket)
+{
+   Hardwar::Building building;
+   building.unserialize(lPacket);
+   mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(0, building));
+}
+
+void Admin::editBuilding(dataPacket lPacket)
 {
    Hardwar::Building building;
    building.unserialize(lPacket);

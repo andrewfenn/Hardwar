@@ -53,6 +53,8 @@ namespace Server
          Hardwar::Buildings mBuildings;
          /** Adds the building to a placement request list */
          void addBuilding(dataPacket lPacket);
+         /** Adds the building to an edit placement request list */
+         void editBuilding(dataPacket lPacket);
          /* If the admin has requested the world data to be saved to file */
          bool mWantsWorldSave;
    };

@@ -34,6 +34,7 @@ namespace Hardwar
          const Ogre::Vector3 getRotation(void);
          const Ogre::String getMeshName(void);
          void setPosition(const Ogre::Vector3);
+         void setRotation(const Ogre::Quaternion);
          void setRotation(const Ogre::Vector3);
          void setMeshName(const Ogre::String);
          dataPacket serialize(dataPacket);

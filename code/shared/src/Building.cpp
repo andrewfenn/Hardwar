@@ -59,6 +59,13 @@ namespace Hardwar
       mRotation.z = Ogre::Math::Floor(mRotation.z);
    }
 
+   void Building::setRotation(const Ogre::Quaternion rotation)
+   {
+      mRotation.x = Ogre::Math::Floor((2*Ogre::Math::ACos(rotation.x).valueDegrees()));
+      mRotation.y = Ogre::Math::Floor((2*Ogre::Math::ACos(rotation.y).valueDegrees()));
+      mRotation.z = Ogre::Math::Floor((2*Ogre::Math::ACos(rotation.z).valueDegrees()));
+   }
+
    const Ogre::String Building::getMeshName(void)
    {
       return mMesh;

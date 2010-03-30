@@ -56,8 +56,11 @@ typedef enum
    join_game      = 3, /* Request to join game */
    status_changed = 4, /* Changed client status */
 
-   add_building   = 50, /* Attempt to add a building */
-   get_building_list = 51, /* get all buildings in the client's list */
+   get_building_list = 50, /* get all buildings in the client's list */
+   add_building   = 51, /* Attempt to add a building */
+   edit_building  = 52,
+   delete_building= 53,
+
    save_world_data = 60, /* Save server side world related data */
 
    admin_login    = 100  /* Attempt to login as admin */
