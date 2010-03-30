@@ -60,15 +60,15 @@ void EditorAxis::updateSelectedUI(void)
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotX");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(2*Ogre::Math::ACos(rot.x)));
+   edit->addText(Ogre::StringConverter::toString(Ogre::Math::Floor((2*Ogre::Math::ACos(rot.x)).valueDegrees())));
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotY");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(2*Ogre::Math::ACos(rot.y)));
+   edit->addText(Ogre::StringConverter::toString(Ogre::Math::Floor((2*Ogre::Math::ACos(rot.y)).valueDegrees())));
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotZ");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(2*Ogre::Math::ACos(rot.z)));
+   edit->addText(Ogre::StringConverter::toString(Ogre::Math::Floor((2*Ogre::Math::ACos(rot.z)).valueDegrees())));
 }
 
 bool EditorAxis::objectSelected()
