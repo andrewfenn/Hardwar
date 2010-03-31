@@ -67,7 +67,6 @@ void Admin::editBuilding(dataPacket lPacket)
 {
    Hardwar::Building building;
    building.unserialize(lPacket);
-   mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(0, building));
 }
 
 bool Admin::getWorldSaveReq()
