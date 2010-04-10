@@ -23,6 +23,7 @@
 #include <boost/filesystem.hpp>
 
 #include "Zone.h"
+#include "Console.h"
 
 namespace Client
 {
@@ -48,9 +49,10 @@ class ZoneManager
       const int getTotal();
       /** Retrieves a pointer to the current zone that the player is in. */
       Zone* getCurrent();
-      
+      void set(Console*);
    private:
       Zones mZones;
+      Console *mConsole;
 };
 
 }

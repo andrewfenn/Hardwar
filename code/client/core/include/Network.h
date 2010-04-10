@@ -86,9 +86,12 @@ class Network
       ENetHost* getHost();
       /** Sets access to the ZoneManager */
       void set(ZoneManager*);
+      /** Sets access to the ZoneManager */
+      void set(Console*);
    private:
       ENetHost*         mNetHost;
-      ZoneManager       *mZoneMgr;
+      ZoneManager*      mZoneMgr;
+      Console*          mConsole;
 
       ENetEvent         mEvent;
       ENetPeer*         mPeer;

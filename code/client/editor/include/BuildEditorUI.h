@@ -25,7 +25,7 @@
 #include "GameSettings.h"
 
 #include "ItemBoxMgr.h"
-
+#include "GameManager.h"
 
 namespace Client
 {
@@ -75,6 +75,7 @@ namespace Client
          Ogre::Root         *mRoot;
          Ogre::SceneManager *mSceneMgr;
          Ogre::SceneNode    *mEditorNode;
+         Console            *mConsole;
 
          bool mShow;
          /** renders all the building icons in a building page and displays them in the UI */

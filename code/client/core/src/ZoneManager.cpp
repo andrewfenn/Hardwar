@@ -29,6 +29,11 @@ ZoneManager::~ZoneManager()
    mZones.clear();
 }
 
+void ZoneManager::set(Console* console)
+{
+   mConsole = console;
+}
+
 void ZoneManager::preload()
 {
    boost::filesystem::path lPath("../media/models/hangers");
@@ -49,7 +54,7 @@ void ZoneManager::preload()
 void ZoneManager::create(const int zone, const Ogre::String filename)
 {
    /* FIXME: Needs correct number */
-   mZones.push_back(Zone(filename));
+   mZones.push_back(Zone(mConsole, filename));
 }
 
 void ZoneManager::clear()

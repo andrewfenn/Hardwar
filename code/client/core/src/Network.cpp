@@ -45,6 +45,12 @@ void Network::set(ZoneManager* zoneMgr)
    mZoneMgr = zoneMgr;
 }
 
+void Network::set(Console* console)
+{
+   mConsole = console;
+}
+
+
 bool Network::setPort(const int port)
 {
    if (mStatus == status_disconnected)
@@ -75,7 +81,7 @@ void Network::connect(void)
 
 void Network::setConStatus(const clientStatus lStatus)
 {
-   Console::getSingletonPtr()->addToConsole("Changing state: "+Ogre::StringConverter::toString(lStatus));
+   mConsole->addToConsole("Changing state: "+Ogre::StringConverter::toString(lStatus));
    mStatus = lStatus;
 }
 
@@ -181,19 +187,18 @@ void Network::threadLoopGame()
          case SERVER_CHANNEL_ADMIN:
             if (lReceivedPacket.getMessage() == admin_login)
             {
-               Console* lConsole = Console::getSingletonPtr();
                packetMessage msg;
                lReceivedPacket.move(&msg, sizeof(packetMessage));
                if (msg == accepted)
                {
                   /* Login Successful */
-                  lConsole->addToConsole(lConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
+                  mConsole->addToConsole(mConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
                   GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));
                }
                else
                {
                   /* Failed to login correctly */
-                  lConsole->addToConsole(lConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Login failed")));
+                  mConsole->addToConsole(mConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Login failed")));
                }
             }
          break;
@@ -211,11 +216,11 @@ void Network::threadLoopGame()
 
                      if (zone->addBuilding(building))
                      {
-                        Console::getSingletonPtr()->addToConsole("Building Added");
+                        mConsole->addToConsole("Building Added");
                      }
                      else
                      {
-                        Console::getSingletonPtr()->addToConsole("Building Add Error");
+                        mConsole->addToConsole("Building Add Error");
                      }
                   }
                default:
@@ -231,8 +236,7 @@ void Network::threadLoopGame()
          }
          break;
          default:
-            Console* lConsole = Console::getSingletonPtr();
-            lConsole->addToConsole(Ogre::String((char*) (*mitEvent).second.packet->data));
+            mConsole->addToConsole(Ogre::String((char*) (*mitEvent).second.packet->data));
          break;
       }
       enet_packet_destroy((*mitEvent).second.packet);

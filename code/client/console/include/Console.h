@@ -44,8 +44,11 @@ namespace Client
 class Console
 {
    public:
+      Console();
       ~Console();
-      static Console* getSingletonPtr(void);
+
+      /** This method loads the assets needed for the console. */
+      void load();
       /** The method either shows or hides the console from the screen */
       void toggleShow();
       /** The method is used for fade effects when the console is hidden or shown */
@@ -123,12 +126,6 @@ class Console
       void notifyCommandTyped(MyGUI::WidgetPtr, MyGUI::KeyCode, MyGUI::Char);
       void notifyCommandAccept(MyGUI::ComboBoxPtr, size_t);
       void notifySubmitButtonClick(MyGUI::WidgetPtr);
-
-      static Console *mConsole;
-
-      Console(void);
-      Console(const Console&) { }
-      Console & operator = (const Console&);
 
       bool mShow;
       bool mAutoCompleted;

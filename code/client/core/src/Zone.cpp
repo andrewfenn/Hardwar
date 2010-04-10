@@ -20,11 +20,12 @@
 
 using namespace Client;
 
-Zone::Zone(const Ogre::String filename)
+Zone::Zone(Console* console, const Ogre::String filename)
 {
    Ogre::Root* lRoot             = Ogre::Root::getSingletonPtr();
    Ogre::SceneManager* lSceneMgr  = lRoot->getSceneManager("GameSceneMgr");
    Ogre::RenderWindow* lWindow    = lRoot->getAutoCreatedWindow();
+   mConsole = console;
    /* load world file */
    OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
    lOgreMax->Load(filename, lWindow, 0, lSceneMgr, lSceneMgr->getRootSceneNode());
@@ -83,7 +84,7 @@ bool Zone::drawBuilding(const unsigned int loc)
    }
    catch(Ogre::Exception& e)
    {
-      Console::getSingletonPtr()->addToConsole(Console::getSingletonPtr()->getConsoleError(), "addbuilding", e.getFullDescription());
+      mConsole->addToConsole(mConsole->getConsoleError(), "addbuilding", e.getFullDescription());
    }
 
    return false;

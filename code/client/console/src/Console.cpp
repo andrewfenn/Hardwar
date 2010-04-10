@@ -20,15 +20,22 @@
 
 using namespace Client;
 
-Console* Console::mConsole;
-
 Console::Console()
 {
    mShow = false;
    mKeptTempWord = false;
    mListPos = 0;
-   MyGUI::WidgetManager::getInstancePtr()->registerFactory(new MyGUI::factory::ConsoleComboBoxFactory());
+}
+
+Console::~Console()
+{
+}
+
+void Console::load()
+{
    mGUI = MyGUI::Gui::getInstancePtr();
+
+   MyGUI::WidgetManager::getInstancePtr()->registerFactory(new MyGUI::factory::ConsoleComboBoxFactory());
    MyGUI::LayoutManager::getInstance().load("console.layout");
 
    mGUIConsole = mGUI->findWidget<MyGUI::Window>("console");
@@ -50,11 +57,6 @@ Console::Console()
    mSubmitButton->setCaption(Ogre::UTFString(gettext("submit")));
    mGUIConsole->setVisible(false);
    mGUIConsole->setEnabled(false);
-}
-
-Console::~Console()
-{
-   delete mConsole;
 }
 
 bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate* function)
@@ -234,14 +236,4 @@ bool Console::isActive()
 void Console::update()
 {
    
-}
-
-Console* Console::getSingletonPtr(void)
-{
-   if(!mConsole)
-   {
-      mConsole = new Console();
-   }
-
-   return mConsole;
 }

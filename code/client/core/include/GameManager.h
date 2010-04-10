@@ -55,11 +55,11 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
    public:
       bool                 mSinglePlayer;
       MyGUI::Gui           *mGUI;
-      Console              *mConsole;
       Ogre::SceneManager   *mSceneMgr;
 
       Network*             getNetwork();
       ZoneManager*         getZoneMgr();
+      Console*             getConsole();
       Ogre::Camera*        getCamera();
       Ogre::Viewport*      getViewport();
       static GameManager*  getSingletonPtr();
@@ -90,6 +90,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       InputManager         *mInputMgr;
       GameSettings         *mSettings;
       GameCore             mGameCore;
+      Console              mConsole;
       GameState            *mLoadState;
       GameState            *mPlayState;
       Network              mNetwork;

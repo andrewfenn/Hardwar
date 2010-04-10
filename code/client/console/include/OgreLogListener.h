@@ -27,7 +27,7 @@ namespace Client
    class OgreLogListener : public Ogre::LogListener
    {
       public:
-         OgreLogListener();
+         OgreLogListener(Console* console);
          void messageLogged(const Ogre::String&, Ogre::LogMessageLevel, bool, const Ogre::String&);
       private:
          Console *mConsole;

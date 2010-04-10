@@ -20,9 +20,9 @@
 
 using namespace Client;
 
-OgreLogListener::OgreLogListener()
+OgreLogListener::OgreLogListener(Console* console)
 {
-   mConsole = Console::getSingletonPtr();
+   mConsole = console;
 }
 
 void OgreLogListener::messageLogged(const Ogre::String &message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName)

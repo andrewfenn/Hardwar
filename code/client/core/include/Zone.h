@@ -27,19 +27,21 @@
 
 namespace Client
 {
-   /** A zone is an outside player area. */
-   class Zone
-   {
-      public:
-         Zone(const Ogre::String);
-         ~Zone();
-         bool addBuilding(Hardwar::Building);
-         Hardwar::Building getBuildingByName(const Ogre::String);
-      private:
-         std::vector<Hardwar::Building> mBuildings;
+/** A zone is an outside player area. */
+class Zone
+{
+   public:
+      Zone(Console*, const Ogre::String);
+      ~Zone();
+      bool addBuilding(Hardwar::Building);
+      Hardwar::Building getBuildingByName(const Ogre::String);
+   private:
+      std::vector<Hardwar::Building> mBuildings;
+      Console *mConsole;
 
-         /** Create a building specified from the building list */
-         bool drawBuilding(const unsigned int);
-   };
+      /** Create a building specified from the building list */
+      bool drawBuilding(const unsigned int);
+};
+
 }
 #endif /* __ZONE_H_ */

@@ -36,7 +36,8 @@ BuildEditorUI::BuildEditorUI(void)
    mMenuPanelEdit->setVisible(false);
 
    // Add console command
-   Console::getSingletonPtr()->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditorUI::cmd_showEditor));
+   Console* mConsole = GameManager::getSingletonPtr()->getConsole();
+   mConsole->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditorUI::cmd_showEditor));
 
    // Make the buttons function
    MyGUI::ButtonPtr lButton;
@@ -188,15 +189,14 @@ void BuildEditorUI::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFStrin
 void BuildEditorUI::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFString &value)
 {
    bool show = false;
-   Console* lConsole = Console::getSingletonPtr();
 
    if (!MyGUI::utility::parseComplex(value, show))
    {
       if (!value.empty())
       {
-         lConsole->addToConsole(lConsole->getConsoleError(), key, value);
+         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
       }
-      lConsole->addToConsole(lConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString(gettext("Show the hardwar editor")));
+      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString(gettext("Show the hardwar editor")));
    }
    else
    {
@@ -204,11 +204,11 @@ void BuildEditorUI::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFSt
       if (isAdmin)
       {
          this->show(show);
-         lConsole->addToConsole(lConsole->getConsoleSuccess(), key, Ogre::StringConverter::toString(show));
+         mConsole->addToConsole(mConsole->getConsoleSuccess(), key, Ogre::StringConverter::toString(show));
       }
       else
       {
-         lConsole->addToConsole(lConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
+         mConsole->addToConsole(mConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
       }
    }
 }

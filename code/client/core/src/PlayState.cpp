@@ -128,11 +128,11 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
       }
    }
 
-   if (mGameMgr->mConsole->isVisible())
+   if (mGameMgr->getConsole()->isVisible())
    {
       if (e.key == OIS::KC_ESCAPE)
       {
-         mGameMgr->mConsole->toggleShow();
+         mGameMgr->getConsole()->toggleShow();
       }
    }
    else if (mBuildEditor->isVisible())
