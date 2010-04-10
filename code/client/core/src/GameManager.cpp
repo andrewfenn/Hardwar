@@ -30,14 +30,13 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
                                                  mPlayState(0), bShutdown(false)
 {
    mSinglePlayer = false;
-   mNetwork = Network::getSingletonPtr();
-   mNetwork->mZoneMgr = &mZoneMgr;
+   mNetwork.set(&mZoneMgr);
+   mGameCore.set(&mNetwork);
+      
 }
 
 GameManager::~GameManager( void )
 {
-   delete mNetwork;
-
    /* Clean up all the states */
    while(!mStates.empty())
    {
@@ -141,6 +140,7 @@ void GameManager::startGame( GameState *gameState )
 
    /* Add Console */
    mConsole = Console::getSingletonPtr();
+   mGameCore.bindConsole(mConsole);
 
    /* Add log listeners */
    mOgreLogListener = new OgreLogListener;
@@ -148,9 +148,6 @@ void GameManager::startGame( GameState *gameState )
 
    /* Add Game Settings */
    mSettings = GameSettings::getSingletonPtr();
-
-   /* Add the game's core functions */
-   mGameCore = new GameCore;
 
    /* Setup states */
    mLoadState = LoadState::getSingletonPtr();
@@ -182,11 +179,11 @@ void GameManager::startGame( GameState *gameState )
       mStates.back()->update(lTimeSinceLastFrame);
 
       lDelay += lTimeSinceLastFrame;
-      if (lDelay > mGameCore->getDelayTime())
+      if (lDelay > mGameCore.getDelayTime())
       {
          /* render the next frame */
          mRoot->renderOneFrame();
-         mGameCore->update(lTimeSinceLastFrame);
+         mGameCore.update(lTimeSinceLastFrame);
          mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/100);
          mConsole->update();
          lDelay = 0;
@@ -248,7 +245,7 @@ void GameManager::setupResources(void)
 
 Network* GameManager::getNetwork()
 {
-   return mNetwork;
+   return &mNetwork;
 }
 
 ZoneManager* GameManager::getZoneMgr()

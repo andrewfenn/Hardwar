@@ -58,7 +58,7 @@ void PlayState::enter(void)
 
 void PlayState::exit(void)
 {
-   Network::getSingletonPtr()->stopThread();
+   mGameMgr->getNetwork()->stopThread();
    delete mBuildEditor;
 }
 

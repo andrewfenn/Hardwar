@@ -20,8 +20,6 @@
 
 using namespace Client;
 
-Network* Network::mNetwork;
-
 Network::Network()
 {
    if (enet_initialize() != 0) {
@@ -35,6 +33,16 @@ Network::Network()
    mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkRetryLimit"));
    mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTimeout"));
    mConAttempts = 0;
+}
+
+Network::~Network()
+{
+   stopThread();
+}
+
+void Network::set(ZoneManager* zoneMgr)
+{
+   mZoneMgr = zoneMgr;
 }
 
 bool Network::setPort(const int port)
@@ -330,16 +338,7 @@ bool Network::message(dataPacket data, const enet_uint8 channel, const enet_uint
    return result;
 }
 
-Network::~Network()
+ENetHost* Network::getHost()
 {
-   stopThread();
-}
-
-Network* Network::getSingletonPtr(void)
-{
-   if(!mNetwork)
-   {
-      mNetwork = new Network();
-   }
-   return mNetwork;
+   return mNetHost;
 }

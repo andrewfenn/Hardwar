@@ -45,7 +45,7 @@ class Network
 {
    public:
       ~Network();
-      static Network* getSingletonPtr(void);
+      Network();
 
       /** Connects to a server */
       void connect(void);
@@ -80,11 +80,16 @@ class Network
       void stopThread(void);
       /** Gets the client's connection status */
       clientStatus getConStatus(void);
+      /** Sets the client's connection status */
       void setConStatus(const clientStatus);
-      ENetHost*         mNetHost;
-
-      ZoneManager       *mZoneMgr;
+      /** Returns the enet host */
+      ENetHost* getHost();
+      /** Sets access to the ZoneManager */
+      void set(ZoneManager*);
    private:
+      ENetHost*         mNetHost;
+      ZoneManager       *mZoneMgr;
+
       ENetEvent         mEvent;
       ENetPeer*         mPeer;
       int               mPort;
@@ -95,16 +100,10 @@ class Network
       unsigned short    mTimeout;
 
       Message::iterator mitEvent;
-
-      static Network *mNetwork;
       Message mMessages;
       mutable boost::mutex mMessageMutex;
       void addMessage(const ENetEvent);
       Message getMessages(void);
-
-      Network(void);
-      Network(const Network&) { }
-      Network & operator = (const Network&);
 
       bool connect(unsigned int, std::string);
       bool sendJoinRequest(void);

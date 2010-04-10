@@ -89,10 +89,10 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       Ogre::RenderWindow   *mRenderWindow;
       InputManager         *mInputMgr;
       GameSettings         *mSettings;
-      GameCore             *mGameCore;
+      GameCore             mGameCore;
       GameState            *mLoadState;
       GameState            *mPlayState;
-      Network              *mNetwork;
+      Network              mNetwork;
       ZoneManager          mZoneMgr;
       Ogre::Camera         *mCamera;
       Ogre::Viewport       *mViewport;

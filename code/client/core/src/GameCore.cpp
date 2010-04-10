@@ -28,8 +28,17 @@ GameCore::GameCore(void)
    mMaxFPS  = Ogre::StringConverter::parseInt(lconfig.getSetting("MaxFPS", "Game", "60"));
    mShowFPS = Ogre::StringConverter::parseBool(lconfig.getSetting("ShowFPS", "Debug", "false"));
    mShowNet = Ogre::StringConverter::parseBool(lconfig.getSetting("ShowNet", "Debug", "false"));
+   mWaitTime = ceil((float)1000/mMaxFPS);
+}
 
-   mConsole = Console::getSingletonPtr();
+void GameCore::set(Network* network)
+{
+   mNetwork = network;
+}
+
+void GameCore::bindConsole(Console* console)
+{
+   mConsole = console;
    mConsole->addCommand(Ogre::UTFString("cl_showfps"), MyGUI::newDelegate(this, &GameCore::cmd_showFPS));
    mConsole->addCommand(Ogre::UTFString("cl_maxfps"), MyGUI::newDelegate(this, &GameCore::cmd_maxFPS));
    mConsole->addCommand(Ogre::UTFString("cl_shownet"), MyGUI::newDelegate(this, &GameCore::cmd_showNet));
@@ -37,7 +46,6 @@ GameCore::GameCore(void)
    mConsole->addCommand(Ogre::UTFString("cl_screenshot"), MyGUI::newDelegate(this, &GameCore::cmd_screenshot));
    mConsole->addCommand(Ogre::UTFString("rcon_password"), MyGUI::newDelegate(this, &GameCore::cmd_remoteConnect));
    mConsole->addCommand(Ogre::UTFString("sv_save"), MyGUI::newDelegate(this, &GameCore::cmd_remoteSave));
-   mWaitTime = ceil((float)1000/mMaxFPS);
 }
 
 void GameCore::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &value)
@@ -182,7 +190,7 @@ void GameCore::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTFStri
       dataPacket packet = dataPacket(admin_login);
       lString = md5(lString.c_str());
       packet.appendString(lString);
-      Network::getSingletonPtr()->message(packet, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+      mNetwork->message(packet, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
       /* reponse is dealt with in the Network thread */
    }
 }
@@ -203,7 +211,7 @@ void GameCore::cmd_remoteSave(const Ogre::UTFString &key, const Ogre::UTFString 
       else
       {
          dataPacket packet = dataPacket(save_world_data);
-         Network::getSingletonPtr()->message(packet, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         mNetwork->message(packet, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
       }
    }
    else
@@ -248,7 +256,7 @@ void GameCore::showNet(void)
    Ogre::OverlayElement* lguiPackLost = lOverlayMgr->getOverlayElement("Hardwar/PacketsLost");
    Ogre::OverlayElement* lguiTimeout  = lOverlayMgr->getOverlayElement("Hardwar/Timeout");
 
-   ENetHost *lHost = Network::getSingletonPtr()->mNetHost;
+   ENetHost *lHost = mNetwork->getHost();
 
    lguiPing->setCaption(lPing + Ogre::StringConverter::toString(lHost->lastServicedPeer->roundTripTime) + Ogre::String(" ms"));
    lguiIncData->setCaption(lIncData + Ogre::StringConverter::toString(Ogre::Real(lHost->incomingBandwidth/1000)) + Ogre::String(" Kib"));
@@ -309,4 +317,3 @@ void GameCore::showFPS(void)
       o->show();
    }
 }
-

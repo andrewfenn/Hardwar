@@ -94,8 +94,13 @@ namespace Client
                 upon what the max FPS limit is set to. */
          unsigned short getDelayTime(void);
          void update(unsigned long);
+            /** Attach the command functions to the console. */
+         void bindConsole(Console*);
+            /** Used to gain access to the network */
+         void set(Network*);
       private:
          Console *mConsole;
+         Network *mNetwork;
          void showFPS(void);
          void showNet(void);
          bool mShowFPS;
