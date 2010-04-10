@@ -89,9 +89,14 @@ void Game::processBuildingReqs(Admin* admin)
 {
    /* Process add building requests */
    Hardwar::Buildings buildings = admin->getAddBuildings();
+   Hardwar::Building lBuilding;
+
    for (Hardwar::Buildings::iterator building=buildings.begin(); building != buildings.end(); building++)
    {
-      mZoneMgr.get(building->first)->addBuilding(building->second);
+      lBuilding = building->second;
+      lBuilding.setID(mZoneMgr.get(building->first)->numBuildings());
+
+      mZoneMgr.get(building->first)->addBuilding(lBuilding);
       dataPacket packet = dataPacket(add_building);
       packet = building->second.serialize(packet);
       mClientMgr.send(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
