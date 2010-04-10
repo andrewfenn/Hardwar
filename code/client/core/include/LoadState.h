@@ -27,7 +27,6 @@
 #include "hwstructs.h"
 #include "PlayState.h"
 #include "enet/enet.h"
-#include "OgreMaxScene.hpp"
 
 namespace Client
 {
@@ -60,10 +59,7 @@ public:
 private:
 
     Ogre::Root           *mRoot;
-    Ogre::Camera         *mCamera;
     Ogre::SceneManager   *mSceneMgr;
-    Ogre::RenderWindow   *mWindow;
-    Ogre::Viewport       *mViewport;
     static LoadState     *mLoadState;
     GameManager          *mGameMgr;
     clientStatus         mLoadStatus;
@@ -83,7 +79,6 @@ private:
     bool mReverse; /* use for GUI animation */
     unsigned long mGUICounter; /* keeps track of time between animation updates */
     MyGUI::StaticTextPtr  mStatusText;
-    bool mFilesLoaded;
     bool mDownloads;
 };
 }

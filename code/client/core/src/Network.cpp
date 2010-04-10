@@ -196,32 +196,12 @@ void Network::threadLoopGame()
                case status_downloading:
                   if (lReceivedPacket.getMessage() == add_building)
                   {
-                     Console::getSingletonPtr()->addToConsole("Add Building Request");
                      Hardwar::Building building;
                      building.unserialize(lReceivedPacket);
+                     /* FIXME: Should know which zone to put in */
+                     Zone* zone = mZoneMgr->getCurrent();
 
-                     /* add the object */      
-                     Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-                     Console::getSingletonPtr()->addToConsole(Ogre::String("Pos:")+Ogre::StringConverter::toString(building.getPosition()).c_str()+Ogre::String(", Rot: ")+Ogre::StringConverter::toString(building.getRotation()).c_str()+"\n");
-
-                     bool isAdded = false;
-                     try
-                     {
-                        /* We create an entity with the name of the buildings position. This means two buildings can't exist
-                        in the same position. */
-                        Ogre::Entity *lEntity = lSceneMgr->createEntity(Ogre::String("Building/")+Ogre::StringConverter::toString(building.getPosition()), building.getMeshName());
-                        Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode();
-                        lSceneNode->attachObject(lEntity);
-                        lSceneNode->setPosition(building.getPosition());
-                        lSceneNode->setDirection(building.getRotation());
-                        isAdded = true;
-                     }
-                     catch(Ogre::Exception& e)
-                     {
-                        Console::getSingletonPtr()->addToConsole(Console::getSingletonPtr()->getConsoleError(), "addbuilding", e.getFullDescription());
-                     }
-                     dataPacket lPacket;
-                     if (isAdded)
+                     if (zone->addBuilding(building))
                      {
                         Console::getSingletonPtr()->addToConsole("Building Added");
                      }

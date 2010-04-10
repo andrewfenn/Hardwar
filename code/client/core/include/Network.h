@@ -30,6 +30,7 @@
 #include "Building.h"
 #include "Console.h"
 #include "GameSettings.h"
+#include "ZoneManager.h"
 
 namespace Client
 {
@@ -82,6 +83,7 @@ class Network
       void setConStatus(const clientStatus);
       ENetHost*         mNetHost;
 
+      ZoneManager       *mZoneMgr;
    private:
       ENetEvent         mEvent;
       ENetPeer*         mPeer;

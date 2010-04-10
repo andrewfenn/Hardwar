@@ -49,10 +49,17 @@ void Admin::processRequest(dataPacket lPacket)
    }
 }
 
-Hardwar::Buildings Admin::getBuildings()
+Hardwar::Buildings Admin::getAddBuildings()
 {
-   Hardwar::Buildings list = mBuildings;
-   mBuildings.clear();
+   Hardwar::Buildings list = mAddBuildings;
+   mAddBuildings.clear();
+   return list;
+}
+
+Hardwar::Buildings Admin::getEditBuildings()
+{
+   Hardwar::Buildings list = mEditBuildings;
+   mEditBuildings.clear();
    return list;
 }
 
@@ -60,13 +67,14 @@ void Admin::addBuilding(dataPacket lPacket)
 {
    Hardwar::Building building;
    building.unserialize(lPacket);
-   mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(0, building));
+   mAddBuildings.insert(std::pair<unsigned int,Hardwar::Building>(0, building));
 }
 
 void Admin::editBuilding(dataPacket lPacket)
 {
    Hardwar::Building building;
    building.unserialize(lPacket);
+   mEditBuildings.insert(std::pair<unsigned int,Hardwar::Building>(0, building));
 }
 
 bool Admin::getWorldSaveReq()

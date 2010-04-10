@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2009-2010  Andrew Fenn
+    Copyright © 2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,26 +20,26 @@
 #define __ZONE_H_
 
 #include <Ogre.h>
-#include <sqlite3.h>
-#include <stdio.h>
-#include <libintl.h>
+#include "OgreMaxScene.hpp"
 
 #include "Building.h"
+#include "Console.h"
 
-namespace Server
+namespace Client
 {
    /** A zone is an outside player area. */
    class Zone
    {
       public:
-         Zone();
+         Zone(const Ogre::String);
          ~Zone();
          bool addBuilding(Hardwar::Building);
-         bool editBuilding(Hardwar::Building);
-         std::vector<Hardwar::Building> getBuildings(void);
-         unsigned int numBuildings(void);
+         Hardwar::Building getBuildingByName(const Ogre::String);
       private:
          std::vector<Hardwar::Building> mBuildings;
+
+         /** Create a building specified from the building list */
+         bool drawBuilding(const unsigned int);
    };
 }
 #endif /* __ZONE_H_ */

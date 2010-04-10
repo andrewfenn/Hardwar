@@ -94,14 +94,17 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
       if (lObj)
       {
+         GameManager* lGameMgr = GameManager::getSingletonPtr();
+
          // Building possibly moved
          Ogre::SceneNode * lNode = lObj->getParentSceneNode();
          Ogre::Vector3 lPosition = lNode->getPosition();
          Ogre::Quaternion lRotation = lNode->getOrientation();
-         Ogre::String lName = lNode->getName();
+         Zone* zone = lGameMgr->getZoneMgr()->getCurrent();
+
+         Hardwar::Building building = zone->getBuildingByName(lNode->getName());
 
          // Send new location
-         Hardwar::Building building;
          building.setPosition(lNode->getPosition());
          building.setRotation(lNode->getOrientation());
          building.setMeshName(lNode->getName());
@@ -109,7 +112,7 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
          /* Tell the server to place down a new building */
          dataPacket lPacket = dataPacket(edit_building);
          lPacket = building.serialize(lPacket);
-         GameManager::getSingletonPtr()->getNetwork()->message(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
+         lGameMgr->getNetwork()->message(lPacket, SERVER_CHANNEL_ADMIN, ENET_PACKET_FLAG_RELIABLE);
       }
 
       mAxis.clearSelectedAxis();

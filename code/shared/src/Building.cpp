@@ -24,6 +24,7 @@ namespace Hardwar
    Building::Building() {
       mPosition = Ogre::Vector3::ZERO;
       mRotation = Ogre::Vector3::ZERO;
+      mID = 0;
    }
 
    Building::Building(const Ogre::Vector3 position, const Ogre::Vector3 rotation, const Ogre::String mesh)
@@ -31,6 +32,7 @@ namespace Hardwar
       mPosition = position;
       mRotation = rotation;
       mMesh     = mesh;
+      mID = 0;
    }
 
    const Ogre::Vector3 Building::getPosition(void)
@@ -66,6 +68,16 @@ namespace Hardwar
       mRotation.z = Ogre::Math::Floor((2*Ogre::Math::ACos(rotation.z).valueDegrees()));
    }
 
+   const int Building::getID()
+   {
+      return mID;
+   }
+
+   void Building::setID(const int i)
+   {
+      mID = i;
+   }
+
    const Ogre::String Building::getMeshName(void)
    {
       return mMesh;
@@ -80,6 +92,7 @@ namespace Hardwar
    {
       packet.append(&mPosition, sizeof(Ogre::Vector3));
       packet.append(&mRotation, sizeof(Ogre::Vector3));
+      packet.append(&mID, sizeof(int));
       packet.appendString(mMesh);
       return packet;
    }
@@ -88,6 +101,7 @@ namespace Hardwar
    {
       packet.move(&mPosition, sizeof(Ogre::Vector3));
       packet.move(&mRotation, sizeof(Ogre::Vector3));
+      packet.move(&mID, sizeof(int));
       packet.moveString(mMesh, packet.size());
    }
 }

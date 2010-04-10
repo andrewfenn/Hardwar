@@ -38,6 +38,7 @@
 #include "OgreLogListener.h"
 #include "GameSettings.h"
 #include "GameCore.h"
+#include "ZoneManager.h"
 
 namespace Client
 {
@@ -52,8 +53,16 @@ class GameState;
 class GameManager : public OIS::KeyListener, OIS::MouseListener
 {
    public:
-      bool                mSinglePlayer;
+      bool                 mSinglePlayer;
+      MyGUI::Gui           *mGUI;
+      Console              *mConsole;
+      Ogre::SceneManager   *mSceneMgr;
 
+      Network*             getNetwork();
+      ZoneManager*         getZoneMgr();
+      Ogre::Camera*        getCamera();
+      Ogre::Viewport*      getViewport();
+      static GameManager*  getSingletonPtr();
       ~GameManager(void);
       /** The method initialises Ogre::Root and other core parts of the game 
          such as MyGUI, Client::InputManager , Client::Console and 
@@ -71,18 +80,9 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       */
       void changeState(GameState *gameState);
       void pushState(GameState *gameState);
-      void popState(void);
+      void popState();
       /** Shuts down the game */
-      void requestShutdown(void);
-
-      static GameManager* getSingletonPtr(void);
-      Network*  getNetwork(void);
-      MyGUI::Gui           *mGUI;
-      Console              *mConsole;
-
-      Ogre::Camera*  getCamera(void);
-      Ogre::SceneManager   *mSceneMgr;
-      Ogre::Viewport*   getViewport(void);
+      void requestShutdown();
 
    private:
       Ogre::Root           *mRoot;
@@ -93,11 +93,11 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       GameState            *mLoadState;
       GameState            *mPlayState;
       Network              *mNetwork;
+      ZoneManager          mZoneMgr;
       Ogre::Camera         *mCamera;
       Ogre::Viewport       *mViewport;
 
       OgreLogListener      *mOgreLogListener;
-
       bool                 bShutdown;
       static GameManager   *mGameManager;
 

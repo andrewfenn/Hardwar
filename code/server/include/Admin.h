@@ -45,12 +45,15 @@ namespace Server
          /** Get any buildings this admin added.
             @remarks Any buildings in this list are deleted when calling this method
           */
-         Hardwar::Buildings getBuildings();
+         Hardwar::Buildings getAddBuildings();
+         Hardwar::Buildings getEditBuildings();
          bool getWorldSaveReq();
       private:
          void requestSave();
          /** Buildings to add to the game */
-         Hardwar::Buildings mBuildings;
+         Hardwar::Buildings mAddBuildings;
+         /** Buildings to edit in the game */
+         Hardwar::Buildings mEditBuildings;
          /** Adds the building to a placement request list */
          void addBuilding(dataPacket lPacket);
          /** Adds the building to an edit placement request list */

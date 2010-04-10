@@ -171,6 +171,8 @@ bool ZoneManager::loadBuildings()
 		      done = true;
 	      break;
 	      case SQLITE_ROW:
+            /* get ID */
+            lBuilding.setID(sqlite3_column_int(statement,0));
 		      /* get mesh name */
 		      lBuilding.setMeshName(Ogre::String((const char*) sqlite3_column_text(statement,2)));
 		      /* get position */

@@ -27,42 +27,19 @@ void LoadState::enter( void )
    mRoot         = Ogre::Root::getSingletonPtr();
 
    mGameMgr      = GameManager::getSingletonPtr();
-   mWindow       = mRoot->getAutoCreatedWindow();
    mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
-   mCamera       = mGameMgr->getCamera();
-   mViewport     = mGameMgr->getViewport();
-
    mSceneMgr->clearScene();
 
    mGameMgr->mGUI->hidePointer();
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
-   mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");
-
-   /* Pre load all building models - Not doing so makes the network thread crash 
-      when it tries to create buildings during connection.
-    */
-   boost::filesystem::path lPath("../media/models/hangers");
-	if (boost::filesystem::is_directory(lPath))
-   {
-	   for (boost::filesystem::directory_iterator itr(lPath); itr!=boost::filesystem::directory_iterator(); ++itr)
-      {
-	      Ogre::String temp = (Ogre::String) itr->path().leaf();
-	      if (temp.substr(temp.length()-4, 4).compare("mesh") == 0)
-         {
-            MeshManager::getSingleton().load((Ogre::String) itr->path().leaf(), "General");
-	      }
-	   }
-	}
-   
+   mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");   
 
    mGameMgr->getNetwork()->connect();
    mGameMgr->getNetwork()->startThread();
 
-
    mGUIcount = 0;
    mReverse = false; /* for the load bar animation */
-   mFilesLoaded = false;
    mDownloads = false;
 }
 
@@ -102,20 +79,13 @@ void LoadState::update( unsigned long lTimeElapsed )
       break;
       case status_filecheck:
          {
-            if (!mFilesLoaded)
+            if (mGameMgr->getZoneMgr()->getTotal() == 0)
             {
-               /* load world */
-               OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
-               const Ogre::String filename = Ogre::String("../media/hardwar/non-free/world.scene");
-               lOgreMax->Load(filename, mWindow, 0, mSceneMgr, mSceneMgr->getRootSceneNode());
+               mGameMgr->getZoneMgr()->preload();
+               mGameMgr->getZoneMgr()->create(0, "../media/hardwar/non-free/world.scene");
 
-               /* turn it into static geometry */
-               Ogre::StaticGeometry *lStatic = mSceneMgr->createStaticGeometry("world");
-               lStatic->addSceneNode(mSceneMgr->getSceneNode("world"));
                dataPacket packet = dataPacket(accepted);
                mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-               mFilesLoaded = true;
-               delete lOgreMax;
             }
          }
       break;

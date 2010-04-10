@@ -31,6 +31,7 @@ GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0),
 {
    mSinglePlayer = false;
    mNetwork = Network::getSingletonPtr();
+   mNetwork->mZoneMgr = &mZoneMgr;
 }
 
 GameManager::~GameManager( void )
@@ -245,17 +246,22 @@ void GameManager::setupResources(void)
    }
 }
 
-Network* GameManager::getNetwork(void)
+Network* GameManager::getNetwork()
 {
    return mNetwork;
 }
 
-Ogre::Camera* GameManager::getCamera(void)
+ZoneManager* GameManager::getZoneMgr()
+{
+   return &mZoneMgr;
+}
+
+Ogre::Camera* GameManager::getCamera()
 {
    return mCamera;
 }
 
-Ogre::Viewport* GameManager::getViewport(void)
+Ogre::Viewport* GameManager::getViewport()
 {
    return mViewport;
 }
