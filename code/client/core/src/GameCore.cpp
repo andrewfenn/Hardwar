@@ -55,13 +55,13 @@ void GameCore::cmd_showFPS(const Ogre::UTFString &key, const Ogre::UTFString &va
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         mConsole->print(mConsole->getConsoleError(), key, value);
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show debug information"));
+      mConsole->print(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show debug information"));
    }
    else
    {
-      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
+      mConsole->print(mConsole->getConsoleSuccess(), key, value);
       mShowFPS = show;
       if (!show)
       {
@@ -79,9 +79,9 @@ void GameCore::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &val
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         mConsole->print(mConsole->getConsoleError(), key, value);
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[integer] - "+Ogre::UTFString("Set the max FPS limit"));
+      mConsole->print(mConsole->getConsoleFormat(), key, "[integer] - "+Ogre::UTFString("Set the max FPS limit"));
    }
    else
    {
@@ -89,7 +89,7 @@ void GameCore::cmd_maxFPS(const Ogre::UTFString &key, const Ogre::UTFString &val
       {
          mWaitTime = ceil((float)1000/newfps);
          mMaxFPS = newfps;
-         mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
+         mConsole->print(mConsole->getConsoleSuccess(), key, value);
       }
    }
 }
@@ -101,13 +101,13 @@ void GameCore::cmd_showBoundingBox(const Ogre::UTFString &key, const Ogre::UTFSt
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         mConsole->print(mConsole->getConsoleError(), key, value);
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show bounding boxes (for debug purposes)"));
+      mConsole->print(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show bounding boxes (for debug purposes)"));
    }
    else
    {
-      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
+      mConsole->print(mConsole->getConsoleSuccess(), key, value);
       Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->showBoundingBoxes(show);
       Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr")->getRootSceneNode()->showBoundingBox(show);
    }
@@ -120,7 +120,7 @@ void GameCore::cmd_screenshot(const Ogre::UTFString &key, const Ogre::UTFString 
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         mConsole->print(mConsole->getConsoleError(), key, value);
       }
    }
    /* FIXME: Should add regex here to stop the user from putting in stupid
@@ -145,7 +145,7 @@ void GameCore::cmd_screenshot(const Ogre::UTFString &key, const Ogre::UTFString 
       filename = Ogre::UTFString("screenshot_")+Ogre::StringConverter::toString(total)+Ogre::UTFString(".png");
    }
 
-   mConsole->addToConsole(mConsole->getConsoleFormat(), key, Ogre::UTFString("Taking Screenshot."));
+   mConsole->print(mConsole->getConsoleFormat(), key, Ogre::UTFString("Taking Screenshot."));
    filename = Ogre::UTFString("./screenshots/")+filename;
    Ogre::Root::getSingletonPtr()->getAutoCreatedWindow()->writeContentsToFile(filename.c_str());
 }
@@ -157,13 +157,13 @@ void GameCore::cmd_showNet(const Ogre::UTFString &key, const Ogre::UTFString &va
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         mConsole->print(mConsole->getConsoleError(), key, value);
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show network information"));
+      mConsole->print(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Show network information"));
    }
    else
    {
-      mConsole->addToConsole(mConsole->getConsoleSuccess(), key, value);
+      mConsole->print(mConsole->getConsoleSuccess(), key, value);
       mShowNet = show;
       if (!show)
       {
@@ -181,9 +181,9 @@ void GameCore::cmd_remoteConnect(const Ogre::UTFString &key, const Ogre::UTFStri
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, Ogre::UTFString("****"));
+         mConsole->print(mConsole->getConsoleError(), key, Ogre::UTFString("****"));
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[password] - "+Ogre::UTFString("Gain administrator privileges on the remote server"));
+      mConsole->print(mConsole->getConsoleFormat(), key, "[password] - "+Ogre::UTFString("Gain administrator privileges on the remote server"));
    }
    else
    {
@@ -204,9 +204,9 @@ void GameCore::cmd_remoteSave(const Ogre::UTFString &key, const Ogre::UTFString 
       {
          if (!value.empty())
          {
-            mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+            mConsole->print(mConsole->getConsoleError(), key, value);
          }
-         mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Saves world related data on the server side."));
+         mConsole->print(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString("Saves world related data on the server side."));
       }
       else
       {
@@ -216,7 +216,7 @@ void GameCore::cmd_remoteSave(const Ogre::UTFString &key, const Ogre::UTFString 
    }
    else
    {
-      mConsole->addToConsole(mConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
+      mConsole->print(mConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
    }
 }
 

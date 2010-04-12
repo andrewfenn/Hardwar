@@ -66,7 +66,7 @@ class Console
       */
       bool addCommand(const Ogre::UTFString&, CommandDelegate::IDelegate*);
       /** The method adds text to the console's window. */
-      void addToConsole(const Ogre::UTFString&);
+      void print(const Ogre::UTFString&);
       /** The method adds formatted text to the console's window according to
       the UserString's in bin/media/core/console/console.layout
       @param reason
@@ -77,9 +77,9 @@ class Console
       @param value
              The result text displayed after the key text.
       */
-      void addToConsole(const Ogre::UTFString& reason, const Ogre::UTFString& key, const Ogre::UTFString& value)
+      void print(const Ogre::UTFString& reason, const Ogre::UTFString& key, const Ogre::UTFString& value)
       {
-         addToConsole(MyGUI::utility::toString(reason, "'", key, " ", value, "'"));
+         print(MyGUI::utility::toString(reason, "'", key, " ", value, "'"));
       }
 
       const Ogre::UTFString & getConsoleCurrent() { return mStringCurrent; }
@@ -98,12 +98,12 @@ class Console
          else
          {
             if (!MyGUI::utility::parseComplex(value, result)) {
-               addToConsole(getConsoleError(), key, value);
-               addToConsole(getConsoleFormat(), key, format.empty() ? formats::format<T>() : format);
+               print(getConsoleError(), key, value);
+               print(getConsoleFormat(), key, format.empty() ? formats::format<T>() : format);
             }
             else
             {
-               addToConsole(getConsoleSuccess(), key, value);
+               print(getConsoleSuccess(), key, value);
                return true;
             }
 	      }

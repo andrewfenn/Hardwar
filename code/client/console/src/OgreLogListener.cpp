@@ -27,6 +27,6 @@ OgreLogListener::OgreLogListener(Console* console)
 
 void OgreLogListener::messageLogged(const Ogre::String &message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName)
 {
-   mConsole->addToConsole(mConsole->getConsoleCurrent(), Ogre::String(""), message);
+   mConsole->print(mConsole->getConsoleCurrent(), Ogre::String(""), message);
 }
 

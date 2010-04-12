@@ -194,9 +194,9 @@ void BuildEditorUI::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFSt
    {
       if (!value.empty())
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, value);
+         mConsole->print(mConsole->getConsoleError(), key, value);
       }
-      mConsole->addToConsole(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString(gettext("Show the hardwar editor")));
+      mConsole->print(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString(gettext("Show the hardwar editor")));
    }
    else
    {
@@ -204,11 +204,11 @@ void BuildEditorUI::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFSt
       if (isAdmin)
       {
          this->show(show);
-         mConsole->addToConsole(mConsole->getConsoleSuccess(), key, Ogre::StringConverter::toString(show));
+         mConsole->print(mConsole->getConsoleSuccess(), key, Ogre::StringConverter::toString(show));
       }
       else
       {
-         mConsole->addToConsole(mConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
+         mConsole->print(mConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
       }
    }
 }

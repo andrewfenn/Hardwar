@@ -84,7 +84,7 @@ bool Zone::drawBuilding(const unsigned int loc)
    }
    catch(Ogre::Exception& e)
    {
-      mConsole->addToConsole(mConsole->getConsoleError(), "addbuilding", e.getFullDescription());
+      mConsole->print(mConsole->getConsoleError(), "addbuilding", e.getFullDescription());
    }
 
    return false;

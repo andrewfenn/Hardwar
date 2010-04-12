@@ -81,7 +81,7 @@ void Network::connect(void)
 
 void Network::setConStatus(const clientStatus lStatus)
 {
-   mConsole->addToConsole("Changing state: "+Ogre::StringConverter::toString(lStatus));
+   mConsole->print("Changing state: "+Ogre::StringConverter::toString(lStatus));
    mStatus = lStatus;
 }
 
@@ -192,13 +192,13 @@ void Network::threadLoopGame()
                if (msg == accepted)
                {
                   /* Login Successful */
-                  mConsole->addToConsole(mConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
+                  mConsole->print(mConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
                   GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));
                }
                else
                {
                   /* Failed to login correctly */
-                  mConsole->addToConsole(mConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Login failed")));
+                  mConsole->print(mConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Login failed")));
                }
             }
          break;
@@ -216,11 +216,11 @@ void Network::threadLoopGame()
 
                      if (zone->addBuilding(building))
                      {
-                        mConsole->addToConsole("Building Added");
+                        mConsole->print("Building Added");
                      }
                      else
                      {
-                        mConsole->addToConsole("Building Add Error");
+                        mConsole->print("Building Add Error");
                      }
                   }
                default:
@@ -236,7 +236,7 @@ void Network::threadLoopGame()
          }
          break;
          default:
-            mConsole->addToConsole(Ogre::String((char*) (*mitEvent).second.packet->data));
+            mConsole->print(Ogre::String((char*) (*mitEvent).second.packet->data));
          break;
       }
       enet_packet_destroy((*mitEvent).second.packet);

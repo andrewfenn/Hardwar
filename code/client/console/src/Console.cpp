@@ -201,7 +201,7 @@ void Console::executeCommand(const Ogre::UTFString command, const Ogre::UTFStrin
    {
 		if (eventConsoleUnknownCommand.empty())
       {
-			addToConsole(mStringUnknown + "'" + command + "'");
+			print(mStringUnknown + "'" + command + "'");
 		}
 		else
       {
@@ -210,7 +210,7 @@ void Console::executeCommand(const Ogre::UTFString command, const Ogre::UTFStrin
 	}
 }
 
-void Console::addToConsole(const Ogre::UTFString & line)
+void Console::print(const Ogre::UTFString & line)
 {
    if (mHistoryList->getCaption().empty())
    {
