@@ -27,6 +27,7 @@
 
 namespace Client
 {
+
 /** A zone is an outside player area. */
 class Zone
 {
@@ -40,7 +41,7 @@ class Zone
       Console *mConsole;
 
       /** Create a building specified from the building list */
-      bool drawBuilding(const unsigned int);
+      bool drawBuilding(Hardwar::Building);
 };
 
 }

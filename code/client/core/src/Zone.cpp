@@ -46,7 +46,7 @@ Zone::~Zone()
 bool Zone::addBuilding(Hardwar::Building building)
 {
    mBuildings.push_back(building);
-   return drawBuilding(mBuildings.size()-1);
+   return drawBuilding(building);
 }
 
 Hardwar::Building Zone::getBuildingByName(Ogre::String name)
@@ -56,20 +56,20 @@ Hardwar::Building Zone::getBuildingByName(Ogre::String name)
       throw;
 
    unsigned int id = Ogre::StringConverter::parseInt(arr[1]);
-   if (mBuildings.size() < id)
-      throw;
 
-   return mBuildings.at(id);
+   for (std::vector<Hardwar::Building>::iterator buildItr=mBuildings.begin(); buildItr != mBuildings.end(); buildItr++)
+   {
+      if (buildItr->getID() == id)
+      {
+         return *buildItr;
+      }
+   }
+
+   throw;
 }
 
-bool Zone::drawBuilding(const unsigned int loc)
+bool Zone::drawBuilding(Hardwar::Building building)
 {
-   Hardwar::Building building;
-
-   if (mBuildings.size() < loc)
-      return false;
-
-   building = mBuildings.at(loc);
    Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
 
    try
@@ -79,7 +79,10 @@ bool Zone::drawBuilding(const unsigned int loc)
       Ogre::SceneNode * lSceneNode = lSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::String("Building/")+Ogre::StringConverter::toString(building.getID()));
       lSceneNode->attachObject(lEntity);
       lSceneNode->setPosition(building.getPosition());
-      lSceneNode->setDirection(building.getRotation());
+      if (building.getRotation() != Ogre::Quaternion::ZERO)
+      {
+         lSceneNode->setOrientation(building.getRotation());
+      }
       return true;
    }
    catch(Ogre::Exception& e)

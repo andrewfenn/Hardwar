@@ -29,22 +29,21 @@ namespace Hardwar
    {
       public:
          Building();
-         Building(const Ogre::Vector3, const Ogre::Vector3, const Ogre::String);
+         Building(const Ogre::Vector3, const Ogre::Quaternion, const Ogre::String);
          const Ogre::Vector3 getPosition();
-         const Ogre::Vector3 getRotation();
+         const Ogre::Quaternion getRotation();
          const Ogre::String getMeshName();
-         const int getID();
+         const unsigned int getID();
          void setPosition(const Ogre::Vector3);
          void setRotation(const Ogre::Quaternion);
-         void setRotation(const Ogre::Vector3);
          void setMeshName(const Ogre::String);
-         void setID(const int);
+         void setID(const unsigned int);
          dataPacket serialize(dataPacket);
          void unserialize(dataPacket);
       private:
          int mID;
          Ogre::Vector3 mPosition;
-         Ogre::Vector3 mRotation;
+         Ogre::Quaternion mRotation;
          Ogre::String  mMesh;
    };
 

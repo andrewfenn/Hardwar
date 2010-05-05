@@ -22,6 +22,7 @@
 #include <Ogre.h>
 #include <MyGUI.h>
 #include "CollisionTools.h"
+#include "GameManager.h"
 
 namespace Client
 {

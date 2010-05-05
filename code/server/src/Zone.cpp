@@ -42,13 +42,15 @@ bool Zone::addBuilding(Hardwar::Building building)
 {
    mBuildings.push_back(building);
 
-   Ogre::Vector3 pos, rot;
+   Ogre::Vector3 pos;
+   Ogre::Quaternion rot;
    Ogre::String mesh;
    pos = building.getPosition();
    rot = building.getRotation();
    mesh = building.getMeshName();
    /* FIXME: Remove the printf after debugging */
-   printf("Zone: New Building - Position: %s - Rotation: %s - Mesh: %s\n",
+   printf("Zone: New Building - ID: %d - Position: %s - Rotation: %s - Mesh: %s\n",
+                              building.getID(),
                               Ogre::StringConverter::toString(pos).c_str(),
                               Ogre::StringConverter::toString(rot).c_str(),
                               mesh.c_str());
@@ -57,15 +59,14 @@ bool Zone::addBuilding(Hardwar::Building building)
 
 bool Zone::editBuilding(Hardwar::Building building)
 {
-   std::cout << "Building Moved: " << building.getID() << std::endl;
    for (std::vector<Hardwar::Building>::iterator buildItr=mBuildings.begin(); buildItr != mBuildings.end(); buildItr++)
    {
-      std::cout << buildItr->getID() << std::endl;
       if (building.getID() == buildItr->getID())
       {
-//         mBuildings.push_back(building);
-
-         Ogre::Vector3 pos, rot;
+         mBuildings.erase(buildItr);
+         mBuildings.push_back(building);
+         Ogre::Vector3 pos;
+         Ogre::Quaternion rot;
          Ogre::String mesh;
          pos = building.getPosition();
          rot = building.getRotation();

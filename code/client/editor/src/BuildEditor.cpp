@@ -106,8 +106,9 @@ void BuildEditor::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
          // Send new location
          building.setPosition(lNode->getPosition());
-         building.setRotation(lNode->getOrientation());
-         building.setMeshName(lNode->getName());
+         Ogre::Quaternion rot = lNode->getOrientation();
+         lNode->convertLocalToWorldOrientation(rot);
+         building.setRotation(rot);
 
          /* Tell the server to place down a new building */
          dataPacket lPacket = dataPacket(edit_building);

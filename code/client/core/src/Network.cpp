@@ -81,7 +81,6 @@ void Network::connect(void)
 
 void Network::setConStatus(const clientStatus lStatus)
 {
-   mConsole->print("Changing state: "+Ogre::StringConverter::toString(lStatus));
    mStatus = lStatus;
 }
 
@@ -214,11 +213,7 @@ void Network::threadLoopGame()
                      /* FIXME: Should know which zone to put in */
                      Zone* zone = mZoneMgr->getCurrent();
 
-                     if (zone->addBuilding(building))
-                     {
-                        mConsole->print("Building Added");
-                     }
-                     else
+                     if (!zone->addBuilding(building))
                      {
                         mConsole->print("Building Add Error");
                      }

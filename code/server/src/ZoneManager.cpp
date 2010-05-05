@@ -70,9 +70,9 @@ bool ZoneManager::loadData(Ogre::String name)
 void ZoneManager::saveWorld()
 {
    Hardwar::Buildings buildings = getAllBuildings();
-   unsigned int zone;
+   unsigned short zone = 0;
    Ogre::Vector3 pos;
-   Ogre::Vector3 rot;
+   Ogre::Quaternion rot;
 
    /* TODO: Save process..
       1) touch new file
@@ -86,42 +86,43 @@ void ZoneManager::saveWorld()
    int error;
    char * errorMsg;
 
-   error = sqlite3_exec(mSQLdb, "DELETE FROM buildings WHERE 1=1;", 0, 0, &errorMsg);
-   if (error != SQLITE_DONE)
+   error = sqlite3_exec(mSQLdb, "DELETE FROM buildings;", 0, 0, &errorMsg);
+   if (error != SQLITE_OK)
    {
-      std::cout << "SQLite Error: " << errorMsg << std::endl;
-      sqlite3_close(mSQLdb);
+      std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;
+      return;
    }
 
    std::string sql = std::string("INSERT INTO buildings \
                (`id`,`crater`,`mesh`,`position_x`,`position_y`, \
-               `position_z`,`rotation_x`,`rotation_y`,`rotation_z`) \
-               VALUES(NULL, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);");
+               `position_z`,`rotation_x`,`rotation_y`,`rotation_z`,`rotation_w`) \
+               VALUES(NULL, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9);");
    sqlite3_stmt* statement;
    for (Hardwar::Buildings::iterator building=buildings.begin(); building != buildings.end(); building++)
    {
-      zone = building->first;
-      Hardwar::Building hanger = building->second;
-      pos = hanger.getPosition();
-      rot = hanger.getRotation();
+        zone = building->first;
+        Hardwar::Building hanger = building->second;
+        pos = hanger.getPosition();
+        rot = hanger.getRotation();
 
-      sqlite3_prepare_v2(mSQLdb, sql.c_str(), sql.size(), &statement, 0);
-      sqlite3_bind_int(statement, 1, zone);
-      sqlite3_bind_text(statement, 2, hanger.getMeshName().c_str(), hanger.getMeshName().length(), 0);
-      sqlite3_bind_int(statement, 3, pos.x);
-      sqlite3_bind_int(statement, 4, pos.y);
-      sqlite3_bind_int(statement, 5, pos.z);
-      sqlite3_bind_int(statement, 6, rot.z);
-      sqlite3_bind_int(statement, 7, rot.z);
-      sqlite3_bind_int(statement, 8, rot.z);
+        sqlite3_prepare_v2(mSQLdb, sql.c_str(), sql.size(), &statement, 0);
+        sqlite3_bind_int(statement, 1, zone);
+        sqlite3_bind_text(statement, 2, hanger.getMeshName().c_str(), hanger.getMeshName().length(), 0);
+        sqlite3_bind_int(statement, 3, pos.x);
+        sqlite3_bind_int(statement, 4, pos.y);
+        sqlite3_bind_int(statement, 5, pos.z);
+        sqlite3_bind_double(statement, 6, rot.x);
+        sqlite3_bind_double(statement, 7, rot.y);
+        sqlite3_bind_double(statement, 8, rot.z);
+        sqlite3_bind_double(statement, 9, rot.w);
 
-      if (sqlite3_step(statement) != SQLITE_DONE)
-      {
-         std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;
-         sqlite3_finalize(statement);
-         sqlite3_close(mSQLdb);
-      }
-      sqlite3_reset(statement);
+        if (sqlite3_step(statement) != SQLITE_DONE)
+        {
+            std::cout << "SQLite Error: " << sqlite3_errmsg(mSQLdb) << std::endl;
+            sqlite3_finalize(statement);
+            return;
+        }
+        sqlite3_reset(statement);
    }
    sqlite3_finalize(statement);
    std::cout << gettext("Saved buildings") << ":" << buildings.size() << std::endl; 
@@ -152,6 +153,7 @@ bool ZoneManager::loadBuildings()
    sqlite3_stmt* statement;
    Hardwar::Building lBuilding;
    Ogre::Vector3 point;
+   Ogre::Quaternion rot;
 
    /* get all the buildings out the database */
    std::string sql = std::string("SELECT * FROM buildings");
@@ -173,19 +175,20 @@ bool ZoneManager::loadBuildings()
 	      case SQLITE_ROW:
             /* get ID */
             lBuilding.setID(sqlite3_column_int(statement,0));
-		      /* get mesh name */
-		      lBuilding.setMeshName(Ogre::String((const char*) sqlite3_column_text(statement,2)));
-		      /* get position */
-		      point.x = sqlite3_column_double(statement,3);
-		      point.y = sqlite3_column_double(statement,4);
-		      point.z = sqlite3_column_double(statement,5);
+            /* get mesh name */
+            lBuilding.setMeshName(Ogre::String((const char*) sqlite3_column_text(statement,2)));
+            /* get position */
+            point.x = sqlite3_column_double(statement,3);
+            point.y = sqlite3_column_double(statement,4);
+            point.z = sqlite3_column_double(statement,5);
             lBuilding.setPosition(point);
 
-		      /* get rotation */
-		      point.x = sqlite3_column_double(statement,6);
-		      point.y = sqlite3_column_double(statement,7);
-		      point.z = sqlite3_column_double(statement,8);
-            lBuilding.setRotation(point);
+            /* get rotation */
+            rot.x = sqlite3_column_double(statement,6);
+            rot.y = sqlite3_column_double(statement,7);
+            rot.z = sqlite3_column_double(statement,8);
+            rot.w = sqlite3_column_double(statement,9);
+            lBuilding.setRotation(rot);
 
             get(sqlite3_column_int(statement,1))->addBuilding(lBuilding);
 	      break;

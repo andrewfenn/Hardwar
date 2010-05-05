@@ -56,19 +56,19 @@ void EditorAxis::updateSelectedUI(void)
    edit->eraseText(0, edit->getTextLength());
    edit->addText(Ogre::StringConverter::toString(mSelected->getParentNode()->getPosition().y));
 
-   Ogre::Quaternion rot = mSelected->getParentNode()->getOrientation();
+   Ogre::Quaternion lRot = mSelected->getParentNode()->getOrientation();
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotX");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(Ogre::Math::Floor((2*Ogre::Math::ACos(rot.x)).valueDegrees())));
+   edit->addText(Ogre::StringConverter::toString(lRot.getRoll().valueDegrees()));
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotY");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(Ogre::Math::Floor((2*Ogre::Math::ACos(rot.y)).valueDegrees())));
+   edit->addText(Ogre::StringConverter::toString(lRot.getPitch().valueDegrees()));
 
    edit =  MyGUI::Gui::getInstancePtr()->findWidget<MyGUI::Edit>("RotZ");
    edit->eraseText(0, edit->getTextLength());
-   edit->addText(Ogre::StringConverter::toString(Ogre::Math::Floor((2*Ogre::Math::ACos(rot.z)).valueDegrees())));
+   edit->addText(Ogre::StringConverter::toString(lRot.getYaw().valueDegrees()));
 }
 
 bool EditorAxis::objectSelected()
@@ -173,43 +173,46 @@ void EditorAxis::clearSelectedAxis(void)
 }
 
 
-void EditorAxis::createPlane(void)
+void EditorAxis::createPlane()
 {
-   Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
-   Ogre::SceneNode * lNode = mSelected->getParentSceneNode();
-   Ogre::Vector3 lPosition = lNode->getPosition();
+    Ogre::SceneManager* lSceneMgr = Ogre::Root::getSingletonPtr()->getSceneManager("GameSceneMgr");
+    Ogre::SceneNode * lNode = mSelected->getParentSceneNode();
+    Ogre::Vector3 lPosition = lNode->getPosition();
 
-   Ogre::Plane plane;
-   Ogre::Vector3 lUpVec;
-   if (mSelectedAxis->getName() == "AxisZ" || mSelectedAxis->getName() == "AxisRotZ")
-   {
-   	plane.normal = Vector3::UNIT_X;
-      lUpVec = Vector3::UNIT_Y;
-   }
-   else if (mSelectedAxis->getName() == "AxisRotY")
-   {
-   	plane.normal = Vector3::UNIT_Z;
-      lUpVec = Vector3::UNIT_X;
-   }
-   else
-   {
-   	plane.normal = Vector3::UNIT_Y;
-      lUpVec = Vector3::UNIT_Z;
-   }
+    Ogre::Plane plane;
+    Ogre::Vector3 lUpVec;
+    if (mSelectedAxis->getName() == "AxisZ" || mSelectedAxis->getName() == "AxisRotZ")
+    {
+        plane.normal = Vector3::NEGATIVE_UNIT_X;
+        lUpVec = Vector3::UNIT_Y;
+    }
+    else if (mSelectedAxis->getName() == "AxisRotY")
+    {
+        plane.normal = Vector3::NEGATIVE_UNIT_Z;
+        lUpVec = Vector3::UNIT_X;
+    }
+    else
+    {
+        plane.normal = Vector3::NEGATIVE_UNIT_Y;
+        lUpVec = Vector3::UNIT_Z;
+    }
 
-	plane.d = 0;
+    plane.normal *= GameManager::getSingletonPtr()->getCamera()->getDirection();
+    lUpVec *= GameManager::getSingletonPtr()->getCamera()->getDirection();
 
-   Ogre::MeshManager::getSingleton().createPlane("planeforcollision",
-			Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane,
-			10000,10000,10,10,true,1,10,10, lUpVec);
-	Entity* lEntity = lSceneMgr->createEntity( "collisonplane", "planeforcollision" );
-	lEntity->setCastShadows(false);
-   lEntity->setQueryFlags(mCollisionFlag);
-   lEntity->setMaterialName("Editor/Grid");
+    plane.d = 0;
 
-	Ogre::SceneNode* node = lSceneMgr->getRootSceneNode()->createChildSceneNode("collisonplane");
-   node->setPosition(lPosition);
-   node->attachObject(lEntity);
+    Ogre::MeshManager::getSingleton().createPlane("planeforcollision",
+	        Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane,
+	        10000,10000,10,10,true,1,10,10, lUpVec);
+    Entity* lEntity = lSceneMgr->createEntity( "collisonplane", "planeforcollision" );
+    lEntity->setCastShadows(false);
+    lEntity->setQueryFlags(mCollisionFlag);
+    lEntity->setMaterialName("Editor/Grid");
+
+    Ogre::SceneNode* node = lSceneMgr->getRootSceneNode()->createChildSceneNode("collisonplane");
+    node->setPosition(lPosition);
+    node->attachObject(lEntity);
 }
 
 void EditorAxis::moveBuilding(Ogre::Ray _ray)
@@ -256,6 +259,14 @@ void EditorAxis::moveBuilding(Ogre::Ray _ray)
       {
          lNode->lookAt(lResult, Ogre::Node::TS_PARENT, Ogre::Vector3::NEGATIVE_UNIT_Y);
       }
+
+      Ogre::Quaternion lRot = mSelected->getParentNode()->getOrientation();
+      Ogre::Degree deg = Ogre::Degree(Ogre::Math::Floor(lRot.getYaw().valueDegrees()));
+      Ogre::Vector3 vec = lRot.xAxis();
+
+      lRot.ToAngleAxis(deg, vec);
+      
+      mSelected->getParentNode()->setOrientation(lRot);
 
       updateSelectedUI();
    }
