@@ -31,6 +31,7 @@
 #include <dirent.h>
 #endif
 #include <MyGUI.h>
+#include <MyGUI_OgrePlatform.h>
 
 #include "InputManager.h"
 #include "Network.h"
@@ -87,6 +88,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
    private:
       Ogre::Root           *mRoot;
       Ogre::RenderWindow   *mRenderWindow;
+      MyGUI::OgrePlatform  *mPlatform;
       InputManager         *mInputMgr;
       GameSettings         *mSettings;
       GameCore             mGameCore;

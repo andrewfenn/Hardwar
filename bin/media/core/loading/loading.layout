@@ -2,7 +2,7 @@
 <MyGUI type="Layout">
     <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1.19922 1" align="Left Top" layer="Back">
         <Property key="Image_Texture" value="load.zworks.png"/>
-        <Property key="Widget_Show" value="true"/>
+        <Property key="Widget_Visible" value="true"/>
         <Widget type="StaticImage" skin="StaticImage" position_real="0 0.796424 0.833062 0.208074" align="Left Bottom" layer="Back">
             <Property key="Image_Texture" value="load_bkg_hint.zworks.png"/>
         </Widget>

@@ -71,8 +71,10 @@ GameManager::~GameManager( void )
    mGUI->destroyAllChildWidget();
    mGUI->shutdown();
    delete mGUI;
-   mGUI = 0;
-
+   mGUI = 0;   
+   mPlatform->shutdown();
+   delete mPlatform;
+   mPlatform = 0;
 
    mSceneMgr->clearScene();
    mSceneMgr->destroyAllCameras();
@@ -129,15 +131,16 @@ void GameManager::startGame( GameState *gameState )
    mInputMgr->addMouseListener(this, "GameManager");
    mInputMgr->getJoystick(1);
 
-   mGUI = new MyGUI::Gui();
-
    mRoot->createSceneManager(Ogre::ST_GENERIC,"GameSceneMgr");
    mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
    mCamera       = mSceneMgr->createCamera("GameCamera");
    mViewport     = mRenderWindow->addViewport(mCamera,1);
 
-   mGUI->initialise(mRoot->getAutoCreatedWindow(), "core.xml", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "logs/mygui.log");
-   mGUI->setSceneManager(mSceneMgr);
+   mGUI = new MyGUI::Gui();
+   mPlatform = new MyGUI::OgrePlatform();
+   mPlatform->initialise(mRenderWindow, mSceneMgr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "");
+   mGUI->initialise("core.xml", "./logs/mygui.log");
+
 
    /* Add Console */
    mConsole.load();
@@ -324,7 +327,8 @@ bool GameManager::keyPressed(const OIS::KeyEvent &e)
    }
 
    if (mConsole.isActive())
-   {      mGUI->injectKeyPress(e);
+   {
+      mGUI->injectKeyPress(MyGUI::KeyCode::Enum(e.key), e.text);
    }
    else
    {
@@ -337,7 +341,7 @@ bool GameManager::keyReleased(const OIS::KeyEvent &e)
 {
    if (e.key == OIS::KC_SYSRQ)
    {
-      mConsole.executeCommand(Ogre::UTFString("cl_screenshot"));
+      mConsole.executeCommand(MyGUI::UString("cl_screenshot"));
    }
    else if (e.key == OIS::KC_GRAVE)
    {
@@ -346,7 +350,7 @@ bool GameManager::keyReleased(const OIS::KeyEvent &e)
 
    if (mConsole.isActive())
    {
-      mGUI->injectKeyRelease(e);
+      mGUI->injectKeyRelease(MyGUI::KeyCode::Enum(e.key));
    } else {
       mStates.back()->keyReleased(e);
    }
@@ -357,7 +361,7 @@ bool GameManager::mouseMoved(const OIS::MouseEvent &e)
 {
    if (mConsole.isActive())
    {
-      mGUI->injectMouseMove(e);
+      mGUI->injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
    } else {
       mStates.back()->mouseMoved(e);
    }
@@ -368,7 +372,7 @@ bool GameManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
    if (mConsole.isActive())
    {
-      mGUI->injectMousePress(e, id);
+      mGUI->injectMousePress(e.state.X.abs, e.state.Y.abs, MyGUI::MouseButton::Enum(id));
    } else {
       mStates.back()->mousePressed( e, id );
    }
@@ -379,7 +383,7 @@ bool GameManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
    if (mConsole.isActive())
    {
-      mGUI->injectMouseRelease(e, id);
+      mGUI->injectMouseRelease(e.state.X.abs, e.state.Y.abs, MyGUI::MouseButton::Enum(id));
    } else {
       mStates.back()->mouseReleased(e, id);
    }

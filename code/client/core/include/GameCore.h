@@ -41,7 +41,7 @@ namespace Client
             @param value
                    A boolean value that either shows or hides the window.
             */
-         void cmd_showFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_showFPS(const MyGUI::UString&, const MyGUI::UString&);
             /** This method is used by Client::Console to toggle the debug window that
             shows network information.
             @param key
@@ -49,7 +49,7 @@ namespace Client
             @param value
                    A boolean value that either shows or hides the window.
             */
-         void cmd_showNet(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_showNet(const MyGUI::UString&, const MyGUI::UString&);
             /** This method is used by Client::Console to change the FPS limit.
             @remarks
                    The value can not be below 25 FPS.
@@ -58,7 +58,7 @@ namespace Client
             @param value
                    An integer for the new FPS limit.
             */
-         void cmd_maxFPS(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_maxFPS(const MyGUI::UString&, const MyGUI::UString&);
             /** This method is used by Client::Console to show bounding boxes on
                 all 3d objects for debug purposes.
             @param key
@@ -66,7 +66,7 @@ namespace Client
             @param value
                    A boolean value that either shows or hides the boxes.
             */
-         void cmd_showBoundingBox(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_showBoundingBox(const MyGUI::UString&, const MyGUI::UString&);
             /** This method is used by Client::Console to take a screenshot
             @remarks
                    The filename value is optional.
@@ -75,21 +75,21 @@ namespace Client
             @param value
                    A string value for the filename.
             */            
-         void cmd_screenshot(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_screenshot(const MyGUI::UString&, const MyGUI::UString&);
             /** This method is used by Client::Console to remotely log into the server.
             @param key
                    The command name typed in the console.
             @param value
                    The password typed into the console.
             */
-         void cmd_remoteConnect(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_remoteConnect(const MyGUI::UString&, const MyGUI::UString&);
             /** This method is used by Client::Console to remotely save world data on the server side.
             @param key
                    The command name typed in the console.
             @param value
                    Bool true or false.
             */
-         void cmd_remoteSave(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_remoteSave(const MyGUI::UString&, const MyGUI::UString&);
             /** This method returns the delay time between render loops depending
                 upon what the max FPS limit is set to. */
          unsigned short getDelayTime(void);

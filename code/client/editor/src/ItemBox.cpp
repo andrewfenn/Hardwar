@@ -45,7 +45,7 @@ namespace Client
       pos.top = _top;
       mImage->setPosition(pos);
       mDragged = true;
-      MyGUI::Gui::getInstancePtr()->hidePointer();
+      MyGUI::Gui::getInstancePtr()->setVisiblePointer(false);
    }
 
    MyGUI::IntCoord ItemBox::getCoord(void)
@@ -62,7 +62,7 @@ namespace Client
    {
       mImage->setCoord(mOrigCoord);
       mDragged = false;
-      MyGUI::Gui::getInstancePtr()->showPointer();
+      MyGUI::Gui::getInstancePtr()->setVisiblePointer(true);
    }
 
    bool ItemBox::isActive(void)

@@ -19,11 +19,12 @@
 #ifndef __CONSOLE_H_
 #define __CONSOLE_H_
 
-#include "ConsoleCombo.h"
 #include <MyGUI.h>
+#include <Ogre.h>
+#include <limits>
 #include <libintl.h>
 
-typedef MyGUI::delegates::CDelegate2<const Ogre::UTFString&, const Ogre::UTFString&> CommandDelegate;
+typedef MyGUI::delegates::CDelegate2<const MyGUI::UString&, const MyGUI::UString&> CommandDelegate;
 
 namespace formats
 {
@@ -64,9 +65,9 @@ class Console
              The function which is called when the user executes the console
       command.
       */
-      bool addCommand(const Ogre::UTFString&, CommandDelegate::IDelegate*);
+      bool addCommand(const MyGUI::UString&, CommandDelegate::IDelegate*);
       /** The method adds text to the console's window. */
-      void print(const Ogre::UTFString&);
+      void print(const MyGUI::UString&);
       /** The method adds formatted text to the console's window according to
       the UserString's in bin/media/core/console/console.layout
       @param reason
@@ -77,19 +78,19 @@ class Console
       @param value
              The result text displayed after the key text.
       */
-      void print(const Ogre::UTFString& reason, const Ogre::UTFString& key, const Ogre::UTFString& value)
+      void print(const MyGUI::UString& reason, const MyGUI::UString& key, const MyGUI::UString& value)
       {
          print(MyGUI::utility::toString(reason, "'", key, " ", value, "'"));
       }
 
-      const Ogre::UTFString & getConsoleCurrent() { return mStringCurrent; }
-      const Ogre::UTFString & getConsoleError() { return mStringError; }
-      const Ogre::UTFString & getConsoleSuccess() { return mStringSuccess; }
-      const Ogre::UTFString & getConsoleUnknow() { return mStringUnknown; }
-      const Ogre::UTFString & getConsoleFormat() { return mStringFormat; }
+      const MyGUI::UString & getConsoleCurrent() { return mStringCurrent; }
+      const MyGUI::UString & getConsoleError() { return mStringError; }
+      const MyGUI::UString & getConsoleSuccess() { return mStringSuccess; }
+      const MyGUI::UString & getConsoleUnknow() { return mStringUnknown; }
+      const MyGUI::UString & getConsoleFormat() { return mStringFormat; }
       CommandDelegate eventConsoleUnknownCommand;
 
-      template <typename T> bool isAction(T& result, const Ogre::UTFString& key, const Ogre::UTFString& value, const Ogre::UTFString& format = "")
+      template <typename T> bool isAction(T& result, const MyGUI::UString& key, const MyGUI::UString& value, const MyGUI::UString& format = "")
       {
          if (value.empty())
          {
@@ -110,7 +111,7 @@ class Console
 	      return false;
       }
 
-      void executeCommand(const Ogre::UTFString, const Ogre::UTFString=Ogre::UTFString(""));
+      void executeCommand(const MyGUI::UString, const MyGUI::UString=MyGUI::UString(""));
 
    private:
       void draw();
@@ -133,18 +134,18 @@ class Console
 
       MyGUI::Gui          *mGUI;
       MyGUI::WindowPtr     mGUIConsole;
-      MyGUI::ConsoleComboBoxPtr   mCommandBox;
+      MyGUI::ComboBoxPtr   mCommandBox;
       MyGUI::EditPtr       mHistoryList;
       MyGUI::ButtonPtr     mSubmitButton;
 
-      Ogre::UTFString mStringCurrent;
-      Ogre::UTFString mStringError;
-      Ogre::UTFString mStringSuccess;
-      Ogre::UTFString mStringUnknown;
-      Ogre::UTFString mStringFormat;
+      MyGUI::UString mStringCurrent;
+      MyGUI::UString mStringError;
+      MyGUI::UString mStringSuccess;
+      MyGUI::UString mStringUnknown;
+      MyGUI::UString mStringFormat;
 
-      typedef std::map<Ogre::UTFString,CommandDelegate> MapFunction;
-      std::vector<Ogre::UTFString> mUsedCommands;
+      typedef std::map<MyGUI::UString,CommandDelegate> MapFunction;
+      std::vector<MyGUI::UString> mUsedCommands;
       unsigned short mListPos;
       MapFunction mFunctions;
 };

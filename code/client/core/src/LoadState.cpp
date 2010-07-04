@@ -70,12 +70,12 @@ void LoadState::update( unsigned long lTimeElapsed )
 
          if (mGameMgr->getNetwork()->getRetryAttempts() > 0)
          {
-            mStatusText->setCaption(Ogre::UTFString(gettext("Retrying"))+Ogre::UTFString(" (")+
-                            Ogre::StringConverter::toString(mGameMgr->getNetwork()->getRetryAttempts())+Ogre::UTFString(")"));
+            mStatusText->setCaption(MyGUI::UString(gettext("Retrying"))+MyGUI::UString(" (")+
+                            MyGUI::UString(Ogre::StringConverter::toString(mGameMgr->getNetwork()->getRetryAttempts()))+MyGUI::UString(")"));
          }
       break;
       case status_listening:
-         mStatusText->setCaption(Ogre::String(gettext("Loading")));
+         mStatusText->setCaption(gettext("Loading"));
       break;
       case status_filecheck:
          {

@@ -35,11 +35,10 @@ void Console::load()
 {
    mGUI = MyGUI::Gui::getInstancePtr();
 
-   MyGUI::WidgetManager::getInstancePtr()->registerFactory(new MyGUI::factory::ConsoleComboBoxFactory());
    MyGUI::LayoutManager::getInstance().load("console.layout");
 
    mGUIConsole = mGUI->findWidget<MyGUI::Window>("console");
-   mCommandBox = mGUI->findWidget<MyGUI::ConsoleComboBox>("commandbox");
+   mCommandBox = mGUI->findWidget<MyGUI::ComboBox>("commandbox");
    mHistoryList = mGUI->findWidget<MyGUI::Edit>("historylist");
    mHistoryList->setOverflowToTheLeft(true);
    mSubmitButton = mGUI->findWidget<MyGUI::Button>("submit");
@@ -50,16 +49,16 @@ void Console::load()
    mStringUnknown = mGUIConsole->getUserString("Unknown");
    mStringFormat  = mGUIConsole->getUserString("Format");
 
-	mCommandBox->eventComboAccept = newDelegate(this, &Console::notifyCommandAccept);
-	mCommandBox->eventKeyButtonPressed = newDelegate(this, &Console::notifyCommandTyped);
-	mSubmitButton->eventMouseButtonClick = newDelegate(this, &Console::notifySubmitButtonClick);
+   mCommandBox->eventComboAccept = newDelegate(this, &Console::notifyCommandAccept);
+   mCommandBox->eventKeyButtonPressed = newDelegate(this, &Console::notifyCommandTyped);
+   mSubmitButton->eventMouseButtonClick = newDelegate(this, &Console::notifySubmitButtonClick);
 
-   mSubmitButton->setCaption(Ogre::UTFString(gettext("submit")));
+   mSubmitButton->setCaption(MyGUI::UString(gettext("submit")));
    mGUIConsole->setVisible(false);
    mGUIConsole->setEnabled(false);
 }
 
-bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate* function)
+bool Console::addCommand(const MyGUI::UString &name, CommandDelegate::IDelegate* function)
 {
    mCommandBox->addItem(name);
    MapFunction::iterator iter = mFunctions.find(name);
@@ -73,22 +72,15 @@ bool Console::addCommand(const Ogre::UTFString &name, CommandDelegate::IDelegate
 
 void Console::toggleShow()
 {
+   mShow = !mShow;
+   mGUI->setVisiblePointer(mShow);
+   mGUIConsole->setVisible(mShow);
+   mGUIConsole->setEnabled(mShow);
+
    if (mShow)
    {
-      mShow = false;
-      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(0, 100, true);
-      MyGUI::ControllerManager::getInstance().addItem(mGUIConsole, controller);  
-      mGUI->hidePointer();
+       MyGUI::InputManager::getInstance().setKeyFocusWidget(mCommandBox);
    }
-   else
-   {
-      mShow = true;
-      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(1, 100, true);
-      MyGUI::ControllerManager::getInstance().addItem(mGUIConsole, controller);
-      mGUI->showPointer();
-      MyGUI::InputManager::getInstance().setKeyFocusWidget(mCommandBox);
-   }
-   mGUIConsole->setEnabled(mShow);
 }
 
 void Console::notifySubmitButtonClick(MyGUI::WidgetPtr sender)
@@ -99,13 +91,7 @@ void Console::notifySubmitButtonClick(MyGUI::WidgetPtr sender)
 void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, MyGUI::Char character)
 {
    size_t len = sender->getCaption().length();
-
-   /*MyGUI::ConsoleComboBoxPtr combo = sender->castType<MyGUI::ConsoleComboBox>();
-   if (len > 0)
-   {
-
-   }*/
-   
+ 
    MyGUI::EditPtr edit = sender->castType<MyGUI::Edit>();
    if ((key == MyGUI::KeyCode::Backspace) && (len > 0))
    {
@@ -145,7 +131,7 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
       return;
    }
 */
-   Ogre::UTFString command = sender->getCaption();
+   MyGUI::UString command = sender->getCaption();
    if (command.length() == 0) return;
 
    for (MapFunction::iterator iter = mFunctions.begin(); iter != mFunctions.end(); ++iter)
@@ -164,14 +150,14 @@ void Console::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, My
 
 void Console::notifyCommandAccept(MyGUI::ComboBoxPtr sender, size_t index)
 {
-	const Ogre::UTFString & command = sender->getCaption();
+	const MyGUI::UString & command = sender->getCaption();
 	if (command == "") return;
 
-	Ogre::UTFString key = command;
-	Ogre::UTFString value;
+	MyGUI::UString key = command;
+	MyGUI::UString value;
 
 	size_t pos = command.find(' ');
-	if (pos != Ogre::UTFString::npos)
+	if (pos != MyGUI::UString::npos)
    {
 		key = command.substr(0, pos);
 		value = command.substr(pos + 1);
@@ -190,7 +176,7 @@ void Console::notifyCommandAccept(MyGUI::ComboBoxPtr sender, size_t index)
 	sender->setCaption("");
 }
 
-void Console::executeCommand(const Ogre::UTFString command, const Ogre::UTFString value)
+void Console::executeCommand(const MyGUI::UString command, const MyGUI::UString value)
 {
    MapFunction::iterator iter = mFunctions.find(command);
 	if (iter != mFunctions.end())
@@ -210,7 +196,7 @@ void Console::executeCommand(const Ogre::UTFString command, const Ogre::UTFStrin
 	}
 }
 
-void Console::print(const Ogre::UTFString & line)
+void Console::print(const MyGUI::UString & line)
 {
    if (mHistoryList->getCaption().empty())
    {

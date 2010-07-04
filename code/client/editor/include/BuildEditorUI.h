@@ -49,7 +49,7 @@ namespace Client
          @param value
                  A boolean value that either shows or hides the window.
          */
-         void cmd_showEditor(const Ogre::UTFString&, const Ogre::UTFString&);
+         void cmd_showEditor(const MyGUI::UString&, const MyGUI::UString&);
          void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
          void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
          void mouseMoved(const OIS::MouseEvent &e);

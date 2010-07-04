@@ -24,7 +24,7 @@ FIND_PATH(MYGUI_INCLUDE_DIR MyGUI.h
 )
 
 FIND_LIBRARY(MYGUI_LIBRARY 
-  NAMES MyGUI MyGUIEngine libMyGUI libmygui.so
+  NAMES MyGUI MyGUIEngine libMyGUIEngine libMyGUI libmygui
   HINTS
   $ENV{MYGUIDIR}
   PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64
@@ -38,7 +38,6 @@ FIND_LIBRARY(MYGUI_LIBRARY
   /opt/csw
   /opt
 )
-
 
 SET(MYGUI_FOUND False)
 IF(MYGUI_LIBRARY AND MYGUI_INCLUDE_DIR)

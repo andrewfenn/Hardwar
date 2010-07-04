@@ -40,7 +40,7 @@ BuildEditorUI::BuildEditorUI(void)
 
    // Add console command
    Console* mConsole = GameManager::getSingletonPtr()->getConsole();
-   mConsole->addCommand(Ogre::UTFString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditorUI::cmd_showEditor));
+   mConsole->addCommand(MyGUI::UString("cl_showeditor"), MyGUI::newDelegate(this, &BuildEditorUI::cmd_showEditor));
 
    // Make the buttons function
    MyGUI::ButtonPtr lButton;
@@ -189,7 +189,7 @@ void BuildEditorUI::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFStrin
    mSceneMgr->destroySceneNode(lPanelName);
 }
 
-void BuildEditorUI::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFString &value)
+void BuildEditorUI::cmd_showEditor(const MyGUI::UString &key, const MyGUI::UString &value)
 {
    bool show = false;
 
@@ -199,7 +199,7 @@ void BuildEditorUI::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFSt
       {
          mConsole->print(mConsole->getConsoleError(), key, value);
       }
-      mConsole->print(mConsole->getConsoleFormat(), key, "[true|false] - "+Ogre::UTFString(gettext("Show the hardwar editor")));
+      mConsole->print(mConsole->getConsoleFormat(), key, "[true|false] - "+MyGUI::UString(gettext("Show the hardwar editor")));
    }
    else
    {
@@ -207,11 +207,11 @@ void BuildEditorUI::cmd_showEditor(const Ogre::UTFString &key, const Ogre::UTFSt
       if (isAdmin)
       {
          this->show(show);
-         mConsole->print(mConsole->getConsoleSuccess(), key, Ogre::StringConverter::toString(show));
+         mConsole->print(mConsole->getConsoleSuccess(), key, MyGUI::UString(Ogre::StringConverter::toString(show)));
       }
       else
       {
-         mConsole->print(mConsole->getConsoleError(), key, Ogre::UTFString(gettext("You must be logged in to do this. (use rcon_password)")));
+         mConsole->print(mConsole->getConsoleError(), key, MyGUI::UString(gettext("You must be logged in to do this. (use rcon_password)")));
       }
    }
 }
@@ -242,17 +242,17 @@ Ogre::UTFString BuildEditorUI::getIconName()
 
 void BuildEditorUI::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   mGUI->injectMousePress(e, id);
+   mGUI->injectMousePress(e.state.X.abs, e.state.Y.abs, MyGUI::MouseButton::Enum(id));
 }
 
 void BuildEditorUI::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   mGUI->injectMouseRelease(e, id);
+   mGUI->injectMouseRelease(e.state.X.abs, e.state.Y.abs, MyGUI::MouseButton::Enum(id));
 }
 
 void BuildEditorUI::mouseMoved(const OIS::MouseEvent &e)
 {
-   mGUI->injectMouseMove(e);
+   mGUI->injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
 }
 
 void BuildEditorUI::showEditPane(bool show)
@@ -267,11 +267,11 @@ void BuildEditorUI::showEditPane(bool show)
       mMenuPanelAdd->setVisible(true);
       mMenuPanelEdit->setVisible(false);
 
-      if (!mGUI->isShowPointer())
+      if (!mGUI->isVisiblePointer())
       {
          if (!mBoxMgr.isIconActive())
          {
-            mGUI->showPointer();
+            mGUI->setVisiblePointer(true);
          }
       }
       mBoxMgr.update();
@@ -285,27 +285,15 @@ void BuildEditorUI::update(unsigned long lTimeElapsed)
 
 void BuildEditorUI::show(bool lShow)
 {
-   if (!lShow)
-   {
-      /* Don't know which panel we're on so set them all hidden */
-      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(0, 100, true);
-      MyGUI::ControllerManager::getInstance().addItem(mEditorWindow, controller);
-      mMenuPanelAdd->setVisible(false);
-      mMenuPanelEdit->setVisible(false);
-      mMenuBar->setVisible(false);
-      mShow = false;
-   }
-   else
-   {
-      renderBuildingList(mBuildingPage);
-      mMenuPanelAdd->setVisible(true);
-      mMenuBar->setVisible(true);
-      mShow = true;
-      mGUI->showPointer();
-      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(1, 100, true);
-      MyGUI::ControllerManager::getInstance().addItem(mEditorWindow, controller);
-   }
-   mMenuBar->setEnabled(mShow);
-   mMenuPanelEdit->setEnabled(mShow);
-   mMenuPanelAdd->setEnabled(mShow);
+    mShow = lShow;
+
+    if (mShow)
+    {
+        renderBuildingList(mBuildingPage);   
+    }
+
+    mEditorWindow->setVisible(mShow);
+    mMenuBar->setEnabled(mShow);
+    mMenuPanelEdit->setEnabled(mShow);
+    mMenuPanelAdd->setEnabled(mShow);
 }

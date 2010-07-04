@@ -11,7 +11,7 @@
 
       <Widget type="Widget" skin="PanelSmall" position="4 4 601 345" align="Stretch">
       <Widget type="Edit" skin="WordWrap" position="4 3 592 337" align="Stretch" name="historylist"/></Widget>
-      <Widget type="ConsoleComboBox" skin="ComboBox" position="5 354 505 26" align="HStretch Bottom" name="commandbox"/>
+      <Widget type="ComboBox" skin="ComboBox" position="5 354 505 26" align="HStretch Bottom" name="commandbox"/>
       <Widget type="Button" skin="Button" position="513 354 91 26" align="Right Bottom" name="submit"></Widget>
    </Widget>
 </MyGUI>

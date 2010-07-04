@@ -191,13 +191,13 @@ void Network::threadLoopGame()
                if (msg == accepted)
                {
                   /* Login Successful */
-                  mConsole->print(mConsole->getConsoleSuccess(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Logged in as admin")));
+                  mConsole->print(mConsole->getConsoleSuccess(), MyGUI::UString("rcon_password"), MyGUI::UString(gettext("Logged in as admin")));
                   GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));
                }
                else
                {
                   /* Failed to login correctly */
-                  mConsole->print(mConsole->getConsoleError(), Ogre::UTFString("rcon_password"), Ogre::UTFString(gettext("Login failed")));
+                  mConsole->print(mConsole->getConsoleError(), MyGUI::UString("rcon_password"), MyGUI::UString(gettext("Login failed")));
                }
             }
          break;

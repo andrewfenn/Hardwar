@@ -1,7 +1,7 @@
 NOTE: You need the following versions or higher
 
 - Ogre3D - 1.6.0 or later
-- MyGUI - 2.2.2 or 2.2.3
+- MyGUI - 3.3.1 or later
 - OIS - 1.2 or later
 
 
@@ -9,7 +9,11 @@ NOTE: You need the following versions or higher
             How to build on unix
 ###############################################################################
 
-To compile the game:
+To compile the game first run the following to make the dependencies
+cmake .
+make
+
+Once done run the commands again to make the game
 cmake .
 make
 

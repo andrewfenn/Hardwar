@@ -49,6 +49,16 @@ MACRO_ADD_LIBRARY(ENET client)
 MACRO_ADD_LIBRARY(OIS client)
 MACRO_ADD_LIBRARY(OGRE client)
 MACRO_ADD_LIBRARY(MYGUI client)
+
+add_library(MYGUI_OGRE STATIC IMPORTED)
+if (UNIX)
+   set_property(TARGET MYGUI_OGRE PROPERTY
+                IMPORTED_LOCATION /usr/lib/libMyGUI.OgrePlatform.a)
+else()
+   #windows
+endif()
+target_link_libraries(client MYGUI_OGRE)
+
 MACRO_ADD_LIBRARY(OgreMax client)
 MACRO_ADD_LIBRARY(SQLITE client)
 MACRO_ADD_LIBRARY(TinyXML client)

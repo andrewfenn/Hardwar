@@ -29,6 +29,7 @@ void PlayState::enter(void)
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
    mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
+
    mGUI          = MyGUI::Gui::getInstancePtr();
    mCamera       = mGameMgr->getCamera();
    mViewport     = mGameMgr->getViewport();
@@ -124,7 +125,7 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
       mBuildEditor->show(!mBuildEditor->isVisible());
       if (!mBuildEditor->isVisible())
       {
-         mGUI->hidePointer();
+         mGUI->setVisiblePointer(false);
       }
    }
 
@@ -140,7 +141,7 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
       if (e.key == OIS::KC_ESCAPE)
       {
          mBuildEditor->show(false);
-         mGUI->hidePointer();
+         mGUI->setVisiblePointer(false);
       }
       else
       {
@@ -183,7 +184,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGUI->isShowPointer() || mBuildEditor->isVisible())
+   if (mGUI->isVisiblePointer() || mBuildEditor->isVisible())
    {
       mBuildEditor->mousePressed(e, id);
    }
@@ -191,7 +192,7 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGUI->isShowPointer() || mBuildEditor->isVisible())
+   if (mGUI->isVisiblePointer() || mBuildEditor->isVisible())
    {
       mBuildEditor->mouseReleased(e, id);
    }
