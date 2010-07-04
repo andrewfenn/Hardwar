@@ -2,16 +2,6 @@ cmake_minimum_required(VERSION 2.6)
 project(Hardwar)
 cmake_policy(SET CMP0003 NEW)
 
-SET(Required_Packages
-   ENET
-   OIS
-   OGRE
-   MyGUI
-   SQLITE
-   TinyXML
-   OgreMax
-)
-
 # project version
 SET( ${PROJECT_NAME}_MAJOR_VERSION 0 )
 SET( ${PROJECT_NAME}_MINOR_VERSION 1 )
@@ -23,7 +13,8 @@ SET( CMAKE_MODULE_PATH   "${CMAKE_MODULE_PATH}"
  )
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
 # Set compiler specific build flags
 IF (UNIX)
    add_definitions(-msse -Wunused -g3 -O3 -Wall)
@@ -47,24 +38,28 @@ IF (MSVC_IDE)
 	SET(CMAKE_CXX_FLAGS_DEBUG "${PLATFORM_C_FLAGS_DEBUG}")
 ENDIF (MSVC_IDE)
 
-#this foreach loads all of the packages that you specified as required.
-FOREACH(Package ${Required_Packages})
-  FIND_PACKAGE(${Package} REQUIRED)
-  IF (${Package}_FOUND)
-      INCLUDE_DIRECTORIES(${${Package}_INCLUDE_DIR})
-  ELSE (${Package}_FOUND)
-      MESSAGE(STATUS "${Package} not found")
-  ENDIF(${Package}_FOUND)
-ENDFOREACH(Package)
+set(deps_built True)
 
-FIND_PACKAGE(Boost QUIET COMPONENTS thread-mt)
-IF (NOT {$boost_thread-mt_FOUND})
-   MESSAGE(STATUS "Could not find Boost thread-mt. Trying Boost thread")
-   FIND_PACKAGE(Boost COMPONENTS thread REQUIRED)
-ENDIF (NOT {$boost_thread-mt_FOUND})
+FIND_PACKAGE(ENET)
+if (NOT ENET_FOUND)
+   message("Enet not found. Using dependencies.")
+   add_subdirectory(dependencies/enet)
+   set(deps_built False)
+endif ()
 
-FIND_PACKAGE(Boost COMPONENTS filesystem REQUIRED)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+FIND_PACKAGE(OgreMax)
+if (NOT OgreMax_FOUND)
+   message("OgreMax not found. Using dependencies.")
+   add_subdirectory(dependencies/OgreMax)
+   set(deps_built False)
+endif ()
 
-add_subdirectory(code/client)
-add_subdirectory(code/server)
+if (NOT deps_built)
+   message("-------------------------")
+   message("\tMissing static libraries. The make files have been generated.\n\tFirst build then re-run cmake to build the game.")
+   message("-------------------------")
+else ()
+   set(Boost_USE_MULTITHREADED True)
+   add_subdirectory(code/client)
+   add_subdirectory(code/server)
+endif ()

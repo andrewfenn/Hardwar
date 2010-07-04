@@ -1,20 +1,16 @@
 project(HardwarClient)
 cmake_policy(SET CMP0003 NEW)
 
-#Declare any external dependencies
-SET(Required_Packages
-   ENET
-   OIS
-   OGRE
-   MyGUI
-   TinyXML
-   OgreMax
-   SQLITE
-)
-
 # searches for all .cpp and .h files
 FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-FILE(GLOB_RECURSE shared_source ${Hardwar_SOURCE_DIR}/code/shared/src/*.cpp)
+set(shared_source
+${Hardwar_SOURCE_DIR}/code/shared/src/md5.cpp
+${Hardwar_SOURCE_DIR}/code/shared/src/db.cpp
+${Hardwar_SOURCE_DIR}/code/shared/src/Building.cpp
+${Hardwar_SOURCE_DIR}/code/shared/src/GameSettings.cpp
+${Hardwar_SOURCE_DIR}/code/shared/src/DynamicLines.cpp
+${Hardwar_SOURCE_DIR}/code/shared/src/DynamicRenderable.cpp
+)
 SOURCE_GROUP("Client" FILES ${folder_source})
 
 INCLUDE_DIRECTORIES(
@@ -24,21 +20,36 @@ INCLUDE_DIRECTORIES(
    ${Hardwar_SOURCE_DIR}/code/shared/include
 )
 
-ADD_EXECUTABLE(client WIN32 ${folder_source} ${shared_source})
+INCLUDE(addLibraryHelper)
 
-#this foreach loads all of the packages that you specified as required.
-FOREACH(Package ${Required_Packages})
-   IF (${Package}_LIBRARIES)
-      TARGET_LINK_LIBRARIES(client ${${Package}_LIBRARIES})
-   ELSE (${Package}_LIBRARIES)
-      LINK_DIRECTORIES(${${Package}_LIBRARY_DIRS})
-   ENDIF (${Package}_LIBRARIES)
-ENDFOREACH(Package)
+MACRO_FIND_LIBRARY(ENET)
+MACRO_FIND_LIBRARY(OIS)
+MACRO_FIND_LIBRARY(OGRE)
+MACRO_FIND_LIBRARY(MYGUI)
+MACRO_FIND_LIBRARY(OgreMax)
+MACRO_FIND_LIBRARY(SQLITE)
+MACRO_FIND_LIBRARY(TinyXML)
+MACRO_FIND_LIBRARIES(Boost "filesystem;thread;")
 
-TARGET_LINK_LIBRARIES(client ${Boost_LIBRARIES})
-
-IF (MSVC)
+if (MSVC)
 	MESSAGE(STATUS "Using GetText in dependencies")
 	INCLUDE_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/include)
 	LINK_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/lib)
-ENDIF(MSVC)
+endif ()
+
+if (WIN32)
+   set(exe "WIN32")
+elseif (WIN64)
+   set(exe "WIN64")
+endif ()
+
+ADD_EXECUTABLE(client ${exe} ${folder_source} ${shared_source})
+
+MACRO_ADD_LIBRARY(ENET client)
+MACRO_ADD_LIBRARY(OIS client)
+MACRO_ADD_LIBRARY(OGRE client)
+MACRO_ADD_LIBRARY(MYGUI client)
+MACRO_ADD_LIBRARY(OgreMax client)
+MACRO_ADD_LIBRARY(SQLITE client)
+MACRO_ADD_LIBRARY(TinyXML client)
+MACRO_ADD_LIBRARY(Boost client)

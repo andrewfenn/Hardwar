@@ -1,37 +1,48 @@
-SET( OgreMax_DEFINITIONS "" )
- 
-##
-# You're going to have to edit this file if you intend to use it for your own project
-##
-SET( OgreMax_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dependencies/OgreMax )
- 
-IF( EXISTS ${OgreMax_INCLUDE_DIR} )
-    SET( OgreMax_FOUND TRUE )
-    FILE(GLOB OgreMax_source ${OgreMax_INCLUDE_DIR}/*.cpp)
-    ADD_LIBRARY(OgreMax ${OgreMax_source})
+# Find OgreMax includes and library
+#
+# This module defines
+#  OgreMax_INCLUDE_DIR
+#  OgreMax_LIB_DIR, the location of the libraries
+#  OgreMax_FOUND, If false, do not try to use OgreMax
+#
+# Copyright © 2009-2010, Andrew Fenn
+#
 
-    SET( OgreMax_LIBRARIES OgreMax TinyXML)
-ENDIF( EXISTS ${OgreMax_INCLUDE_DIR} )
- 
-IF( NOT OgreMax_FOUND)
-    IF( NOT OgreMax_INCLUDE_DIR )
-        IF (OgreMax_FIND_REQUIRED)
-	    	MESSAGE(FATAL_ERROR "Could not find OgreMax")
-    	ENDIF (OgreMax_FIND_REQUIRED)
-    ENDIF( NOT OgreMax_INCLUDE_DIR )
-ELSE ( NOT OgreMax_FOUND)
-    INCLUDE_DIRECTORIES("${OgreMax_INCLUDE_DIR}")
-ENDIF( NOT OgreMax_FOUND)
- 
- 
-# Finally, display informations if not in quiet mode
-IF( NOT OgreMax_FIND_QUIETLY )
-  MESSAGE( STATUS "OgreMax found " )
-  MESSAGE( STATUS " libraries : ${OgreMax_LIBRARIES}" )
-  MESSAGE( STATUS " includes : ${OgreMax_INCLUDE_DIR}" )
-ENDIF( NOT OgreMax_FIND_QUIETLY )
- 
-MARK_AS_ADVANCED(
-  OgreMax_INCLUDE_DIR
-  OgreMax_LIBRARIES
+FIND_PATH(OgreMax_INCLUDE_DIR OgreMaxScene.hpp
+  HINTS
+  $ENV{OgreMaxDIR}
+  PATH_SUFFIXES OgreMax
+  PATHS
+  ~/Library/Frameworks
+  /Library/Frameworks
+  /usr/local
+  /usr
+  /sw # Fink
+  /opt/local # DarwinPorts
+  /opt/csw # Blastwave
+  /opt
+  ${CMAKE_SOURCE_DIR}/dependencies/
 )
+
+FIND_LIBRARY(OgreMax_LIBRARY 
+  NAMES libOgreMax libOgreMax.a
+  HINTS
+  $ENV{OgreMaxDIR}
+  PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64
+  PATHS
+  ~/Library/Frameworks
+  /Library/Frameworks
+  /usr/local
+  /usr
+  /sw
+  /opt/local
+  /opt/csw
+  /opt
+  ${CMAKE_SOURCE_DIR}
+)
+
+
+SET(OgreMax_FOUND "NO")
+IF(OgreMax_LIBRARY AND OgreMax_INCLUDE_DIR)
+  SET(OgreMax_FOUND "YES")
+ENDIF(OgreMax_LIBRARY AND OgreMax_INCLUDE_DIR)
