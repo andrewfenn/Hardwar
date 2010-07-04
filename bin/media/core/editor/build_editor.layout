@@ -1,155 +1,142 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout">
-    <Widget type="StaticImage" skin="StaticImage" position="0 0 400 40" layer="Back" name="BuildEditorMenuTop">
-        <Property key="Image_Texture" value="layout_bar.png"/>
-        <Widget type="Button" skin="Button" position="66 0 40 40" layer="Back">
-            <Widget type="StaticImage" skin="StaticImage" position="0 0 40 40" layer="Back">
-                <Property key="Widget_Alpha" value="0.3"/>
-                <Property key="Widget_InheritsAlpha" value="false"/>
-                <Property key="Image_Texture" value="icon_build.png"/>
-                <Property key="Widget_InheritsPick" value="true"/>
+    <Widget type="Window" skin="WindowCS" position="168 72 400 460" layer="Overlapped" name="BuildEditorWindow">
+        <Property key="Window_MinMax" value="400 450 400 460"/>
+
+        <Widget type="StaticImage" skin="StaticImage" position="0 0 400 40" layer="Back" name="BuildEditorMenuTop">
+            <Property key="Image_Texture" value="layout_bar.png"/>
+            <Widget type="Button" skin="Button" position="66 0 40 40" layer="Back">
+                <Widget type="StaticImage" skin="StaticImage" position="0 0 40 40" layer="Back">
+                    <Property key="Widget_Alpha" value="0.3"/>
+                    <Property key="Widget_InheritsAlpha" value="false"/>
+                    <Property key="Image_Texture" value="icon_build.png"/>
+                    <Property key="Widget_InheritsPick" value="true"/>
+                </Widget>
             </Widget>
         </Widget>
-    </Widget>
-    <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuAdd">
-        <Property key="Widget_Alpha" value="0.8"/>
-        <Widget type="Button" skin="ButtonLeft" position="16 16 24 24" layer="Back" name="BuildEditorMenuPrevious">
-            <Property key="Widget_InheritsAlpha" value="false"/>
+        <Widget type="Widget" skin="PanelSmall" position="0 38 402 450" layer="Back" align="Stretch" name="BuildEditorMenuAdd">
+            <Property key="Widget_Alpha" value="0"/>
+            <Widget type="Button" skin="ButtonLeft" position="16 16 24 24" layer="Back" name="BuildEditorMenuPrevious">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+            </Widget>
+            <Widget type="Button" skin="ButtonRight" position="358 16 24 24" layer="Back" name="BuildEditorMenuNext">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="40 60 70 70" layer="Back" name="RenderBox1_1">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="120 60 70 70" layer="Back" name="RenderBox1_2">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="200 60 70 70" layer="Back" name="RenderBox1_3">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="280 60 70 70" layer="Back" name="RenderBox1_4">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="40 140 70 70" layer="Back" name="RenderBox2_1">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="120 140 70 70" layer="Back" name="RenderBox2_2">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="200 140 70 70" layer="Back" name="RenderBox2_3">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="280 140 70 70" layer="Back" name="RenderBox2_4">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="40 220 70 70" layer="Back" name="RenderBox3_1">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="120 220 70 70" layer="Back" name="RenderBox3_2">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="200 220 70 70" layer="Back" name="RenderBox3_3">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="280 220 70 70" layer="Back" name="RenderBox3_4">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="40 300 70 70" layer="Back" name="RenderBox4_1">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="120 300 70 70" layer="Back" name="RenderBox4_2">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="200 300 70 70" layer="Back" name="RenderBox4_3">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
+            <Widget type="StaticImage" skin="StaticImage" position="280 300 70 70" layer="Back" name="RenderBox4_4">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Visible" value="true"/>
+            </Widget>
         </Widget>
-        <Widget type="Button" skin="ButtonRight" position="358 16 24 24" layer="Back" name="BuildEditorMenuNext">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="40 60 70 70" layer="Back" name="RenderBox1_1">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="120 60 70 70" layer="Back" name="RenderBox1_2">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="200 60 70 70" layer="Back" name="RenderBox1_3">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="280 60 70 70" layer="Back" name="RenderBox1_4">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="40 140 70 70" layer="Back" name="RenderBox2_1">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="120 140 70 70" layer="Back" name="RenderBox2_2">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="200 140 70 70" layer="Back" name="RenderBox2_3">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="280 140 70 70" layer="Back" name="RenderBox2_4">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="40 220 70 70" layer="Back" name="RenderBox3_1">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="120 220 70 70" layer="Back" name="RenderBox3_2">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="200 220 70 70" layer="Back" name="RenderBox3_3">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="280 220 70 70" layer="Back" name="RenderBox3_4">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="40 300 70 70" layer="Back" name="RenderBox4_1">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="120 300 70 70" layer="Back" name="RenderBox4_2">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="200 300 70 70" layer="Back" name="RenderBox4_3">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position="280 300 70 70" layer="Back" name="RenderBox4_4">
-            <Property key="Widget_InheritsAlpha" value="false"/>
-            <Property key="Widget_Visible" value="true"/>
-        </Widget>
-    </Widget>
-    <Widget type="Widget" skin="PanelSmall" position="0 38 402 600" layer="Back" name="BuildEditorMenuEdit">
-         <Widget type="StaticImage" skin="StaticImage" position="40 100 24 24" layer="Back">
-             <Property key="Widget_Alpha" value="0.3"/>
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Image_Texture" value="axisX.png"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-         </Widget>
-        <Widget type="Edit" skin="Edit" position="60 102 90 24" layer="Back" name="TransX">
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-        </Widget>
+        <Widget type="Widget" skin="PanelSmall" position="0 38 402 450" layer="Back" align="Stretch" name="BuildEditorMenuEdit">
+            <Property key="Widget_Alpha" value="0"/>
+            <Widget type="StaticImage" skin="StaticImage" position="30 8 332 372" layer="Back">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Widget_Alpha" value="0.8"/>
+                <Property key="Image_Texture" value="edit.png"/>
+                <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
+            <Widget type="StaticText" skin="StaticText" position="0 25 170 17" layer="Back" name="text_position">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Text_TextColour" value="0 0 0 1"/>
+                <Property key="Text_TextAlign" value="Right"/>
+                <Property key="Text_FontName" value="DejaVuSans.17"/>
+                <Property key="Text_FontHeight" value="17"/>
+                <Property key="Widget_Caption" value="Position"/>
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="101 61 67 28" layer="Back" name="TransX">
+                 <Property key="Widget_InheritsAlpha" value="false"/>
+                 <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="101 93 67 28" layer="Back" name="TransY">
+                 <Property key="Widget_InheritsAlpha" value="false"/>
+                 <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="101 125 67 28" layer="Back" name="TransZ">
+                 <Property key="Widget_InheritsAlpha" value="false"/>
+                 <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
 
-         <Widget type="StaticImage" skin="StaticImage" position="40 124 24 24" layer="Back">
-             <Property key="Widget_Alpha" value="0.3"/>
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Image_Texture" value="axisY.png"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-         </Widget>
-        <Widget type="Edit" skin="Edit" position="60 126 90 24" layer="Back" name="TransY">
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Widget_InheritsPick" value="true"/>
+            <Widget type="StaticText" skin="StaticText" position="180 25 170 17" layer="Back" name="text_rotation">
+                <Property key="Widget_InheritsAlpha" value="false"/>
+                <Property key="Text_TextColour" value="0 0 0 1"/>
+                <Property key="Text_TextAlign" value="Right"/>
+                <Property key="Text_FontName" value="DejaVuSans.17"/>
+                <Property key="Text_FontHeight" value="17"/>
+                <Property key="Widget_Caption" value="Rotation"/>
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="276 61 67 28" layer="Back" name="RotX">
+                 <Property key="Widget_InheritsAlpha" value="false"/>
+                 <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="276 93 67 28" layer="Back" name="RotY">
+                 <Property key="Widget_InheritsAlpha" value="false"/>
+                 <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
+            <Widget type="Edit" skin="Edit" position="276 125 67 28" layer="Back" name="RotZ">
+                 <Property key="Widget_InheritsAlpha" value="false"/>
+                 <Property key="Widget_InheritsPick" value="true"/>
+            </Widget>
+            <Widget type="Button" skin="Button" position="16 0 40 40" layer="Back" name="ApplyChanges" />
         </Widget>
-
-         <Widget type="StaticImage" skin="StaticImage" position="40 148 24 24" layer="Back">
-             <Property key="Widget_Alpha" value="0.3"/>
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Image_Texture" value="axisZ.png"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-         </Widget>
-        <Widget type="Edit" skin="Edit" position="60 150 90 24" layer="Back" name="TransZ">
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-        </Widget>
-
-         <Widget type="StaticImage" skin="StaticImage" position="200 100 24 24" layer="Back">
-             <Property key="Widget_Alpha" value="0.3"/>
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Image_Texture" value="axisX.png"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-         </Widget>
-        <Widget type="Edit" skin="Edit" position="220 102 90 24" layer="Back" name="RotX">
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-        </Widget>
-
-         <Widget type="StaticImage" skin="StaticImage" position="200 124 24 24" layer="Back">
-             <Property key="Widget_Alpha" value="0.3"/>
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Image_Texture" value="axisY.png"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-         </Widget>
-        <Widget type="Edit" skin="Edit" position="220 126 90 24" layer="Back" name="RotY">
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-        </Widget>
-
-         <Widget type="StaticImage" skin="StaticImage" position="200 148 24 24" layer="Back">
-             <Property key="Widget_Alpha" value="0.3"/>
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Image_Texture" value="axisZ.png"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-         </Widget>
-        <Widget type="Edit" skin="Edit" position="220 150 90 24" layer="Back" name="RotZ">
-             <Property key="Widget_InheritsAlpha" value="false"/>
-             <Property key="Widget_InheritsPick" value="true"/>
-        </Widget>
-        <Widget type="Button" skin="Button" position="16 0 40 40" layer="Back" name="ApplyChanges" />
     </Widget>
 </MyGUI>

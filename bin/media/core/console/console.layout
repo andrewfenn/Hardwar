@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout">
-   <Widget type="Window" skin="WindowCS" position="168 72 416 318" layer="Overlapped" name="console">
-      <Property key="Window_MinMax" value="200 100 2000 2000"/>
+   <Widget type="Window" skin="WindowCS" position="168 72 616 418" layer="Overlapped" name="console">
+      <Property key="Window_MinMax" value="616 418 2000 2000"/>
 
       <UserString key="Current" value = "#FFFFFF" />
       <UserString key="Error" value = "#FF0000error: #FFFFFF" />
@@ -9,9 +9,9 @@
       <UserString key="Unknown" value = "#FF0000unknown command : #FFFFFF" />
       <UserString key="Format" value = "#00FFFFformat : #FFFFFF" />
 
-      <Widget type="Widget" skin="PanelSmall" position="4 4 401 245" align="Stretch">
-      <Widget type="Edit" skin="WordWrap" position="4 3 392 237" align="Stretch" name="historylist"/></Widget>
-      <Widget type="ConsoleComboBox" skin="ComboBox" position="5 254 305 26" align="HStretch Bottom" name="commandbox"/>
-      <Widget type="Button" skin="Button" position="313 254 91 26" align="Right Bottom" name="submit"></Widget>
+      <Widget type="Widget" skin="PanelSmall" position="4 4 601 345" align="Stretch">
+      <Widget type="Edit" skin="WordWrap" position="4 3 592 337" align="Stretch" name="historylist"/></Widget>
+      <Widget type="ConsoleComboBox" skin="ComboBox" position="5 354 505 26" align="HStretch Bottom" name="commandbox"/>
+      <Widget type="Button" skin="Button" position="513 354 91 26" align="Right Bottom" name="submit"></Widget>
    </Widget>
 </MyGUI>

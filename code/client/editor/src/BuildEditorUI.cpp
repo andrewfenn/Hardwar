@@ -28,6 +28,9 @@ BuildEditorUI::BuildEditorUI(void)
    mGUI = MyGUI::Gui::getInstancePtr();
    MyGUI::LayoutManager::getInstance().load("build_editor.layout");
 
+
+   mEditorWindow = mGUI->findWidget<MyGUI::Window>("BuildEditorWindow");
+   mEditorWindow->setVisible(false);
    mMenuBar = mGUI->findWidget<MyGUI::StaticImage>("BuildEditorMenuTop");
    mMenuBar->setVisible(false);
    mMenuPanelAdd = mGUI->findWidget<MyGUI::Widget>("BuildEditorMenuAdd");
@@ -227,9 +230,9 @@ bool BuildEditorUI::hasPlaceableIcon()
    return mBoxMgr.isPlaceable();
 }
 
-MyGUI::IntPoint BuildEditorUI::getIconCoords()
+MyGUI::IntCoord BuildEditorUI::getIconCoords()
 {
-   return mBoxMgr.getPoint();
+   return mBoxMgr.getCoord();
 }
 
 Ogre::UTFString BuildEditorUI::getIconName()
@@ -285,6 +288,8 @@ void BuildEditorUI::show(bool lShow)
    if (!lShow)
    {
       /* Don't know which panel we're on so set them all hidden */
+      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(0, 100, true);
+      MyGUI::ControllerManager::getInstance().addItem(mEditorWindow, controller);
       mMenuPanelAdd->setVisible(false);
       mMenuPanelEdit->setVisible(false);
       mMenuBar->setVisible(false);
@@ -297,6 +302,8 @@ void BuildEditorUI::show(bool lShow)
       mMenuBar->setVisible(true);
       mShow = true;
       mGUI->showPointer();
+      MyGUI::ControllerFadeAlpha * controller = new MyGUI::ControllerFadeAlpha(1, 100, true);
+      MyGUI::ControllerManager::getInstance().addItem(mEditorWindow, controller);
    }
    mMenuBar->setEnabled(mShow);
    mMenuPanelEdit->setEnabled(mShow);

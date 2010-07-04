@@ -65,7 +65,7 @@ namespace Client
          /** This method returns if there is an icon that is being placed on the screen. */
          bool hasPlaceableIcon();
          /** This method returns the active icon's coords if an active icon exists. */
-         MyGUI::IntPoint getIconCoords();
+         MyGUI::IntCoord getIconCoords();
          /** This method returns the active icon's mesh name. */
          Ogre::UTFString getIconName();
          /** Shows or hides the editor UI. */
@@ -90,6 +90,7 @@ namespace Client
          MyGUI::StaticImagePtr mMenuBar;
          MyGUI::WidgetPtr mMenuPanelAdd;
          MyGUI::WidgetPtr mMenuPanelEdit;
+         MyGUI::WindowPtr mEditorWindow;
 
          std::vector<Ogre::UTFString> mBuildingList;
          unsigned short mBuildingPage;

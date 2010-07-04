@@ -43,13 +43,13 @@ namespace Client
          /** This method returns the active icon's mesh name. */
          Ogre::UTFString getMeshName();
          /** This method returns the active icon's coords if an active icon exists. */
-         MyGUI::IntPoint getPoint();
+         MyGUI::IntCoord getCoord();
       private:
          typedef std::vector<Client::ItemBox*> VectorItemBox;
    		VectorItemBox mListItemBox;
          VectorItemBox::iterator mActive;
          bool mPlaceMode;
-         MyGUI::IntPoint mPoint;
+         MyGUI::IntCoord mCoord;
    };
 }
 #endif // __ITEM_BOX_MGR_H__

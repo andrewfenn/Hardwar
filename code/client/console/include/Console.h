@@ -138,15 +138,15 @@ class Console
       MyGUI::ButtonPtr     mSubmitButton;
 
       Ogre::UTFString mStringCurrent;
-		Ogre::UTFString mStringError;
-		Ogre::UTFString mStringSuccess;
-		Ogre::UTFString mStringUnknown;
-		Ogre::UTFString mStringFormat;
+      Ogre::UTFString mStringError;
+      Ogre::UTFString mStringSuccess;
+      Ogre::UTFString mStringUnknown;
+      Ogre::UTFString mStringFormat;
 
       typedef std::map<Ogre::UTFString,CommandDelegate> MapFunction;
       std::vector<Ogre::UTFString> mUsedCommands;
       unsigned short mListPos;
-		MapFunction mFunctions;
+      MapFunction mFunctions;
 };
 
 }

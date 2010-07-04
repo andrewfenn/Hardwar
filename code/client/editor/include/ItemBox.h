@@ -41,13 +41,13 @@ namespace Client
          ~ItemBox();
          void moveItemBox(MyGUI::WidgetPtr, int, int);
          void releasedItemBox(MyGUI::WidgetPtr, int, int, MyGUI::MouseButton);
-         MyGUI::IntPoint getPoint(void);
+         MyGUI::IntCoord getCoord(void);
          bool isActive(void);
          Ogre::UTFString getName(void);
       private:
          MyGUI::StaticImage* mImage;
          MyGUI::IntCoord mOrigCoord;
-         MyGUI::IntPoint mNewCoord;
+         MyGUI::IntCoord mNewCoord;
          bool mDragged;
          Ogre::UTFString mMeshName;
 	};

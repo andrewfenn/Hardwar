@@ -130,6 +130,9 @@ void BuildEditor::mouseMoved(const OIS::MouseEvent &e)
    }
 }
 
+void BuildEditor::keyPressed(const OIS::KeyEvent &e)
+{ }
+
 void BuildEditor::keyReleased(const OIS::KeyEvent &e)
 {
    if (e.key == OIS::KC_LSHIFT)

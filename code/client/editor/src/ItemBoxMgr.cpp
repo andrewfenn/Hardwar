@@ -35,7 +35,7 @@ namespace Client
       mListItemBox.push_back(_itembox);
    }
    
-   void ItemBoxMgr::clear(void)
+   void ItemBoxMgr::clear()
    {
       /* We have to destory the objects like this, otherwise the destructor
       is not called. However the item in the list remains so we need to clear
@@ -47,7 +47,7 @@ namespace Client
       mListItemBox.clear();
    }
 
-   bool ItemBoxMgr::isIconActive(void)
+   bool ItemBoxMgr::isIconActive()
    {
       for (mActive = mListItemBox.begin(); mActive != mListItemBox.end(); ++mActive)
       {
@@ -60,35 +60,41 @@ namespace Client
       return false;
    }
 
-   bool ItemBoxMgr::isPlaceable(void)
+   bool ItemBoxMgr::isPlaceable()
    {
       return mPlaceMode;
    }
 
-   Ogre::UTFString ItemBoxMgr::getMeshName(void)
+   Ogre::UTFString ItemBoxMgr::getMeshName()
    {
       return (*mActive)->getName();
    }
 
-   MyGUI::IntPoint ItemBoxMgr::getPoint(void)
+   MyGUI::IntCoord ItemBoxMgr::getCoord()
    {
-      return mPoint;
+      return mCoord;
    }
 
-   void ItemBoxMgr::update(void)
+   void ItemBoxMgr::update()
    {
+      MyGUI::Gui* mGUI = MyGUI::Gui::getInstancePtr();
+      MyGUI::Window* editorWindow = mGUI->findWidget<MyGUI::Window>("BuildEditorWindow");
+      MyGUI::IntSize size = editorWindow->getMaxSize();
+
+      Ogre::Log* log = Ogre::LogManager::getSingletonPtr()->getDefaultLog();
       mPlaceMode = false;
+
       if (isIconActive())
       {
-         mPoint = (*mActive)->getPoint();
-         mPoint.left += 40;
-         mPoint.top += 40;
-         if (!mPlaceMode)
+         mCoord = (*mActive)->getCoord();
+         log->logMessage(Ogre::StringConverter::toString(mCoord.width)+" "+Ogre::StringConverter::toString(mCoord.height)+ " " +Ogre::StringConverter::toString(mCoord.top) + " "+Ogre::StringConverter::toString(mCoord.left)
+         + "Size: "+Ogre::StringConverter::toString(size.width)+  " "+Ogre::StringConverter::toString(size.height)
+         );
+
+         if ((mCoord.left < 0 || mCoord.left > size.width)
+            && (mCoord.top < 0 || mCoord.top > size.height))
          {
-            if (mPoint.left > 370 || mPoint.top > 570)
-            {
-               mPlaceMode = true;
-            }
+            mPlaceMode = true;
          }
       }
    }

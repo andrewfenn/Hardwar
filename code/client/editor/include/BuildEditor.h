@@ -47,9 +47,10 @@ public:
    BuildEditor();
    ~BuildEditor();
    void update(unsigned long);
+   void keyPressed(const OIS::KeyEvent &e);
+   void keyReleased(const OIS::KeyEvent &e);
    void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-   void keyReleased(const OIS::KeyEvent &e);
    void mouseMoved(const OIS::MouseEvent &e);
    bool isVisible();
    void show(bool);

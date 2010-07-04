@@ -26,7 +26,7 @@ namespace Client
       mImage->setImageTexture(_image);
       mImage->eventMouseDrag = MyGUI::newDelegate(this, &ItemBox::moveItemBox);
       mImage->eventMouseButtonReleased = MyGUI::newDelegate(this, &ItemBox::releasedItemBox);
-      mOrigCoord = mImage->getCoord();
+      mNewCoord = mOrigCoord = mImage->getCoord();
       mDragged = false;
       mMeshName = _meshName;
    }
@@ -38,14 +38,17 @@ namespace Client
 
    void ItemBox::moveItemBox(MyGUI::WidgetPtr sender, int _left, int _top)
    {
-      mNewCoord.left = _left-40;
-      mNewCoord.top  = _top-60;
-      mImage->setPosition(mNewCoord);
+      mNewCoord.left = _left;
+      mNewCoord.top  = _top;
+      MyGUI::IntPoint pos;
+      pos.left = _left;
+      pos.top = _top;
+      mImage->setPosition(pos);
       mDragged = true;
       MyGUI::Gui::getInstancePtr()->hidePointer();
    }
 
-   MyGUI::IntPoint ItemBox::getPoint(void)
+   MyGUI::IntCoord ItemBox::getCoord(void)
    {
       return mNewCoord;
    }
