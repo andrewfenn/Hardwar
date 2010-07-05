@@ -30,7 +30,7 @@ void LoadState::enter( void )
    mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
    mSceneMgr->clearScene();
 
-   mGameMgr->mGUI->hidePointer();
+   mGameMgr->mGUI->setVisiblePointer(false);
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");   

@@ -75,7 +75,6 @@ void BuildEditorUI::buttonNext(MyGUI::WidgetPtr lWidget)
 {
    if (mBuildingPage == mBuildingMaxPage)
       return;
-
    renderBuildingList(++mBuildingPage);
 }
 
@@ -119,7 +118,8 @@ void BuildEditorUI::renderBuildingList(unsigned short pageNum)
    {
       // Remove existing icons in the UI
       mBoxMgr.clear();
-      Ogre::ResourceGroupManager::getSingletonPtr()->clearResourceGroup("BuildEditorIcons");
+      Ogre::ResourceGroupManager::getSingletonPtr()->destroyResourceGroup("BuildEditorIcons");
+      Ogre::ResourceGroupManager::getSingletonPtr()->createResourceGroup("BuildEditorIcons");
    }
    catch (Ogre::Exception e) { }
 
@@ -128,18 +128,18 @@ void BuildEditorUI::renderBuildingList(unsigned short pageNum)
    unsigned short startFrom = ((mMaxBuildingCols*mMaxBuildingRows)*mBuildingPage);
 
    std::vector<Ogre::UTFString>::iterator buildingItr = mBuildingList.begin();
-   advance(buildingItr, startFrom);
+   std::advance(buildingItr, startFrom);
 
    while (buildingItr < mBuildingList.end())
    {
       if (x > mMaxBuildingRows)
       {
-         buildingItr = mBuildingList.end();
+        buildingItr = mBuildingList.end();
       }
       else
       {
-         Ogre::UTFString lPanelName = Ogre::UTFString("RenderBox")+Ogre::StringConverter::toString(x)+"_"+Ogre::StringConverter::toString(y);
-	      renderMesh((Ogre::String)(*buildingItr), lPanelName);
+        Ogre::UTFString lPanelName = Ogre::UTFString("RenderBox")+Ogre::StringConverter::toString(x)+"_"+Ogre::StringConverter::toString(y);
+        renderMesh((Ogre::String)(*buildingItr), lPanelName);
       }
       y++;
       if (y > mMaxBuildingCols)
@@ -178,7 +178,7 @@ void BuildEditorUI::renderMesh(const Ogre::UTFString lMesh, const Ogre::UTFStrin
    renderTexture->getViewport(0)->setOverlaysEnabled(false);
    renderTexture->update(true);
 
-   mBoxMgr.addItem(new Client::ItemBox(lPanelName, lPanelName, lMesh));
+   mBoxMgr.addItem(new ItemBox(lPanelName, lPanelName, lMesh));
 
    renderTexture->setActive(false);
    renderTexture->removeAllViewports();

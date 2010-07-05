@@ -17,7 +17,6 @@ fragment_program Cg/Ocean2FS cg
 	source Ocean2HLSL_Cg.frag
 	entry_point main
 	profiles ps_2_0 arbfp1
-
 }
 
 material Ocean2_Cg
@@ -27,6 +26,7 @@ material Ocean2_Cg
 		pass
 		{
 			scene_blend alpha_blend
+			depth_write off
 
 			vertex_program_ref Cg/Ocean2VS
 			{
