@@ -114,14 +114,14 @@ void BuildEditorUI::checkUIButtons(void)
 
 void BuildEditorUI::renderBuildingList(unsigned short pageNum)
 {
-   try
+   Ogre::ResourceGroupManager* resourceMgr = Ogre::ResourceGroupManager::getSingletonPtr();
+   if (resourceMgr->resourceGroupExists("BuildEditorIcons"))
    {
       // Remove existing icons in the UI
       mBoxMgr.clear();
-      Ogre::ResourceGroupManager::getSingletonPtr()->destroyResourceGroup("BuildEditorIcons");
-      Ogre::ResourceGroupManager::getSingletonPtr()->createResourceGroup("BuildEditorIcons");
+      resourceMgr->destroyResourceGroup("BuildEditorIcons");
+      resourceMgr->createResourceGroup("BuildEditorIcons");
    }
-   catch (Ogre::Exception e) { }
 
    unsigned short x = 1;
    unsigned short y = 1;
