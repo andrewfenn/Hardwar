@@ -57,16 +57,8 @@ int main( int argc, char **argv ) {
    gameManager->getNetwork()->setAddress(address);
    gameManager->mSinglePlayer = false;
 
-   try
-   {      /* Initialise the game and switch to the first state */
-      gameManager->startGame(Client::LoadState::getSingletonPtr());
-   }
-   catch ( Ogre::Exception& ex )
-   {
-      #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        MessageBox(0, ex.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-      #else
-        std::cerr << "An exception has occured: " << ex.getFullDescription();
-      #endif   }   delete gameManager;
+   /* Initialise the game and switch to the first state */
+   gameManager->startGame(Client::LoadState::getSingletonPtr());
+      delete gameManager;
    return 0;
 }

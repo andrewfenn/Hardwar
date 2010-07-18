@@ -27,14 +27,13 @@ MACRO_FIND_LIBRARIES(Boost "filesystem;thread;")
 
 if (MSVC)
 	MESSAGE(STATUS "Using GetText in dependencies")
-	INCLUDE_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/include)
-	LINK_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/lib)
+	get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/ ABSOLUTE)
+	INCLUDE_DIRECTORIES(${windows_extras}/gettext/include)
+	LINK_DIRECTORIES(${windows_extras}/gettext/lib)
 endif ()
 
 if (WIN32)
    set(exe "WIN32")
-elseif (WIN64)
-   set(exe "WIN64")
 endif ()
 
 # create the project

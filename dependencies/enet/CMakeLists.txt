@@ -1,6 +1,8 @@
 project(Enet)
 cmake_policy(SET CMP0003 NEW)
 
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+
 FILE(GLOB_RECURSE enet_source ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 SOURCE_GROUP("Enet" FILES ${enet_source})
 

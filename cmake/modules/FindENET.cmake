@@ -23,10 +23,10 @@ FIND_PATH(ENET_INCLUDE_DIR enet/enet.h
 )
 
 FIND_LIBRARY(ENET_LIBRARY 
-  NAMES enet libenet libEnet.a
+  NAMES enet libenet libEnet.a Enet.lib
   HINTS
   $ENV{ENETDIR}
-  PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64
+  PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64 lib/Debug lib/Release
   PATHS
   ~/Library/Frameworks
   /Library/Frameworks

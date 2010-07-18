@@ -8,6 +8,8 @@
 # Copyright © 2009-2010, Andrew Fenn
 #
 
+get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/Ogre ABSOLUTE)
+
 FIND_PATH(OIS_INCLUDE_DIR OIS.h
   HINTS
   $ENV{OISDIR}
@@ -21,13 +23,17 @@ FIND_PATH(OIS_INCLUDE_DIR OIS.h
   /opt/local # DarwinPorts
   /opt/csw # Blastwave
   /opt
+  C:/OgreSDK
+  C:/Ogre
+  C:/OGRE
+  ${windows_extras}
 )
 
 FIND_LIBRARY(OIS_LIBRARY 
-  NAMES OIS libOIS
+  NAMES OIS libOIS OIS.lib
   HINTS
   $ENV{OISDIR}
-  PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64
+  PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64 lib/release
   PATHS
   ~/Library/Frameworks
   /Library/Frameworks
@@ -37,6 +43,10 @@ FIND_LIBRARY(OIS_LIBRARY
   /opt/local
   /opt/csw
   /opt
+   C:/OgreSDK
+   C:/Ogre
+   C:/OGRE
+   ${windows_extras}
 )
 
 

@@ -30,8 +30,8 @@ IF (MSVC_IDE)
 		LINK_DIRECTORIES(${OGRESDK}/lib)
 	ENDIF(EXISTS $ENV{OGRE_HOME})
 
-	SET(PLATFORM_C_FLAGS "/W3 /MD /Od /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /ZI /EHsc")
-	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Od /Gm /Gy /fp:fast /ZI")
+	SET(PLATFORM_C_FLAGS "/W3 /MD /D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /Gm /Gy /fp:fast /EHsc")
+	SET(PLATFORM_C_FLAGS_DEBUG "/W3 /MDd /Gm /Gy /fp:fast")
 
 	SET(CMAKE_CXX_FLAGS "${PLATFORM_C_FLAGS}")
 	SET(CMAKE_CXX_FLAGS_RELEASE "${PLATFORM_C_FLAGS}")
@@ -54,12 +54,31 @@ if (NOT OgreMax_FOUND)
    set(deps_built False)
 endif ()
 
+FIND_PACKAGE(SQLITE)
+if (NOT SQLITE_FOUND)
+   message("SQLite not found. Using dependencies.")
+   add_subdirectory(dependencies/sqlite3)
+   set(deps_built False)
+endif ()
+
 if (NOT deps_built)
    message("-------------------------")
-   message("\tMissing static libraries. The make files have been generated.\n\tFirst build then re-run cmake to build the game.")
+   message("\tThe make files have been generated.\n\tFirst build then re-run cmake to build the game.")
    message("-------------------------")
 else ()
+
    set(Boost_USE_MULTITHREADED True)
+   if (WIN32)
+      get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/ ABSOLUTE)
+      set (BOOST_ROOT "${windows_extras}/boost_1_42")
+
+      if (WIN32 OR APPLE)
+         set(Boost_USE_STATIC_LIBS TRUE)
+      endif ()
+
+      set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
+   endif ()
+
    add_subdirectory(code/client)
    add_subdirectory(code/server)
 endif ()

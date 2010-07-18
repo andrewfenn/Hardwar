@@ -64,9 +64,10 @@ else ()
   set(OGRE_LIB_SUFFIX "")
 endif ()
 
-
 set(OGRE_LIBRARY_NAMES "OgreMain${OGRE_LIB_SUFFIX}")
 get_debug_names(OGRE_LIBRARY_NAMES)
+
+get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/Ogre ABSOLUTE)
 
 # construct search paths from environmental hints and
 # OS specific guesses
@@ -74,6 +75,9 @@ if (WIN32)
   set(OGRE_PREFIX_GUESSES
     ${ENV_PROGRAMFILES}/OGRE
     C:/OgreSDK
+	C:/Ogre
+	C:/OGRE
+	${windows_extras}
   )
 elseif (UNIX)
   set(OGRE_PREFIX_GUESSES

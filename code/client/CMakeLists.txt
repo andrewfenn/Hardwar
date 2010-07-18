@@ -32,15 +32,14 @@ MACRO_FIND_LIBRARY(TinyXML)
 MACRO_FIND_LIBRARIES(Boost "filesystem;thread;")
 
 if (MSVC)
-	MESSAGE(STATUS "Using GetText in dependencies")
-	INCLUDE_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/include)
-	LINK_DIRECTORIES(${Hardwar_SOURCE_DIR}/dependencies/gettext/lib)
+   MESSAGE(STATUS "Using GetText in dependencies")
+   get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/ ABSOLUTE)
+   INCLUDE_DIRECTORIES(${windows_extras}/gettext/include)
+   LINK_DIRECTORIES(${windows_extras}/gettext/lib)
 endif ()
 
 if (WIN32)
    set(exe "WIN32")
-elseif (WIN64)
-   set(exe "WIN64")
 endif ()
 
 ADD_EXECUTABLE(client ${exe} ${folder_source} ${shared_source})
@@ -49,16 +48,6 @@ MACRO_ADD_LIBRARY(ENET client)
 MACRO_ADD_LIBRARY(OIS client)
 MACRO_ADD_LIBRARY(OGRE client)
 MACRO_ADD_LIBRARY(MYGUI client)
-
-add_library(MYGUI_OGRE STATIC IMPORTED)
-if (UNIX)
-   set_property(TARGET MYGUI_OGRE PROPERTY
-                IMPORTED_LOCATION /usr/lib/libMyGUI.OgrePlatform.a)
-else()
-   #windows
-endif()
-target_link_libraries(client MYGUI_OGRE)
-
 MACRO_ADD_LIBRARY(OgreMax client)
 MACRO_ADD_LIBRARY(SQLITE client)
 MACRO_ADD_LIBRARY(TinyXML client)
