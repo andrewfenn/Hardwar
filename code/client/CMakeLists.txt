@@ -44,6 +44,10 @@ endif ()
 
 ADD_EXECUTABLE(client ${exe} ${folder_source} ${shared_source})
 
+if (MSVC)
+	target_link_libraries(client ${windows_extras}/gettext/lib/intl.lib)
+endif()
+
 MACRO_ADD_LIBRARY(ENET client)
 MACRO_ADD_LIBRARY(OIS client)
 MACRO_ADD_LIBRARY(OGRE client)

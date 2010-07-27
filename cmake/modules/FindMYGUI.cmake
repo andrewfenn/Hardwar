@@ -10,12 +10,8 @@
 
 get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/MyGUI ABSOLUTE)
 
-FIND_PATH(MYGUI_INCLUDE_DIR MyGUI.h
-  HINTS
-  $ENV{MYGUIDIR}
-  PATH_SUFFIXES include/MyGUI include/MYGUI include
-  PATHS
-  ~/Library/Frameworks
+set(paths
+ ~/Library/Frameworks
   /Library/Frameworks
   /usr/local
   /usr
@@ -24,50 +20,31 @@ FIND_PATH(MYGUI_INCLUDE_DIR MyGUI.h
   /opt/csw # Blastwave
   /opt
   ${windows_extras}
-)
+  )
 
-FIND_LIBRARY(MYGUI_LIBRARY 
-  NAMES MyGUIEngine libMyGUIEngine 
+  set(prefixes lib64 lib libs64 libs libs/Win32 libs/Win64)
+
+  set(release_libs MyGUI libMyGUI libMyGUI.OgrePlatform.a)
+  set(debug_libs MyGUI_d libMyGUI libMyGUI.OgrePlatform.a)
+  set(release_engine_libs MyGUIEngine libMyGUIEngine.so)
+  set(debug_engine_libs  MyGUIEngine_d libMyGUIEngine.so)
+
+FIND_PATH(MYGUI_INCLUDE_DIR MyGUI.h
   HINTS
   $ENV{MYGUIDIR}
-  PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64
-  PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /usr/local
-  /usr
-  /sw
-  /opt/local
-  /opt/csw
-  /opt
-  ${windows_extras}
+  PATH_SUFFIXES include/MyGUI include/MYGUI include
+  PATHS ${paths} 
 )
 
-FIND_LIBRARY(MYGUI_LIBRARY2 
-  NAMES MyGUI libMyGUI libMyGUI.OgrePlatform.a
-  HINTS
-  $ENV{MYGUIDIR}
-  PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64
-  PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /usr/local
-  /usr
-  /sw
-  /opt/local
-  /opt/csw
-  /opt
-  ${windows_extras}
-)
+FIND_LIBRARY(MYGUI_ENGINE_REL NAMES ${release_engine_libs} HINTS $ENV{MYGUIDIR} PATH_SUFFIXES ${prefixes} PATHS ${paths})
+FIND_LIBRARY(MYGUI_ENGINE_DBG NAMES ${debug_engine_libs}   HINTS $ENV{MYGUIDIR} PATH_SUFFIXES ${prefixes} PATHS ${paths})
+FIND_LIBRARY(MYGUI_LIBRARY_REL NAMES ${release_libs} HINTS $ENV{MYGUIDIR} PATH_SUFFIXES ${prefixes} PATHS ${paths})
+FIND_LIBRARY(MYGUI_LIBRARY_DBG NAMES ${debug_libs}   HINTS $ENV{MYGUIDIR} PATH_SUFFIXES ${prefixes} PATHS ${paths})
+set(MYGUI_LIBRARY optimized "${MYGUI_LIBRARY_REL};${MYGUI_ENGINE_REL}" debug "${MYGUI_LIBRARY_DBG};${MYGUI_ENGINE_DBG};")
 
 set(MYGUI_FOUND False)
-
-if (MYGUI_LIBRARY AND MYGUI_LIBRARY2 AND MYGUI_INCLUDE_DIR)
+if (MYGUI_LIBRARY_REL AND MYGUI_INCLUDE_DIR)
 	  set(MYGUI_FOUND True)
-	  set(MYGUI_LIBRARIES
-	  ${MYGUI_LIBRARY}
-	  ${MYGUI_LIBRARY2}
-	  )
-	  set(MYGUI_LIBRARY "")
+     get_filename_component(MYGUI_LIBRARY_DIR_REL "${MYGUI_LIBRARY_REL}" PATH)
+     set(MYGUI_LIBRARY_DIRS ${MYGUI_LIBRARY_DIR_REL})
 endif ()
-
