@@ -20,7 +20,7 @@ set(paths
   ${CMAKE_SOURCE_DIR}
   )
 
-  set(suffixes lib64 lib libs64 libs libs/Win32 libs/Win64)
+set(suffixes lib64 lib libs64 libs libs/Win32 libs/Win64)
 
 
 FIND_PATH(ENET_INCLUDE_DIR enet/enet.h
@@ -35,14 +35,15 @@ FIND_LIBRARY(ENET_LIBRARY_DBG NAMES enet libenet libEnet Enet.lib HINTS $ENV{ENE
 
 set(ENET_FOUND False)
 set(ENET_LIBRARY optimized ${ENET_LIBRARY_REL} debug ${ENET_LIBRARY_DBG})
+if (ENET_LIBRARY AND ENET_INCLUDE_DIR)
+   set(ENET_FOUND True)
 
-if (NOT DEFINED ENET_LIBRARY_REL)
-	message("Could not find a release copy of Enet. This is probably because you forgot to build it.")
-endif()
-if (NOT DEFINED ENET_LIBRARY_DBG)
-	message("Could not find a debug copy of Enet. This is probably because you forgot to build it.")
-endif()
-
-if (ENET_LIBRARY AND ENET_INCLUDE_DIR)
-  set(ENET_FOUND True)
+   if (NOT DEFINED ENET_LIBRARY_REL)
+	   message("Could not find a release copy of Enet. This is probably because you forgot to build it.")
+      set(ENET_FOUND False)
+   endif()
+   if (NOT DEFINED ENET_LIBRARY_DBG)
+	   message("Could not find a debug copy of Enet. This is probably because you forgot to build it.")
+      set(ENET_FOUND False)
+   endif()
 endif (ENET_LIBRARY AND ENET_INCLUDE_DIR)
