@@ -33,13 +33,13 @@ FIND_PATH(OgreMax_INCLUDE_DIR OgreMaxScene.hpp
 
 FIND_LIBRARY(OgreMax_LIBRARY_REL
   NAMES libOgreMax libOgreMax.a OgreMax.lib 
-  HINTS $ENV{OgreMaxDIR} PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64 lib/Debug lib/Release 
+  HINTS $ENV{OgreMaxDIR} PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64 lib/Release 
   PATHS ${paths}
 )
 
 FIND_LIBRARY(OgreMax_LIBRARY_DBG
   NAMES libOgreMax_d libOgreMax.a OgreMax.lib 
-  HINTS $ENV{OgreMaxDIR} PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64 lib/Debug lib/Release 
+  HINTS $ENV{OgreMaxDIR} PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64 lib/Debug
   PATHS ${paths}
 )
 
