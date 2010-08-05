@@ -16,8 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __LOADSTATE_H_
-#define __LOADSTATE_H_
+#pragma once
 
 #include <OgreRoot.h>
 #include <libintl.h>
@@ -39,14 +38,16 @@ namespace Client
 class LoadState : public GameState
 {
 public:
-    ~LoadState(void);
+    LoadState();
+    ~LoadState();
 
-    void enter(void);
-    void exit(void);
+    void enter();
+    void exit();
 
-    void pause(void);
-    void resume(void);
+    void pause();
+    void resume();
     void update(unsigned long lTimeElapsed);
+    void redraw();
 
     void keyPressed(const OIS::KeyEvent &e);
     void keyReleased(const OIS::KeyEvent &e);
@@ -55,32 +56,23 @@ public:
     void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
     void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-    static LoadState* getSingletonPtr(void);
 private:
-
-    Ogre::Root           *mRoot;
-    Ogre::SceneManager   *mSceneMgr;
-    static LoadState     *mLoadState;
-    GameManager          *mGameMgr;
-    clientStatus         mLoadStatus;
+    Ogre::Root *mRoot;
+    Ogre::SceneManager *mSceneMgr;
+    GameManager *mGameMgr;
+    clientStatus mLoadStatus;
 
     MyGUI::VectorWidgetPtr mLayout;
 
-    LoadState(void) { }
-    LoadState(const LoadState&) { }
-    LoadState & operator = (const LoadState&);
-
-    void updateLoadbar(void);
-    void killLoadbar(void);
+    void updateLoadbar();
+    void killLoadbar();
 
     unsigned long mCounter; /* keeps track of time between connection attempts */
-
     unsigned short mGUIcount; /* used for GUI animation */
     bool mReverse; /* use for GUI animation */
     unsigned long mGUICounter; /* keeps track of time between animation updates */
-    MyGUI::StaticTextPtr  mStatusText;
+    MyGUI::StaticTextPtr mStatusText;
     bool mDownloads;
 };
 }
-#endif /* __LOADSTATE_H_ */
 

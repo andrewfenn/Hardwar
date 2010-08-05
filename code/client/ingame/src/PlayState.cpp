@@ -20,9 +20,9 @@
 
 using namespace Client;
 
-PlayState* PlayState::mPlayState;
+PlayState::PlayState() {}
 
-void PlayState::enter(void)
+void PlayState::enter()
 {
    mGameMgr      = GameManager::getSingletonPtr();
    mRoot         = Ogre::Root::getSingletonPtr();
@@ -57,7 +57,7 @@ void PlayState::enter(void)
    mBuildEditor = new BuildEditor;
 }
 
-void PlayState::exit(void)
+void PlayState::exit()
 {
    mGameMgr->getNetwork()->stopThread();
    delete mBuildEditor;
@@ -69,13 +69,9 @@ void PlayState::exit(void)
   //  play->changeState( EditorState::getSingletonPtr());
 }*/
 
-void PlayState::pause(void)
-{
-}
-
-void PlayState::resume(void)
-{
-}
+void PlayState::pause() {}
+void PlayState::resume() {}
+void PlayState::redraw() {}
 
 void PlayState::update(unsigned long lTimeElapsed)
 {
@@ -197,13 +193,3 @@ void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
       mBuildEditor->mouseReleased(e, id);
    }
 }
-
-PlayState* PlayState::getSingletonPtr(void)
-{
-   if(!mPlayState)
-   {
-      mPlayState = new PlayState();
-   }
-   return mPlayState;
-}
-

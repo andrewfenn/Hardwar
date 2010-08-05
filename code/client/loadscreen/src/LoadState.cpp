@@ -20,9 +20,9 @@
 
 using namespace Client;
 
-LoadState* LoadState::mLoadState;
+LoadState::LoadState() {}
 
-void LoadState::enter( void )
+void LoadState::enter()
 {
    mRoot         = Ogre::Root::getSingletonPtr();
 
@@ -44,17 +44,15 @@ void LoadState::enter( void )
 }
 
 /* Destory everything we created when entering */
-void LoadState::exit( void )
+void LoadState::exit()
 {
    /* Delete what we loaded */
    MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
 }
 
-void LoadState::pause(void)
-{}
-
-void LoadState::resume(void)
-{}
+void LoadState::pause() {}
+void LoadState::resume() {}
+void LoadState::redraw() {}
 
 void LoadState::update( unsigned long lTimeElapsed )
 {
@@ -101,7 +99,7 @@ void LoadState::update( unsigned long lTimeElapsed )
       break;
       case status_ingame:
          {
-            this->changeState(PlayState::getSingletonPtr());
+            this->changeState(new PlayState());
          }
       break;
       case status_disconnected:
@@ -114,7 +112,7 @@ void LoadState::update( unsigned long lTimeElapsed )
 }
 
 /* Update the GUI animation */
-void LoadState::updateLoadbar(void)
+void LoadState::updateLoadbar()
 {
    MyGUI::types::TCoord<Ogre::Real> coord;
    if (mGUICounter*0.001 > 0.5)
@@ -181,7 +179,8 @@ void LoadState::keyReleased(const OIS::KeyEvent &e)
 {
    if( e.key == OIS::KC_ESCAPE )
    {
-      this->requestShutdown(); /* FIXME: Should go to main menu */
+      /* FIXME: Should go to main menu */
+      this->requestShutdown(); 
    } 
 }
 
@@ -193,12 +192,3 @@ void LoadState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 
 void LoadState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 { }
-
-LoadState* LoadState::getSingletonPtr(void)
-{
-   if(!mLoadState)
-   {
-      mLoadState = new LoadState();
-   }
-   return mLoadState;
-}

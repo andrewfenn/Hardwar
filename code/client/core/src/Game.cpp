@@ -16,18 +16,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GameState.h"
-#include "PlayState.h"
-#include "LoadState.h"
-#include "GameManager.h"
+
+#include "Game.h"
 
 namespace Client
 {
 
 GameManager* GameManager::mGameManager;
 
-GameManager::GameManager(void) : mRoot(0), mInputMgr(0), mLoadState(0), 
-                                                 mPlayState(0), bShutdown(false)
+GameManager::GameManager(void) : mRoot(0), mInputMgr(0), bShutdown(false)
 {
    mSinglePlayer = false;
    mZoneMgr.set(&mConsole);
@@ -48,16 +45,6 @@ GameManager::~GameManager( void )
    {
       delete mInputMgr;
       mInputMgr = 0;
-   }
-   if(mLoadState)
-   {
-      delete mLoadState;
-      mLoadState = 0;
-   }	
-   if(mPlayState)
-   {
-      delete mPlayState;
-      mPlayState  = 0;
    }
 
    /* Remove all listeners from console */
@@ -87,8 +74,10 @@ GameManager::~GameManager( void )
    }
 }
 
-void GameManager::startGame( GameState *gameState )
+void GameManager::startGame()
 {
+   GameState *gameState = new Client::LoadState();
+
    #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
    mRoot = new Ogre::Root("plugins.cfg", "game.cfg", "./logs/ogre.log");
    #else
@@ -125,7 +114,7 @@ void GameManager::startGame( GameState *gameState )
    }
 
    /* Setup open input system */
-   mInputMgr = InputManager::getSingletonPtr();
+   mInputMgr = new InputManager();
    mInputMgr->initialise(mRenderWindow);
    mInputMgr->addKeyListener(this, "GameManager");
    mInputMgr->addMouseListener(this, "GameManager");
@@ -153,11 +142,8 @@ void GameManager::startGame( GameState *gameState )
    /* Add Game Settings */
    mSettings = GameSettings::getSingletonPtr();
 
-   /* Setup states */
-   mLoadState = LoadState::getSingletonPtr();
-   mPlayState = PlayState::getSingletonPtr();
    /* Go to the first state */
-   this->changeState( gameState );
+   this->changeState(gameState);
 
    /* 
     * lTimeLastFrame remembers the last time that it was checked
@@ -188,7 +174,6 @@ void GameManager::startGame( GameState *gameState )
          /* render the next frame */
          mRoot->renderOneFrame();
          mGameCore.update(lTimeSinceLastFrame);
-         mGUI->injectFrameEntered((Ogre::Real) lTimeSinceLastFrame/100);
          mConsole.update();
          lDelay = 0;
       }

@@ -20,10 +20,12 @@
 
 using namespace Client;
 
-InputManager *InputManager::mInputManager;
-
-InputManager::InputManager(void) : mInputSystem(0),mMouse(0),mKeyboard(0)
-{ }
+InputManager::InputManager()
+{
+   mInputSystem = 0;
+   mMouse = 0;
+   mKeyboard = 0;
+}
 
 InputManager::~InputManager(void)
 {
@@ -452,14 +454,5 @@ bool InputManager::buttonReleased(const OIS::JoyStickEvent &e, int button)
       itJoystickListener->second->buttonReleased(e, button);
    }
    return true;
-}
-
-InputManager* InputManager::getSingletonPtr(void)
-{
-   if(!mInputManager)
-   {
-      mInputManager = new InputManager();
-   }
-   return mInputManager;
 }
 

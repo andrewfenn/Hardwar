@@ -16,8 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __InputManager_H_
-#define __InputManager_H_
+#pragma once
 
 #include "OISInputManager.h"
 #include "OISException.h"
@@ -34,10 +33,11 @@ namespace Client
 
 class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener {
 public:
-    virtual ~InputManager( void );
+    InputManager();
+    virtual ~InputManager();
 
     void initialise( Ogre::RenderWindow *renderWindow );
-    void capture( void );
+    void capture();
 
     void addKeyListener( OIS::KeyListener *keyListener, const std::string& instanceName );
     void addMouseListener( OIS::MouseListener *mouseListener, const std::string& instanceName );
@@ -51,20 +51,18 @@ public:
     void removeMouseListener( OIS::MouseListener *mouseListener );
     void removeJoystickListener( OIS::JoyStickListener *joystickListener );
 
-    void removeAllListeners( void );
-    void removeAllKeyListeners( void );
-    void removeAllMouseListeners( void );
-    void removeAllJoystickListeners( void );
+    void removeAllListeners();
+    void removeAllKeyListeners();
+    void removeAllMouseListeners();
+    void removeAllJoystickListeners();
 
     void setWindowExtents( int width, int height );
 
-    OIS::Mouse*    getMouse( void );
-    OIS::Keyboard* getKeyboard( void );
+    OIS::Mouse*    getMouse();
+    OIS::Keyboard* getKeyboard();
     OIS::JoyStick* getJoystick( unsigned int index );
 
-    int getNumOfJoysticks( void );
-
-    static InputManager* getSingletonPtr( void );
+    int getNumOfJoysticks();
 private:
 
     OIS::InputManager *mInputSystem;
@@ -87,12 +85,6 @@ private:
     std::map<std::string, OIS::MouseListener*>::iterator itMouseListenerEnd;
     std::map<std::string, OIS::JoyStickListener*>::iterator itJoystickListenerEnd;
 
-    static InputManager *mInputManager;
-
-    InputManager( void );
-    InputManager( const InputManager& ) { }
-    InputManager & operator = ( const InputManager& );
-
     bool keyPressed( const OIS::KeyEvent &e );
     bool keyReleased( const OIS::KeyEvent &e );
 
@@ -106,7 +98,5 @@ private:
     bool buttonPressed( const OIS::JoyStickEvent &e, int button );
     bool buttonReleased( const OIS::JoyStickEvent &e, int button );
 };
-
 }
-#endif /* __InputManager_H_ */
 

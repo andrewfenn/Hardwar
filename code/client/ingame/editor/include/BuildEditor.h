@@ -16,15 +16,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __BuildEditor_H_
-#define __BuildEditor_H_
+#pragma once
 
 #include <Ogre.h>
 #include <OgreRay.h>
 
 #include <libintl.h>
 
-#include "GameManager.h"
+#include "Game.h"
 #include "Console.h"
 #include "CollisionTools.h"
 #include "DynamicLines.h"
@@ -36,6 +35,9 @@
 
 namespace Client
 {
+
+class GameManager;
+
 /** The Build Editor
         @remarks
             The Client::BuildEditor class deals with editing the levels in the
@@ -83,5 +85,4 @@ private:
 };
 
 }
-#endif /* __BuildEditor_H_ */
 

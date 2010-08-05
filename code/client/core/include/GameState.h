@@ -21,14 +21,9 @@
 
 #include <OISMouse.h>
 #include <OISKeyboard.h>
-
 #include <OgreRoot.h>
-#include <OgreRenderWindow.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreStringConverter.h>
 
-#include "GameManager.h"
+#include "Game.h"
 #include "InputManager.h"
 
 namespace Client
@@ -36,21 +31,22 @@ namespace Client
 
 class GameState {
 public:
-    ~GameState( void ) { }
+    ~GameState() { }
 
-    virtual void enter( void )  = 0;
-    virtual void exit( void )   = 0;
+    virtual void enter()  = 0;
+    virtual void exit()   = 0;
+    virtual void redraw() = 0;
 
-    virtual void pause( void )  = 0;
-    virtual void resume( void ) = 0;
-    virtual void update( unsigned long lTimeElapsed ) = 0;
+    virtual void pause()  = 0;
+    virtual void resume() = 0;
+    virtual void update(unsigned long lTimeElapsed) = 0;
     
-    virtual void keyPressed( const OIS::KeyEvent &e )  = 0;
-    virtual void keyReleased( const OIS::KeyEvent &e ) = 0;
+    virtual void keyPressed(const OIS::KeyEvent &e)  = 0;
+    virtual void keyReleased(const OIS::KeyEvent &e) = 0;
 
-    virtual void mouseMoved( const OIS::MouseEvent &e ) = 0;
-    virtual void mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id )  = 0;
-    virtual void mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id ) = 0;
+    virtual void mouseMoved(const OIS::MouseEvent &e) = 0;
+    virtual void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)  = 0;
+    virtual void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) = 0;
 
     void changeState( GameState *state );
     void pushState( GameState *state );

@@ -16,8 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __BuildEditorUI_H_
-#define __BuildEditorUI_H_
+#pragma once
 
 #include <MyGUI.h>
 #include <boost/filesystem.hpp>
@@ -25,7 +24,7 @@
 #include "GameSettings.h"
 
 #include "ItemBoxMgr.h"
-#include "GameManager.h"
+#include "Game.h"
 
 namespace Client
 {
@@ -101,6 +100,4 @@ namespace Client
          unsigned short mMaxBuildingCols;
    };
 }
-
-#endif /* __BuildEditor_H_ */
 

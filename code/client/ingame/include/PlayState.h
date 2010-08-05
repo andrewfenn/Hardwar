@@ -16,11 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __PLAYSTATE_H_
-#define __PLAYSTATE_H_
+#pragma once
 
 #include <OgreRoot.h>
 
+#include "Game.h"
 #include "GameState.h"
 #include "srvstructs.h"
 #include "BuildEditor.h"
@@ -29,25 +29,30 @@
 namespace Client
 {
 
+class GameManager;
+class BuildEditor;
+
 class PlayState : public GameState
 {
    public:
-      ~PlayState(void);
+      PlayState();
+      ~PlayState();
 
-      void enter(void);
-      void exit(void);
+      void enter();
+      void exit();
 
-      void pause(void);
-      void resume(void);
+      void pause();
+      void resume();
       void update(unsigned long lTimeElapsed);
+      void redraw();
 
       void keyPressed(const OIS::KeyEvent &e);
       void keyReleased(const OIS::KeyEvent &e);
 
+
       void mouseMoved(const OIS::MouseEvent &e);
       void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
       void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-      static PlayState* getSingletonPtr(void);
    private:
       Ogre::Root              *mRoot;
       Ogre::Camera            *mCamera;
@@ -64,18 +69,12 @@ class PlayState : public GameState
       Ogre::SceneNode         *mWorldNode;
       Ogre::SceneNode         *mWaterNode;
 
-      static PlayState        *mPlayState;
       BuildEditor             *mBuildEditor;
       Ogre::Degree            mMouseRotX, mMouseRotY;
       int                     mKeydownUp, mKeydownDown, 
                               mKeydownRight, mKeydownLeft;
       Ogre::Real              fpstimer;
-
-      PlayState(void) { }
-      PlayState(const PlayState&) { }
-      PlayState & operator = (const PlayState&);
 };
 
 }
-#endif /* __PLAYSTATE_H_ */
 

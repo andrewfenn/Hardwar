@@ -16,8 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GameManager_H
-#define GameManager_H
+#pragma once
 
 #include <OISMouse.h>
 #include <OISKeyboard.h>
@@ -40,11 +39,15 @@
 #include "GameSettings.h"
 #include "GameCore.h"
 #include "ZoneManager.h"
+#include "GameState.h"
+#include "LoadState.h"
+#include "GameTask.h"
 
 namespace Client
 {
 
 class GameState;
+class GameTask;
 
 /** The Game Manager
         @remarks
@@ -74,7 +77,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
          @remarks
             This method should only be called once.
       */
-      void startGame(GameState *gameState);
+      void startGame();
       /** This method changes the current GameState being run.
          @param gameState
             The GameState being changed to.
@@ -105,6 +108,7 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       static GameManager   *mGameManager;
 
       std::vector<GameState*> mStates;
+      std::vector<GameTask*> mTasks;
 
       GameManager(void);
       GameManager(const GameManager&) { }
@@ -120,7 +124,5 @@ class GameManager : public OIS::KeyListener, OIS::MouseListener
       bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
       bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 };
-
 }
-#endif
 
