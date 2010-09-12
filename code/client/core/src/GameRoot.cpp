@@ -29,6 +29,7 @@ GameRoot::GameRoot()
 
 GameRoot::~GameRoot()
 {
+	Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
    mRoot->getAutoCreatedWindow()->removeAllViewports();
    if(mRoot)
    {
@@ -72,17 +73,10 @@ void GameRoot::init()
    mRoot = new Ogre::Root("", "game.cfg", str);
    #endif
 
-   this->load
-
+   this->loadPlugins();
    this->setupResources();
-   if( !this->configureGame() )
-   {
-      /* If game can't be configured, throw exception and quit application */
-      throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR,
-                                      "Error - Couldn't Configure Renderwindow",
-                                      "Game Error" );
-      return;
-   }
+   this->configureGame();
+   mGameMgr = new GameManager();
 }
 
 bool GameRoot::configureGame()
@@ -93,12 +87,14 @@ bool GameRoot::configureGame()
       // If there is no config file, show the configuration dialog
       if( !mRoot->showConfigDialog())
       {
-         return false;
+         /* If game can't be configured, throw exception and quit application */
+         throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR, "Error - Couldn't Configure Renderwindow", "Game Error");
       }
     }
 
     /* Initialise and create a default rendering window */
     mRenderWindow = mRoot->initialise( true, "Hardwar" );
+    Ogre::WindowEventUtilities::addWindowEventListener(mRenderWindow, this);
 
     /* Initialise resources */
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -132,4 +128,19 @@ void GameRoot::setupResources()
    }
 }
 
+void GameRoot::windowResized(Ogre::RenderWindow *rw)
+{
+   mGameMgr.windowChangedSize(rw);
+}
+
+bool GameRoot::windowClosing(Ogre::RenderWindow *rw)
+{
+   mGameMgr.shutdown();
+}
+
+void GameRoot::windowFocusChange(Ogre::RenderWindow *rw)
+{
+   mGameMgr.windowChangedFocus(rw);
+}
 } /* namespace Client */
+

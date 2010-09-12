@@ -16,14 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ZoneManager_H
-#define ZoneManager_H
+#pragma once
 
 #include <Ogre.h>
 #include <boost/filesystem.hpp>
 
 #include "Zone.h"
-#include "Console.h"
+#include "GameTask.h"
 
 namespace Client
 {
@@ -34,13 +33,13 @@ typedef std::vector<Zone> Zones;
             The Client::ZoneManager class is our root class which deals with the
             initialisation and running of our Zone.
     */
-class ZoneManager
+class ZoneTask : public GameTask
 {
    public:
-      ZoneManager();
-      ~ZoneManager();
+      ZoneTask();
+      ~ZoneTask();
       /** Pre-load all game assets related to the levels */
-      void preload();
+      void init();
       /** Creates a new zone */
       void create(const int, const Ogre::String);
       /** Clears all currently loaded zones */
@@ -49,12 +48,9 @@ class ZoneManager
       const int getTotal();
       /** Retrieves a pointer to the current zone that the player is in. */
       Zone* getCurrent();
-      void set(Console*);
    private:
       Zones mZones;
-      Console *mConsole;
 };
 
 }
-#endif
 

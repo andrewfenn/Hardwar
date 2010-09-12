@@ -16,25 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ZoneManager.h"
+#include "ZoneTask.h"
 
 using namespace Client;
 
-ZoneManager::ZoneManager()
-{
-}
-
-ZoneManager::~ZoneManager()
-{
-   mZones.clear();
-}
-
-void ZoneManager::set(Console* console)
-{
-   mConsole = console;
-}
-
-void ZoneManager::preload()
+void ZoneTask::init()
 {
    boost::filesystem::path lPath("../media/models/hangers");
 	if (boost::filesystem::is_directory(lPath))
@@ -51,23 +37,23 @@ void ZoneManager::preload()
 
 }
 
-void ZoneManager::create(const int zone, const Ogre::String filename)
+void ZoneTask::create(const int zone, const Ogre::String filename)
 {
    /* FIXME: Needs correct number */
-   mZones.push_back(Zone(mConsole, filename));
+   mZones.push_back(Zone(filename));
 }
 
-void ZoneManager::clear()
+void ZoneTask::clear()
 {
    mZones.clear();
 }
 
-const int ZoneManager::getTotal()
+const int ZoneTask::getTotal()
 {
    return mZones.size();
 }
 
-Zone* ZoneManager::getCurrent()
+Zone* ZoneTask::getCurrent()
 {
    /* FIXME: Needs to actually get the correct zone */
    return &mZones[0];

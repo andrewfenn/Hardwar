@@ -17,22 +17,100 @@
 */
 
 #include "GameState.h"
+#include "GameTask.h"
 
 using namespace Client;
 
-void GameState::changeState( GameState *state ) { 
-    GameManager::getSingletonPtr()->changeState( state ); 
+GameState::GameState(const Ogre::String& name)
+{
+   mName = name;
+   mPaused = false;
 }
 
-void GameState::pushState( GameState *state ) { 
-    GameManager::getSingletonPtr()->pushState( state ); 
+void GameState::setParent(GameState* parent)
+{
+   mParent = parent;
+   mTasklist = parent->mTasklist;
 }
 
-void GameState::popState( void ) { 
-    GameManager::getSingletonPtr()->popState(); 
+void GameState::shutdown()
+{
+   this->exit();
+
+   for (GameStateList::iterator i=mChildren.begin(); i != mChildren.end(); i++)
+   {
+      i->second->shutdown();
+      mChildren.erase(i);
+   }
+
+   if (mParent)
+   {
+      mParent->destroyState(this->getName());
+   }
 }
 
-void GameState::requestShutdown( void ) {
-    GameManager::getSingletonPtr()->requestShutdown();
+const Ogre::String GameState::getName()
+{
+   return mName;
 }
 
+GameState* GameState::createState(GameState* state)
+{
+   if (mChildren.find(state->getName()) != mChildren.end())
+   {
+      OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
+         "A state with the name " + state->getName() + " already exists",
+         "GameManager::createState" );
+   }
+   state->setParent(this);
+   mChildren.insert(GameStateList::value_type(state->getName(), state));
+   return state;
+}
+
+GameState* GameState::getState(const Ogre::String& name)
+{
+   GameStateList::const_iterator i = mChildren.find(name);
+   if (i != mChildren.end())
+   {
+      return (GameState*) &i->second;
+   }
+   OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
+         "Cannot find State with name " + name,
+         "GameTask::getState");
+}
+
+bool GameState::hasState(const Ogre::String& name)
+{
+   return (mChildren.find(name) != mChildren.end());
+}
+
+void GameState::destroyState(const Ogre::String& name)
+{
+   GameStateList::iterator i = mChildren.find(name);
+   if (i != mChildren.end())
+   {
+      OGRE_DELETE &i->second;
+      mChildren.erase(i);
+   }
+}
+
+void GameState::pause()
+{
+   mPaused = true;
+}
+
+void GameState::resume()
+{
+   mPaused = false;
+}
+
+void GameState::update(unsigned long lTimeElapsed)
+{
+   if (mPaused)
+      return;
+
+   for (GameStateList::iterator i=mChildren.begin(); i != mChildren.end(); i++)
+   {
+      i->second->update(lTimeElapsed);
+   }
+}

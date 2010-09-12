@@ -21,11 +21,14 @@
 #include <OgreRoot.h>
 #include <libintl.h>
 
-#include "GameState.h"
 #include "srvstructs.h"
 #include "hwstructs.h"
+
+#include "GameState.h"
 #include "PlayState.h"
-#include "enet/enet.h"
+
+#include "NetworkTask.h"
+#include "ZoneTask.h"
 
 namespace Client
 {
@@ -44,11 +47,7 @@ public:
     void enter();
     void exit();
 
-    void pause();
-    void resume();
     void update(unsigned long lTimeElapsed);
-    void redraw();
-
     void keyPressed(const OIS::KeyEvent &e);
     void keyReleased(const OIS::KeyEvent &e);
 
@@ -57,10 +56,12 @@ public:
     void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 private:
-    Ogre::Root *mRoot;
-    Ogre::SceneManager *mSceneMgr;
-    GameManager *mGameMgr;
+    Ogre::Root* mRoot;
+    Ogre::SceneManager* mSceneMgr;
     clientStatus mLoadStatus;
+
+    NetworkTask* mNetwork;
+    ZoneTask* mLevel;
 
     MyGUI::VectorWidgetPtr mLayout;
 

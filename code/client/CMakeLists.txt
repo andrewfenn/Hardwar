@@ -15,10 +15,10 @@ SOURCE_GROUP("Client" FILES ${folder_source})
 
 INCLUDE_DIRECTORIES(
    ${CMAKE_CURRENT_SOURCE_DIR}/core/include
-   ${CMAKE_CURRENT_SOURCE_DIR}/core/console/include
-   ${CMAKE_CURRENT_SOURCE_DIR}/ingame/include
-   ${CMAKE_CURRENT_SOURCE_DIR}/ingame/editor/include
-   ${CMAKE_CURRENT_SOURCE_DIR}/loadscreen/include
+   ${CMAKE_CURRENT_SOURCE_DIR}/console/include
+   ${CMAKE_CURRENT_SOURCE_DIR}/playstate/include
+   ${CMAKE_CURRENT_SOURCE_DIR}/playstate/editor/include
+   ${CMAKE_CURRENT_SOURCE_DIR}/loadstate/include
    ${Hardwar_SOURCE_DIR}/code/shared/include
 )
 

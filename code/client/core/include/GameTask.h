@@ -20,18 +20,25 @@
 
 namespace Client
 {
+class GameTask;
+typedef std::map<Ogre::String, GameTask*> GameTaskList;
 
-class GameTask {
+class GameTask
+{
 public:
-    ~GameTask() { }
-    GameTask() { }
+    virtual void init();
+    virtual void shutdown();
+    virtual void update();
 
-    virtual void init() = 0;
-    virtual void exit()   = 0;
-    virtual void resize() = 0;
-    virtual void minimise() = 0;
-    virtual void requestShutdown() = 0;
+    virtual void changeSize(Ogre::RenderWindow*);
+    virtual void changeFocus(Ogre::RenderWindow*);
+
+    void setTaskList(GameTaskList* gametasks)
+    {
+      mTaskList = gametasks;
+    }
+protected:
+   GameTaskList* mTaskList;
 };
-
 }
 

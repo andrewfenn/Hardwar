@@ -16,11 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Network.h"
+#include "NetworkTask.h"
 
 using namespace Client;
 
-Network::Network()
+NetworkTask::NetworkTask()
 {
    if (enet_initialize() != 0) {
       fprintf(stderr, gettext("An error occurred while initializing ENet\n"));
@@ -30,28 +30,18 @@ Network::Network()
    mRunThread = false;
    mStatus = status_disconnected;
    GameSettings* lSettings = GameSettings::getSingletonPtr();
-   mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkRetryLimit"));
-   mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTimeout"));
+   mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTaskRetryLimit"));
+   mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTaskTimeout"));
    mConAttempts = 0;
 }
 
-Network::~Network()
+NetworkTask::~NetworkTask()
 {
    stopThread();
 }
 
-void Network::set(ZoneManager* zoneMgr)
-{
-   mZoneMgr = zoneMgr;
-}
 
-void Network::set(Console* console)
-{
-   mConsole = console;
-}
-
-
-bool Network::setPort(const int port)
+bool NetworkTask::setPort(const int port)
 {
    if (mStatus == status_disconnected)
    {
@@ -61,7 +51,7 @@ bool Network::setPort(const int port)
    return false;
 }
 
-bool Network::setAddress(const std::string address)
+bool NetworkTask::setAddress(const std::string address)
 {
    if (mStatus == status_disconnected)
    {
@@ -71,7 +61,7 @@ bool Network::setAddress(const std::string address)
    return false;
 }
 
-void Network::connect(void)
+void NetworkTask::connect(void)
 {
    if (mPort > 0 && !mAddress.empty())
    {
@@ -79,31 +69,31 @@ void Network::connect(void)
    }
 }
 
-void Network::setConStatus(const clientStatus lStatus)
+void NetworkTask::setConStatus(const clientStatus lStatus)
 {
    mStatus = lStatus;
 }
 
-unsigned short Network::getRetryAttempts(void)
+unsigned short NetworkTask::getRetryAttempts(void)
 {
    return mConAttempts;
 }
 
-clientStatus Network::getConStatus(void)
+clientStatus NetworkTask::getConStatus(void)
 {
    return mStatus;
 }
 
-void Network::startThread(void)
+void NetworkTask::startThread(void)
 {
    if (!mRunThread)
    {
       /* create a new thread */
-      mThread = boost::thread(boost::bind(&Network::threadLoopConnect, this));
+      mThread = boost::thread(boost::bind(&NetworkTask::threadLoopConnect, this));
    }
 }
 
-void Network::stopThread(void)
+void NetworkTask::stopThread(void)
 {
    if (mRunThread)
    {
@@ -113,12 +103,12 @@ void Network::stopThread(void)
    }
 }
 
-enet_uint32 Network::getTimeout(void)
+enet_uint32 NetworkTask::getTimeout(void)
 {
    return mPeer->nextTimeout;
 }
 
-void Network::threadLoopConnect(void)
+void NetworkTask::threadLoopConnect(void)
 {
    mRunThread = true;
 
@@ -156,7 +146,7 @@ void Network::threadLoopConnect(void)
    enet_deinitialize();
 }
 
-void Network::threadLoopMessages()
+void NetworkTask::threadLoopMessages()
 {
    Ogre::UTFString lResponse;
    ENetEvent lEvent;
@@ -173,7 +163,7 @@ void Network::threadLoopMessages()
    }
 }
 
-void Network::threadLoopGame()
+void NetworkTask::threadLoopGame()
 {
    ENetEvent lEvent;
    Message lMessages = getMessages();
@@ -210,13 +200,6 @@ void Network::threadLoopGame()
                   {
                      Hardwar::Building building;
                      building.unserialize(lReceivedPacket);
-                     /* FIXME: Should know which zone to put in */
-                     Zone* zone = mZoneMgr->getCurrent();
-
-                     if (!zone->addBuilding(building))
-                     {
-                        mConsole->print("Building Add Error");
-                     }
                   }
                default:
                   {
@@ -238,13 +221,13 @@ void Network::threadLoopGame()
    }
 }
 
-void Network::addMessage(const ENetEvent lEvent)
+void NetworkTask::addMessage(const ENetEvent lEvent)
 {
    boost::mutex::scoped_lock lMutex(mMessageMutex);
    mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
 }
 
-Message Network::getMessages(void)
+Message NetworkTask::getMessages(void)
 {
    boost::mutex::scoped_lock lMutex(mMessageMutex);
    Message lMessages = mMessages;
@@ -252,7 +235,7 @@ Message Network::getMessages(void)
    return lMessages;
 }
 
-bool Network::sendJoinRequest(void)
+bool NetworkTask::sendJoinRequest(void)
 {
    if (connect(mPort, mAddress))
    {
@@ -263,18 +246,18 @@ bool Network::sendJoinRequest(void)
    return false;
 }
 
-bool Network::connect(unsigned int port, std::string ip)
+bool NetworkTask::connect(unsigned int port, std::string ip)
 {
    ENetAddress address;
 
    /* TODO: Add config option to increase speed, set the 0 (unlimited) at the moment */
-   mNetHost = enet_host_create (0 /* create a Network host */,
+   mNetHost = enet_host_create (0 /* create a NetworkTask host */,
                                        1 /* only allow 1 outgoing connection */,
                     57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
                     14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
    if (mNetHost == 0)
    {
-      fprintf (stderr, gettext("An error occurred while trying to create an ENet Network host.\n"));
+      fprintf (stderr, gettext("An error occurred while trying to create an ENet NetworkTask host.\n"));
       return false;
    }
 
@@ -315,7 +298,7 @@ bool Network::connect(unsigned int port, std::string ip)
    return false;
 }
 
-bool Network::pollMessage(ENetEvent *pEvent)
+bool NetworkTask::pollMessage(ENetEvent *pEvent)
 {
    if (enet_host_service(mNetHost, pEvent, 0) > 0)
    {
@@ -324,7 +307,7 @@ bool Network::pollMessage(ENetEvent *pEvent)
    return false;
 }
 
-bool Network::message(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
+bool NetworkTask::message(dataPacket data, const enet_uint8 channel, const enet_uint32 priority)
 {
    bool result = true;
    ENetPacket * packet = enet_packet_create(data.getContents(), data.size(), priority);
@@ -337,7 +320,7 @@ bool Network::message(dataPacket data, const enet_uint8 channel, const enet_uint
    return result;
 }
 
-ENetHost* Network::getHost()
+ENetHost* NetworkTask::getHost()
 {
    return mNetHost;
 }

@@ -16,14 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ZONE_H_
-#define __ZONE_H_
+#pragma once
 
 #include <Ogre.h>
 #include "OgreMaxScene.hpp"
 
 #include "Building.h"
-#include "Console.h"
 
 namespace Client
 {
@@ -32,17 +30,16 @@ namespace Client
 class Zone
 {
    public:
-      Zone(Console*, const Ogre::String);
+      Zone(const Ogre::String);
       ~Zone();
       bool addBuilding(Hardwar::Building);
       Hardwar::Building getBuildingByName(const Ogre::String);
    private:
       std::vector<Hardwar::Building> mBuildings;
-      Console *mConsole;
 
       /** Create a building specified from the building list */
       bool drawBuilding(Hardwar::Building);
 };
 
 }
-#endif /* __ZONE_H_ */
+

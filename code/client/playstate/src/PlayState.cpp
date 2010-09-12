@@ -20,11 +20,8 @@
 
 using namespace Client;
 
-PlayState::PlayState() {}
-
 void PlayState::enter()
 {
-   mGameMgr      = GameManager::getSingletonPtr();
    mRoot         = Ogre::Root::getSingletonPtr();
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
@@ -33,7 +30,6 @@ void PlayState::enter()
    mGUI          = MyGUI::Gui::getInstancePtr();
    mCamera       = mGameMgr->getCamera();
    mViewport     = mGameMgr->getViewport();
-
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
@@ -54,28 +50,15 @@ void PlayState::enter()
 	light->setSpecularColour( ColourValue( .82, .81, .7 ) );
 	light->setDirection( Vector3( 0, -1, 1 ) ); 
 
-   mBuildEditor = new BuildEditor;
 }
 
 void PlayState::exit()
 {
-   mGameMgr->getNetwork()->stopThread();
-   delete mBuildEditor;
+   mGameMgr->getTask("NetworkManager")->stopThread();
 }
-
-/*void PlayState::switchToEditor(vector<String>& Params)
-{
-    PlayState* play = PlayState::getSingletonPtr(); 
-  //  play->changeState( EditorState::getSingletonPtr());
-}*/
-
-void PlayState::pause() {}
-void PlayState::resume() {}
-void PlayState::redraw() {}
 
 void PlayState::update(unsigned long lTimeElapsed)
 {
-   mBuildEditor->update(lTimeElapsed);
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
    float scale = 0.9f;
 
@@ -118,11 +101,6 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 {
    if (e.key == OIS::KC_TAB)
    {
-      mBuildEditor->show(!mBuildEditor->isVisible());
-      if (!mBuildEditor->isVisible())
-      {
-         mGUI->setVisiblePointer(false);
-      }
    }
 
    if (mGameMgr->getConsole()->isVisible())
@@ -130,18 +108,6 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
       if (e.key == OIS::KC_ESCAPE)
       {
          mGameMgr->getConsole()->toggleShow();
-      }
-   }
-   else if (mBuildEditor->isVisible())
-   {
-      if (e.key == OIS::KC_ESCAPE)
-      {
-         mBuildEditor->show(false);
-         mGUI->setVisiblePointer(false);
-      }
-      else
-      {
-         mBuildEditor->keyReleased(e);
       }
    }
    else
@@ -165,31 +131,16 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
-   if (mBuildEditor->isVisible())
-   {
-      mBuildEditor->mouseMoved(e);
-   }
-
-   if (!mBuildEditor->isVisible())
-   {
-      const OIS::MouseState &mouseState = e.state;
-      mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
-      mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
-   }
+   const OIS::MouseState &mouseState = e.state;
+   mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
+   mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
 }
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGUI->isVisiblePointer() || mBuildEditor->isVisible())
-   {
-      mBuildEditor->mousePressed(e, id);
-   }
+   
 }
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   if (mGUI->isVisiblePointer() || mBuildEditor->isVisible())
-   {
-      mBuildEditor->mouseReleased(e, id);
-   }
 }

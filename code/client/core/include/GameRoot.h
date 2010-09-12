@@ -19,7 +19,10 @@
 #pragma once
 
 #include <Ogre.h>
-#include "Game.h"
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+   #include <dirent.h>
+#endif
+#include "GameManager.h"
 
 namespace Client
 {
@@ -29,9 +32,18 @@ class GameRoot
    public:
       void init();
 
+      /* event window listeners */
+      void windowResized(Ogre::RenderWindow *rw);
+      bool windowClosing(Ogre::RenderWindow *rw);
+      void windowFocusChange(Ogre::RenderWindow *rw);
    private:
       Ogre::Root           *mRoot;
       Ogre::RenderWindow   *mRenderWindow;
+      GameManager          *mGameMgr;
+
+      void loadPlugins();
+      void configureGame();
+      void setupResources();
 };
 }
 

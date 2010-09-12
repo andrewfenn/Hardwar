@@ -24,47 +24,49 @@
 #include "OISMouse.h"
 #include "OISJoyStick.h"
 #include "OISEvents.h"
+#include <Ogre.h>
 
-
-#include <OgreRenderWindow.h>
+#include "GameTask.h"
 
 namespace Client
 {
-
-class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener {
+class InputTask : public Client::GameTask, OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener
+{
 public:
-    InputManager();
-    virtual ~InputManager();
+    InputTask();
 
-    void initialise( Ogre::RenderWindow *renderWindow );
-    void capture();
+    void init();
+    void shutdown();
+    void update();
 
-    void addKeyListener( OIS::KeyListener *keyListener, const std::string& instanceName );
-    void addMouseListener( OIS::MouseListener *mouseListener, const std::string& instanceName );
-    void addJoystickListener( OIS::JoyStickListener *joystickListener, const std::string& instanceName );
+    void changeSize(Ogre::RenderWindow*);
+    void changeFocus(Ogre::RenderWindow*);
 
-    void removeKeyListener( const std::string& instanceName );
-    void removeMouseListener( const std::string& instanceName );
-    void removeJoystickListener( const std::string& instanceName );
+    void addKeyListener(OIS::KeyListener *keyListener, const std::string& instanceName);
+    void addMouseListener(OIS::MouseListener *mouseListener, const std::string& instanceName);
+    void addJoystickListener(OIS::JoyStickListener *joystickListener, const std::string& instanceName);
 
-    void removeKeyListener( OIS::KeyListener *keyListener );
-    void removeMouseListener( OIS::MouseListener *mouseListener );
-    void removeJoystickListener( OIS::JoyStickListener *joystickListener );
+    void removeKeyListener(const std::string& instanceName);
+    void removeMouseListener(const std::string& instanceName);
+    void removeJoystickListener(const std::string& instanceName);
+
+    void removeKeyListener(OIS::KeyListener *keyListener);
+    void removeMouseListener(OIS::MouseListener *mouseListener);
+    void removeJoystickListener(OIS::JoyStickListener *joystickListener);
 
     void removeAllListeners();
     void removeAllKeyListeners();
     void removeAllMouseListeners();
     void removeAllJoystickListeners();
 
-    void setWindowExtents( int width, int height );
-
     OIS::Mouse*    getMouse();
     OIS::Keyboard* getKeyboard();
-    OIS::JoyStick* getJoystick( unsigned int index );
+    OIS::JoyStick* getJoystick(unsigned int index);
 
     int getNumOfJoysticks();
 private:
 
+    Ogre::RenderWindow *mRenderWindow;
     OIS::InputManager *mInputSystem;
     OIS::Mouse        *mMouse;
     OIS::Keyboard     *mKeyboard;

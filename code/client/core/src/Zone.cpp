@@ -20,14 +20,13 @@
 
 using namespace Client;
 
-Zone::Zone(Console* console, const Ogre::String filename)
+Zone::Zone(const Ogre::String filename)
 {
    Ogre::Root* lRoot             = Ogre::Root::getSingletonPtr();
    Ogre::SceneManager* lSceneMgr  = lRoot->getSceneManager("GameSceneMgr");
    Ogre::RenderWindow* lWindow    = lRoot->getAutoCreatedWindow();
-   mConsole = console;
    /* load world file */
-   OgreMax::OgreMaxScene *lOgreMax = new OgreMax::OgreMaxScene;
+   OgreMax::OgreMaxScene *lOgreMax = OGRE_NEW OgreMax::OgreMaxScene;
    lOgreMax->Load(filename, lWindow, 0, lSceneMgr, lSceneMgr->getRootSceneNode());
 
    /* turn it into static geometry */
@@ -35,7 +34,7 @@ Zone::Zone(Console* console, const Ogre::String filename)
    Ogre::StaticGeometry *lStatic = lSceneMgr->createStaticGeometry("world");
    lStatic->addSceneNode(lSceneMgr->getSceneNode("world"));
 
-   delete lOgreMax;
+   OGRE_DELETE lOgreMax;
 }
 
 Zone::~Zone()
@@ -65,7 +64,9 @@ Hardwar::Building Zone::getBuildingByName(Ogre::String name)
       }
    }
 
-   throw;
+   OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
+         "No building with the name " + name + " found",
+         "Zone::getBuildingByName" );
 }
 
 bool Zone::drawBuilding(Hardwar::Building building)
@@ -87,7 +88,7 @@ bool Zone::drawBuilding(Hardwar::Building building)
    }
    catch(Ogre::Exception& e)
    {
-      mConsole->print(mConsole->getConsoleError(), "addbuilding", e.getFullDescription());
+      // FIXME: Add error to log
    }
 
    return false;

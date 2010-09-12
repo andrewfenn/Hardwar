@@ -17,6 +17,7 @@
 */
 
 #include "GameRoot.h"
+#include <Ogre.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 char **GetArgvCommandLine(int *argc)
@@ -40,7 +41,8 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
 int main( int argc, char **argv ) {
 #endif
    std::string cmdvar;
-   Client::GameRoot game = new Client::GameRoot();
-   game.init();
+   Client::GameRoot* game = OGRE_NEW Client::GameRoot();
+   game->init();
+   OGRE_DELETE game;
    return 0;
 }

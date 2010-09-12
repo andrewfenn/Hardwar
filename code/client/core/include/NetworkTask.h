@@ -16,8 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __NETWORK_H_
-#define __NETWORK_H_
+#pragma once
 
 #include <string>
 #include <stdio.h>
@@ -28,9 +27,8 @@
 
 #include "DataPacket.h"
 #include "Building.h"
-#include "Console.h"
-#include "GameSettings.h"
-#include "ZoneManager.h"
+
+#include "GameTask.h"
 
 namespace Client
 {
@@ -41,11 +39,11 @@ namespace Client
     */
 typedef std::multimap<enet_uint8,ENetEvent> Message;
 
-class Network
+class NetworkTask : public GameTask
 {
    public:
-      ~Network();
-      Network();
+      ~NetworkTask();
+      NetworkTask();
 
       /** Connects to a server */
       void connect(void);
@@ -84,14 +82,8 @@ class Network
       void setConStatus(const clientStatus);
       /** Returns the enet host */
       ENetHost* getHost();
-      /** Sets access to the ZoneManager */
-      void set(ZoneManager*);
-      /** Sets access to the ZoneManager */
-      void set(Console*);
    private:
       ENetHost*         mNetHost;
-      ZoneManager*      mZoneMgr;
-      Console*          mConsole;
 
       ENetEvent         mEvent;
       ENetPeer*         mPeer;
@@ -119,5 +111,4 @@ class Network
 };
 
 }
-#endif /* __NETWORK_H_ */
 

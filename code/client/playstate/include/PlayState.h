@@ -20,35 +20,22 @@
 
 #include <OgreRoot.h>
 
-#include "Game.h"
 #include "GameState.h"
 #include "srvstructs.h"
-#include "BuildEditor.h"
-#include "Network.h"
+#include "NetworkTask.h"
 
 namespace Client
 {
-
-class GameManager;
-class BuildEditor;
-
 class PlayState : public GameState
 {
    public:
-      PlayState();
-      ~PlayState();
-
       void enter();
       void exit();
 
-      void pause();
-      void resume();
       void update(unsigned long lTimeElapsed);
-      void redraw();
 
       void keyPressed(const OIS::KeyEvent &e);
       void keyReleased(const OIS::KeyEvent &e);
-
 
       void mouseMoved(const OIS::MouseEvent &e);
       void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
@@ -64,12 +51,9 @@ class PlayState : public GameState
       OIS::Keyboard           *mInputDevice;
       MyGUI::Gui              *mGUI;
 
-      GameManager             *mGameMgr;
-
       Ogre::SceneNode         *mWorldNode;
       Ogre::SceneNode         *mWaterNode;
 
-      BuildEditor             *mBuildEditor;
       Ogre::Degree            mMouseRotX, mMouseRotY;
       int                     mKeydownUp, mKeydownDown, 
                               mKeydownRight, mKeydownLeft;

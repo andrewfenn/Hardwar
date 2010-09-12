@@ -16,49 +16,69 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GameState_H
-#define GameState_H
+#pragma once
 
-#include <OISMouse.h>
-#include <OISKeyboard.h>
-#include <OgreRoot.h>
+#include <Ogre.h>
+#include <OIS.h>
 
-#include "Game.h"
-#include "InputManager.h"
+#include "GameTask.h"
 
 namespace Client
 {
+class GameState;
+typedef std::map<Ogre::String, GameState*> GameStateList;
 
 class GameState {
 public:
-    ~GameState() { }
+   GameState(const Ogre::String&);
 
-    virtual void enter()  = 0;
-    virtual void exit()   = 0;
-    virtual void redraw() = 0;
+   virtual void enter() {}
+   virtual void exit() {}
 
-    virtual void pause()  = 0;
-    virtual void resume() = 0;
-    virtual void update(unsigned long lTimeElapsed) = 0;
-    
-    virtual void keyPressed(const OIS::KeyEvent &e)  = 0;
-    virtual void keyReleased(const OIS::KeyEvent &e) = 0;
+   virtual void update(unsigned long lTimeElapsed);
 
-    virtual void mouseMoved(const OIS::MouseEvent &e) = 0;
-    virtual void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)  = 0;
-    virtual void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) = 0;
+   virtual void keyPressed(const OIS::KeyEvent &e);
+   virtual void keyReleased(const OIS::KeyEvent &e);
 
-    void changeState( GameState *state );
-    void pushState( GameState *state );
-    void popState( void );
-    void requestShutdown( void );
+   virtual void mouseMoved(const OIS::MouseEvent &e);
+   virtual void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+   virtual void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+
+   /** Internal only method */
+   void setParent(GameState*);
+
+   const Ogre::String getName();
+   void shutdown();
+
+   GameState* createState(GameState*);
+   GameState* getState(const Ogre::String&);
+   bool hasState(const Ogre::String&);
+   void destroyState(const Ogre::String&);
+   void pause();
+   void resume();
 protected:
-    GameState( void ) { }
+   GameTaskList* mTasklist;
+   bool mPaused;
 private:
-    GameState( const GameState& ) { }
-    GameState & operator = ( const GameState& );
+   GameStateList mChildren;
+   GameState* mParent;
+   Ogre::String mName;
 };
 
+class RootGameState : public GameState
+{
+public:
+   RootGameState() : GameState("Root") { }
+
+   void update(unsigned long lTimeElapsed)
+   {
+      
+   }
+
+   void setTaskList(GameTaskList* gametasks)
+   {
+      mTasklist = gametasks;
+   }
+};
 }
-#endif
 

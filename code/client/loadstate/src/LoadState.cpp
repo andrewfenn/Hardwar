@@ -20,14 +20,14 @@
 
 using namespace Client;
 
-LoadState::LoadState() {}
+LoadState::LoadState() {
+   mName = "LoadState";
+}
 
 void LoadState::enter()
 {
-   mRoot         = Ogre::Root::getSingletonPtr();
-
-   mGameMgr      = GameManager::getSingletonPtr();
-   mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
+   mRoot = Ogre::Root::getSingletonPtr();
+   mSceneMgr = mRoot->getSceneManager("GameSceneMgr");
    mSceneMgr->clearScene();
 
    mGameMgr->mGUI->setVisiblePointer(false);
@@ -35,8 +35,11 @@ void LoadState::enter()
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");   
 
-   mGameMgr->getNetwork()->connect();
-   mGameMgr->getNetwork()->startThread();
+   mNetwork = (NetworkTask*) mGameMgr->getTask("Network");
+   mNetwork->connect();
+   mNetwork->startThread();
+
+   mLevel = (LevelTask*) mGameMgr->getTask("Zone");
 
    mGUIcount = 0;
    mReverse = false; /* for the load bar animation */
@@ -50,10 +53,6 @@ void LoadState::exit()
    MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
 }
 
-void LoadState::pause() {}
-void LoadState::resume() {}
-void LoadState::redraw() {}
-
 void LoadState::update( unsigned long lTimeElapsed )
 {
    mGUICounter += lTimeElapsed;
@@ -61,15 +60,15 @@ void LoadState::update( unsigned long lTimeElapsed )
 
    updateLoadbar();
 
-   switch(mGameMgr->getNetwork()->getConStatus())
+   switch(mNetwork->getStatus())
    {
       case status_connecting:
          mStatusText->setCaption(Ogre::String(gettext("Connecting")));
 
-         if (mGameMgr->getNetwork()->getRetryAttempts() > 0)
+         if (mNetwork->getRetryAttempts() > 0)
          {
             mStatusText->setCaption(MyGUI::UString(gettext("Retrying"))+MyGUI::UString(" (")+
-                            MyGUI::UString(Ogre::StringConverter::toString(mGameMgr->getNetwork()->getRetryAttempts()))+MyGUI::UString(")"));
+                            MyGUI::UString(Ogre::StringConverter::toString(mNetwork->getRetryAttempts()))+MyGUI::UString(")"));
          }
       break;
       case status_listening:
@@ -77,13 +76,13 @@ void LoadState::update( unsigned long lTimeElapsed )
       break;
       case status_filecheck:
          {
-            if (mGameMgr->getZoneMgr()->getTotal() == 0)
+            if (mLevel->getTotal() == 0)
             {
-               mGameMgr->getZoneMgr()->preload();
-               mGameMgr->getZoneMgr()->create(0, "../media/hardwar/non-free/world.scene");
+               mLevel->preload();
+               mLevel->create(0, "../media/hardwar/non-free/world.scene");
 
                dataPacket packet = dataPacket(accepted);
-               mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+               mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
             }
          }
       break;
@@ -92,7 +91,7 @@ void LoadState::update( unsigned long lTimeElapsed )
             if (!mDownloads)
             {
                dataPacket packet = dataPacket(get_building_list);
-               mGameMgr->getNetwork()->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+               mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
                mDownloads = true;
             }
          }
