@@ -50,18 +50,17 @@ public:
    const Ogre::String getName();
    void shutdown();
 
-   GameState* createState(GameState*);
-   GameState* getState(const Ogre::String&);
-   bool hasState(const Ogre::String&);
-   void destroyState(const Ogre::String&);
+   GameState* add(GameState*);
+   GameState* get(const Ogre::String&);
+   bool has(const Ogre::String&);
+   void remove(const Ogre::String&);
    void pause();
    void resume();
 protected:
    GameTaskList* mTasklist;
    bool mPaused;
-private:
-   GameStateList mChildren;
    GameState* mParent;
+   GameStateList mChildren;
    Ogre::String mName;
 };
 

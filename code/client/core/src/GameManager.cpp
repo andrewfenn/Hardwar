@@ -36,11 +36,7 @@ GameManager::~GameManager( void )
    /* Clean up all the game tasks
     * such as networking, etc.
     */
-   for (GameTaskList::iterator i=mTasks.begin(); i != mTasks.end(); i++)
-   {
-      i->second->shutdown();
-      mTasks.erase(i);
-   }
+   mTasks.removeAll();
 
    /* Delete MyGUI */
    mGUI->destroyAllChildWidget();
@@ -59,9 +55,8 @@ GameManager::~GameManager( void )
 
 void GameManager::windowChangedSize(Ogre::RenderWindow* rw)
 {
-   mRenderWindow = rw;
-   GameTaskList::iterator i = mTasks.begin();
-   if (i != mTasks.end())
+   TaskList* list = mTasks.list();
+   for (TaskList::iterator i = list->begin(); i != list->end(); i++)
    {
       i->second->changeSize(rw);
    }
@@ -69,9 +64,8 @@ void GameManager::windowChangedSize(Ogre::RenderWindow* rw)
 
 void GameManager::windowChangedFocus(Ogre::RenderWindow* rw)
 {
-   mRenderWindow = rw;
-   GameTaskList::iterator i = mTasks.begin();
-   if (i != mTasks.end())
+   TaskList* list = mTasks.list();
+   for (TaskList::iterator i = list->begin(); i != list->end(); i++)
    {
       i->second->changeFocus(rw);
    }
@@ -90,16 +84,15 @@ void GameManager::start()
    mGUI->initialise("core.xml", "./logs/mygui.log");
 
    /* setup system tasks */
-   this->createTask("Input", OGRE_NEW InputTask);
-   this->createTask("Network", OGRE_NEW NetworkTask);
-   this->createTask("Zone", OGRE_NEW ZoneTask);
+   mTasks.add("Input", OGRE_NEW InputTask);
+   mTasks.add("Network", OGRE_NEW NetworkTask);
+   mTasks.add("Zone", OGRE_NEW ZoneTask);
 
    /* create root state */
    mRootState.setTaskList(&mTasks);
 
    /* attach game modules to root state */
-   mRootState.createState(OGRE_NEW LoadState);
-
+   mRootState.add(OGRE_NEW LoadState);
 
    /* 
     * lTimeLastFrame remembers the last time that it was checked
@@ -110,6 +103,8 @@ void GameManager::start()
 
    mMaxFPS = 60;
    mDelayTime = ceil((float)1000/mMaxFPS);
+
+   TaskList* list = mTasks.list();
 
    while (!mShutdown)
    {
@@ -125,7 +120,7 @@ void GameManager::start()
       if (lDelay > mDelayTime)
       {
          /* update game system tasks */
-         for (GameTaskList::iterator i=mTasks.begin(); i != mTasks.end(); i++)
+         for (TaskList::iterator i=list->begin(); i != list->end(); i++)
          {
             i->second->update();
          }
@@ -139,46 +134,6 @@ void GameManager::start()
       }
       /* Deal with platform specific issues */
       Ogre::WindowEventUtilities::messagePump();
-   }
-}
-
-GameTask* GameManager::createTask(const Ogre::String& name, GameTask* task)
-{
-   if (mTasks.find(name) != mTasks.end())
-   {
-      OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
-         "A task with the name " + name + " already exists",
-         "GameManager::createTask" );
-   }
-   task->setTaskList(&mTasks);
-   mTasks.insert(GameTaskList::value_type(name, task));
-   return task;
-}
-
-GameTask* GameManager::getTask(const Ogre::String& name)
-{
-   GameTaskList::const_iterator i = mTasks.find(name);
-   if (i != mTasks.end())
-   {
-      return (GameTask*) &i->second;
-   }
-   OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
-      "Cannot find Task with name " + name,
-      "GameTask::getTask");
-}
-
-bool GameManager::hasTask(const Ogre::String& name)
-{
-   return (mTasks.find(name) != mTasks.end());
-}
-
-void GameManager::destroyTask(const Ogre::String& name)
-{
-   GameTaskList::iterator i = mTasks.find(name);
-   if (i != mTasks.end())
-   {
-      OGRE_DELETE &i->second;
-      mTasks.erase(i);
    }
 }
 

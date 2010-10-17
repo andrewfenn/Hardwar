@@ -27,9 +27,11 @@
 namespace Client
 {
 
-class GameRoot
+class GameRoot : public Ogre::WindowEventListener
 {
    public:
+      GameRoot();
+      ~GameRoot();
       void init();
 
       /* event window listeners */
@@ -42,7 +44,7 @@ class GameRoot
       GameManager          *mGameMgr;
 
       void loadPlugins();
-      void configureGame();
+      bool configureGame();
       void setupResources();
 };
 }

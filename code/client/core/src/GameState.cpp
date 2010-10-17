@@ -45,7 +45,7 @@ void GameState::shutdown()
 
    if (mParent)
    {
-      mParent->destroyState(this->getName());
+      mParent->remove(this->getName());
    }
 }
 
@@ -54,7 +54,7 @@ const Ogre::String GameState::getName()
    return mName;
 }
 
-GameState* GameState::createState(GameState* state)
+GameState* GameState::add(GameState* state)
 {
    if (mChildren.find(state->getName()) != mChildren.end())
    {
@@ -67,7 +67,7 @@ GameState* GameState::createState(GameState* state)
    return state;
 }
 
-GameState* GameState::getState(const Ogre::String& name)
+GameState* GameState::get(const Ogre::String& name)
 {
    GameStateList::const_iterator i = mChildren.find(name);
    if (i != mChildren.end())
@@ -79,12 +79,12 @@ GameState* GameState::getState(const Ogre::String& name)
          "GameTask::getState");
 }
 
-bool GameState::hasState(const Ogre::String& name)
+bool GameState::has(const Ogre::String& name)
 {
    return (mChildren.find(name) != mChildren.end());
 }
 
-void GameState::destroyState(const Ogre::String& name)
+void GameState::remove(const Ogre::String& name)
 {
    GameStateList::iterator i = mChildren.find(name);
    if (i != mChildren.end())

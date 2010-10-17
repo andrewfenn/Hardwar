@@ -20,25 +20,87 @@
 
 namespace Client
 {
-class GameTask;
-typedef std::map<Ogre::String, GameTask*> GameTaskList;
+
+class GameTaskList;
 
 class GameTask
 {
-public:
-    virtual void init();
-    virtual void shutdown();
-    virtual void update();
+   public:
+       virtual void init();
+       virtual void shutdown();
+       virtual void update();
 
-    virtual void changeSize(Ogre::RenderWindow*);
-    virtual void changeFocus(Ogre::RenderWindow*);
+       virtual void changeSize(Ogre::RenderWindow*);
+       virtual void changeFocus(Ogre::RenderWindow*);
 
-    void setTaskList(GameTaskList* gametasks)
-    {
-      mTaskList = gametasks;
-    }
-protected:
-   GameTaskList* mTaskList;
+       void setTaskList(GameTaskList* gametasks)
+       {
+         mTaskList = gametasks;
+       }
+   protected:
+      GameTaskList* mTaskList;
 };
+
+typedef std::map<Ogre::String, GameTask*> TaskList;
+class GameTaskList
+{
+   public:
+      GameTask* add(const Ogre::String& name, GameTask* task)
+      {
+         if (mList.find(name) != mList.end())
+         {
+            OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
+               "A task with the name " + name + " already exists",
+               "GameTaskList::add" );
+         }
+         task->setTaskList(this);
+         mList.insert(TaskList::value_type(name, task));
+         return task;
+      }
+
+      GameTask* get(const Ogre::String& name)
+      {
+         TaskList::const_iterator i = mList.find(name);
+         if (i != mList.end())
+         {
+            return (GameTask*) &i->second;
+         }
+         OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
+            "Cannot find Task with name " + name,
+            "GameTaskList::get");
+      }
+
+      bool has(const Ogre::String& name)
+      {
+         return (mList.find(name) != mList.end());
+      }
+
+      void remove(const Ogre::String& name)
+      {
+         TaskList::iterator i = mList.find(name);
+         if (i != mList.end())
+         {
+            OGRE_DELETE &i->second;
+            mList.erase(i);
+         }
+      }
+
+      void removeAll()
+      {
+         for(TaskList::iterator i = mList.begin(); i != mList.end(); i++)
+         {
+            OGRE_DELETE &i->second;
+            mList.erase(i);
+         }
+      }
+
+      TaskList* list()
+      {
+         return &mList;
+      }
+   private:
+      TaskList mList;
+};
+
 }
 

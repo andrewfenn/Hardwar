@@ -44,17 +44,17 @@ void PlayState::enter()
    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
 
 	// create a lightsource
-	Light* light = mSceneMgr->createLight( "Sun" );
-	light->setType( Light::LT_DIRECTIONAL );
-	light->setDiffuseColour( ColourValue( .82, .81, .7 ) );
-	light->setSpecularColour( ColourValue( .82, .81, .7 ) );
-	light->setDirection( Vector3( 0, -1, 1 ) ); 
+	Ogre::Light* light = mSceneMgr->createLight( "Sun" );
+	light->setType( Ogre::Light::LT_DIRECTIONAL );
+	light->setDiffuseColour( Ogre::ColourValue( .82, .81, .7 ) );
+	light->setSpecularColour( Ogre::ColourValue( .82, .81, .7 ) );
+	light->setDirection( Ogre::Vector3( 0, -1, 1 ) ); 
 
 }
 
 void PlayState::exit()
 {
-   mGameMgr->getTask("NetworkManager")->stopThread();
+   mTasklist->get("Network")->stopThread();
 }
 
 void PlayState::update(unsigned long lTimeElapsed)
@@ -103,30 +103,21 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
    {
    }
 
-   if (mGameMgr->getConsole()->isVisible())
-   {
-      if (e.key == OIS::KC_ESCAPE)
-      {
-         mGameMgr->getConsole()->toggleShow();
-      }
-   }
-   else
-   {
-      if (e.key == OIS::KC_ESCAPE)
-         this->requestShutdown();
+   if (e.key == OIS::KC_ESCAPE)
+      this->shutdown();
 
-      if (e.key == OIS::KC_W)
-         mKeydownUp = 0;
+   if (e.key == OIS::KC_W)
+      mKeydownUp = 0;
 
-      if (e.key == OIS::KC_S)
-         mKeydownDown = 0;
+   if (e.key == OIS::KC_S)
+      mKeydownDown = 0;
 
-      if (e.key == OIS::KC_A)
-         mKeydownLeft = 0;
+   if (e.key == OIS::KC_A)
+      mKeydownLeft = 0;
 
-      if (e.key == OIS::KC_D)
-         mKeydownRight = 0;
-   }
+   if (e.key == OIS::KC_D)
+      mKeydownRight = 0;
+
 }
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)

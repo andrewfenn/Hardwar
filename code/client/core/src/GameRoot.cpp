@@ -36,19 +36,29 @@ GameRoot::~GameRoot()
       delete mRoot;
       mRoot = 0;
    }
+
+   if (mGameMgr)
+   {
+      delete mGameMgr;
+      mGameMgr = 0;
+   }
 }
 
 void GameRoot::loadPlugins()
 {
+   Ogre::String str = Ogre::String("./logs/ogre.log");
+
    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
    if (opendir("/usr/lib/OGRE") != 0)
    {
+      mRoot = new Ogre::Root("", "game.cfg", str);
       mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
       mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
       mRoot->loadPlugin("/usr/lib/OGRE/Plugin_CgProgramManager");
    }
    else if (opendir("/usr/local/lib/OGRE") != 0)
    {
+      mRoot = new Ogre::Root("", "game.cfg", str);
       mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
       mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
       mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_CgProgramManager");
@@ -63,20 +73,16 @@ void GameRoot::loadPlugins()
 
 void GameRoot::init()
 {
-
    Ogre::String str = Ogre::String("./logs/ogre.log");
 
    #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-   mRoot = new Ogre::Root("plugins.cfg", "game.cfg", str);
-   #else
-   /* Unix */
-   mRoot = new Ogre::Root("", "game.cfg", str);
+      mRoot = new Ogre::Root("plugins.cfg", "game.cfg", str);
    #endif
 
    this->loadPlugins();
    this->setupResources();
    this->configureGame();
-   mGameMgr = new GameManager();
+   mGameMgr = new GameManager(mRoot);
 }
 
 bool GameRoot::configureGame()
@@ -130,17 +136,18 @@ void GameRoot::setupResources()
 
 void GameRoot::windowResized(Ogre::RenderWindow *rw)
 {
-   mGameMgr.windowChangedSize(rw);
+   mGameMgr->windowChangedSize(rw);
 }
 
 bool GameRoot::windowClosing(Ogre::RenderWindow *rw)
 {
-   mGameMgr.shutdown();
+   mGameMgr->shutdown();
+   return true;
 }
 
 void GameRoot::windowFocusChange(Ogre::RenderWindow *rw)
 {
-   mGameMgr.windowChangedFocus(rw);
+   mGameMgr->windowChangedFocus(rw);
 }
 } /* namespace Client */
 

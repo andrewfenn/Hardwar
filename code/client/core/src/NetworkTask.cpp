@@ -29,9 +29,11 @@ NetworkTask::NetworkTask()
    mAddress = std::string("127.0.0.1");
    mRunThread = false;
    mStatus = status_disconnected;
-   GameSettings* lSettings = GameSettings::getSingletonPtr();
+   /*GameSettings* lSettings = GameSettings::getSingletonPtr();
    mRetryLimit = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTaskRetryLimit"));
-   mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTaskTimeout"));
+   mTimeout    = Ogre::StringConverter::parseInt(lSettings->getOption("NetworkTaskTimeout"));*/
+   mRetryLimit = 5;
+   mTimeout = 5;
    mConAttempts = 0;
 }
 
@@ -181,13 +183,13 @@ void NetworkTask::threadLoopGame()
                if (msg == accepted)
                {
                   /* Login Successful */
-                  mConsole->print(mConsole->getConsoleSuccess(), MyGUI::UString("rcon_password"), MyGUI::UString(gettext("Logged in as admin")));
-                  GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));
+                  /*mConsole->print(mConsole->getConsoleSuccess(), MyGUI::UString("rcon_password"), MyGUI::UString(gettext("Logged in as admin")));
+                  GameSettings::getSingletonPtr()->setOption("isAdmin", Ogre::UTFString("1"));*/
                }
                else
                {
                   /* Failed to login correctly */
-                  mConsole->print(mConsole->getConsoleError(), MyGUI::UString("rcon_password"), MyGUI::UString(gettext("Login failed")));
+                  /*mConsole->print(mConsole->getConsoleError(), MyGUI::UString("rcon_password"), MyGUI::UString(gettext("Login failed")));*/
                }
             }
          break;
@@ -214,7 +216,7 @@ void NetworkTask::threadLoopGame()
          }
          break;
          default:
-            mConsole->print(Ogre::String((char*) (*mitEvent).second.packet->data));
+            /*mConsole->print(Ogre::String((char*) (*mitEvent).second.packet->data));*/
          break;
       }
       enet_packet_destroy((*mitEvent).second.packet);

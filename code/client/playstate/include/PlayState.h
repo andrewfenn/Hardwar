@@ -19,6 +19,7 @@
 #pragma once
 
 #include <OgreRoot.h>
+#include <MyGUI.h>
 
 #include "GameState.h"
 #include "srvstructs.h"
