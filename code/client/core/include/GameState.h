@@ -44,8 +44,8 @@ public:
    virtual void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    virtual void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-   /** Internal only method */
-   void setParent(GameState*);
+   /** Internal only method for setting up the data in the state propperly */
+   void setParent(GameState*, GameTaskList*, Ogre::Root*, Ogre::Viewport*);
 
    const Ogre::String getName();
    void shutdown();
@@ -57,26 +57,32 @@ public:
    void pause();
    void resume();
 protected:
-   GameTaskList* mTasklist;
    bool mPaused;
    GameState* mParent;
    GameStateList mChildren;
    Ogre::String mName;
+   Ogre::Root           *mRoot;
+   Ogre::SceneManager   *mSceneMgr;
+   Ogre::Camera         *mCamera;
+   Ogre::Viewport       *mViewport;
+   GameTaskList         *mTasklist;
 };
 
 class RootGameState : public GameState
 {
 public:
-   RootGameState() : GameState("Root") { }
+   RootGameState(GameTaskList* gametasks, Ogre::Root* root, Ogre::Viewport* viewport) : GameState("Root")
+   {
+      mTasklist = gametasks;
+      mRoot     = root;
+      mSceneMgr = mRoot->getSceneManager("GameSceneMgr");
+      mCamera   = mSceneMgr->getCamera("GameCamera");
+      mViewport = viewport;
+   }
 
    void update(unsigned long lTimeElapsed)
    {
       
-   }
-
-   void setTaskList(GameTaskList* gametasks)
-   {
-      mTasklist = gametasks;
    }
 };
 }

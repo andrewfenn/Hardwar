@@ -31,22 +31,12 @@ GameManager::GameManager(Ogre::Root* root)
 GameManager::~GameManager( void )
 {
    /* Clean up all the game states */
-   mRootState.shutdown();
+   mRootState->shutdown();
 
    /* Clean up all the game tasks
     * such as networking, etc.
     */
    mTasks.removeAll();
-
-   /* Delete MyGUI */
-   mGUI->destroyAllChildWidget();
-   mGUI->shutdown();
-   OGRE_DELETE mGUI;
-   mGUI = 0;   
-
-   mPlatform->shutdown();
-   OGRE_DELETE mPlatform;
-   mPlatform = 0;
 
    mSceneMgr->clearScene();
    mSceneMgr->destroyAllCameras();
@@ -78,27 +68,25 @@ void GameManager::start()
    mCamera       = mSceneMgr->createCamera("GameCamera");
    mViewport     = mRenderWindow->addViewport(mCamera, 1);
 
-   mGUI = OGRE_NEW MyGUI::Gui();
-   mPlatform = OGRE_NEW MyGUI::OgrePlatform();
-   mPlatform->initialise(mRenderWindow, mSceneMgr, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "");
-   mGUI->initialise("core.xml", "./logs/mygui.log");
-
    /* setup system tasks */
    mTasks.add("Input", OGRE_NEW InputTask);
    mTasks.add("Network", OGRE_NEW NetworkTask);
    mTasks.add("Zone", OGRE_NEW ZoneTask);
+   mTasks.add("Gui", OGRE_NEW GuiTask(mRenderWindow, mSceneMgr));
 
    /* create root state */
-   mRootState.setTaskList(&mTasks);
+   mRootState = OGRE_NEW RootGameState(&mTasks, mRoot, mViewport);
 
    /* attach game modules to root state */
-   mRootState.add(OGRE_NEW LoadState);
+   mRootState->add(OGRE_NEW LoadState);
 
    /* 
     * lTimeLastFrame remembers the last time that it was checked
     * We use it to calculate the time since last frame
     */
-   unsigned long lTimeLastFrame, lTimeCurrentFrame, lTimeSinceLastFrame = 0;
+   unsigned long lTimeLastFrame = 0,
+                 lTimeCurrentFrame = 0,
+                 lTimeSinceLastFrame = 0;
    unsigned long lDelay = 0;
 
    mMaxFPS = 60;
@@ -126,7 +114,7 @@ void GameManager::start()
          }
 
          /* update the current game states */
-         mRootState.update(lTimeSinceLastFrame);
+         mRootState->update(lTimeSinceLastFrame);
 
          /* render the next frame */
          mRoot->renderOneFrame();

@@ -20,17 +20,13 @@
 
 using namespace Client;
 
-LoadState::LoadState() {
-   mName = "LoadState";
-}
-
 void LoadState::enter()
 {
    mRoot = Ogre::Root::getSingletonPtr();
    mSceneMgr = mRoot->getSceneManager("GameSceneMgr");
    mSceneMgr->clearScene();
 
-   mGameMgr->mGUI->setVisiblePointer(false);
+   mGUI->setVisiblePointer(false);
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");   

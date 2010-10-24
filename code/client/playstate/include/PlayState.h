@@ -19,8 +19,8 @@
 #pragma once
 
 #include <OgreRoot.h>
-#include <MyGUI.h>
 
+#include "GuiTask.h"
 #include "GameState.h"
 #include "srvstructs.h"
 #include "NetworkTask.h"

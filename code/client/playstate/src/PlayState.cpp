@@ -22,14 +22,9 @@ using namespace Client;
 
 void PlayState::enter()
 {
-   mRoot         = Ogre::Root::getSingletonPtr();
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
-   mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
-
    mGUI          = MyGUI::Gui::getInstancePtr();
-   mCamera       = mGameMgr->getCamera();
-   mViewport     = mGameMgr->getViewport();
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
@@ -54,7 +49,7 @@ void PlayState::enter()
 
 void PlayState::exit()
 {
-   mTasklist->get("Network")->stopThread();
+   ((NetworkTask*)mTasklist->get("Network"))->stopThread();
 }
 
 void PlayState::update(unsigned long lTimeElapsed)

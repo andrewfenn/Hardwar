@@ -30,7 +30,7 @@
 
 namespace Client
 {
-class InputTask : public Client::GameTask, OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener
+class InputTask : public GameTask, OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener
 {
 public:
     InputTask();

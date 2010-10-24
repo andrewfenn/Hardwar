@@ -27,10 +27,15 @@ GameState::GameState(const Ogre::String& name)
    mPaused = false;
 }
 
-void GameState::setParent(GameState* parent)
+void GameState::setParent(GameState* parent, GameTaskList* gametasks, 
+                                     Ogre::Root* root, Ogre::Viewport* viewport)
 {
-   mParent = parent;
-   mTasklist = parent->mTasklist;
+   mParent   = parent;
+   mTasklist = gametasks;
+   mRoot     = root;
+   mSceneMgr = root->getSceneManager("GameSceneMgr");
+   mCamera   = mSceneMgr->getCamera("GameCamera");
+   mViewport = viewport;
 }
 
 void GameState::shutdown()
@@ -62,7 +67,7 @@ GameState* GameState::add(GameState* state)
          "A state with the name " + state->getName() + " already exists",
          "GameManager::createState" );
    }
-   state->setParent(this);
+   state->setParent(this, mTasklist, mRoot, mViewport);
    mChildren.insert(GameStateList::value_type(state->getName(), state));
    return state;
 }

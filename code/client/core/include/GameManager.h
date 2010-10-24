@@ -19,17 +19,18 @@
 #pragma once
 
 #include <Ogre.h>
-#include <MyGUI.h>
-#include <MyGUI_OgrePlatform.h>
 
 #include "GameState.h"
 #include "GameTask.h"
 
+/* game tasks */
 #include "InputTask.h"
 #include "NetworkTask.h"
 #include "ZoneTask.h"
-#include "LoadState.h"
+#include "GuiTask.h"
 
+/* game states */
+#include "LoadState.h"
 
 namespace Client
 {
@@ -47,10 +48,10 @@ class GameManager
       GameManager(Ogre::Root*);
       ~GameManager();
 
-      GameTask* createTask(const Ogre::String&, GameTask*);
+/*      GameTask* createTask(const Ogre::String&, GameTask*);
       GameTask* getTask(const Ogre::String&);
       bool hasTask(const Ogre::String&);
-      void destroyTask(const Ogre::String&);
+      void destroyTask(const Ogre::String&);*/
 
       void start();
       void windowChangedSize(Ogre::RenderWindow*);
@@ -60,13 +61,12 @@ class GameManager
    private:
       Ogre::Root           *mRoot;
       Ogre::RenderWindow   *mRenderWindow;
-      MyGUI::OgrePlatform  *mPlatform;
       Ogre::Camera         *mCamera;
       Ogre::Viewport       *mViewport;
+      RootGameState        *mRootState;
 
       bool                 mShutdown;
       GameTaskList         mTasks;
-      RootGameState        mRootState;
 
       unsigned short       mDelayTime;
       unsigned short       mMaxFPS;
