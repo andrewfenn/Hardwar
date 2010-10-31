@@ -31,7 +31,7 @@ MACRO_FIND_LIBRARY(MYGUI)
 MACRO_FIND_LIBRARY(OgreMax)
 MACRO_FIND_LIBRARY(SQLITE)
 MACRO_FIND_LIBRARY(TinyXML)
-MACRO_FIND_LIBRARIES(Boost "filesystem;thread;")
+MACRO_FIND_LIBRARIES(Boost "system;filesystem;thread;")
 
 if (MSVC)
    MESSAGE(STATUS "Using GetText in dependencies")

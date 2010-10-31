@@ -41,7 +41,7 @@ namespace Client
 class LoadState : public GameState
 {
 public:
-    LoadState();
+    LoadState() : GameState("loadstate") {}
     ~LoadState();
 
     void enter();
@@ -56,8 +56,6 @@ public:
     void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 private:
-    Ogre::Root* mRoot;
-    Ogre::SceneManager* mSceneMgr;
     clientStatus mLoadStatus;
 
     NetworkTask* mNetwork;

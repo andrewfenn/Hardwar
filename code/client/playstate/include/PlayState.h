@@ -30,6 +30,7 @@ namespace Client
 class PlayState : public GameState
 {
    public:
+      PlayState() : GameState("playstate") { }
       void enter();
       void exit();
 
@@ -42,10 +43,6 @@ class PlayState : public GameState
       void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
       void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    private:
-      Ogre::Root              *mRoot;
-      Ogre::Camera            *mCamera;
-      Ogre::SceneManager      *mSceneMgr;
-      Ogre::Viewport          *mViewport;
       Ogre::OverlayManager    *mOverlayMgr;
       Ogre::RenderWindow      *mWindow;
 

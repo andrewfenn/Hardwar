@@ -48,12 +48,16 @@ public:
    void setParent(GameState*, GameTaskList*, Ogre::Root*, Ogre::Viewport*);
 
    const Ogre::String getName();
+   GameState* getParent();
    void shutdown();
 
    GameState* add(GameState*);
    GameState* get(const Ogre::String&);
+   GameState* swap(GameState*);
    bool has(const Ogre::String&);
+   bool has(GameState&);
    void remove(const Ogre::String&);
+   void removeAllChildren();
    void pause();
    void resume();
 protected:

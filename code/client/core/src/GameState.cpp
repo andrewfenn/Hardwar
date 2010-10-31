@@ -45,6 +45,7 @@ void GameState::shutdown()
    for (GameStateList::iterator i=mChildren.begin(); i != mChildren.end(); i++)
    {
       i->second->shutdown();
+      OGRE_DELETE &i->second;
       mChildren.erase(i);
    }
 
@@ -89,11 +90,33 @@ bool GameState::has(const Ogre::String& name)
    return (mChildren.find(name) != mChildren.end());
 }
 
+bool GameState::has(GameState& state)
+{
+   return (mChildren.find(state.getName()) != mChildren.end());
+}
+
+GameState* GameState::getParent()
+{
+   return mParent;
+}
+
 void GameState::remove(const Ogre::String& name)
 {
    GameStateList::iterator i = mChildren.find(name);
    if (i != mChildren.end())
    {
+      i->second->shutdown();
+      OGRE_DELETE &i->second;
+      mChildren.erase(i);
+   }
+}
+
+void GameState::removeAllChildren()
+{
+   GameStateList::iterator i = mChildren.begin();
+   while (i != mChildren.end())
+   {
+      i->second->shutdown();
       OGRE_DELETE &i->second;
       mChildren.erase(i);
    }

@@ -26,16 +26,17 @@ void LoadState::enter()
    mSceneMgr = mRoot->getSceneManager("GameSceneMgr");
    mSceneMgr->clearScene();
 
-   mGUI->setVisiblePointer(false);
+   MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
+   gui->setVisiblePointer(false);
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
    mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");   
 
-   mNetwork = (NetworkTask*) mGameMgr->getTask("Network");
+   mNetwork = (NetworkTask*) mTasklist->get("Network");
    mNetwork->connect();
    mNetwork->startThread();
 
-   mLevel = (LevelTask*) mGameMgr->getTask("Zone");
+   mLevel = (ZoneTask*) mTasklist->get("Zone");
 
    mGUIcount = 0;
    mReverse = false; /* for the load bar animation */
@@ -56,7 +57,7 @@ void LoadState::update( unsigned long lTimeElapsed )
 
    updateLoadbar();
 
-   switch(mNetwork->getStatus())
+   switch(mNetwork->getConStatus())
    {
       case status_connecting:
          mStatusText->setCaption(Ogre::String(gettext("Connecting")));
@@ -74,7 +75,7 @@ void LoadState::update( unsigned long lTimeElapsed )
          {
             if (mLevel->getTotal() == 0)
             {
-               mLevel->preload();
+               mLevel->init();
                mLevel->create(0, "../media/hardwar/non-free/world.scene");
 
                dataPacket packet = dataPacket(accepted);
@@ -94,7 +95,9 @@ void LoadState::update( unsigned long lTimeElapsed )
       break;
       case status_ingame:
          {
-            this->changeState(new PlayState());
+            GameState* state = this->getParent();
+            state->removeAllChildren();
+            state->add(OGRE_NEW PlayState());
          }
       break;
       case status_disconnected:
@@ -175,7 +178,7 @@ void LoadState::keyReleased(const OIS::KeyEvent &e)
    if( e.key == OIS::KC_ESCAPE )
    {
       /* FIXME: Should go to main menu */
-      this->requestShutdown(); 
+      this->shutdown();
    } 
 }
 
