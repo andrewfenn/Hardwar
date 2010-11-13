@@ -15,9 +15,7 @@ SOURCE_GROUP("Client" FILES ${folder_source})
 
 INCLUDE_DIRECTORIES(
    ${CMAKE_CURRENT_SOURCE_DIR}/core/include
-   ${CMAKE_CURRENT_SOURCE_DIR}/console/include
    ${CMAKE_CURRENT_SOURCE_DIR}/playstate/include
-   ${CMAKE_CURRENT_SOURCE_DIR}/playstate/editor/include
    ${CMAKE_CURRENT_SOURCE_DIR}/loadstate/include
    ${Hardwar_SOURCE_DIR}/code/shared/include
 )
@@ -31,6 +29,7 @@ MACRO_FIND_LIBRARY(MYGUI)
 MACRO_FIND_LIBRARY(OgreMax)
 MACRO_FIND_LIBRARY(SQLITE)
 MACRO_FIND_LIBRARY(TinyXML)
+MACRO_FIND_LIBRARY(Boost)
 MACRO_FIND_LIBRARIES(Boost "system;filesystem;thread;")
 
 if (MSVC)

@@ -33,7 +33,7 @@ typedef std::vector<Zone> Zones;
             The Client::ZoneManager class is our root class which deals with the
             initialisation and running of our Zone.
     */
-class ZoneTask : public GameTask
+class ZoneTask : virtual GameTask
 {
    public:
       ZoneTask();
@@ -48,6 +48,8 @@ class ZoneTask : public GameTask
       const int getTotal();
       /** Retrieves a pointer to the current zone that the player is in. */
       Zone* getCurrent();
+      void shutdown();
+      void update();
    private:
       Zones mZones;
 };

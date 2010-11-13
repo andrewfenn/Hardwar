@@ -37,6 +37,13 @@ void ZoneTask::init()
 
 }
 
+void ZoneTask::shutdown()
+{
+   this->clear();
+}
+
+void ZoneTask::update() {}
+
 void ZoneTask::create(const int zone, const Ogre::String filename)
 {
    /* FIXME: Needs correct number */

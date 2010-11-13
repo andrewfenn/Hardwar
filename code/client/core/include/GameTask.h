@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <Ogre.h>
+
 namespace Client
 {
 
@@ -26,12 +28,12 @@ class GameTaskList;
 class GameTask
 {
    public:
-       virtual void init();
-       virtual void shutdown();
-       virtual void update();
+       virtual void init() = 0;
+       virtual void shutdown() = 0;
+       virtual void update() = 0;
 
-       virtual void changeSize(Ogre::RenderWindow*);
-       virtual void changeFocus(Ogre::RenderWindow*);
+       virtual void changeSize(Ogre::RenderWindow*) = 0;
+       virtual void changeFocus(Ogre::RenderWindow*) = 0;
 
        void setTaskList(GameTaskList* gametasks)
        {
