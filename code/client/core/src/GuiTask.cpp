@@ -52,15 +52,5 @@ void GuiTask::update()
 
 }
 
-void GuiTask::changeSize(Ogre::RenderWindow* rw)
-{
-
-}
-
-void changeFocus(Ogre::RenderWindow* rw)
-{
-
-}
-
 }
 

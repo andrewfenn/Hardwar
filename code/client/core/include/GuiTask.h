@@ -33,9 +33,6 @@ class GuiTask : public GameTask
        void init();
        void shutdown();
        void update();
-
-       void changeSize(Ogre::RenderWindow*);
-       void changeFocus(Ogre::RenderWindow*);
    private:
       MyGUI::Gui *mGUI;
       MyGUI::OgrePlatform  *mPlatform;

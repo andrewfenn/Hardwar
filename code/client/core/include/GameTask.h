@@ -32,8 +32,8 @@ class GameTask
        virtual void shutdown() = 0;
        virtual void update() = 0;
 
-       virtual void changeSize(Ogre::RenderWindow*) = 0;
-       virtual void changeFocus(Ogre::RenderWindow*) = 0;
+       virtual void changeSize(Ogre::RenderWindow*) { }
+       virtual void changeFocus(Ogre::RenderWindow*) { }
 
        void setTaskList(GameTaskList* gametasks)
        {

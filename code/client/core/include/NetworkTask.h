@@ -45,6 +45,12 @@ class NetworkTask : public GameTask
       ~NetworkTask();
       NetworkTask();
 
+      void init() { }
+      void shutdown() {}
+      void update() {}
+      void changeSize(Ogre::RenderWindow*) {}
+      void changeFocus(Ogre::RenderWindow*) {}
+
       /** Connects to a server */
       void connect(void);
       /** Looks for new UDP messages being recieved from the server */

@@ -33,11 +33,11 @@ typedef std::vector<Zone> Zones;
             The Client::ZoneManager class is our root class which deals with the
             initialisation and running of our Zone.
     */
-class ZoneTask : virtual GameTask
+class ZoneTask : public GameTask
 {
    public:
-      ZoneTask();
-      ~ZoneTask();
+      void changeSize(Ogre::RenderWindow*) {}
+      void changeFocus(Ogre::RenderWindow*) {}
       /** Pre-load all game assets related to the levels */
       void init();
       /** Creates a new zone */

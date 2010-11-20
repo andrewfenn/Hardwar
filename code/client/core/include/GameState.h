@@ -37,12 +37,12 @@ public:
 
    virtual void update(unsigned long lTimeElapsed);
 
-   virtual void keyPressed(const OIS::KeyEvent &e);
-   virtual void keyReleased(const OIS::KeyEvent &e);
+   virtual void keyPressed(const OIS::KeyEvent &e) { }
+   virtual void keyReleased(const OIS::KeyEvent &e) { }
 
-   virtual void mouseMoved(const OIS::MouseEvent &e);
-   virtual void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-   virtual void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+   virtual void mouseMoved(const OIS::MouseEvent &e) { }
+   virtual void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) { }
+   virtual void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { }
 
    /** Internal only method for setting up the data in the state propperly */
    void setParent(GameState*, GameTaskList*, Ogre::Root*, Ogre::Viewport*);
