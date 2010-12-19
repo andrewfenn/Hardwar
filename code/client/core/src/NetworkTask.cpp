@@ -63,7 +63,7 @@ bool NetworkTask::setAddress(const std::string address)
    return false;
 }
 
-void NetworkTask::connect(void)
+void NetworkTask::connect()
 {
    if (mPort > 0 && !mAddress.empty())
    {
@@ -76,17 +76,17 @@ void NetworkTask::setConStatus(const clientStatus lStatus)
    mStatus = lStatus;
 }
 
-unsigned short NetworkTask::getRetryAttempts(void)
+unsigned short NetworkTask::getRetryAttempts()
 {
    return mConAttempts;
 }
 
-clientStatus NetworkTask::getConStatus(void)
+clientStatus NetworkTask::getConStatus()
 {
    return mStatus;
 }
 
-void NetworkTask::startThread(void)
+void NetworkTask::startThread()
 {
    if (!mRunThread)
    {

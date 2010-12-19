@@ -44,14 +44,7 @@ void GameState::shutdown()
 
    for (GameStateList::iterator i=mChildren.begin(); i != mChildren.end(); i++)
    {
-      i->second->shutdown();
-      OGRE_DELETE &i->second;
-      mChildren.erase(i);
-   }
-
-   if (mParent)
-   {
-      mParent->remove(this->getName());
+      this->remove(i->second->getName());
    }
 }
 
@@ -70,6 +63,7 @@ GameState* GameState::add(GameState* state)
    }
    state->setParent(this, mTasklist, mRoot, mViewport);
    mChildren.insert(GameStateList::value_type(state->getName(), state));
+   state->enter();
    return state;
 }
 
@@ -106,7 +100,7 @@ void GameState::remove(const Ogre::String& name)
    if (i != mChildren.end())
    {
       i->second->shutdown();
-      OGRE_DELETE &i->second;
+      OGRE_DELETE i->second;
       mChildren.erase(i);
    }
 }
@@ -117,7 +111,7 @@ void GameState::removeAllChildren()
    while (i != mChildren.end())
    {
       i->second->shutdown();
-      OGRE_DELETE &i->second;
+      OGRE_DELETE i->second;
       mChildren.erase(i);
    }
 }

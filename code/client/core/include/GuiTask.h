@@ -33,9 +33,9 @@ class GuiTask : public GameTask
        void init();
        void shutdown();
        void update();
+       MyGUI::Gui *mGUI;
+       MyGUI::OgrePlatform  *mPlatform;
    private:
-      MyGUI::Gui *mGUI;
-      MyGUI::OgrePlatform  *mPlatform;
 };
 
 }

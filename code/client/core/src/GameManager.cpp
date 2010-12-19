@@ -87,7 +87,6 @@ void GameManager::start()
 
    /* attach game modules to root state */
    mRootState->add(OGRE_NEW LoadState);
-   
    mStarted = true;
 
    /* 

@@ -55,8 +55,9 @@ class GameTaskList
                "A task with the name " + name + " already exists",
                "GameTaskList::add" );
          }
-         task->setTaskList(this);
          mList.insert(TaskList::value_type(name, task));
+         task->setTaskList(this);
+         task->init();
          return task;
       }
 
@@ -82,7 +83,8 @@ class GameTaskList
          TaskList::iterator i = mList.find(name);
          if (i != mList.end())
          {
-            OGRE_DELETE &i->second;
+            i->second->shutdown();
+            OGRE_DELETE i->second;
             mList.erase(i);
          }
       }
@@ -91,7 +93,8 @@ class GameTaskList
       {
          for(TaskList::iterator i = mList.begin(); i != mList.end(); i++)
          {
-            OGRE_DELETE &i->second;
+            i->second->shutdown();
+            OGRE_DELETE i->second;
             mList.erase(i);
          }
       }

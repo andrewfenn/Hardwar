@@ -24,14 +24,14 @@ namespace Client
 /** Custom init to pipe the ogre data into the gui system */
 GuiTask::GuiTask(Ogre::RenderWindow* rw, Ogre::SceneManager* sm)
 {
-   mGUI = OGRE_NEW MyGUI::Gui();
    mPlatform = OGRE_NEW MyGUI::OgrePlatform();
    mPlatform->initialise(rw, sm, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "");
+   mGUI = OGRE_NEW MyGUI::Gui();
+   mGUI->initialise("core.xml", "./logs/mygui.log");
 }
 
 void GuiTask::init()
 {
-   mGUI->initialise("core.xml", "./logs/mygui.log");
 }
 
 void GuiTask::shutdown()
@@ -39,10 +39,12 @@ void GuiTask::shutdown()
    /* Delete MyGUI */
    mGUI->destroyAllChildWidget();
    mGUI->shutdown();
-   OGRE_DELETE mGUI;
-   mGUI = 0;
 
    mPlatform->shutdown();
+
+   OGRE_DELETE mGUI;
+   mGUI = 0;
+   
    OGRE_DELETE mPlatform;
    mPlatform = 0;
 }

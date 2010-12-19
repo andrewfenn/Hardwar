@@ -22,15 +22,14 @@ using namespace Client;
 
 void LoadState::enter()
 {
-   mRoot = Ogre::Root::getSingletonPtr();
-   mSceneMgr = mRoot->getSceneManager("GameSceneMgr");
    mSceneMgr->clearScene();
 
-   MyGUI::Gui* gui = MyGUI::Gui::getInstancePtr();
-   gui->setVisiblePointer(false);
+   GuiTask* gui = (GuiTask*) mTasklist->get("Gui");
+   gui->mGUI->setVisiblePointer(false);
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
-   mStatusText = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticText>("status");   
+
+   mStatusText = gui->mGUI->findWidget<MyGUI::StaticText>("status");   
 
    mNetwork = (NetworkTask*) mTasklist->get("Network");
    mNetwork->connect();
@@ -55,7 +54,7 @@ void LoadState::update( unsigned long lTimeElapsed )
    mGUICounter += lTimeElapsed;
    mCounter += lTimeElapsed;
 
-   updateLoadbar();
+   this->updateLoadbar();
 
    switch(mNetwork->getConStatus())
    {
@@ -112,60 +111,13 @@ void LoadState::update( unsigned long lTimeElapsed )
 /* Update the GUI animation */
 void LoadState::updateLoadbar()
 {
-   MyGUI::types::TCoord<Ogre::Real> coord;
-   if (mGUICounter*0.001 > 0.5)
-   {
-      mGUICounter = 0;
-      MyGUI::StaticImagePtr lstatusImage;
-
-      if (mGUIcount > 0)
-      {
-         /* set the size of the last big dot to small */
-         lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> (
-                                                          Ogre::UTFString("dot")+
-                                       Ogre::StringConverter::toString(mGUIcount)
-                                                                               );
-         coord = lstatusImage->getCoord();
-         lstatusImage->setCoord(coord.left+3, coord.top +3, coord.width -5, coord.height -5);
-      }
-
-      if (mReverse)
-      {
-         mGUIcount--;
-      }
-      else
-      {
-         mGUIcount++;
-      }
-
-      if (mGUIcount < 2)
-      {
-         mGUIcount = 1;
-         mReverse = false;
-      }
-      if (mGUIcount > 2)
-      {
-         mGUIcount = 3;
-         mReverse = true;
-      }
-
-      lstatusImage = MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage>
-                     (Ogre::UTFString("dot")+Ogre::StringConverter::toString(mGUIcount));
-      coord = lstatusImage->getCoord();
-      lstatusImage->setCoord(coord.left-3, coord.top -3, coord.width +5, coord.height +5);
-   }
+  
 }
 
 /* Stop the loading animation and stop failure message */
 void LoadState::killLoadbar()
 {
-   MyGUI::StaticImagePtr lstatusImage;
-   lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> ("dot1");
-   lstatusImage->setVisible(false);
-   lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> ("dot2");
-   lstatusImage->setVisible(false);
-   lstatusImage= MyGUI::Gui::getInstance().findWidget<MyGUI::StaticImage> ("dot3");
-   lstatusImage->setVisible(false);
+
    /* TODO: make this a popup window? */
    mStatusText->setCaption(Ogre::String(gettext("Failed")));
 }

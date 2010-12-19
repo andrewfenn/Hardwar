@@ -52,7 +52,7 @@ class NetworkTask : public GameTask
       void changeFocus(Ogre::RenderWindow*) {}
 
       /** Connects to a server */
-      void connect(void);
+      void connect();
       /** Looks for new UDP messages being recieved from the server */
       bool pollMessage(ENetEvent*);
       /** Sets the IP address of the server to connect to
@@ -65,9 +65,9 @@ class NetworkTask : public GameTask
                 The port address of the server
       */
       bool setPort(const int);
-      enet_uint32 getTimeout(void);
+      enet_uint32 getTimeout();
       /** Gets the number of times a connection has failed */
-      unsigned short getRetryAttempts(void);
+      unsigned short getRetryAttempts();
       /** Sends a message to the server
          @param data
                 The data being sent
@@ -79,11 +79,11 @@ class NetworkTask : public GameTask
       */
       bool message(dataPacket data, const enet_uint8, const enet_uint32);
       /** Starts the network thread */
-      void startThread(void);
+      void startThread();
       /** Stops the network thread */
-      void stopThread(void);
+      void stopThread();
       /** Gets the client's connection status */
-      clientStatus getConStatus(void);
+      clientStatus getConStatus();
       /** Sets the client's connection status */
       void setConStatus(const clientStatus);
       /** Returns the enet host */
