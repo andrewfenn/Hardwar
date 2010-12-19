@@ -66,6 +66,7 @@ class GameManager
       RootGameState        *mRootState;
 
       bool                 mShutdown;
+      bool                 mStarted;
       GameTaskList         mTasks;
 
       unsigned short       mDelayTime;

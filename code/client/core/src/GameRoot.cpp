@@ -31,16 +31,18 @@ GameRoot::~GameRoot()
 {
 	Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
    mRoot->getAutoCreatedWindow()->removeAllViewports();
-   if(mRoot)
-   {
-      delete mRoot;
-      mRoot = 0;
-   }
 
    if (mGameMgr)
    {
-      delete mGameMgr;
+      OGRE_DELETE mGameMgr;
       mGameMgr = 0;
+   }
+   
+   if(mRoot)
+   {
+      mRoot->shutdown();
+      OGRE_DELETE mRoot;
+      mRoot = 0;
    }
 }
 
@@ -48,17 +50,21 @@ void GameRoot::loadPlugins()
 {
    Ogre::String str = Ogre::String("./logs/ogre.log");
 
+   #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+      mRoot = OGRE_NEW Ogre::Root("plugins.cfg", "game.cfg", str);
+   #endif
+
    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
    if (opendir("/usr/lib/OGRE") != 0)
    {
-      mRoot = new Ogre::Root("", "game.cfg", str);
+      mRoot = OGRE_NEW Ogre::Root("", "game.cfg", str);
       mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
       mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
       mRoot->loadPlugin("/usr/lib/OGRE/Plugin_CgProgramManager");
    }
    else if (opendir("/usr/local/lib/OGRE") != 0)
    {
-      mRoot = new Ogre::Root("", "game.cfg", str);
+      mRoot = OGRE_NEW Ogre::Root("", "game.cfg", str);
       mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
       mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
       mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_CgProgramManager");
@@ -66,23 +72,18 @@ void GameRoot::loadPlugins()
    else
    {
       /* Can't find where Ogre is, just start and hope for the best */
-      mRoot = new Ogre::Root("plugins.cfg", "game.cfg", str);
+      mRoot = OGRE_NEW Ogre::Root("plugins.cfg", "game.cfg", str);
    }
    #endif
 }
 
 void GameRoot::init()
 {
-   Ogre::String str = Ogre::String("./logs/ogre.log");
-
-   #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-      mRoot = new Ogre::Root("plugins.cfg", "game.cfg", str);
-   #endif
-
    this->loadPlugins();
    this->setupResources();
    this->configureGame();
-   mGameMgr = new GameManager(mRoot);
+   mGameMgr = OGRE_NEW GameManager(mRoot);
+   mGameMgr->start();
 }
 
 bool GameRoot::configureGame()

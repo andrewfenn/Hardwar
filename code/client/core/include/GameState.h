@@ -58,6 +58,7 @@ public:
    bool has(GameState&);
    void remove(const Ogre::String&);
    void removeAllChildren();
+   void updateAllChildren(unsigned long lTimeElapsed);
    void pause();
    void resume();
 protected:
@@ -79,14 +80,14 @@ public:
    {
       mTasklist = gametasks;
       mRoot     = root;
-      mSceneMgr = mRoot->getSceneManager("GameSceneMgr");
+      mSceneMgr = root->getSceneManager("GameSceneMgr");
       mCamera   = mSceneMgr->getCamera("GameCamera");
       mViewport = viewport;
    }
-
+   
    void update(unsigned long lTimeElapsed)
    {
-      
+      this->updateAllChildren(lTimeElapsed);
    }
 };
 }

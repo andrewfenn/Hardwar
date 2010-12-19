@@ -25,22 +25,30 @@ namespace Client
 GameManager::GameManager(Ogre::Root* root)
 {
    mShutdown = false;
+   mStarted = false;
    mRoot = root;
 }
 
-GameManager::~GameManager( void )
+GameManager::~GameManager()
 {
+   if (!mStarted)
+      return;
+
    /* Clean up all the game states */
-   mRootState->shutdown();
+   if (mRootState)
+      mRootState->shutdown();
 
    /* Clean up all the game tasks
     * such as networking, etc.
     */
    mTasks.removeAll();
 
-   mSceneMgr->clearScene();
-   mSceneMgr->destroyAllCameras();
-   mRenderWindow->removeAllViewports();
+   if (mSceneMgr)
+   {
+      mSceneMgr->clearScene();
+      mSceneMgr->destroyAllCameras();
+      mRenderWindow->removeAllViewports();
+   }
 }
 
 void GameManager::windowChangedSize(Ogre::RenderWindow* rw)
@@ -63,8 +71,8 @@ void GameManager::windowChangedFocus(Ogre::RenderWindow* rw)
 
 void GameManager::start()
 {
-   mRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
-   mSceneMgr     = mRoot->getSceneManager("GameSceneMgr");
+   mRenderWindow = mRoot->getAutoCreatedWindow();
+   mSceneMgr     = mRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
    mCamera       = mSceneMgr->createCamera("GameCamera");
    mViewport     = mRenderWindow->addViewport(mCamera, 1);
 
@@ -79,6 +87,8 @@ void GameManager::start()
 
    /* attach game modules to root state */
    mRootState->add(OGRE_NEW LoadState);
+   
+   mStarted = true;
 
    /* 
     * lTimeLastFrame remembers the last time that it was checked
@@ -129,5 +139,6 @@ void GameManager::shutdown(void)
 {
    mShutdown = true;
 }
+
 } /* namespace Client */
 

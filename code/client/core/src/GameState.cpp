@@ -66,7 +66,7 @@ GameState* GameState::add(GameState* state)
    {
       OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
          "A state with the name " + state->getName() + " already exists",
-         "GameManager::createState" );
+         "GameManager::add" );
    }
    state->setParent(this, mTasklist, mRoot, mViewport);
    mChildren.insert(GameStateList::value_type(state->getName(), state));
@@ -82,7 +82,7 @@ GameState* GameState::get(const Ogre::String& name)
    }
    OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
          "Cannot find State with name " + name,
-         "GameTask::getState");
+         "GameTask::get");
 }
 
 bool GameState::has(const Ogre::String& name)
@@ -119,6 +119,15 @@ void GameState::removeAllChildren()
       i->second->shutdown();
       OGRE_DELETE &i->second;
       mChildren.erase(i);
+   }
+}
+
+void GameState::updateAllChildren(unsigned long lTimeElapsed)
+{
+   GameStateList::iterator i = mChildren.begin();
+   while (i != mChildren.end())
+   {
+      i->second->update(lTimeElapsed);
    }
 }
 
