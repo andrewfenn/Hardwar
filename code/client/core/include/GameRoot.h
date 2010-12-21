@@ -43,7 +43,8 @@ class GameRoot : public Ogre::WindowEventListener
       Ogre::RenderWindow   *mRenderWindow;
       GameManager          *mGameMgr;
 
-      void loadPlugins();
+      bool loadPlugin(const Ogre::String);
+      bool loadPlugins();
       bool configureGame();
       void setupResources();
 };

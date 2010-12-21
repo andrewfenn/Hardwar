@@ -29,7 +29,7 @@ GameRoot::GameRoot()
 
 GameRoot::~GameRoot()
 {
-	Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
+   Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
    mRoot->getAutoCreatedWindow()->removeAllViewports();
 
    if (mGameMgr)
@@ -46,40 +46,111 @@ GameRoot::~GameRoot()
    }
 }
 
-void GameRoot::loadPlugins()
+bool GameRoot::loadPlugin(const Ogre::String dir)
 {
-   Ogre::String str = Ogre::String("./logs/ogre.log");
+   if (!mRoot)
+      return false;
+
+   try
+   {
+      mRoot->loadPlugin(dir);
+   }
+   catch(Ogre::Exception& e)
+   {
+      Ogre::LogManager::getSingleton().logMessage(Ogre::String("Unable to create D3D9 RenderSystem: ") + e.getFullDescription());
+      return false;
+   }
+   return true;
+}
+
+bool GameRoot::loadPlugins()
+{
+   mRoot = OGRE_NEW Ogre::Root("", "game.cfg", "./logs/ogre.log");
 
    #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-      mRoot = OGRE_NEW Ogre::Root("plugins.cfg", "game.cfg", str);
+      HRESULT hr; 
+      DWORD dwDirectXVersion = 0; 
+      TCHAR strDirectXVersion[10]; 
+
+      hr = GetDXVersion( &dwDirectXVersion, strDirectXVersion, 10 ); 
+
+      if(!SUCCEEDED(hr))
+         return false;
+
+      ostringstream dxinfoStream; 
+      dxinfoStream << "DirectX version: " << strDirectXVersion; 
+      LogManager::getSingleton().logMessage(dxinfoStream.str()); 
+
+      if(dwDirectXVersion < 0x00090000)
+         return false;
+         
+      if (!this->loadPlugin("RenderSystem_Direct3D9"))
+      {
+         if (!this->loadPlugin("RenderSystem_GL"))
+            return false;
+      }
+      
+      if (!this->loadPlugin("Plugin_OctreeSceneManager"))
+         return false;
+
+      if (!this->loadPlugin("Plugin_CgProgramManager"))
+         return false;
    #endif
 
    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-   if (opendir("/usr/lib/OGRE") != 0)
-   {
-      mRoot = OGRE_NEW Ogre::Root("", "game.cfg", str);
-      mRoot->loadPlugin("/usr/lib/OGRE/RenderSystem_GL");
-      mRoot->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager");
-      mRoot->loadPlugin("/usr/lib/OGRE/Plugin_CgProgramManager");
-   }
-   else if (opendir("/usr/local/lib/OGRE") != 0)
-   {
-      mRoot = OGRE_NEW Ogre::Root("", "game.cfg", str);
-      mRoot->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL");
-      mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager");
-      mRoot->loadPlugin("/usr/local/lib/OGRE/Plugin_CgProgramManager");
-   }
-   else
-   {
-      /* Can't find where Ogre is, just start and hope for the best */
-      mRoot = OGRE_NEW Ogre::Root("plugins.cfg", "game.cfg", str);
-   }
+      bool error = false;
+      bool loaded = false;
+      if (opendir("/usr/lib/OGRE") != 0)
+      {
+         if (!this->loadPlugin("/usr/lib/OGRE/RenderSystem_GL"))
+            error = true;
+
+         if (!this->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager"))
+            error = true;
+
+         if (!this->loadPlugin("/usr/lib/OGRE/Plugin_CgProgramManager"))
+            error = true;
+            
+         loaded = true;
+      }
+      
+      if ((!loaded || error) && opendir("/usr/local/lib/OGRE") != 0)
+      {
+         error = false;
+         
+         if (!this->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL"))
+            error = true;
+
+         if (!this->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager"))
+            error = true;
+         
+         if (!this->loadPlugin("/usr/local/lib/OGRE/Plugin_CgProgramManager"))
+            error = true;
+            
+         loaded = true;
+      }
+
+      if (!loaded || error)
+      {
+         if (!this->loadPlugin("RenderSystem_GL"))
+            return false;
+
+         if (!this->loadPlugin("Plugin_OctreeSceneManager"))
+            return false;
+
+         if (!this->loadPlugin("Plugin_CgProgramManager"))
+            return false;
+      }
    #endif
+
+   return true;
 }
 
 void GameRoot::init()
 {
-   this->loadPlugins();
+   if (!this->loadPlugins())
+      return;
+
    this->setupResources();
    this->configureGame();
    mGameMgr = OGRE_NEW GameManager(mRoot);
