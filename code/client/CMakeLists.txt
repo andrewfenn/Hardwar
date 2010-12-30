@@ -17,6 +17,7 @@ INCLUDE_DIRECTORIES(
    ${CMAKE_CURRENT_SOURCE_DIR}/core/include
    ${CMAKE_CURRENT_SOURCE_DIR}/playstate/include
    ${CMAKE_CURRENT_SOURCE_DIR}/loadstate/include
+   ${CMAKE_CURRENT_SOURCE_DIR}/menustate/include
    ${Hardwar_SOURCE_DIR}/code/shared/include
 )
 

@@ -46,6 +46,8 @@ void GameState::shutdown()
    {
       this->remove(i->second->getName());
    }
+   
+   this->mParent->shutdown();
 }
 
 const Ogre::String GameState::getName()
@@ -53,7 +55,7 @@ const Ogre::String GameState::getName()
    return mName;
 }
 
-GameState* GameState::add(GameState* state)
+void* GameState::add(GameState* state)
 {
    if (mChildren.find(state->getName()) != mChildren.end())
    {
@@ -67,7 +69,7 @@ GameState* GameState::add(GameState* state)
    return state;
 }
 
-GameState* GameState::get(const Ogre::String& name)
+void* GameState::get(const Ogre::String& name)
 {
    GameStateList::const_iterator i = mChildren.find(name);
    if (i != mChildren.end())
@@ -77,6 +79,12 @@ GameState* GameState::get(const Ogre::String& name)
    OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
          "Cannot find State with name " + name,
          "GameTask::get");
+}
+
+void GameState::replace(GameState* state)
+{
+   mParent->add(state);
+   mParent->remove(this->getName());
 }
 
 bool GameState::has(const Ogre::String& name)
@@ -89,7 +97,7 @@ bool GameState::has(GameState& state)
    return (mChildren.find(state.getName()) != mChildren.end());
 }
 
-GameState* GameState::getParent()
+void* GameState::getParent()
 {
    return mParent;
 }

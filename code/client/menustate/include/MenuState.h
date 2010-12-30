@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2009-2010  Andrew Fenn
+    Copyright © 2010  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,25 +18,21 @@
 
 #pragma once
 
-#include <MyGUI.h>
-#include <OIS.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
 #include "GameState.h"
-#include "NetworkTask.h"
-#include "ZoneTask.h"
 
 namespace Client
 {
-/** The Load State
+/** The Menu State
         @remarks
-            The Client::LoadState class is where a new game is loaded up from.
-        This class deals with animation of the loading screen, starting up a
-        thread from Client::Network and connecting to the server.
+            The Client::MenuState class is where a new game is loaded up from.
+        This class deals with creating and animating the menu screen
     */
-class LoadState : public GameState
+class MenuState : public GameState, OIS::KeyListener, OIS::MouseListener
 {
 public:
-    LoadState() : GameState("loadstate") {}
-    ~LoadState();
+    MenuState():GameState("menustate"){}
 
     void enter();
     void exit();
@@ -50,22 +46,6 @@ public:
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 private:
-    clientStatus mLoadStatus;
-
-    NetworkTask* mNetwork;
-    ZoneTask* mLevel;
-
-    MyGUI::VectorWidgetPtr mLayout;
-
-    void updateLoadbar();
-    void killLoadbar();
-
-    unsigned long mCounter; /* keeps track of time between connection attempts */
-    unsigned short mGUIcount; /* used for GUI animation */
-    bool mReverse; /* use for GUI animation */
-    unsigned long mGUICounter; /* keeps track of time between animation updates */
-    MyGUI::StaticTextPtr mStatusText;
-    bool mDownloads;
 };
 }
 

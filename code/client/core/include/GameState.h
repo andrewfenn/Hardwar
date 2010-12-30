@@ -19,8 +19,6 @@
 #pragma once
 
 #include <Ogre.h>
-#include <OIS.h>
-
 #include "GameTask.h"
 
 namespace Client
@@ -28,32 +26,25 @@ namespace Client
 class GameState;
 typedef std::map<Ogre::String, GameState*> GameStateList;
 
-class GameState {
+class GameState
+{
 public:
    GameState(const Ogre::String&);
 
    virtual void enter() {}
    virtual void exit() {}
-
    virtual void update(unsigned long lTimeElapsed);
-
-   virtual void keyPressed(const OIS::KeyEvent &e) { }
-   virtual void keyReleased(const OIS::KeyEvent &e) { }
-
-   virtual void mouseMoved(const OIS::MouseEvent &e) { }
-   virtual void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) { }
-   virtual void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { }
 
    /** Internal only method for setting up the data in the state propperly */
    void setParent(GameState*, GameTaskList*, Ogre::Root*, Ogre::Viewport*);
 
    const Ogre::String getName();
-   GameState* getParent();
+   void* getParent();
    void shutdown();
 
-   GameState* add(GameState*);
-   GameState* get(const Ogre::String&);
-   GameState* swap(GameState*);
+   void* add(GameState*);
+   void* get(const Ogre::String&);
+   void replace(GameState*);
    bool has(const Ogre::String&);
    bool has(GameState&);
    void remove(const Ogre::String&);
@@ -83,12 +74,28 @@ public:
       mSceneMgr = root->getSceneManager("GameSceneMgr");
       mCamera   = mSceneMgr->getCamera("GameCamera");
       mViewport = viewport;
+      mShutdown = false;
    }
    
    void update(unsigned long lTimeElapsed)
    {
       this->updateAllChildren(lTimeElapsed);
    }
+   
+   const bool shouldExit()
+   {
+      return mShutdown;
+   }
+   
+   void shutdown()
+   {
+      std::cout << "DEBUG: AT ROOT SHUTDOWN" << std::endl;
+      mShutdown = true;
+      this->removeAllChildren();
+   }
+private:
+   /* if true shuts down the game */
+   bool mShutdown;
 };
 }
 

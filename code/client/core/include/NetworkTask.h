@@ -18,16 +18,11 @@
 
 #pragma once
 
-#include <string>
-#include <stdio.h>
 #include <boost/thread.hpp>
-#include <boost/bind.hpp>
-#include <libintl.h>
 #include "enet/enet.h"
+#include <string>
 
 #include "DataPacket.h"
-#include "Building.h"
-
 #include "GameTask.h"
 
 namespace Client

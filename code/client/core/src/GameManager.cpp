@@ -19,6 +19,14 @@
 
 #include "GameManager.h"
 
+/* game tasks */
+#include "InputTask.h"
+#include "NetworkTask.h"
+#include "ZoneTask.h"
+#include "GuiTask.h"
+
+#include "MenuState.h"
+
 namespace Client
 {
 
@@ -86,7 +94,7 @@ void GameManager::start()
    mRootState = OGRE_NEW RootGameState(&mTasks, mRoot, mViewport);
 
    /* attach game modules to root state */
-   mRootState->add(OGRE_NEW LoadState);
+   mRootState->add(OGRE_NEW MenuState);
    mStarted = true;
 
    /* 
@@ -131,6 +139,8 @@ void GameManager::start()
       }
       /* Deal with platform specific issues */
       Ogre::WindowEventUtilities::messagePump();
+
+      mShutdown = mRootState->shouldExit();
    }
 }
 

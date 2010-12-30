@@ -18,6 +18,10 @@
 
 #include "InputTask.h"
 
+#include <OISException.h>
+#include <OISEvents.h>
+
+
 using namespace Client;
 
 InputTask::InputTask()
@@ -66,7 +70,7 @@ void InputTask::shutdown()
 
 void InputTask::init()
 {
-   getJoystick(1);
+   this->getJoystick(1);
    mRenderWindow = Ogre::Root::getSingletonPtr()->getAutoCreatedWindow();
 
    if( !mInputSystem )
@@ -103,9 +107,9 @@ void InputTask::init()
       mInputSystem = OIS::InputManager::createInputSystem(paramList);
       /* If possible create a buffered keyboard */
       #if OIS_VERSION_MINOR == 2
-      if(mInputSystem->getNumberOfDevices(OIS::OISKeyboard) > 0)
+      if (mInputSystem->getNumberOfDevices(OIS::OISKeyboard) > 0)
       #else
-      if(mInputSystem->numKeyboards() > 0)
+      if (mInputSystem->numKeyboards() > 0)
       #endif
       {
          mKeyboard = static_cast<OIS::Keyboard*>(mInputSystem->createInputObject(OIS::OISKeyboard, true));
@@ -114,22 +118,22 @@ void InputTask::init()
 	
       /* If possible create a buffered mouse */
       #if OIS_VERSION_MINOR == 2
-      if(mInputSystem->getNumberOfDevices(OIS::OISMouse) > 0)
+      if (mInputSystem->getNumberOfDevices(OIS::OISMouse) > 0)
       #else
-      if(mInputSystem->numMice() > 0)
+      if (mInputSystem->numMice() > 0)
       #endif
       {
          mMouse = static_cast<OIS::Mouse*>(mInputSystem->createInputObject(OIS::OISMouse, true));
          mMouse->setEventCallback(this);
 
-         changeSize(mRenderWindow);
+         this->changeFocus(mRenderWindow);
       }
 
       /* If possible create all joysticks in buffered mode */
       #if OIS_VERSION_MINOR == 2
-      if(mInputSystem->getNumberOfDevices(OIS::OISJoyStick) > 0)
+      if (mInputSystem->getNumberOfDevices(OIS::OISJoyStick) > 0)
       #else
-      if(mInputSystem->numJoySticks() > 0)
+      if (mInputSystem->numJoySticks() > 0)
       #endif
       {
          #if OIS_VERSION_MINOR == 2
@@ -151,7 +155,7 @@ void InputTask::init()
 
 void InputTask::update()
 {
-   /* Need to capture / update each device every frame */
+   /* Need to capture and update each device for every frame */
    if(mMouse)
    {
       mMouse->capture();

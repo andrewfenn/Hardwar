@@ -23,15 +23,6 @@
 #include "GameState.h"
 #include "GameTask.h"
 
-/* game tasks */
-#include "InputTask.h"
-#include "NetworkTask.h"
-#include "ZoneTask.h"
-#include "GuiTask.h"
-
-/* game states */
-#include "LoadState.h"
-
 namespace Client
 {
 /** The Game Manager
@@ -42,16 +33,10 @@ namespace Client
 class GameManager
 {
    public:
-      MyGUI::Gui           *mGUI;
       Ogre::SceneManager   *mSceneMgr;
 
       GameManager(Ogre::Root*);
       ~GameManager();
-
-/*      GameTask* createTask(const Ogre::String&, GameTask*);
-      GameTask* getTask(const Ogre::String&);
-      bool hasTask(const Ogre::String&);
-      void destroyTask(const Ogre::String&);*/
 
       void start();
       void windowChangedSize(Ogre::RenderWindow*);

@@ -18,6 +18,11 @@
 
 #include "PlayState.h"
 
+#include "srvstructs.h"
+
+#include "GuiTask.h"
+#include "NetworkTask.h"
+
 using namespace Client;
 
 void PlayState::enter()
@@ -77,22 +82,24 @@ void PlayState::update(unsigned long lTimeElapsed)
    mMouseRotX = mMouseRotY = 0;
 }
 
-void PlayState::keyPressed(const OIS::KeyEvent &e)
+bool PlayState::keyPressed(const OIS::KeyEvent &e)
 {
-      if (e.key == OIS::KC_W)
-         mKeydownUp = 1;
+   if (e.key == OIS::KC_W)
+      mKeydownUp = 1;
 
-      if (e.key == OIS::KC_S)
-         mKeydownDown = 1;
+   if (e.key == OIS::KC_S)
+      mKeydownDown = 1;
 
-      if (e.key == OIS::KC_A)
-         mKeydownLeft = 1;
+   if (e.key == OIS::KC_A)
+      mKeydownLeft = 1;
 
-      if (e.key == OIS::KC_D)
-         mKeydownRight = 1;
+   if (e.key == OIS::KC_D)
+      mKeydownRight = 1;
+         
+   return true;
 }
 
-void PlayState::keyReleased(const OIS::KeyEvent &e)
+bool PlayState::keyReleased(const OIS::KeyEvent &e)
 {
    if (e.key == OIS::KC_TAB)
    {
@@ -113,20 +120,23 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
    if (e.key == OIS::KC_D)
       mKeydownRight = 0;
 
+   return true;
 }
 
-void PlayState::mouseMoved(const OIS::MouseEvent &e)
+bool PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
    const OIS::MouseState &mouseState = e.state;
    mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
    mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
+   return true;
 }
 
-void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+bool PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-   
+   return true;
 }
 
-void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+bool PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+   return true;
 }

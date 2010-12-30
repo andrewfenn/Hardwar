@@ -19,12 +19,9 @@
 #pragma once
 
 #include <OISInputManager.h>
-#include <OISException.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 #include <OISJoyStick.h>
-#include <OISEvents.h>
-#include <Ogre.h>
 
 #include "GameTask.h"
 

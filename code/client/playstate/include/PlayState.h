@@ -19,11 +19,10 @@
 #pragma once
 
 #include <OgreRoot.h>
+#include <MyGUI.h>
+#include <OIS.h>
 
-#include "GuiTask.h"
 #include "GameState.h"
-#include "srvstructs.h"
-#include "NetworkTask.h"
 
 namespace Client
 {
@@ -36,12 +35,12 @@ class PlayState : public GameState
 
       void update(unsigned long lTimeElapsed);
 
-      void keyPressed(const OIS::KeyEvent &e);
-      void keyReleased(const OIS::KeyEvent &e);
+      bool keyPressed(const OIS::KeyEvent &e);
+      bool keyReleased(const OIS::KeyEvent &e);
 
-      void mouseMoved(const OIS::MouseEvent &e);
-      void mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-      void mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+      bool mouseMoved(const OIS::MouseEvent &e);
+      bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+      bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
    private:
       Ogre::OverlayManager    *mOverlayMgr;
       Ogre::RenderWindow      *mWindow;

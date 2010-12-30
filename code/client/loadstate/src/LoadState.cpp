@@ -18,6 +18,14 @@
 
 #include "LoadState.h"
 
+#include <OgreRoot.h>
+#include <libintl.h>
+
+#include "srvstructs.h"
+#include "hwstructs.h"
+#include "PlayState.h"
+#include "GuiTask.h"
+
 using namespace Client;
 
 void LoadState::enter()
@@ -94,9 +102,7 @@ void LoadState::update( unsigned long lTimeElapsed )
       break;
       case status_ingame:
          {
-            GameState* state = this->getParent();
-            state->removeAllChildren();
-            state->add(OGRE_NEW PlayState());
+            this->replace(OGRE_NEW PlayState());
          }
       break;
       case status_disconnected:
@@ -122,23 +128,32 @@ void LoadState::killLoadbar()
    mStatusText->setCaption(Ogre::String(gettext("Failed")));
 }
 
-void LoadState::keyPressed(const OIS::KeyEvent &e)
-{ }
+bool LoadState::keyPressed(const OIS::KeyEvent &e)
+{
+   return true;
+}
 
-void LoadState::keyReleased(const OIS::KeyEvent &e)
+bool LoadState::keyReleased(const OIS::KeyEvent &e)
 {
    if( e.key == OIS::KC_ESCAPE )
    {
       /* FIXME: Should go to main menu */
       this->shutdown();
-   } 
+   }
+   return true;
 }
 
-void LoadState::mouseMoved(const OIS::MouseEvent &e)
-{ }
+bool LoadState::mouseMoved(const OIS::MouseEvent &e)
+{
+   return true;
+}
 
-void LoadState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ }
+bool LoadState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+   return true;
+}
 
-void LoadState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ }
+bool LoadState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+   return true;
+}

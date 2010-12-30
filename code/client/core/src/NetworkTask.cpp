@@ -18,6 +18,12 @@
 
 #include "NetworkTask.h"
 
+#include <stdio.h>
+#include <boost/bind.hpp>
+#include <libintl.h>
+
+#include "Building.h"
+
 using namespace Client;
 
 NetworkTask::NetworkTask()
