@@ -47,7 +47,7 @@ typedef std::map<Ogre::String, GameTask*> TaskList;
 class GameTaskList
 {
    public:
-      GameTask* add(const Ogre::String& name, GameTask* task)
+      void* add(const Ogre::String& name, GameTask* task)
       {
          if (mList.find(name) != mList.end())
          {
@@ -61,12 +61,12 @@ class GameTaskList
          return task;
       }
 
-      GameTask* get(const Ogre::String& name)
+      void* get(const Ogre::String& name)
       {
          TaskList::const_iterator i = mList.find(name);
          if (i != mList.end())
          {
-            return (GameTask*) &i->second;
+            return i->second;
          }
          OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
             "Cannot find Task with name " + name,
