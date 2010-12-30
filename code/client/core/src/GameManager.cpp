@@ -110,6 +110,7 @@ void GameManager::start()
    mDelayTime = ceil((float)1000/mMaxFPS);
 
    TaskList* list = mTasks.list();
+   TaskList::iterator taskItr;
 
    while (!mShutdown)
    {
@@ -125,9 +126,9 @@ void GameManager::start()
       if (lDelay > mDelayTime)
       {
          /* update game system tasks */
-         for (TaskList::iterator i=list->begin(); i != list->end(); i++)
+         for (taskItr=list->begin(); taskItr != list->end(); taskItr++)
          {
-            i->second->update();
+            taskItr->second->update();
          }
 
          /* update the current game states */

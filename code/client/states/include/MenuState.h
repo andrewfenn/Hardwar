@@ -32,11 +32,9 @@ namespace Client
 class MenuState : public GameState, OIS::KeyListener, OIS::MouseListener
 {
 public:
-    MenuState():GameState("menustate"){}
-
+    MenuState();
+    ~MenuState();
     void enter();
-    void exit();
-
     void update(unsigned long lTimeElapsed);
     bool keyPressed(const OIS::KeyEvent &e);
     bool keyReleased(const OIS::KeyEvent &e);

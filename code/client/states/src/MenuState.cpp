@@ -21,17 +21,25 @@
 
 using namespace Client;
 
+MenuState::MenuState() : GameState("menustate")
+{ }
+
+MenuState::~MenuState()
+{
+   InputTask* input = (InputTask*) mTasklist->get("Input");
+   input->removeKeyListener(this->getName());
+   input->removeMouseListener(this->getName());
+}
+
 void MenuState::enter()
 {
    mSceneMgr->clearScene();
    mViewport->setBackgroundColour(Ogre::ColourValue::White);
+
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->addKeyListener(this, this->getName());
    input->addMouseListener(this, this->getName());
 }
-
-void MenuState::exit()
-{ }
 
 void MenuState::update( unsigned long lTimeElapsed )
 { }
@@ -43,10 +51,8 @@ bool MenuState::keyPressed(const OIS::KeyEvent &e)
 
 bool MenuState::keyReleased(const OIS::KeyEvent &e)
 {
-   std::cout << "DEBUG: PRESSED" << std::endl;
    if( e.key == OIS::KC_ESCAPE )
    {
-      std::cout << "DEBUG: PRESSED ESC" << std::endl;
       /* FIXME: Should go to main menu */
       this->shutdown();
    }

@@ -30,9 +30,7 @@ class GameState
 {
 public:
    GameState(const Ogre::String&);
-
    virtual void enter() {}
-   virtual void exit() {}
    virtual void update(unsigned long lTimeElapsed);
 
    /** Internal only method for setting up the data in the state propperly */
@@ -62,40 +60,6 @@ protected:
    Ogre::Camera         *mCamera;
    Ogre::Viewport       *mViewport;
    GameTaskList         *mTasklist;
-};
-
-class RootGameState : public GameState
-{
-public:
-   RootGameState(GameTaskList* gametasks, Ogre::Root* root, Ogre::Viewport* viewport) : GameState("Root")
-   {
-      mTasklist = gametasks;
-      mRoot     = root;
-      mSceneMgr = root->getSceneManager("GameSceneMgr");
-      mCamera   = mSceneMgr->getCamera("GameCamera");
-      mViewport = viewport;
-      mShutdown = false;
-   }
-   
-   void update(unsigned long lTimeElapsed)
-   {
-      this->updateAllChildren(lTimeElapsed);
-   }
-   
-   const bool shouldExit()
-   {
-      return mShutdown;
-   }
-   
-   void shutdown()
-   {
-      std::cout << "DEBUG: AT ROOT SHUTDOWN" << std::endl;
-      mShutdown = true;
-      this->removeAllChildren();
-   }
-private:
-   /* if true shuts down the game */
-   bool mShutdown;
 };
 }
 

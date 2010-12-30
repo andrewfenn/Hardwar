@@ -18,6 +18,7 @@
 
 #include "GameState.h"
 #include "GameTask.h"
+#include "RootGameState.h"
 
 using namespace Client;
 
@@ -25,6 +26,7 @@ GameState::GameState(const Ogre::String& name)
 {
    mName = name;
    mPaused = false;
+   mParent = 0;
 }
 
 void GameState::setParent(GameState* parent, GameTaskList* gametasks, 
@@ -40,14 +42,14 @@ void GameState::setParent(GameState* parent, GameTaskList* gametasks,
 
 void GameState::shutdown()
 {
-   this->exit();
-
-   for (GameStateList::iterator i=mChildren.begin(); i != mChildren.end(); i++)
+   this->removeAllChildren();
+   if (mParent)
    {
-      this->remove(i->second->getName());
+      std::cout << "shutdown"<< std::endl;
+      mParent->shutdown();
+   } else {
+      ((RootGameState*)this)->shutdown();
    }
-   
-   this->mParent->shutdown();
 }
 
 const Ogre::String GameState::getName()
@@ -107,7 +109,6 @@ void GameState::remove(const Ogre::String& name)
    GameStateList::iterator i = mChildren.find(name);
    if (i != mChildren.end())
    {
-      i->second->shutdown();
       OGRE_DELETE i->second;
       mChildren.erase(i);
    }
@@ -115,10 +116,10 @@ void GameState::remove(const Ogre::String& name)
 
 void GameState::removeAllChildren()
 {
-   GameStateList::iterator i = mChildren.begin();
-   while (i != mChildren.end())
+   GameStateList::iterator i;
+   std::cout << mChildren.size() << std::endl;
+   for (i = mChildren.begin(); i != mChildren.end(); i++)
    {
-      i->second->shutdown();
       OGRE_DELETE i->second;
       mChildren.erase(i);
    }
@@ -126,8 +127,8 @@ void GameState::removeAllChildren()
 
 void GameState::updateAllChildren(unsigned long lTimeElapsed)
 {
-   GameStateList::iterator i = mChildren.begin();
-   while (i != mChildren.end())
+   GameStateList::iterator i;
+   for (i = mChildren.begin(); i != mChildren.end(); i++)
    {
       i->second->update(lTimeElapsed);
    }

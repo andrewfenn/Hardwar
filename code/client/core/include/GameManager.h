@@ -20,7 +20,7 @@
 
 #include <Ogre.h>
 
-#include "GameState.h"
+#include "RootGameState.h"
 #include "GameTask.h"
 
 namespace Client
