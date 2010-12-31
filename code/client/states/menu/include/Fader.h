@@ -18,32 +18,41 @@
 
 #pragma once
 
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-#include "GameState.h"
-
-namespace Client
-{
-/** The Menu State
-        @remarks
-            The Client::MenuState class is where a new game is loaded up from.
-        This class deals with creating and animating the menu screen
-    */
-class MenuState : public GameState, OIS::KeyListener, OIS::MouseListener
-{
-public:
-    MenuState();
-    ~MenuState();
-    void enter();
-    void update(unsigned long lTimeElapsed);
-    bool keyPressed(const OIS::KeyEvent &e);
-    bool keyReleased(const OIS::KeyEvent &e);
-
-    bool mouseMoved(const OIS::MouseEvent &e );
-    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-
-private:
-};
+#include <Ogre.h>
+ 
+namespace Ogre {
+  class TextureUnitState;
+  class Overlay;
 }
 
+class FaderCallback
+{
+public:
+  virtual void fadeInCallback() {}
+  virtual void fadeOutCallback() {}
+};
+
+class Fader
+{
+public:
+  Fader(const char *OverlayName, const char *MaterialName, FaderCallback *instance = 0);
+  ~Fader();
+
+  void startFadeIn(double duration = 1.0f);
+  void startFadeOut(double duration = 1.0f);
+  void fade(const double timeSinceLastFrame);
+
+protected:
+  double _alpha;
+  double _current_dur;
+  double _total_dur;
+  FaderCallback *_inst;
+  Ogre::TextureUnitState *_tex_unit;
+  Ogre::Overlay *_overlay;
+
+  enum _fadeop {
+      FADE_NONE,
+      FADE_IN,
+      FADE_OUT,
+  } _fadeop;
+};

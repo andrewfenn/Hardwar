@@ -16,6 +16,7 @@ SOURCE_GROUP("Client" FILES ${folder_source})
 INCLUDE_DIRECTORIES(
    ${CMAKE_CURRENT_SOURCE_DIR}/core/include
    ${CMAKE_CURRENT_SOURCE_DIR}/states/include
+   ${CMAKE_CURRENT_SOURCE_DIR}/states/menu/include
    ${CMAKE_CURRENT_SOURCE_DIR}/tasks/include
    ${Hardwar_SOURCE_DIR}/code/shared/include
 )

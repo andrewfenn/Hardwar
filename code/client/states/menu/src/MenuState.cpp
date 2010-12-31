@@ -30,6 +30,7 @@ MenuState::~MenuState()
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->removeKeyListener(this->getName());
    input->removeMouseListener(this->getName());
+   OGRE_DELETE mFade;
 }
 
 void MenuState::enter()
@@ -38,12 +39,21 @@ void MenuState::enter()
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->addKeyListener(this, this->getName());
    input->addMouseListener(this, this->getName());
-
    mSceneMgr->setSkyBox(true, "Menu/MedResSkyBox", 5000);
+   mFade = OGRE_NEW Fader("Menu/FadeInOut", "Materials/OverlayMaterial", this);
+   mFade->startFadeIn(2);
+   mStarted = false;
 }
 
-void MenuState::update( unsigned long lTimeElapsed )
-{ }
+void MenuState::update(const unsigned long lTimeElapsed )
+{
+   if (mStarted)
+   {
+      // skip first frame to get accurate elapsed time
+      mFade->fade(lTimeElapsed);
+   }
+   mStarted = true;
+}
 
 bool MenuState::keyPressed(const OIS::KeyEvent &e)
 { 
