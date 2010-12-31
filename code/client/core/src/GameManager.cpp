@@ -83,6 +83,7 @@ void GameManager::start()
    mSceneMgr     = mRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
    mCamera       = mSceneMgr->createCamera("GameCamera");
    mViewport     = mRenderWindow->addViewport(mCamera, 1);
+   mCamera->setAspectRatio(Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
 
    /* setup system tasks */
    mTasks.add("Input", OGRE_NEW InputTask);

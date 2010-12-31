@@ -47,6 +47,10 @@ public:
 private:
    Fader* mFade;
    bool mStarted;
+   
+   Ogre::Degree            mMouseRotX, mMouseRotY;
+   int                     mKeydownUp, mKeydownDown, 
+                        mKeydownRight, mKeydownLeft;
 };
 }
 

@@ -14,3 +14,86 @@ material Materials/OverlayMaterial
       }
   }
 }
+
+material menu/titan_clouds1
+{
+  technique
+  {
+      pass
+      {
+         ambient 0.01 0.01 0.01
+			diffuse 0.001 0.001 0.001
+			scene_blend add
+			depth_write off
+         colour_op_ex blend_texture_alpha src_diffuse src_current
+			diffuse vertexcolour
+			start_light 1
+
+         texture_unit
+			{
+				texture titan-clouds1.jpg
+				scroll_anim 0.01 0.01
+			}
+      }
+   }
+}
+
+material menu/titan_clouds2
+{
+  technique
+  {
+      pass
+      {
+         ambient 0.001 0.001 0.001
+			diffuse 0.001 0.001 0.001
+			scene_blend add
+			depth_write off
+         colour_op_ex blend_texture_alpha src_diffuse src_current
+			diffuse vertexcolour
+			shading phong
+
+         texture_unit
+			{
+				texture titan-clouds2.jpg
+				scroll_anim 0.02 0
+			}
+      }
+   }
+}
+
+material menu/titan
+{
+  technique
+  {
+      pass
+      {
+         scene_blend alpha_blend
+         ambient 0.5 0.5 0.5
+			diffuse 0.5 0.5 0.5
+
+         texture_unit
+         {
+            texture titan.jpg
+         }
+      }
+  }
+}
+
+material menu/sun
+{
+technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+			diffuse vertexcolour
+
+			texture_unit
+			{
+				texture sun.dds
+			}
+		}
+	}
+}

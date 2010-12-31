@@ -5,6 +5,7 @@ material Menu/MedResSkyBox
 		pass
 		{
 			lighting off
+			scene_blend add
 			depth_write off
 
 			texture_unit

@@ -5,10 +5,9 @@ material Editor/Grid
 		pass
 		{
 			lighting off
-			depth_check on
-         depth_write off
-			scene_blend alpha_blend
-         cull_software none
+			scene_blend add
+			depth_write off
+			diffuse vertexcolour
 
 			texture_unit
 			{
