@@ -18,11 +18,12 @@
 
 #include "MenuState.h"
 #include "InputTask.h"
+#include "GuiTask.h"
+#include <MyGUI.h>
 
 using namespace Client;
 
-MenuState::MenuState() : GameState("menustate")
-{ }
+MenuState::MenuState() : GameState("menustate"){}
 
 MenuState::~MenuState()
 {
@@ -34,11 +35,11 @@ MenuState::~MenuState()
 void MenuState::enter()
 {
    mSceneMgr->clearScene();
-   mViewport->setBackgroundColour(Ogre::ColourValue::White);
-
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->addKeyListener(this, this->getName());
    input->addMouseListener(this, this->getName());
+
+   mSceneMgr->setSkyBox(true, "Menu/MedResSkyBox", 5000);
 }
 
 void MenuState::update( unsigned long lTimeElapsed )
@@ -61,6 +62,7 @@ bool MenuState::keyReleased(const OIS::KeyEvent &e)
 
 bool MenuState::mouseMoved(const OIS::MouseEvent &e)
 {
+   ((GuiTask*) mTasklist->get("Gui"))->mGUI->injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
    return true;
 }
 

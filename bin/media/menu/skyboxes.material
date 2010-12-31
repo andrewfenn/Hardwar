@@ -1,0 +1,17 @@
+material Menu/MedResSkyBox
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture menusky_med_front5.png menusky_med_back6.png menusky_med_left2.png menusky_med_right1.png menusky_med_top3.png menusky_med_bottom4.png separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}

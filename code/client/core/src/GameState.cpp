@@ -45,7 +45,6 @@ void GameState::shutdown()
    this->removeAllChildren();
    if (mParent)
    {
-      std::cout << "shutdown"<< std::endl;
       mParent->shutdown();
    } else {
       ((RootGameState*)this)->shutdown();
@@ -117,7 +116,6 @@ void GameState::remove(const Ogre::String& name)
 void GameState::removeAllChildren()
 {
    GameStateList::iterator i;
-   std::cout << mChildren.size() << std::endl;
    for (i = mChildren.begin(); i != mChildren.end(); i++)
    {
       OGRE_DELETE i->second;
