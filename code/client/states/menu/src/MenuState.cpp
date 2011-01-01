@@ -37,23 +37,23 @@ void MenuState::enter()
 {
    mSceneMgr->clearScene();
    Ogre::SceneNode* sceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("menu");
-   
-   
+
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->addKeyListener(this, this->getName());
    input->addMouseListener(this, this->getName());
 
    mSceneMgr->setSkyBox(true, "Menu/MedResSkyBox", 5000);
-   mFade = OGRE_NEW Fader("Menu/FadeInOut", "Materials/OverlayMaterial", this);
+   mFade = OGRE_NEW Helper::Fader("Menu/FadeInOut", "Materials/OverlayMaterial", this);
    mFade->startFadeIn(2);
    mStarted = false;
 
 	Ogre::Light* light = mSceneMgr->createLight( "Sun" );
-	light->setType( Ogre::Light::LT_DIRECTIONAL );
+	light->setType( Ogre::Light::LT_SPOTLIGHT );
 	light->setDiffuseColour( Ogre::ColourValue( .82, .81, .7 ) );
 	light->setSpecularColour( Ogre::ColourValue( .82, .81, .7 ) );
-	light->setDirection( Ogre::Vector3( 300, 0, -10000 ) ); 
-
+	light->setPosition( Ogre::Vector3( 300, 0, -10000 ) ); 
+   mSceneMgr->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
+   
 	Ogre::BillboardSet* bbs = mSceneMgr->createBillboardSet(1);
 	bbs->setMaterialName("menu/sun");
 	bbs->createBillboard(0, 0, 0, Ogre::ColourValue(1, 1, 1));
@@ -70,11 +70,11 @@ void MenuState::enter()
    Ogre::SceneNode* planetnode = sceneNode->createChildSceneNode("planet");
    planetnode->attachObject(ent);
    planetnode->setPosition(Ogre::Vector3(-200,0,-800));
-   planetnode->setScale(Ogre::Vector3(1.5,1.5,1.5));
+   planetnode->setScale(Ogre::Vector3(1,1,1));
  
    ent = mSceneMgr->createEntity("planetclouds1", Ogre::SceneManager::PT_SPHERE);
-   ent->setMeshLodBias(1.0, 0, 0);
-   ent->setMaterialLodBias(1.0, 0, 0);
+   ent->setMeshLodBias(4, 0, 0);
+   ent->setMaterialLodBias(4, 0, 0);
    ent->setMaterialName("menu/titan_clouds1");
 
    Ogre::SceneNode* planetcloudnode = planetnode->createChildSceneNode("planetclouds1");

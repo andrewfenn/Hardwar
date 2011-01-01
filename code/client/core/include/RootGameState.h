@@ -20,16 +20,25 @@
 
 #include <Ogre.h>
 #include "GameState.h"
+#include <OISKeyboard.h>
+#include <OISMouse.h>
 
 namespace Client
 {
-class RootGameState : public GameState
+class RootGameState : public GameState, OIS::KeyListener, OIS::MouseListener
 {
 public:
    RootGameState(GameTaskList* gametasks, Ogre::Root* root, Ogre::Viewport* viewport);
+   ~RootGameState();
    void update(unsigned long lTimeElapsed);
    const bool shouldExit();
    void shutdown();
+
+   bool keyPressed(const OIS::KeyEvent &e);
+   bool keyReleased(const OIS::KeyEvent &e);
+   bool mouseMoved(const OIS::MouseEvent &e );
+   bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+   bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 private:
    bool mShutdown;
 };

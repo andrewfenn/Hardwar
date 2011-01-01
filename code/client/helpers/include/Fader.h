@@ -25,6 +25,8 @@ namespace Ogre {
   class Overlay;
 }
 
+namespace Helper {
+
 class FaderCallback
 {
 public:
@@ -56,3 +58,5 @@ protected:
       FADE_OUT,
   } _fadeop;
 };
+
+}

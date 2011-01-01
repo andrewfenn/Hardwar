@@ -67,10 +67,8 @@ material menu/titan
   {
       pass
       {
-         scene_blend alpha_blend
-         ambient 0.5 0.5 0.5
-			diffuse 0.5 0.5 0.5
-
+			shading phong
+			scene_blend alpha_blend
          texture_unit
          {
             texture titan.jpg

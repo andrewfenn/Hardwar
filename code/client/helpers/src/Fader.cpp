@@ -17,7 +17,9 @@
 */
 
 #include "Fader.h"
- 
+
+using namespace Helper;
+
 Fader::Fader(const char *OverlayName, const char *MaterialName, FaderCallback *instance)
 {
    _fadeop = FADE_NONE;

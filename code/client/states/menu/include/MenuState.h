@@ -30,7 +30,7 @@ namespace Client
             The Client::MenuState class is where a new game is loaded up from.
         This class deals with creating and animating the menu screen
     */
-class MenuState : public GameState, OIS::KeyListener, OIS::MouseListener, FaderCallback
+class MenuState : public GameState, OIS::KeyListener, OIS::MouseListener, Helper::FaderCallback
 {
 public:
     MenuState();
@@ -45,7 +45,7 @@ public:
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 private:
-   Fader* mFade;
+   Helper::Fader* mFade;
    bool mStarted;
    
    Ogre::Degree            mMouseRotX, mMouseRotY;
