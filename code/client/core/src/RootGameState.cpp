@@ -70,8 +70,9 @@ bool RootGameState::keyReleased(const OIS::KeyEvent &e)
 {
    if (e.key == OIS::KC_GRAVE)
    {
-      GuiTask* gui = (GuiTask*) mTasklist->get("Gui");
-      gui->mGUI->setVisiblePointer(!gui->mGUI->isVisiblePointer());
+/*      GuiTask* gui = (GuiTask*) mTasklist->get("Gui");
+      gui->mGUI->setVisiblePointer(!gui->mGUI->isVisiblePointer());*/
+      mRoot->getAutoCreatedWindow()->writeContentsToTimestampedFile("./screenshots/",".png");
    }
    return true;
 }
