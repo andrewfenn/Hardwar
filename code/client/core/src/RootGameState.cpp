@@ -79,7 +79,7 @@ bool RootGameState::keyReleased(const OIS::KeyEvent &e)
 
 bool RootGameState::mouseMoved(const OIS::MouseEvent &e)
 {
-   ((GuiTask*) mTasklist->get("Gui"))->mGUI->injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
+   ((GuiTask*) mTasklist->get("Gui"))->resource()->injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
    return true;
 }
 

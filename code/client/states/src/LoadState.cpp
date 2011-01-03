@@ -33,11 +33,11 @@ void LoadState::enter()
    mSceneMgr->clearScene();
 
    GuiTask* gui = (GuiTask*) mTasklist->get("Gui");
-   gui->mGUI->setVisiblePointer(false);
+   gui->resource()->setVisiblePointer(false);
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
 
-   mStatusText = gui->mGUI->findWidget<MyGUI::StaticText>("status");   
+   mStatusText = gui->resource()->findWidget<MyGUI::StaticText>("status");
 
    mNetwork = (NetworkTask*) mTasklist->get("Network");
    mNetwork->connect();

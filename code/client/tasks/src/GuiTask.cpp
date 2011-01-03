@@ -35,6 +35,11 @@ void GuiTask::init()
 {
 }
 
+MyGUI::Gui* GuiTask::resource()
+{
+   return mGUI;
+}
+
 void GuiTask::shutdown()
 {
    /* Delete MyGUI */
