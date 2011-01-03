@@ -26,6 +26,7 @@
 #include "GuiTask.h"
 
 #include "MenuState.h"
+#include "ConsoleState.h"
 
 namespace Client
 {
@@ -95,6 +96,7 @@ void GameManager::start()
    mRootState = OGRE_NEW RootGameState(&mTasks, mRoot, mViewport);
 
    /* attach game modules to root state */
+   mRootState->add(OGRE_NEW ConsoleState);
    mRootState->add(OGRE_NEW MenuState);
    mStarted = true;
 
@@ -102,10 +104,10 @@ void GameManager::start()
     * lTimeLastFrame remembers the last time that it was checked
     * We use it to calculate the time since last frame
     */
-   unsigned long lTimeLastFrame = 0,
-                 lTimeCurrentFrame = 0,
-                 lTimeSinceLastFrame = 0;
-   unsigned long lDelay = 0;
+   unsigned long timeLastFrame = 0,
+                 timeCurrentFrame = 0,
+                 timeSinceLastFrame = 0,
+                 delay = 0;
 
    mMaxFPS = 60;
    mDelayTime = ceil((float)1000/mMaxFPS);
@@ -119,12 +121,12 @@ void GameManager::start()
        * Calculate time since last frame and remember current time 
        * for next frame 
        */
-      lTimeCurrentFrame = mRoot->getTimer()->getMilliseconds();
-      lTimeSinceLastFrame = lTimeCurrentFrame - lTimeLastFrame;
-      lTimeLastFrame = lTimeCurrentFrame;
+      timeCurrentFrame = mRoot->getTimer()->getMilliseconds();
+      timeSinceLastFrame = timeCurrentFrame - timeLastFrame;
+      timeLastFrame = timeCurrentFrame;
 
-      lDelay += lTimeSinceLastFrame;
-      if (lDelay > mDelayTime)
+      delay += timeSinceLastFrame;
+      if (delay > mDelayTime)
       {
          /* update game system tasks */
          for (taskItr=list->begin(); taskItr != list->end(); taskItr++)
@@ -133,11 +135,11 @@ void GameManager::start()
          }
 
          /* update the current game states */
-         mRootState->update(lTimeSinceLastFrame);
+         mRootState->update(timeSinceLastFrame);
 
          /* render the next frame */
          mRoot->renderOneFrame();
-         lDelay = 0;
+         delay = 0;
       }
       /* Deal with platform specific issues */
       Ogre::WindowEventUtilities::messagePump();

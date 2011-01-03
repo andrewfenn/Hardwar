@@ -177,6 +177,58 @@ void InputTask::update()
    }
 }
 
+const bool InputTask::disable(const std::string& instanceName)
+{
+   if (mDisabled.find(instanceName) != mDisabled.end())
+   {
+      mDisabled[instanceName]++;
+      return true;
+   }
+   return false;
+}
+
+const bool InputTask::enable(const std::string& instanceName)
+{
+   if (mDisabled.find(instanceName) != mDisabled.end())
+   {
+      if (mDisabled[instanceName] > 0)
+      {
+         mDisabled[instanceName]--;
+         return true;
+      }
+   }
+   return false;
+}
+
+void InputTask::disableAll()
+{
+   std::map<std::string, short>::iterator it;
+   for(it = mDisabled.begin(); it != mDisabled.end(); ++it)
+   {
+      it->second++;
+   }
+}
+
+void InputTask::enableAll()
+{
+   std::map<std::string, short>::iterator it;
+   for(it = mDisabled.begin(); it != mDisabled.end(); ++it)
+   {
+      if (it->second > 0)
+         it->second--;
+   }
+}
+
+const bool InputTask::isEnabled(const std::string& instanceName)
+{
+   if (mDisabled.find(instanceName) == mDisabled.end())
+   {
+      throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR, "Error - "+instanceName+" could not be found", "InputTask::isEnabled");
+   }
+
+   return mDisabled[instanceName] == 0;
+}
+
 void InputTask::addKeyListener(OIS::KeyListener *keyListener, 
                                                 const std::string& instanceName)
 {
@@ -187,6 +239,8 @@ void InputTask::addKeyListener(OIS::KeyListener *keyListener,
       if(itKeyListener == mKeyListeners.end())
       {
          mKeyListeners[instanceName] = keyListener;
+         if (mDisabled.find(instanceName) == mDisabled.end())
+            mDisabled[instanceName] = 0;
       }
    }
 }
@@ -201,6 +255,8 @@ void InputTask::addMouseListener(OIS::MouseListener *mouseListener,
       if( itMouseListener == mMouseListeners.end() )
       {
          mMouseListeners[instanceName] = mouseListener;
+         if (mDisabled.find(instanceName) == mDisabled.end())
+            mDisabled[instanceName] = 0;
       }
    }
 }
@@ -215,6 +271,8 @@ void InputTask::addJoystickListener(OIS::JoyStickListener *joystickListener,
       if(itJoystickListener != mJoystickListeners.end())
       {
          mJoystickListeners[ instanceName ] = joystickListener;
+         if (mDisabled.find(instanceName) == mDisabled.end())
+            mDisabled[instanceName] = 0;
       }
    }
 }
@@ -293,6 +351,7 @@ void InputTask::removeAllListeners(void)
    mKeyListeners.clear();
    mMouseListeners.clear();
    mJoystickListeners.clear();
+   mDisabled.clear();
 }
 
 void InputTask::removeAllKeyListeners(void)
@@ -325,11 +384,11 @@ void InputTask::changeFocus(Ogre::RenderWindow* rw)
 {
    if (rw->isFullScreen())
    {
-      // enable mouse locking to window
+      // TODO: enable mouse locking to window for linux
    }
    else
    {
-      // disable mouse locking to window
+      // TODO: disable mouse locking to window for linux
    }
 
    changeSize(rw);
@@ -367,7 +426,8 @@ bool InputTask::keyPressed(const OIS::KeyEvent &e)
    itKeyListenerEnd = mKeyListeners.end();
    for(;itKeyListener != itKeyListenerEnd; ++itKeyListener)
    {
-      itKeyListener->second->keyPressed(e);
+      if (this->isEnabled(itKeyListener->first))
+         itKeyListener->second->keyPressed(e);
    }
    return true;
 }
@@ -378,7 +438,8 @@ bool InputTask::keyReleased(const OIS::KeyEvent &e)
    itKeyListenerEnd = mKeyListeners.end();
    for(; itKeyListener != itKeyListenerEnd; ++itKeyListener)
    {
-      itKeyListener->second->keyReleased(e);
+      if (this->isEnabled(itKeyListener->first))
+         itKeyListener->second->keyReleased(e);
    }
    return true;
 }
@@ -389,7 +450,8 @@ bool InputTask::mouseMoved(const OIS::MouseEvent &e)
    itMouseListenerEnd = mMouseListeners.end();
    for(; itMouseListener != itMouseListenerEnd; ++itMouseListener)
    {
-      itMouseListener->second->mouseMoved(e);
+      if (this->isEnabled(itMouseListener->first))
+         itMouseListener->second->mouseMoved(e);
    }
    return true;
 }
@@ -400,7 +462,8 @@ bool InputTask::mousePressed(const OIS::MouseEvent &e,OIS::MouseButtonID id)
    itMouseListenerEnd = mMouseListeners.end();
    for(; itMouseListener != itMouseListenerEnd; ++itMouseListener)
    {
-      itMouseListener->second->mousePressed(e, id);
+      if (this->isEnabled(itMouseListener->first))
+         itMouseListener->second->mousePressed(e, id);
    }
    return true;
 }
@@ -411,7 +474,8 @@ bool InputTask::mouseReleased(const OIS::MouseEvent &e,OIS::MouseButtonID id)
    itMouseListenerEnd = mMouseListeners.end();
    for(; itMouseListener != itMouseListenerEnd;++itMouseListener)
    {
-      itMouseListener->second->mouseReleased(e, id);
+      if (this->isEnabled(itMouseListener->first))
+         itMouseListener->second->mouseReleased(e, id);
    }
    return true;
 }
@@ -422,7 +486,8 @@ bool InputTask::povMoved(const OIS::JoyStickEvent &e, int pov)
    itJoystickListenerEnd = mJoystickListeners.end();
    for(; itJoystickListener != itJoystickListenerEnd; ++itJoystickListener)
    {
-      itJoystickListener->second->povMoved(e, pov);
+      if (this->isEnabled(itJoystickListener->first))
+         itJoystickListener->second->povMoved(e, pov);
    }
    return true;
 }
@@ -433,7 +498,8 @@ bool InputTask::axisMoved( const OIS::JoyStickEvent &e, int axis )
    itJoystickListenerEnd = mJoystickListeners.end();
    for(; itJoystickListener != itJoystickListenerEnd; ++itJoystickListener)
    {
-      itJoystickListener->second->axisMoved(e, axis);
+      if (this->isEnabled(itJoystickListener->first))
+         itJoystickListener->second->axisMoved(e, axis);
    }
    return true;
 }
@@ -444,7 +510,8 @@ bool InputTask::sliderMoved( const OIS::JoyStickEvent &e, int sliderID )
    itJoystickListenerEnd = mJoystickListeners.end();
    for(; itJoystickListener != itJoystickListenerEnd; ++itJoystickListener)
    {
-      itJoystickListener->second->sliderMoved(e, sliderID);
+      if (this->isEnabled(itJoystickListener->first))
+         itJoystickListener->second->sliderMoved(e, sliderID);
    }
    return true;
 }
@@ -455,7 +522,8 @@ bool InputTask::buttonPressed(const OIS::JoyStickEvent &e, int button)
    itJoystickListenerEnd = mJoystickListeners.end();
    for(; itJoystickListener != itJoystickListenerEnd; ++itJoystickListener)
    {
-      itJoystickListener->second->buttonPressed(e, button);
+      if (this->isEnabled(itJoystickListener->first))
+         itJoystickListener->second->buttonPressed(e, button);
    }
    return true;
 }
@@ -466,7 +534,8 @@ bool InputTask::buttonReleased(const OIS::JoyStickEvent &e, int button)
    itJoystickListenerEnd = mJoystickListeners.end();
    for(; itJoystickListener != itJoystickListenerEnd; ++itJoystickListener)
    {
-      itJoystickListener->second->buttonReleased(e, button);
+      if (this->isEnabled(itJoystickListener->first))
+         itJoystickListener->second->buttonReleased(e, button);
    }
    return true;
 }

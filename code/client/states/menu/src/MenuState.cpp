@@ -94,31 +94,31 @@ void MenuState::enter()
    mCamera->setNearClipDistance( 0.2f );
 }
 
-void MenuState::update(const unsigned long lTimeElapsed )
+void MenuState::update(const unsigned long timeElapsed )
 {
    if (mStarted)
    {
       // skip first frame to get accurate elapsed time
-      mFade->fade(lTimeElapsed);
+      mFade->fade(timeElapsed);
    }
    
-   if (lTimeElapsed < 10)
+   if (timeElapsed < 10)
       mStarted = true;
    
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
    float scale = 0.9f;
 
    if (mKeydownUp == 1)
-     translateVector.z -= scale*lTimeElapsed;
+     translateVector.z -= scale*timeElapsed;
 
    if (mKeydownDown == 1)
-     translateVector.z += scale*lTimeElapsed;
+     translateVector.z += scale*timeElapsed;
 
    if (mKeydownLeft == 1)
-     translateVector.x -= scale*lTimeElapsed;
+     translateVector.x -= scale*timeElapsed;
 
    if (mKeydownRight == 1)
-     translateVector.x += scale*lTimeElapsed;
+     translateVector.x += scale*timeElapsed;
 
    mCamera->yaw(mMouseRotX);
    mCamera->pitch(mMouseRotY);    

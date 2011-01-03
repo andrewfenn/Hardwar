@@ -36,7 +36,7 @@ public:
     MenuState();
     ~MenuState();
     void enter();
-    void update(const unsigned long lTimeElapsed);
+    void update(const unsigned long timeElapsed);
     bool keyPressed(const OIS::KeyEvent &e);
     bool keyReleased(const OIS::KeyEvent &e);
 

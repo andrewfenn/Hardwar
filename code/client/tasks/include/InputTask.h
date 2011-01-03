@@ -39,6 +39,15 @@ public:
     void changeSize(Ogre::RenderWindow*);
     void changeFocus(Ogre::RenderWindow*);
 
+    /** Disables access to an input listener. When set the instance won't recieve
+    keypresses, mouse events, etc. */
+    const bool disable(const std::string& instanceName);
+    /** Enables access to an input listerner */
+    const bool enable(const std::string& instanceName);
+    void disableAll();
+    void enableAll();
+    const bool isEnabled(const std::string& instanceName);
+
     void addKeyListener(OIS::KeyListener *keyListener, const std::string& instanceName);
     void addMouseListener(OIS::MouseListener *mouseListener, const std::string& instanceName);
     void addJoystickListener(OIS::JoyStickListener *joystickListener, const std::string& instanceName);
@@ -67,6 +76,8 @@ private:
     OIS::InputManager *mInputSystem;
     OIS::Mouse        *mMouse;
     OIS::Keyboard     *mKeyboard;
+
+    std::map<std::string, short> mDisabled;
 
     std::vector<OIS::JoyStick*> mJoysticks;
     std::vector<OIS::JoyStick*>::iterator itJoystick;

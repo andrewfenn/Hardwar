@@ -17,9 +17,6 @@
 */
 
 #include "RootGameState.h"
-#include "InputTask.h"
-#include "GuiTask.h"
-#include <MyGUI.h>
 
 using namespace Client;
 
@@ -31,23 +28,15 @@ RootGameState::RootGameState(GameTaskList* gametasks, Ogre::Root* root, Ogre::Vi
    mCamera   = mSceneMgr->getCamera("GameCamera");
    mViewport = viewport;
    mShutdown = false;
-
-   // register input listener for console
-   InputTask* input = (InputTask*) mTasklist->get("Input");
-   input->addKeyListener(this, this->getName());
-   input->addMouseListener(this, this->getName());
 }
 
 RootGameState::~RootGameState()
 {
-   InputTask* input = (InputTask*) mTasklist->get("Input");
-   input->removeKeyListener(this->getName());
-   input->removeMouseListener(this->getName());
 }
 
-void RootGameState::update(unsigned long lTimeElapsed)
+void RootGameState::update(unsigned long timeElapsed)
 {
-   this->updateAllChildren(lTimeElapsed);
+   this->updateAllChildren(timeElapsed);
 }
 
 const bool RootGameState::shouldExit()
@@ -59,36 +48,4 @@ void RootGameState::shutdown()
 {
    this->removeAllChildren();
    mShutdown = true;
-}
-
-bool RootGameState::keyPressed(const OIS::KeyEvent &e)
-{
-   return true;
-}
-
-bool RootGameState::keyReleased(const OIS::KeyEvent &e)
-{
-   if (e.key == OIS::KC_GRAVE)
-   {
-/*      GuiTask* gui = (GuiTask*) mTasklist->get("Gui");
-      gui->mGUI->setVisiblePointer(!gui->mGUI->isVisiblePointer());*/
-      mRoot->getAutoCreatedWindow()->writeContentsToTimestampedFile("./screenshots/",".png");
-   }
-   return true;
-}
-
-bool RootGameState::mouseMoved(const OIS::MouseEvent &e)
-{
-   ((GuiTask*) mTasklist->get("Gui"))->resource()->injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
-   return true;
-}
-
-bool RootGameState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ 
-   return true;
-}
-
-bool RootGameState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ 
-   return true;
 }

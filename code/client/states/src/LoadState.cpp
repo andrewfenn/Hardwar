@@ -57,10 +57,10 @@ void LoadState::exit()
    MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
 }
 
-void LoadState::update( unsigned long lTimeElapsed )
+void LoadState::update( unsigned long timeElapsed )
 {
-   mGUICounter += lTimeElapsed;
-   mCounter += lTimeElapsed;
+   mGUICounter += timeElapsed;
+   mCounter += timeElapsed;
 
    this->updateLoadbar();
 

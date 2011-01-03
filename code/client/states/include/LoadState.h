@@ -41,7 +41,7 @@ public:
     void enter();
     void exit();
 
-    void update(unsigned long lTimeElapsed);
+    void update(unsigned long timeElapsed);
     bool keyPressed(const OIS::KeyEvent &e);
     bool keyReleased(const OIS::KeyEvent &e);
 

@@ -57,22 +57,22 @@ void PlayState::exit()
    ((NetworkTask*)mTasklist->get("Network"))->stopThread();
 }
 
-void PlayState::update(unsigned long lTimeElapsed)
+void PlayState::update(unsigned long timeElapsed)
 {
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
    float scale = 0.9f;
 
    if (mKeydownUp == 1)
-     translateVector.z -= scale*lTimeElapsed;
+     translateVector.z -= scale*timeElapsed;
 
    if (mKeydownDown == 1)
-     translateVector.z += scale*lTimeElapsed;
+     translateVector.z += scale*timeElapsed;
 
    if (mKeydownLeft == 1)
-     translateVector.x -= scale*lTimeElapsed;
+     translateVector.x -= scale*timeElapsed;
 
    if (mKeydownRight == 1)
-     translateVector.x += scale*lTimeElapsed;
+     translateVector.x += scale*timeElapsed;
 
    mCamera->yaw(mMouseRotX);
    mCamera->pitch(mMouseRotY);    
