@@ -45,6 +45,10 @@ class GameRoot : public Ogre::WindowEventListener
 
       bool loadPlugin(const Ogre::String);
       bool loadPlugins();
+      /** Check if the game is already running.
+      @return bool true if not running, false if another process has already started. */
+      bool isLocked();
+      void setLocked(bool locked);
       bool configureGame();
       void setupResources();
 };

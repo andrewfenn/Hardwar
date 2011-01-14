@@ -19,6 +19,14 @@
 
 #include "GameRoot.h"
 
+#include <fstream>
+#include <stdio.h>
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+   #include <sys/types.h>
+   #include <unistd.h>
+#endif
+
 namespace Client
 {
 
@@ -61,6 +69,71 @@ bool GameRoot::loadPlugin(const Ogre::String dir)
       return false;
    }
    return true;
+}
+
+bool GameRoot::isLocked()
+{
+   #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+      std::fstream runfile;
+      char* buf;
+      int len, pid;
+      runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
+
+      // No file, game not running
+      if (!runfile.is_open())
+         return false;
+         
+      runfile.seekg (0, std::ios::end);
+      len = runfile.tellg();
+      runfile.seekg (0, std::ios::beg);
+
+      if (len > 20)
+      {
+         // should only store a number         
+         runfile.close();
+         return true;
+      }
+      buf = OGRE_NEW char[len];
+      runfile.read(buf,len);
+      runfile.close();
+
+      pid = atoi(buf);
+
+      OGRE_DELETE buf;
+      buf = 0;
+
+      if (pid < 1)
+         return false;
+
+      Ogre::String proc = "/proc/"+Ogre::StringConverter::toString(pid)+"/status";
+      runfile.open(proc.c_str(), std::fstream::in);
+
+      // No file, game not running
+      if (!runfile.is_open())
+         return false;
+         
+      runfile.close();
+      return true;
+   #endif
+
+   return false;
+}
+
+void GameRoot::setLocked(bool locked)
+{
+   #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+      std::fstream runfile;
+      std::string buf;
+
+      remove("/var/lock/hardwar");
+      if (locked)
+      {
+         buf = Ogre::String(Ogre::StringConverter::toString(getpid()));
+         runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
+         runfile.write(buf.c_str(),buf.size());
+         runfile.close();
+      }
+   #endif
 }
 
 bool GameRoot::loadPlugins()
@@ -148,6 +221,11 @@ bool GameRoot::loadPlugins()
 
 void GameRoot::init()
 {
+   if (this->isLocked())
+      return;
+
+   this->setLocked(true);
+
    if (!this->loadPlugins())
       return;
 
@@ -155,6 +233,7 @@ void GameRoot::init()
    this->configureGame();
    mGameMgr = OGRE_NEW GameManager(mRoot);
    mGameMgr->start();
+   this->setLocked(false);
 }
 
 bool GameRoot::configureGame()
