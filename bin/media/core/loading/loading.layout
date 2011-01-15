@@ -1,45 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout">
-    <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1.19922 1" align="Left Top" layer="Back">
-        <Property key="Image_Texture" value="load.zworks.png"/>
-        <Property key="Widget_Visible" value="true"/>
-        <Widget type="StaticImage" skin="StaticImage" position_real="0 0.796424 0.833062 0.208074" align="Left Bottom" layer="Back">
-            <Property key="Image_Texture" value="load_bkg_hint.zworks.png"/>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position_real="0.279316 0.339752 0.281759 0.167813" align="Center" layer="Back">
-            <Property key="Image_Texture" value="load_bkg_status.zworks.png"/>
-            <Widget type="StaticText" skin="StaticText" position_real="0.0375723 0.122951 0.933526 0.401639" layer="Back" name="status">
-                <Property key="Widget_InheritsAlpha" value="true"/>
-                <Property key="Widget_Alpha" value="100"/>
-                <Property key="Text_TextColour" value="0.13 0.709803922 0.450980392 1"/>
-                <Property key="Text_TextAlign" value="Center"/>
-                <Property key="Text_FontName" value="DejaVuSans.17"/>
-                <Property key="Text_FontHeight" value="25"/>
-            </Widget>
-            <Widget type="StaticImage" skin="StaticImage" position_real="0.115607 0.655738 0.0867052 0.245902" layer="Back" name="dot1">
-                <Property key="Image_Name" value="dot1"/>
-                <Property key="Image_Texture" value="dot.zworks.png"/>
-                <Property key="Widget_Alpha" value="0.25"/>
-                <Property key="Widget_InheritsAlpha" value="true"/>
-            </Widget>
-            <Widget type="StaticImage" skin="StaticImage" position_real="0.751445 0.655738 0.0867052 0.245902" layer="Back" name="dot3">
-                <Property key="Image_Name" value="dot3"/>
-                <Property key="Image_Texture" value="dot.zworks.png"/>
-                <Property key="Widget_InheritsAlpha" value="true"/>
-                <Property key="Widget_Alpha" value="0.25"/>
-            </Widget>
-            <Widget type="StaticImage" skin="StaticImage" position_real="0.433526 0.631148 0.101156 0.286885" layer="Back" name="dot2">
-                <Property key="Image_Name" value="dot2"/>
-                <Property key="Image_Texture" value="dot.zworks.png"/>
-                <Property key="Widget_InheritsAlpha" value="true"/>
-                <Property key="Widget_Alpha" value="0.25"/>
-            </Widget>
-        </Widget>
-        <Widget type="StaticImage" skin="StaticImage" position_real="-0.0325733 -0.0178817 1.05375 0.134801" layer="Back">
-            <Property key="Image_Texture" value="black.png"/>
-            <Widget type="StaticImage" skin="StaticImage" position_real="0.677743 0.530612 0.11592 0.295918" layer="Back">
-                <Property key="Image_Texture" value="hwlogo.zworks.png"/>
-            </Widget>
-        </Widget>
-    </Widget>
+     <Widget type="StaticImage" skin="StaticImage" position_real="0 0.796424 1.0 0.208074" align="Left Bottom" layer="Back">
+         <Property key="Image_Texture" value="load_bkg_hint.zworks.png"/>
+     </Widget>
+     <Widget type="StaticImage" skin="StaticImage" position_real="0.375723 0.3 0.29 0.17" align="Center" layer="Back">
+         <Property key="Image_Texture" value="load_bkg_status.zworks.png"/>
+         <Widget type="StaticText" skin="StaticText" position_real="0.0375723 0.122951 0.933526 0.401639" layer="Back" name="status">
+             <Property key="Widget_InheritsAlpha" value="true"/>
+             <Property key="Widget_Alpha" value="100"/>
+             <Property key="Text_TextColour" value="0.13 0.709803922 0.450980392 1"/>
+             <Property key="Text_TextAlign" value="Center"/>
+             <Property key="Text_FontName" value="Default"/>
+             <Property key="Text_FontHeight" value="24"/>
+         </Widget>
+     </Widget>
+     <Widget type="StaticImage" skin="StaticImage" position_real="0 0 1.0 0.134801" layer="Back">
+         <Property key="Image_Texture" value="black.png"/>
+         <Widget type="StaticImage" skin="StaticImage" position_real="0.677743 0.530612 0.11592 0.295918" layer="Back">
+             <Property key="Image_Texture" value="hwlogo.zworks.png"/>
+         </Widget>
+     </Widget>
 </MyGUI>

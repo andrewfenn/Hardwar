@@ -71,7 +71,7 @@ public:
    void updateAllChildren(unsigned long timeElapsed);
 protected:
    bool mPaused;
-   bool markedRemoved;
+   bool mMarkedRemoved;
    GameState* mParent;
    GameStateList mChildren;
    Ogre::String mName;

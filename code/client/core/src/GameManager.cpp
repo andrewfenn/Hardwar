@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2008-2010  Andrew Fenn
+    Copyright © 2008-2011  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -98,28 +98,26 @@ void GameManager::preloadResources()
       {
          sType = itSetting->first;
          sArch = itSetting->second;
-         mRoot->addResourceLocation(sArch, sType, sSection, true);
+         mRoot->addResourceLocation(sArch, sType, sSection);
          ++itSetting;
       }
    }
+   
+    /* Initialise resources */
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
 
 void GameManager::start()
 {
+   /* preload the resources that we're going to use before showing anything */
+   this->preloadResources();
+   
    mRenderWindow = mRoot->getAutoCreatedWindow();
    mSceneMgr     = mRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
    mCamera       = mSceneMgr->createCamera("GameCamera");
    mViewport     = mRenderWindow->addViewport(mCamera, 1);
    mCamera->setAspectRatio(Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
-
-   /* Render one frame to get a blank screen rather then corrupt graphics */
-   Ogre::WindowEventUtilities::messagePump();
-   mSceneMgr->clearScene();
-   mRoot->renderOneFrame();
-
-   /* preload the resources that we're going to use before showing anything */
-   this->preloadResources();
 
    /* setup system tasks */
    mTasks.add("Input", OGRE_NEW InputTask);

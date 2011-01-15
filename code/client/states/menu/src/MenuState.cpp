@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2010  Andrew Fenn
+    Copyright © 2010-2011  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -94,6 +94,8 @@ void MenuState::enter()
 
    mCamera->setPosition(Ogre::Vector3(0, 0, 0));
    mCamera->setNearClipDistance( 0.2f );
+
+   mCount = 0;
 }
 
 void MenuState::update(const unsigned long timeElapsed )
@@ -107,19 +109,16 @@ void MenuState::update(const unsigned long timeElapsed )
    if (timeElapsed < 10)
    {
       mStarted = true;
-      mCount = 0;
    }
 
    if (mStarted && mFade->finished())
    {
       mCount += 1;
-      std::cout << mCount << std::endl;
-      if (mCount > 60*5)
+      if (mCount > 60*1)
       {
          this->replace(OGRE_NEW LoadState());
       }
    }
-
 
    return;
 
@@ -144,7 +143,6 @@ void MenuState::update(const unsigned long timeElapsed )
    mCamera->setPosition(mCamera->getPosition()+translateVector);
 
    mMouseRotX = mMouseRotY = 0;
-   
 }
 
 bool MenuState::keyPressed(const OIS::KeyEvent &e)
@@ -160,6 +158,7 @@ bool MenuState::keyPressed(const OIS::KeyEvent &e)
 
    if (e.key == OIS::KC_D)
       mKeydownRight = 1; 
+
    return true;
 }
 

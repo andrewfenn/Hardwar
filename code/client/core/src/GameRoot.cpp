@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2010  Andrew Fenn
+    Copyright © 2010-2011  Andrew Fenn
     
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -73,6 +73,7 @@ bool GameRoot::loadPlugin(const Ogre::String dir)
 
 bool GameRoot::isLocked()
 {
+   /* FIXME: Add Windows and OSX implementation */
    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
       std::fstream runfile;
       char* buf;
@@ -121,6 +122,7 @@ bool GameRoot::isLocked()
 
 void GameRoot::setLocked(bool locked)
 {
+   /* FIXME: Add Windows and OSX implementation */
    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
       std::fstream runfile;
       std::string buf;
@@ -251,9 +253,6 @@ bool GameRoot::configureGame()
     /* Initialise and create a default rendering window */
     mRenderWindow = mRoot->initialise( true, "Hardwar" );
     Ogre::WindowEventUtilities::addWindowEventListener(mRenderWindow, this);
-
-    /* Initialise resources */
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     return true;
 }

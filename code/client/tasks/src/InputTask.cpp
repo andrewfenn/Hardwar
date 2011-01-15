@@ -279,6 +279,7 @@ void InputTask::addJoystickListener(OIS::JoyStickListener *joystickListener,
 
 void InputTask::removeKeyListener(const std::string& instanceName)
 {
+   std::cout << instanceName << std::endl;
    itKeyListener = mKeyListeners.find(instanceName);
    if(itKeyListener != mKeyListeners.end())
    {
@@ -436,7 +437,7 @@ bool InputTask::keyReleased(const OIS::KeyEvent &e)
 {
    itKeyListener    = mKeyListeners.begin();
    itKeyListenerEnd = mKeyListeners.end();
-   for(; itKeyListener != itKeyListenerEnd; ++itKeyListener)
+   for(;itKeyListener != itKeyListenerEnd; ++itKeyListener)
    {
       if (this->isEnabled(itKeyListener->first))
          itKeyListener->second->keyReleased(e);
