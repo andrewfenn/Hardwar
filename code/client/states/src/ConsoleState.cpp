@@ -248,9 +248,12 @@ void ConsoleState::update(unsigned long timeElapsed)
 
 bool ConsoleState::keyPressed(const OIS::KeyEvent &e)
 {
-   if (this->isVisible())
+   if (e.key != OIS::KC_GRAVE)
    {
-      ((GuiTask*) mTasklist->get("Gui"))->resource()->injectKeyPress(MyGUI::KeyCode::Enum(e.key), e.text);
+      if (this->isVisible())
+      {
+         ((GuiTask*) mTasklist->get("Gui"))->resource()->injectKeyPress(MyGUI::KeyCode::Enum(e.key), e.text);
+      }
    }
    return true;
 }
