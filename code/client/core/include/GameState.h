@@ -31,27 +31,47 @@ class GameState
 public:
    GameState(const Ogre::String&);
    virtual void enter() {}
-   virtual void update(unsigned long lTimeElapsed);
+   virtual void update(unsigned long timeElapsed);
 
    /** Internal only method for setting up the data in the state propperly */
    void setParent(GameState*, GameTaskList*, Ogre::Root*, Ogre::Viewport*);
-
+   /** Gets the name of the current gamestate */
    const Ogre::String getName();
+   /** Gets the parent gamestate */
    void* getParent();
    void shutdown();
-
+   /** Adds a gamestate to another gamestate's child list */
    void* add(GameState*);
+   /** retrieves a gamestate based upon it's name. */
    void* get(const Ogre::String&);
+   /** Replaces the current gamestate with a different one. */
    void replace(GameState*);
+   /** Checks to see if any chilren exist in the list with the defined name
+   given. */
    bool has(const Ogre::String&);
+   /** Checks to see if any chilren exist in the list with the defined gamestate
+   given. */
    bool has(GameState&);
+   /** Removes a child from the parents game state list */
    void remove(const Ogre::String&);
+   /** For times when you wish to remove the instance you are in. Will remove
+   the state from its parent upon the next update assuming you are calling
+   updateInternals in your update function */
+   void markRemoval();
+   /** Used to remove all children being held by the parent */
    void removeAllChildren();
-   void updateAllChildren(unsigned long lTimeElapsed);
+   /** Prevents the child and it's children from running however maybe
+   overrided by the gamestate that does not respect the mPaused variable */
    void pause();
+   /** Allows the child and it's children to update again. */
    void resume();
+   /** Used by parent to determine if the child wishes to be removed */
+   bool shouldRemove();
+   /** Updates all children set to this gamestate */
+   void updateAllChildren(unsigned long timeElapsed);
 protected:
    bool mPaused;
+   bool markedRemoved;
    GameState* mParent;
    GameStateList mChildren;
    Ogre::String mName;

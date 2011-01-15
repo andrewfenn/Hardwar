@@ -56,8 +56,6 @@ namespace Server
          void setPeer(ENetPeer*);
          /** Sends a packet of data to the client */
          bool send(dataPacket data, const enet_uint8 channel, const enet_uint32 priority);
-         /** Add more buildings to send to the client */
-         void addBuildings(Hardwar::Buildings list);
          bool isAdmin();
          Admin* getAdmin();
       private:

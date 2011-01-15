@@ -78,6 +78,33 @@ void GameManager::windowChangedFocus(Ogre::RenderWindow* rw)
    }
 }
 
+void GameManager::preloadResources()
+{
+   /* Load resource paths from config file */
+   Ogre::ConfigFile cf;
+   cf.load("resources.cfg");
+
+   /* go through all settings in the file */
+   Ogre::ConfigFile::SectionIterator itSection = cf.getSectionIterator();
+
+   Ogre::String sSection, sType, sArch;
+   while(itSection.hasMoreElements())
+   {
+      sSection = itSection.peekNextKey();
+
+      Ogre::ConfigFile::SettingsMultiMap *mapSettings = itSection.getNext();
+      Ogre::ConfigFile::SettingsMultiMap::iterator itSetting = mapSettings->begin();
+      while(itSetting != mapSettings->end())
+      {
+         sType = itSetting->first;
+         sArch = itSetting->second;
+         mRoot->addResourceLocation(sArch, sType, sSection, true);
+         ++itSetting;
+      }
+   }
+}
+
+
 void GameManager::start()
 {
    mRenderWindow = mRoot->getAutoCreatedWindow();
@@ -85,6 +112,14 @@ void GameManager::start()
    mCamera       = mSceneMgr->createCamera("GameCamera");
    mViewport     = mRenderWindow->addViewport(mCamera, 1);
    mCamera->setAspectRatio(Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
+
+   /* Render one frame to get a blank screen rather then corrupt graphics */
+   Ogre::WindowEventUtilities::messagePump();
+   mSceneMgr->clearScene();
+   mRoot->renderOneFrame();
+
+   /* preload the resources that we're going to use before showing anything */
+   this->preloadResources();
 
    /* setup system tasks */
    mTasks.add("Input", OGRE_NEW InputTask);

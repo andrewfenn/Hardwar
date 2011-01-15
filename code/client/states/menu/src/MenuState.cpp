@@ -16,10 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <MyGUI.h>
+
 #include "MenuState.h"
+#include "LoadState.h"
 #include "InputTask.h"
 #include "GuiTask.h"
-#include <MyGUI.h>
 
 using namespace Client;
 
@@ -103,8 +105,24 @@ void MenuState::update(const unsigned long timeElapsed )
    }
    
    if (timeElapsed < 10)
+   {
       mStarted = true;
-   
+      mCount = 0;
+   }
+
+   if (mStarted && mFade->finished())
+   {
+      mCount += 1;
+      std::cout << mCount << std::endl;
+      if (mCount > 60*5)
+      {
+         this->replace(OGRE_NEW LoadState());
+      }
+   }
+
+
+   return;
+
    Ogre::Vector3 translateVector = Ogre::Vector3::ZERO;
    float scale = 0.9f;
 

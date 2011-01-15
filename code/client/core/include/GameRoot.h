@@ -50,7 +50,6 @@ class GameRoot : public Ogre::WindowEventListener
       bool isLocked();
       void setLocked(bool locked);
       bool configureGame();
-      void setupResources();
 };
 }
 

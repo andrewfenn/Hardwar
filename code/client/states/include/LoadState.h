@@ -19,7 +19,8 @@
 #pragma once
 
 #include <MyGUI.h>
-#include <OIS.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
 #include "GameState.h"
 #include "NetworkTask.h"
 #include "ZoneTask.h"
@@ -32,14 +33,13 @@ namespace Client
         This class deals with animation of the loading screen, starting up a
         thread from Client::Network and connecting to the server.
     */
-class LoadState : public GameState
+class LoadState : public GameState, OIS::KeyListener, OIS::MouseListener
 {
 public:
     LoadState() : GameState("loadstate") {}
     ~LoadState();
 
     void enter();
-    void exit();
 
     void update(unsigned long timeElapsed);
     bool keyPressed(const OIS::KeyEvent &e);

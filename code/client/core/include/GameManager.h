@@ -44,6 +44,7 @@ class GameManager
       void shutdown();
 
    private:
+      void preloadResources();
       Ogre::Root           *mRoot;
       Ogre::RenderWindow   *mRenderWindow;
       Ogre::Camera         *mCamera;

@@ -71,6 +71,13 @@ void Fader::startFadeOut(double duration )
   _overlay->show();
 }
 
+bool Fader::finished()
+{
+   if (_fadeop == FADE_NONE)
+      return true;
+   return false;
+}
+
 void Fader::fade(const double timeSinceLastFrame)
 {
   if( _fadeop != FADE_NONE && _tex_unit )

@@ -25,19 +25,22 @@
 #include "hwstructs.h"
 #include "PlayState.h"
 #include "GuiTask.h"
+#include "InputTask.h"
 
 using namespace Client;
 
 void LoadState::enter()
 {
-   mSceneMgr->clearScene();
-
    GuiTask* gui = (GuiTask*) mTasklist->get("Gui");
    gui->resource()->setVisiblePointer(false);
    /* Get MyGUI loading layout */
    mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
 
    mStatusText = gui->resource()->findWidget<MyGUI::StaticText>("status");
+
+   InputTask* input = (InputTask*) mTasklist->get("Input");
+   input->addKeyListener(this, this->getName());
+   input->addMouseListener(this, this->getName());
 
    mNetwork = (NetworkTask*) mTasklist->get("Network");
    mNetwork->connect();
@@ -51,14 +54,18 @@ void LoadState::enter()
 }
 
 /* Destory everything we created when entering */
-void LoadState::exit()
+LoadState::~LoadState()
 {
    /* Delete what we loaded */
    MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
+   InputTask* input = (InputTask*) mTasklist->get("Input");
+   input->removeKeyListener(this->getName());
+   input->removeMouseListener(this->getName());
 }
 
 void LoadState::update( unsigned long timeElapsed )
 {
+   dataPacket packet;
    mGUICounter += timeElapsed;
    mCounter += timeElapsed;
 
@@ -79,31 +86,29 @@ void LoadState::update( unsigned long timeElapsed )
          mStatusText->setCaption(gettext("Loading"));
       break;
       case status_filecheck:
+         mStatusText->setCaption(gettext("Checking Files"));
+         if (mLevel->getTotal() == 0)
          {
-            if (mLevel->getTotal() == 0)
-            {
-               mLevel->init();
-               mLevel->create(0, "../media/hardwar/non-free/world.scene");
+            mLevel->init();
+            mLevel->create(0, "../media/hardwar/non-free/world.scene");
 
-               dataPacket packet = dataPacket(accepted);
-               mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-            }
+            packet = dataPacket(accepted);
+            mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
          }
       break;
       case status_downloading:
+         if (!mDownloads)
          {
-            if (!mDownloads)
-            {
-               dataPacket packet = dataPacket(get_building_list);
-               mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-               mDownloads = true;
-            }
+            mStatusText->setCaption(gettext("Downloading Files"));
+            packet = dataPacket(accepted);
+            mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
+            mDownloads = true;
          }
       break;
       case status_ingame:
-         {
-            this->replace(OGRE_NEW PlayState());
-         }
+
+         this->replace(OGRE_NEW PlayState());
+
       break;
       case status_disconnected:
          /* the connection has failed */

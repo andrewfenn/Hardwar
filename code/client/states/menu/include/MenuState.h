@@ -47,6 +47,7 @@ public:
 private:
    Helper::Fader* mFade;
    bool mStarted;
+   long mCount;
    
    Ogre::Degree            mMouseRotX, mMouseRotY;
    int                     mKeydownUp, mKeydownDown, 

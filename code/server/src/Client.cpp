@@ -58,14 +58,6 @@ void Client::setPeer(ENetPeer* lpeer)
    mPeer = lpeer;
 }
 
-void Client::addBuildings(Hardwar::Buildings list)
-{
-   for (Hardwar::Buildings::iterator building=list.begin(); building != list.end(); building++)
-   {
-      mBuildings.insert(std::pair<unsigned int,Hardwar::Building>(building->first, building->second));
-   }
-}
-
 Message Client::getMessages(void)
 {
    Message lMessages;
@@ -160,16 +152,8 @@ void Client::processDownloading()
    for (Message::iterator lEventItr=lMessages.begin(); lEventItr != lMessages.end(); lEventItr++)
    {
       lReceivedPacket = dataPacket((*lEventItr).second.packet->data, (*lEventItr).second.packet->dataLength);
-      if (lReceivedPacket.getMessage() == get_building_list && !requested)
+      if (lReceivedPacket.getMessage() == accepted)
       {
-         requested = true;
-
-         for (Hardwar::Buildings::iterator building=mBuildings.begin(); building != mBuildings.end(); building++)
-         {
-            lResponsePacket = dataPacket(add_building);
-            lResponsePacket = building->second.serialize(lResponsePacket);
-            send(lResponsePacket, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-         }
          changeStatus(status_ingame);
       }
       /* destory the packet */

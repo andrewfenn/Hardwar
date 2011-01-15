@@ -27,6 +27,7 @@ GameState::GameState(const Ogre::String& name)
    mName = name;
    mPaused = false;
    mParent = 0;
+   markedRemoved = false;
 }
 
 void GameState::setParent(GameState* parent, GameTaskList* gametasks, 
@@ -85,7 +86,17 @@ void* GameState::get(const Ogre::String& name)
 void GameState::replace(GameState* state)
 {
    mParent->add(state);
-   mParent->remove(this->getName());
+   this->markRemoval();
+}
+
+void GameState::markRemoval()
+{
+   markedRemoved = true;
+}
+
+bool GameState::shouldRemove()
+{
+   return markedRemoved;
 }
 
 bool GameState::has(const Ogre::String& name)
@@ -123,12 +134,17 @@ void GameState::removeAllChildren()
    }
 }
 
-void GameState::updateAllChildren(unsigned long lTimeElapsed)
+void GameState::updateAllChildren(unsigned long timeElapsed)
 {
    GameStateList::iterator i;
    for (i = mChildren.begin(); i != mChildren.end(); i++)
    {
-      i->second->update(lTimeElapsed);
+      if (i->second->shouldRemove())
+      {
+         this->remove(i->second->getName());
+      } else {
+         i->second->update(timeElapsed);
+      }
    }
 }
 
@@ -142,13 +158,10 @@ void GameState::resume()
    mPaused = false;
 }
 
-void GameState::update(unsigned long lTimeElapsed)
+void GameState::update(unsigned long timeElapsed)
 {
    if (mPaused)
       return;
 
-   for (GameStateList::iterator i=mChildren.begin(); i != mChildren.end(); i++)
-   {
-      i->second->update(lTimeElapsed);
-   }
+   this->updateAllChildren(timeElapsed);
 }

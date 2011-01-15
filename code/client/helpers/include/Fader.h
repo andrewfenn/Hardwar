@@ -43,6 +43,7 @@ public:
   void startFadeIn(double duration = 1.0f);
   void startFadeOut(double duration = 1.0f);
   void fade(const double timeSinceLastFrame);
+  bool finished();
 
 protected:
   double _alpha;

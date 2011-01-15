@@ -229,7 +229,6 @@ void GameRoot::init()
    if (!this->loadPlugins())
       return;
 
-   this->setupResources();
    this->configureGame();
    mGameMgr = OGRE_NEW GameManager(mRoot);
    mGameMgr->start();
@@ -257,32 +256,6 @@ bool GameRoot::configureGame()
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     return true;
-}
-
-void GameRoot::setupResources()
-{
-   /* Load resource paths from config file */
-   Ogre::ConfigFile cf;
-   cf.load("resources.cfg");
-
-   /* go through all settings in the file */
-   Ogre::ConfigFile::SectionIterator itSection = cf.getSectionIterator();
-
-   Ogre::String sSection, sType, sArch;
-   while(itSection.hasMoreElements())
-   {
-      sSection = itSection.peekNextKey();
-
-      Ogre::ConfigFile::SettingsMultiMap *mapSettings = itSection.getNext();
-      Ogre::ConfigFile::SettingsMultiMap::iterator itSetting = mapSettings->begin();
-      while(itSetting != mapSettings->end())
-      {
-         sType = itSetting->first;
-         sArch = itSetting->second;
-         Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sArch, sType, sSection);
-         ++itSetting;
-      }
-   }
 }
 
 void GameRoot::windowResized(Ogre::RenderWindow *rw)

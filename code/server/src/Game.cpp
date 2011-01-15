@@ -44,10 +44,6 @@ void Game::addClient(ENetPeer* peer)
 {
    mClientMgr.add(peer);
    Client* client = mClientMgr.get(peer);
-   if (client)
-   {
-     client->addBuildings(mZoneMgr.getAllBuildings());
-   }
 }
 
 void Game::removeClient(ENetPeer* peer)
