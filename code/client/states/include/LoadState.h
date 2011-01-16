@@ -23,7 +23,7 @@
 #include <OISMouse.h>
 #include "GameState.h"
 #include "NetworkTask.h"
-#include "ZoneTask.h"
+
 
 namespace Client
 {
@@ -53,7 +53,6 @@ private:
     clientStatus mLoadStatus;
 
     NetworkTask* mNetwork;
-    ZoneTask* mLevel;
 
     MyGUI::VectorWidgetPtr mLayout;
 

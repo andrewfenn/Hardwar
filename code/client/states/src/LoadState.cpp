@@ -18,14 +18,17 @@
 
 #include "LoadState.h"
 
-#include <OgreRoot.h>
+#include <Ogre.h>
 #include <libintl.h>
+#include "OgreMaxScene.hpp"
 
 #include "srvstructs.h"
 #include "hwstructs.h"
 #include "PlayState.h"
 #include "GuiTask.h"
 #include "InputTask.h"
+
+
 
 using namespace Client;
 
@@ -46,8 +49,6 @@ void LoadState::enter()
    mNetwork->connect();
    mNetwork->startThread();
 
-   mLevel = (ZoneTask*) mTasklist->get("Zone");
-
    mGUIcount = 0;
    mReverse = false; /* for the load bar animation */
    mDownloads = false;
@@ -56,8 +57,7 @@ void LoadState::enter()
 /* Destory everything we created when entering */
 LoadState::~LoadState()
 {
-   /* Delete what we loaded */
-   MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
+   /* Remove what we loaded */
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->removeKeyListener(this->getName());
    input->removeMouseListener(this->getName());
@@ -87,28 +87,33 @@ void LoadState::update( unsigned long timeElapsed )
       break;
       case status_filecheck:
          mStatusText->setCaption(gettext("Checking Files"));
-         if (mLevel->getTotal() == 0)
-         {
-            mLevel->init();
-            mLevel->create(0, "../media/hardwar/non-free/world.scene");
-
-            packet = dataPacket(accepted);
-            mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
-         }
+         packet = dataPacket(accepted);
+         mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
       break;
       case status_downloading:
          if (!mDownloads)
          {
             mStatusText->setCaption(gettext("Downloading Files"));
+         
+            /* load world file */
+            OgreMax::OgreMaxScene *lOgreMax = OGRE_NEW OgreMax::OgreMaxScene;
+            Ogre::SceneNode * lSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("exteriorworld");
+            lSceneNode->setVisible(false);
+            lOgreMax->Load("../media/hardwar/non-free/world.scene", mRoot->getAutoCreatedWindow(), 0, mSceneMgr, lSceneNode);
+            /* turn it into static geometry */
+            /* FIXME: Need to change this so that it creates with different name */
+            Ogre::StaticGeometry *lStatic = mSceneMgr->createStaticGeometry("world");
+            lStatic->addSceneNode((Ogre::SceneNode*)lSceneNode->getChild("world"));
+            OGRE_DELETE lOgreMax;
+
             packet = dataPacket(accepted);
             mNetwork->message(packet, SERVER_CHANNEL_GENERIC, ENET_PACKET_FLAG_RELIABLE);
             mDownloads = true;
          }
       break;
       case status_ingame:
-
+         MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
          this->replace(OGRE_NEW PlayState());
-
       break;
       case status_disconnected:
          /* the connection has failed */

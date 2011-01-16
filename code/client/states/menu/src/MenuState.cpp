@@ -48,6 +48,11 @@ void MenuState::enter()
    mFade = OGRE_NEW Helper::Fader("Menu/FadeInOut", "Materials/OverlayMaterial", this);
    mFade->startFadeIn(2);
    mStarted = false;
+   
+   if (mSceneMgr->hasLight("Sun"))
+   {
+      mSceneMgr->destroyLight("Sun");
+   }
 
 	Ogre::Light* light = mSceneMgr->createLight( "Sun" );
 	light->setType( Ogre::Light::LT_SPOTLIGHT );

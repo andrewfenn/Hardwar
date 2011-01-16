@@ -27,6 +27,8 @@ using namespace Client;
 
 void PlayState::enter()
 {
+   mSceneMgr->getRootSceneNode()->removeAndDestroyChild("menu");
+
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
    mGUI          = MyGUI::Gui::getInstancePtr();
@@ -43,6 +45,10 @@ void PlayState::enter()
    mMouseRotX = mMouseRotY = 0;
    mKeydownUp = mKeydownDown = mKeydownRight = mKeydownLeft = 0;
 
+   if (mSceneMgr->hasLight("Sun"))
+   {
+      mSceneMgr->destroyLight("Sun");
+   }
 	// create a lightsource
 	Ogre::Light* light = mSceneMgr->createLight( "Sun" );
 	light->setType( Ogre::Light::LT_DIRECTIONAL );
@@ -50,6 +56,7 @@ void PlayState::enter()
 	light->setSpecularColour( Ogre::ColourValue( .82, .81, .7 ) );
 	light->setDirection( Ogre::Vector3( 0, -1, 1 ) ); 
 
+   mSceneMgr->getSceneNode("exteriorworld")->setVisible(true);
 }
 
 void PlayState::exit()
