@@ -22,6 +22,7 @@
 
 #include "GuiTask.h"
 #include "NetworkTask.h"
+#include "InputTask.h"
 
 using namespace Client;
 
@@ -58,11 +59,18 @@ void PlayState::enter()
 
    Ogre::SceneNode* lScene = (Ogre::SceneNode*) mSceneMgr->getRootSceneNode()->getChild("exteriorworld");
    lScene->setVisible(true);
+
+   InputTask* input = (InputTask*) mTasklist->get("Input");
+   input->addKeyListener(this, this->getName());
+   input->addMouseListener(this, this->getName());
 }
 
 PlayState::~PlayState()
 {
    ((NetworkTask*)mTasklist->get("Network"))->stopThread();
+   InputTask* input = (InputTask*) mTasklist->get("Input");
+   input->removeKeyListener(this->getName());
+   input->removeMouseListener(this->getName());
 }
 
 void PlayState::update(unsigned long timeElapsed)

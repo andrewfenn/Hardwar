@@ -26,7 +26,7 @@
 
 namespace Client
 {
-class PlayState : public GameState
+class PlayState : public GameState, OIS::KeyListener, OIS::MouseListener
 {
    public:
       PlayState() : GameState("playstate") { }
