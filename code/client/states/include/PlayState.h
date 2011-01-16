@@ -30,8 +30,8 @@ class PlayState : public GameState
 {
    public:
       PlayState() : GameState("playstate") { }
+      ~PlayState();
       void enter();
-      void exit();
 
       void update(unsigned long timeElapsed);
 

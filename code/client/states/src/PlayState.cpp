@@ -56,10 +56,11 @@ void PlayState::enter()
 	light->setSpecularColour( Ogre::ColourValue( .82, .81, .7 ) );
 	light->setDirection( Ogre::Vector3( 0, -1, 1 ) ); 
 
-   mSceneMgr->getSceneNode("exteriorworld")->setVisible(true);
+   Ogre::SceneNode* lScene = (Ogre::SceneNode*) mSceneMgr->getRootSceneNode()->getChild("exteriorworld");
+   lScene->setVisible(true);
 }
 
-void PlayState::exit()
+PlayState::~PlayState()
 {
    ((NetworkTask*)mTasklist->get("Network"))->stopThread();
 }

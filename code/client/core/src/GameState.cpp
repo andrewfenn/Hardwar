@@ -30,6 +30,11 @@ GameState::GameState(const Ogre::String& name)
    mMarkedRemoved = false;
 }
 
+GameState::~GameState()
+{
+   this->removeAllChildren();
+}
+
 void GameState::setParent(GameState* parent, GameTaskList* gametasks, 
                                      Ogre::Root* root, Ogre::Viewport* viewport)
 {
@@ -119,7 +124,7 @@ void GameState::remove(const Ogre::String& name)
    GameStateList::iterator i = mChildren.find(name);
    if (i != mChildren.end())
    {
-      //OGRE_DELETE i->second;
+      OGRE_DELETE i->second;
       mChildren.erase(i);
    }
 }
@@ -129,9 +134,9 @@ void GameState::removeAllChildren()
    GameStateList::iterator i;
    for (i = mChildren.begin(); i != mChildren.end(); i++)
    {
-      //OGRE_DELETE i->second;
-      mChildren.erase(i);
+      OGRE_DELETE i->second;
    }
+   mChildren.clear();
 }
 
 void GameState::updateAllChildren(unsigned long timeElapsed)

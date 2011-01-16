@@ -84,7 +84,7 @@ class GameTaskList
          if (i != mList.end())
          {
             i->second->shutdown();
-            //OGRE_DELETE i->second;
+            OGRE_DELETE i->second;
             mList.erase(i);
          }
       }
@@ -94,9 +94,9 @@ class GameTaskList
          for(TaskList::iterator i = mList.begin(); i != mList.end(); i++)
          {
             i->second->shutdown();
-            //OGRE_DELETE i->second;
-            mList.erase(i);
+            OGRE_DELETE i->second;
          }
+         mList.clear();
       }
 
       TaskList* list()

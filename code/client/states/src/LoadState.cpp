@@ -61,6 +61,7 @@ LoadState::~LoadState()
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->removeKeyListener(this->getName());
    input->removeMouseListener(this->getName());
+   MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
 }
 
 void LoadState::update( unsigned long timeElapsed )
@@ -112,7 +113,6 @@ void LoadState::update( unsigned long timeElapsed )
          }
       break;
       case status_ingame:
-         MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
          this->replace(OGRE_NEW PlayState());
       break;
       case status_disconnected:

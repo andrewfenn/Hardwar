@@ -30,6 +30,7 @@ class GameState
 {
 public:
    GameState(const Ogre::String&);
+   virtual ~GameState();
    virtual void enter() {}
    virtual void update(unsigned long timeElapsed);
 
@@ -39,6 +40,7 @@ public:
    const Ogre::String getName();
    /** Gets the parent gamestate */
    void* getParent();
+   /** Proppergates itself up until it shuts down the entire game. */
    void shutdown();
    /** Adds a gamestate to another gamestate's child list */
    void* add(GameState*);
