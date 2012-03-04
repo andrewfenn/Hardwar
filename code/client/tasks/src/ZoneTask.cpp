@@ -22,8 +22,9 @@ using namespace Client;
 
 void ZoneTask::init()
 {
+/*
    boost::filesystem::path lPath("../media/models/hangers");
-	if (boost::filesystem::is_directory(lPath))
+   if (boost::filesystem::is_directory(lPath))
    {
 	   for (boost::filesystem::directory_iterator itr(lPath); itr!=boost::filesystem::directory_iterator(); ++itr)
       {
@@ -34,7 +35,7 @@ void ZoneTask::init()
 	      }
 	   }
 	}
-
+*/
 }
 
 void ZoneTask::shutdown()

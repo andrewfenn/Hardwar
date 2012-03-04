@@ -106,7 +106,7 @@ void InputTask::init()
       /* Create inputsystem */
       mInputSystem = OIS::InputManager::createInputSystem(paramList);
       /* If possible create a buffered keyboard */
-      #if OIS_VERSION_MINOR == 2
+      #if OIS_VERSION_MINOR >= 2
       if (mInputSystem->getNumberOfDevices(OIS::OISKeyboard) > 0)
       #else
       if (mInputSystem->numKeyboards() > 0)
@@ -117,7 +117,7 @@ void InputTask::init()
       }
 	
       /* If possible create a buffered mouse */
-      #if OIS_VERSION_MINOR == 2
+      #if OIS_VERSION_MINOR >= 2
       if (mInputSystem->getNumberOfDevices(OIS::OISMouse) > 0)
       #else
       if (mInputSystem->numMice() > 0)
@@ -130,13 +130,13 @@ void InputTask::init()
       }
 
       /* If possible create all joysticks in buffered mode */
-      #if OIS_VERSION_MINOR == 2
+      #if OIS_VERSION_MINOR >= 2
       if (mInputSystem->getNumberOfDevices(OIS::OISJoyStick) > 0)
       #else
       if (mInputSystem->numJoySticks() > 0)
       #endif
       {
-         #if OIS_VERSION_MINOR == 2
+         #if OIS_VERSION_MINOR >= 2
          mJoysticks.resize(mInputSystem->getNumberOfDevices(OIS::OISJoyStick));
          #else
          mJoysticks.resize(mInputSystem->numJoySticks());
