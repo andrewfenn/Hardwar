@@ -54,19 +54,25 @@ if (WIN32)
    set(exe "WIN32")
 endif ()
 
+link_libraries(Enet SQLite OgreMax)
+
 add_executable(client ${exe} ${folder_source} ${shared_source})
 
-add_dependencies(client SQLITE)
+add_dependencies(client SQLite)
+add_dependencies(client Enet)
 add_dependencies(client OgreMax)
-add_dependencies(client OGRE)
-add_dependencies(client Boost)
 
 if (MSVC)
 	target_link_libraries(client ${windows_extras}/gettext/lib/intl.lib)
 endif()
 
 set_target_properties(client PROPERTIES SOLUTION_FOLDER "Hardwar Client")
-target_link_libraries(client ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${MYGUI_LIBRARIES} ${Boost_LIBRARIES} ${OgreMax_LIBRARIES})
+target_link_libraries(client
+    ${OGRE_LIBRARIES}
+    ${OIS_LIBRARIES}
+    ${MYGUI_LIBRARIES}
+    ${Boost_LIBRARIES}
+    )
 
 #MACRO_ADD_LIBRARY(OIS client)
 #MACRO_ADD_LIBRARY(OGRE client)

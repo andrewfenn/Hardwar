@@ -30,6 +30,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(../TinyXML/)
 include_directories(${OGRE_INCLUDE_DIRS})
 
+link_libraries(TinyXML)
+
 add_library(OgreMax STATIC ${OgreMax_source})
 
 add_dependencies(OgreMax TinyXML)

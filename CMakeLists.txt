@@ -41,29 +41,6 @@ if(MSVC80 OR MSVC90 OR MSVC10)
         add_definitions(-DNOMINMAX)
 endif(MSVC80 OR MSVC90 OR MSVC10)
 
-
-#IF (MSVC_IDE)
-#	SET(PLATFORM_C_FLAGS "/D \"WIN32\" /D \"_WINDOWS\" /D \"TIXML_USE_STL\" /D \"ENET_DLL\" /fp:fast /EHsc")
-#	SET(CMAKE_CXX_FLAGS "${PLATFORM_C_FLAGS}")
-#	SET(CMAKE_CXX_FLAGS_RELEASE "${PLATFORM_C_FLAGS}")
-#	SET(CMAKE_CXX_FLAGS_DEBUG "${PLATFORM_C_FLAGS} /MDd")
-#ENDIF (MSVC_IDE)
-
-#set(Boost_USE_MULTITHREADED True)
-#if (WIN32)
-#    get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps ABSOLUTE)
-#    set (BOOST_ROOT "${windows_extras}/boost_1_42")#
-#
-#    if (WIN32 OR APPLE)
-#        set(Boost_USE_STATIC_LIBS TRUE)
-#    endif ()
-#
-#    set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
-#endif ()
-
-
-#set(deps_built True)
-
 find_package(OGRE REQUIRED)
 
 if((NOT "${OGRE_VERSION_NAME}" STREQUAL "Byatis") AND (NOT "${OGRE_VERSION_NAME}" STREQUAL "Ghadamon"))
@@ -109,13 +86,6 @@ endif(UNIX)
 
 find_package(OIS REQUIRED)
 find_package(MYGUI REQUIRED)
-
-#include_directories(${OGRE_INCLUDE_DIRS})
-#include_directories(${OIS_INCLUDE_DIRS})
-#include_directories(${MYGUI_INCLUDE_DIRS})
-#include_directories(${OGRE_Terrain_INCLUDE_DIR})
-#include_directories(${OGRE_Paging_INCLUDE_DIR})
-#include_directories(${Boost_INCLUDE_DIR})
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(HARDWAR_LIBPATH  "${CMAKE_CURRENT_SOURCE_DIR}/lib")
