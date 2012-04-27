@@ -18,11 +18,6 @@ set(abi_version ${HARDWAR_VERSION_STRING})
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/lib)
 
-# Set compiler specific build flags
-IF (UNIX)
-   add_definitions(-msse -O3)
-ENDIF()
-
 if(WIN32)
 set(CMAKE_DEBUG_POSTFIX "_d")
 endif(WIN32)
@@ -46,6 +41,43 @@ find_package(OGRE REQUIRED)
 if((NOT "${OGRE_VERSION_NAME}" STREQUAL "Byatis") AND (NOT "${OGRE_VERSION_NAME}" STREQUAL "Ghadamon"))
     message(SEND_ERROR "You need Ogre 1.8 Byatis or later to build this.")
 endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "")
+    # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
+    # differentiation between debug and release builds.
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif ()
+
+message(STATUS "Build type set to: ${CMAKE_BUILD_TYPE}")
+
+#if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+#    if (UNIX)
+#       add_definitions(-O1 -g)
+#    endif()
+#elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+#    if (UNIX)
+#       add_definitions(-msse -O3)
+#    endif()
+#endif ()
+
+if(UNIX AND NOT APPLE)
+    # Newer ld versions need this linked explicitly
+    find_package(Threads REQUIRED)
+    add_definitions(${CMAKE_THREAD_LIBS_INIT})
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}-Wl,--no-as-needed ${CMAKE_THREAD_LIBS_INIT}")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}-Wl,--no-as-needed ${CMAKE_THREAD_LIBS_INIT}")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}-Wl,--no-as-needed ${CMAKE_THREAD_LIBS_INIT}")
+endif(UNIX AND NOT APPLE)
+
+if(APPLE)
+    # Newer ld versions need this linked explicitly
+    find_package(Threads REQUIRED)
+    add_definitions(${CMAKE_THREAD_LIBS_INIT})
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}-Wl ${CMAKE_THREAD_LIBS_INIT}")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}-Wl ${CMAKE_THREAD_LIBS_INIT}")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}-Wl 
+${CMAKE_THREAD_LIBS_INIT}")
+endif(APPLE)
 
 if(APPLE)
     find_package(CG REQUIRED)

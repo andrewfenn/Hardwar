@@ -29,19 +29,13 @@ include_directories(
    ${HARDWAR_SOURCE_DIR}/code/shared/include
 )
 
-include_directories(${OGRE_INCLUDE_DIRS})
-include_directories(${DEPENDENCIES_INCLUDES})
-include_directories(${OIS_INCLUDE_DIRS})
-include_directories(${MYGUI_INCLUDE_DIRS})
-include_directories(${OGRE_Terrain_INCLUDE_DIR})
-include_directories(${OGRE_Paging_INCLUDE_DIR})
-include_directories(${Boost_INCLUDE_DIR})
-
-
-#INCLUDE(addLibraryHelper)
-
-#MACRO_FIND_LIBRARY(OIS)
-#MACRO_FIND_LIBRARY(MYGUI)
+include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
+include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
+include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
+include_directories(SYSTEM ${MYGUI_INCLUDE_DIRS})
+include_directories(SYSTEM ${OGRE_Terrain_INCLUDE_DIR})
+include_directories(SYSTEM ${OGRE_Paging_INCLUDE_DIR})
+include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 if (MSVC)
    MESSAGE(STATUS "Using GetText in dependencies")
@@ -74,4 +68,8 @@ target_link_libraries(client
     ${MYGUI_LIBRARIES}
     ${Boost_LIBRARIES}
     )
+
+if (UNIX)
+    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings)
+endif()
 
