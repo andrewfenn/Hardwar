@@ -1,19 +1,49 @@
-project(Enet)
+cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0003 NEW)
+
+project(Enet)
+
+SET(Enet_MAJOR_VERSION 1)
+SET(Enet_MINOR_VERSION 3)
+SET(Enet_PATCH_VERSION 3)
+
+SET(Enet_VERSION ${Enet_MAJOR_VERSION}.${Enet_MINOR_VERSION}.${Enet_PATCH_VERSION})
+SET(Enet_COMPATIBILITY_VERSION ${Enet_MAJOR_VERSION}.${Enet_MINOR_VERSION}.0)
+SET(Enet_SOVERSION ${Enet_MAJOR_VERSION}.${Enet_MINOR_VERSION}.0)
+
+SET(Enet_LIBRARY_NAME Enet)
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../)
 
-FILE(GLOB_RECURSE enet_source ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+set(enet_source 
+    callbacks.c
+    compress.c
+    host.c
+    list.c
+    packet.c
+    peer.c
+    protocol.c
+    unix.c
+    win32.c        
+)
 SOURCE_GROUP("Enet" FILES ${enet_source})
-
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 ADD_LIBRARY(Enet STATIC ${enet_source})
 
+IF(UNIX)
+	SET_TARGET_PROPERTIES(Enet PROPERTIES
+		VERSION ${Enet_VERSION}
+		SOVERSION ${Enet_SOVERSION}
+	)
+ENDIF(UNIX)
+
+set(LIBRARY_OUTPUT_PATH  ../../lib)
+
 IF (WINDOWS)
      IF (WIN32)
- 	    TARGET_LINK_LIBRARIES(Enet "ws2_32.lib")
+        TARGET_LINK_LIBRARIES(Enet "ws2_32.lib")
      ELSEIF (WIN64)
-       TARGET_LINK_LIBRARIES(Enet "ws2_64.lib")
+        TARGET_LINK_LIBRARIES(Enet "ws2_64.lib")
      ENDIF ()
 ELSE (WINDOWS) # unix
      INCLUDE(CheckCSourceCompiles)
@@ -46,3 +76,8 @@ ELSE (WINDOWS) # unix
 
      SET_SOURCE_FILES_PROPERTIES(${enet_source} PROPERTIES COMPILE_FLAGS ${Enet_DEFINITIONS})
 ENDIF (WINDOWS)
+
+if(UNIX)
+        set(CMAKE_CXX_FLAGS -fPIC)
+endif(UNIX)
+

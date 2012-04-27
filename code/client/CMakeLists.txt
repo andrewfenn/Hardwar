@@ -24,15 +24,13 @@ INCLUDE_DIRECTORIES(
 
 INCLUDE(addLibraryHelper)
 
-MACRO_FIND_LIBRARY(ENET)
+
 MACRO_FIND_LIBRARY(OIS)
 MACRO_FIND_LIBRARY(OGRE)
 MACRO_FIND_LIBRARY(MYGUI)
 MACRO_FIND_LIBRARY(OgreMax)
 MACRO_FIND_LIBRARY(SQLITE)
 MACRO_FIND_LIBRARY(TinyXML)
-MACRO_FIND_LIBRARY(Boost)
-MACRO_FIND_LIBRARIES(Boost "system;filesystem;thread;")
 
 if (MSVC)
    MESSAGE(STATUS "Using GetText in dependencies")
@@ -51,7 +49,7 @@ if (MSVC)
 	target_link_libraries(client ${windows_extras}/gettext/lib/intl.lib)
 endif()
 
-MACRO_ADD_LIBRARY(ENET client)
+
 MACRO_ADD_LIBRARY(OIS client)
 MACRO_ADD_LIBRARY(OGRE client)
 MACRO_ADD_LIBRARY(MYGUI client)
