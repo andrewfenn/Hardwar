@@ -3,13 +3,13 @@ cmake_policy(SET CMP0003 NEW)
 
 project(OgreMax)
 
-SET(OgreMax_MAJOR_VERSION 2)
-SET(OgreMax_MINOR_VERSION 1)
-SET(OgreMax_PATCH_VERSION 2)
+set(OgreMax_MAJOR_VERSION 2)
+set(OgreMax_MINOR_VERSION 1)
+set(OgreMax_PATCH_VERSION 2)
 
-SET(OgreMax_VERSION ${OgreMax_MAJOR_VERSION}.${OgreMax_MINOR_VERSION}.${OgreMax_PATCH_VERSION})
-SET(OgreMax_COMPATIBILITY_VERSION ${OgreMax_MAJOR_VERSION}.${OgreMax_MINOR_VERSION}.0)
-SET(OgreMax_SOVERSION ${OgreMax_MAJOR_VERSION}.${OgreMax_MINOR_VERSION}.0)
+set(OgreMax_VERSION ${OgreMax_MAJOR_VERSION}.${OgreMax_MINOR_VERSION}.${OgreMax_PATCH_VERSION})
+set(OgreMax_COMPATIBILITY_VERSION ${OgreMax_MAJOR_VERSION}.${OgreMax_MINOR_VERSION}.0)
+set(OgreMax_SOVERSION ${OgreMax_MAJOR_VERSION}.${OgreMax_MINOR_VERSION}.0)
 
 set(OgreMax_source
     OgreMaxModel.cpp
@@ -19,17 +19,17 @@ set(OgreMax_source
     Version.cpp
 )
 
-SET(OgreMax_LIBRARY_NAME OgreMax)
+set(OgreMax_LIBRARY_NAME OgreMax)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../)
 set(LIBRARY_OUTPUT_PATH  ../../lib)
 
-SOURCE_GROUP("OgreMax" FILES ${OgreMax_source})
+source_group("OgreMax" FILES ${OgreMax_source})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(../TinyXML/)
 
-ADD_LIBRARY(OgreMax STATIC ${OgreMax_source})
+add_library(OgreMax STATIC ${OgreMax_source})
 
 add_dependencies(OgreMax TinyXML)
 add_dependencies(OgreMax OGRE)

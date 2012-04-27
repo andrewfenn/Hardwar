@@ -1,59 +1,73 @@
-project(HardwarClient)
+cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0003 NEW)
+
+project(HardwarClient)
+
+SET(HardwarClient_MAJOR_VERSION ${HARDWAR_MAJOR_VERSION})
+SET(HardwarClient_MINOR_VERSION ${HARDWAR_MINOR_VERSION})
+SET(HardwarClient_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
 
 # searches for all .cpp and .h files
 FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-set(shared_source
-${Hardwar_SOURCE_DIR}/code/shared/src/md5.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/db.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/Building.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/GameSettings.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/DynamicLines.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/DynamicRenderable.cpp
-)
 SOURCE_GROUP("Client" FILES ${folder_source})
 
-INCLUDE_DIRECTORIES(
+set(shared_source
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/md5.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/db.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/Building.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/GameSettings.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/DynamicLines.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/DynamicRenderable.cpp
+)
+
+include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/core/include
    ${CMAKE_CURRENT_SOURCE_DIR}/states/include
    ${CMAKE_CURRENT_SOURCE_DIR}/states/menu/include
    ${CMAKE_CURRENT_SOURCE_DIR}/helpers/include
    ${CMAKE_CURRENT_SOURCE_DIR}/tasks/include
-   ${Hardwar_SOURCE_DIR}/code/shared/include
+   ${HARDWAR_SOURCE_DIR}/code/shared/include
 )
 
-INCLUDE(addLibraryHelper)
+include_directories(${OGRE_INCLUDE_DIRS})
+include_directories(${OIS_INCLUDE_DIRS})
+include_directories(${MYGUI_INCLUDE_DIRS})
+include_directories(${OGRE_Terrain_INCLUDE_DIR})
+include_directories(${OGRE_Paging_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIR})
 
 
-MACRO_FIND_LIBRARY(OIS)
-MACRO_FIND_LIBRARY(OGRE)
-MACRO_FIND_LIBRARY(MYGUI)
-MACRO_FIND_LIBRARY(OgreMax)
-MACRO_FIND_LIBRARY(SQLITE)
-MACRO_FIND_LIBRARY(TinyXML)
+#INCLUDE(addLibraryHelper)
+
+#MACRO_FIND_LIBRARY(OIS)
+#MACRO_FIND_LIBRARY(MYGUI)
 
 if (MSVC)
    MESSAGE(STATUS "Using GetText in dependencies")
-   get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/ ABSOLUTE)
-   INCLUDE_DIRECTORIES(${windows_extras}/gettext/include)
-   LINK_DIRECTORIES(${windows_extras}/gettext/lib)
+   get_filename_component(windows_extras ${HARDWAR_SOURCE_DIR}/hardwar-deps/ ABSOLUTE)
+   include_directories(${windows_extras}/gettext/include)
+   link_directories(${windows_extras}/gettext/lib)
 endif ()
 
 if (WIN32)
    set(exe "WIN32")
 endif ()
 
-ADD_EXECUTABLE(client ${exe} ${folder_source} ${shared_source})
+add_executable(client ${exe} ${folder_source} ${shared_source})
+
+add_dependencies(client SQLITE)
+add_dependencies(client OgreMax)
+add_dependencies(client OGRE)
+add_dependencies(client Boost)
 
 if (MSVC)
 	target_link_libraries(client ${windows_extras}/gettext/lib/intl.lib)
 endif()
 
+set_target_properties(client PROPERTIES SOLUTION_FOLDER "Hardwar Client")
+target_link_libraries(client ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${MYGUI_LIBRARIES} ${Boost_LIBRARIES} ${OgreMax_LIBRARIES})
 
-MACRO_ADD_LIBRARY(OIS client)
-MACRO_ADD_LIBRARY(OGRE client)
-MACRO_ADD_LIBRARY(MYGUI client)
-MACRO_ADD_LIBRARY(OgreMax client)
-MACRO_ADD_LIBRARY(SQLITE client)
-MACRO_ADD_LIBRARY(TinyXML client)
-MACRO_ADD_LIBRARY(Boost client)
+#MACRO_ADD_LIBRARY(OIS client)
+#MACRO_ADD_LIBRARY(OGRE client)
+#MACRO_ADD_LIBRARY(MYGUI client)
+
