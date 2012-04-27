@@ -69,10 +69,12 @@ endif()
 set_target_properties(client PROPERTIES SOLUTION_FOLDER "Hardwar Client")
 target_link_libraries(client
     ${OGRE_LIBRARIES}
+    ${OGRE_LIBRARY} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${OIS_LIBRARIES}
     ${MYGUI_LIBRARIES}
     ${Boost_LIBRARIES}
     )
+message(${Boost_LIBRARIES})
 
 #MACRO_ADD_LIBRARY(OIS client)
 #MACRO_ADD_LIBRARY(OGRE client)
