@@ -125,6 +125,7 @@ set(DEPENDENCIES_INCLUDES
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML"
+    "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OgreMax"
 )
 
 set(DEPENDENCIES_LIBPATH "${CMAKE_CURRENT_SOURCE_DIR}/lib")

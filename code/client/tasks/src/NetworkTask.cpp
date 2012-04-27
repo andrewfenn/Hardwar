@@ -257,12 +257,14 @@ bool NetworkTask::sendJoinRequest(void)
 bool NetworkTask::connect(unsigned int port, std::string ip)
 {
    ENetAddress address;
+   mNetHost = enet_host_create (NULL, /* create a NetworkTask host */
+                                   1, /* only allow 1 outgoing connection */
+                 SERVER_MAX_CHANNELS, /* allow up to x channels to be used */
+                           57600 / 8, /* 56K modem with 56 Kbps downstream bandwidth */
+                           14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */
+                                );
 
-   /* TODO: Add config option to increase speed, set the 0 (unlimited) at the moment */
-   mNetHost = enet_host_create (0 /* create a NetworkTask host */,
-                                       1 /* only allow 1 outgoing connection */,
-                    57600 / 8 /* 56K modem with 56 Kbps downstream bandwidth */,
-                    14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
+                    
    if (mNetHost == 0)
    {
       fprintf (stderr, gettext("An error occurred while trying to create an ENet NetworkTask host.\n"));
@@ -278,8 +280,9 @@ bool NetworkTask::connect(unsigned int port, std::string ip)
    }
    address.port = port;
 
+   /* TODO: Add config option to increase speed, set the 0 (unlimited) at the moment */
    /* Initiate the connection */
-   mPeer = enet_host_connect(mNetHost, &address, SERVER_MAX_CHANNELS);
+   mPeer = enet_host_connect(mNetHost, &address, SERVER_MAX_CHANNELS, 0);
 
    if (mPeer == 0)
    {

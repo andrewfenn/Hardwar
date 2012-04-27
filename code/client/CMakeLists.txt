@@ -30,6 +30,7 @@ include_directories(
 )
 
 include_directories(${OGRE_INCLUDE_DIRS})
+include_directories(${DEPENDENCIES_INCLUDES})
 include_directories(${OIS_INCLUDE_DIRS})
 include_directories(${MYGUI_INCLUDE_DIRS})
 include_directories(${OGRE_Terrain_INCLUDE_DIR})
