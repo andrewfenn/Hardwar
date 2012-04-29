@@ -16,7 +16,8 @@ lib
 game.cfg
 bin/logs/mygui.log
 bin/logs/ogre.log
-./docs
+docs
+tests
 bin/screenshots/*
 bin/client
 bin/server

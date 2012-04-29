@@ -132,11 +132,12 @@ set(DEPENDENCIES_INCLUDES
 
 set(DEPENDENCIES_LIBPATH "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OgreMax)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OgreMax")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 
 #add_subdirectory(code/client)
 add_subdirectory(code/server)
