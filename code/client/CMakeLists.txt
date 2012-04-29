@@ -70,6 +70,6 @@ target_link_libraries(client
     )
 
 if (UNIX)
-    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings)
+#    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings)
 endif()
 

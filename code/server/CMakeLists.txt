@@ -1,46 +1,55 @@
-project(HardwarServer)
+cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0003 NEW)
+
+project(HardwarServer)
+
+SET(HardwarServer_MAJOR_VERSION ${HARDWAR_MAJOR_VERSION})
+SET(HardwarServer_MINOR_VERSION ${HARDWAR_MINOR_VERSION})
+SET(HardwarServer_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
+
 
 # searches for all .cpp and .h files
 FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 set(shared_source
-${Hardwar_SOURCE_DIR}/code/shared/src/md5.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/db.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/Building.cpp
-${Hardwar_SOURCE_DIR}/code/shared/src/GameSettings.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/md5.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/db.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/Building.cpp
+    ${HARDWAR_SOURCE_DIR}/code/shared/src/GameSettings.cpp
 )
 
 SOURCE_GROUP("Server" FILES ${folder_source})
 
-INCLUDE_DIRECTORIES(
+include_directories (
    ${CMAKE_CURRENT_SOURCE_DIR}/include
-   ${Hardwar_SOURCE_DIR}/code/shared/include
+   ${HARDWAR_SOURCE_DIR}/code/shared/include
 )
 
-INCLUDE(addLibraryHelper)
-
-MACRO_FIND_LIBRARY(OGRE)
-MACRO_FIND_LIBRARY(ENET)
-MACRO_FIND_LIBRARY(SQLITE)
-MACRO_FIND_LIBRARIES(Boost "filesystem;thread;")
+include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
+include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
+include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 if (MSVC)
-	MESSAGE(STATUS "Using GetText in dependencies")
-	get_filename_component(windows_extras ${CMAKE_SOURCE_DIR}/../hardwar-deps/ ABSOLUTE)
-	INCLUDE_DIRECTORIES(${windows_extras}/gettext/include)
-	LINK_DIRECTORIES(${windows_extras}/gettext/lib)
+   message(STATUS "Using GetText in dependencies")
+   get_filename_component(windows_extras ${HARDWAR_SOURCE_DIR}/hardwar-deps/ ABSOLUTE)
+   include_directories(${windows_extras}/gettext/include)
+   link_directories(${windows_extras}/gettext/lib)
 endif ()
 
 if (WIN32)
    set(exe "WIN32")
 endif ()
 
-# create the project
-ADD_EXECUTABLE(server ${exe} ${folder_source} ${shared_source})
+link_libraries(Enet SQLite)
 
-MACRO_ADD_LIBRARY(OGRE server)
-MACRO_ADD_LIBRARY(ENET server)
-MACRO_ADD_LIBRARY(SQLITE server)
-MACRO_ADD_LIBRARY(Boost server)
+add_executable(server ${exe} ${folder_source} ${shared_source})
+
+target_link_libraries(server
+    ${OGRE_LIBRARIES}
+    ${Boost_LIBRARIES}
+    )
+
+if (UNIX)
+#    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings)
+endif()
 

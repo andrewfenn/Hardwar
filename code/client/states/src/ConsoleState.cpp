@@ -112,7 +112,8 @@ void ConsoleState::notifySubmitButtonClick(MyGUI::WidgetPtr sender)
 
 void ConsoleState::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode key, MyGUI::Char character)
 {
-   size_t len = sender->getCaption().length();
+    return;
+   size_t len; // = sender->getCaption().length();
  
    MyGUI::EditPtr edit = sender->castType<MyGUI::Edit>();
    if ((key == MyGUI::KeyCode::Backspace) && (len > 0))
@@ -120,6 +121,7 @@ void ConsoleState::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode ke
 	   edit->eraseText(len);
       return;
    }
+
 
    /* make tab key move cursor to the end */
    if ((key == MyGUI::KeyCode::Tab) && (len > 0) && (mAutoCompleted))
@@ -153,7 +155,7 @@ void ConsoleState::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode ke
       return;
    }
 */
-   MyGUI::UString command = sender->getCaption();
+   MyGUI::UString command; // = sender->getCaption();
    if (command.length() == 0) return;
 
    for (MapFunction::iterator iter = mFunctions.begin(); iter != mFunctions.end(); ++iter)
@@ -172,7 +174,8 @@ void ConsoleState::notifyCommandTyped(MyGUI::WidgetPtr sender, MyGUI::KeyCode ke
 
 void ConsoleState::notifyCommandAccept(MyGUI::ComboBoxPtr sender, size_t index)
 {
-	const MyGUI::UString & command = sender->getCaption();
+    return;
+	const MyGUI::UString command;// = sender->getCaption();
 	if (command == "") return;
 
 	MyGUI::UString key = command;

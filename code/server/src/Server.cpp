@@ -52,10 +52,12 @@ namespace Server
       std::cout << gettext("Starting server") << std::endl;
       std::cout << gettext("Port:") << port << std::endl;
 
-      mServer = enet_host_create (&address /* the address to bind the server host to */, 
-                                 32      /* allow up to 32 clients and/or outgoing connections */,
-                                  0      /* assume any amount of incoming bandwidth */,
-                                  0      /* assume any amount of outgoing bandwidth */);
+      mServer = enet_host_create (&address, /* create a NetworkTask host */
+                                   32, /* allow up to 32 clients and/or outgoing connections */
+                 SERVER_MAX_CHANNELS, /* allow up to x channels to be used */
+                                   0, /* assume any amount of incoming bandwidth */
+                                   0  /* assume any amount of outgoing bandwidth */
+                                );
       if (mServer == 0)
       {
          std::cout << gettext("An error occurred while trying to create an ENet server host.") << std::endl;
