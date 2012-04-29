@@ -20,15 +20,13 @@ set(OgreMax_source
 )
 
 set(OgreMax_LIBRARY_NAME OgreMax)
-
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../)
-set(LIBRARY_OUTPUT_PATH  ../../lib)
+set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 
 source_group("OgreMax" FILES ${OgreMax_source})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(../TinyXML/)
-include_directories(${OGRE_INCLUDE_DIRS})
+include_directories(SYSTEM ../TinyXML/)
+include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
 
 link_libraries(TinyXML)
 
@@ -38,15 +36,15 @@ add_dependencies(OgreMax TinyXML)
 add_dependencies(OgreMax OGRE)
 add_dependencies(OgreMax Boost)
 
-IF(UNIX)
-	SET_TARGET_PROPERTIES(OgreMax PROPERTIES
+if(UNIX)
+	set_target_properties(OgreMax PROPERTIES
 		VERSION ${OgreMax_VERSION}
 		SOVERSION ${OgreMax_SOVERSION}
 	)
 
     set(CMAKE_CXX_FLAGS -fPIC)
 
-ENDIF(UNIX)
+endif()
 
 set_target_properties(OgreMax PROPERTIES SOLUTION_FOLDER Dependencies)
 target_link_libraries(OgreMax ${OGRE_LIBRARIES} ${Boost_LIBRARIES} ${TinyXML_LIBRARIES})

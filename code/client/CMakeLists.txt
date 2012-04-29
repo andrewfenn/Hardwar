@@ -12,12 +12,12 @@ FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 SOURCE_GROUP("Client" FILES ${folder_source})
 
 set(shared_source
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/md5.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/db.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/Building.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/GameSettings.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/DynamicLines.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/DynamicRenderable.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/md5.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/db.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/GameSettings.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/DynamicLines.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/DynamicRenderable.cpp
 )
 
 include_directories(
@@ -26,7 +26,7 @@ include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/states/menu/include
    ${CMAKE_CURRENT_SOURCE_DIR}/helpers/include
    ${CMAKE_CURRENT_SOURCE_DIR}/tasks/include
-   ${HARDWAR_SOURCE_DIR}/code/shared/include
+   ${CMAKE_SOURCE_DIR}/code/shared/include
 )
 
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})

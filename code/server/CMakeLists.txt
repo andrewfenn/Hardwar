@@ -12,17 +12,17 @@ SET(HardwarServer_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
 FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 set(shared_source
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/md5.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/db.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/Building.cpp
-    ${HARDWAR_SOURCE_DIR}/code/shared/src/GameSettings.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/md5.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/db.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/GameSettings.cpp
 )
 
 SOURCE_GROUP("Server" FILES ${folder_source})
 
 include_directories (
    ${CMAKE_CURRENT_SOURCE_DIR}/include
-   ${HARDWAR_SOURCE_DIR}/code/shared/include
+   ${CMAKE_SOURCE_DIR}/code/shared/include
 )
 
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
@@ -41,6 +41,8 @@ if (WIN32)
 endif ()
 
 link_libraries(Enet SQLite)
+
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 add_executable(server ${exe} ${folder_source} ${shared_source})
 

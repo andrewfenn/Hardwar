@@ -13,8 +13,6 @@ set(Enet_SOVERSION ${Enet_MAJOR_VERSION}.${Enet_MINOR_VERSION}.0)
 
 set(Enet_LIBRARY_NAME Enet)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../)
-
 set(enet_source 
     callbacks.c
     compress.c
@@ -26,32 +24,32 @@ set(enet_source
     unix.c
     win32.c        
 )
-SOURCE_GROUP("Enet" FILES ${enet_source})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
-ADD_LIBRARY(Enet STATIC ${enet_source})
+source_group("Enet" FILES ${enet_source})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_library(Enet STATIC ${enet_source})
 
-IF(UNIX)
-	SET_TARGET_PROPERTIES(Enet PROPERTIES
+if(UNIX)
+	set_target_properties(Enet PROPERTIES
 		VERSION ${Enet_VERSION}
 		SOVERSION ${Enet_SOVERSION}
 	)
-ENDIF(UNIX)
+endif()
 
-set(LIBRARY_OUTPUT_PATH  ../../lib)
+set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 
-IF (WINDOWS)
-     IF (WIN32)
-        TARGET_LINK_LIBRARIES(Enet "ws2_32.lib")
-     ELSEIF (WIN64)
-        TARGET_LINK_LIBRARIES(Enet "ws2_64.lib")
-     ENDIF ()
-ELSE (WINDOWS) # unix
-     INCLUDE(CheckCSourceCompiles)
-     INCLUDE(CheckCXXSourceCompiles)
-     INCLUDE(CheckStructMember)
-     INCLUDE(CheckType)
-     INCLUDE(CheckFunctionExists) 
-     INCLUDE(CheckIncludeFiles) 
+if (WINDOWS)
+     if (WIN32)
+        target_link_libraries(Enet "ws2_32.lib")
+     elseif (WIN64)
+        target_link_libraries(Enet "ws2_64.lib")
+     endif()
+else () # unix
+     include(CheckCSourceCompiles)
+     include(CheckCXXSourceCompiles)
+     include(CheckStructMember)
+     include(CheckType)
+     include(CheckFunctionExists)
+     include(CheckIncludeFiles)
           
      CHECK_FUNCTION_EXISTS("gethostbyaddr_r"   _HAS_GETHOSTBYADDR_R)
      CHECK_FUNCTION_EXISTS("gethostbyname_r"   _HAS_GETHOSTBYNAME_R)
@@ -67,17 +65,14 @@ ELSE (WINDOWS) # unix
      CHECK_TYPE(socklen_t "sys/types.h;sys/socket.h" _HAS_SOCKLEN_T)
 
      # list all from above here and add them to the definitions
-     SET(_CHECKS HAS_GETHOSTBYADDR_R; HAS_GETHOSTBYNAME_R; HAS_POLL; HAS_FCNTL; HAS_INET_PTON; HAS_INET_NTOP; HAS_SOCKET_INCLUDE; HAS_TYPES_INCLUDE; HAS_MSGHDR_FLAGS; HAS_SOCKLEN_T;)
-     FOREACH (it ${_CHECKS})
-         IF (${_${it}})
-             SET(Enet_DEFINITIONS "${Enet_DEFINITIONS}-D${it}=1 ")
-         ENDIF (${_${it}})
-     ENDFOREACH (it)
+     set(_CHECKS HAS_GETHOSTBYADDR_R; HAS_GETHOSTBYNAME_R; HAS_POLL; HAS_FCNTL; HAS_INET_PTON; HAS_INET_NTOP; HAS_SOCKET_INCLUDE; HAS_TYPES_INCLUDE; HAS_MSGHDR_FLAGS; HAS_SOCKLEN_T;)
+     foreach (it ${_CHECKS})
+         if (${_${it}})
+             set(Enet_DEFINITIONS "${Enet_DEFINITIONS}-D${it}=1 ")
+         endif ()
+     endforeach (it)
 
-     SET_SOURCE_FILES_PROPERTIES(${enet_source} PROPERTIES COMPILE_FLAGS ${Enet_DEFINITIONS})
-ENDIF (WINDOWS)
-
-if(UNIX)
-        set(CMAKE_CXX_FLAGS -fPIC)
-endif(UNIX)
+     set_source_files_properties(${enet_source} PROPERTIES COMPILE_FLAGS ${Enet_DEFINITIONS})
+     set(CMAKE_CXX_FLAGS -fPIC)
+endif ()
 

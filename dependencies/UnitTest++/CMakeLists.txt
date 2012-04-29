@@ -95,7 +95,7 @@ include_directories(SYSTEM ${UnitTest_INCLUDE_DIR})
 
 link_libraries(UnitTest)
 
-set(EXECUTABLE_OUTPUT_PATH ${HARDWAR_BINARY_DIR}/tests/)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/tests/)
 add_executable(UnitTestTest ${exe} ${UnitTestTest_source})
 
 add_dependencies(UnitTestTest UnitTest)
@@ -109,4 +109,6 @@ if(UNIX)
     set(UnitTestTest_DEFINITIONS "${UnitTestTest_DEFINITIONS} -g")
 endif()
 
-Add_Custom_Command (TARGET UnitTestTest POST_BUILD COMMAND ${HARDWAR_BINARY_DIR}/tests/UnitTestTest)
+set_target_properties(UnitTestTest PROPERTIES SOLUTION_FOLDER UnitTests)
+
+add_custom_command(TARGET UnitTestTest POST_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/UnitTestTest)
