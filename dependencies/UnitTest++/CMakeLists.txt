@@ -101,11 +101,6 @@ add_executable(UnitTestTest ${exe} ${UnitTestTest_source})
 add_dependencies(UnitTestTest UnitTest)
 
 if(UNIX)
-	set_target_properties(UnitTestTest PROPERTIES
-		VERSION ${UnitTest_VERSION}
-		SOVERSION ${UnitTest_SOVERSION}
-	)
-
     set(UnitTestTest_DEFINITIONS "${UnitTestTest_DEFINITIONS} -g")
 endif()
 

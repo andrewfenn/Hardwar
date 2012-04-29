@@ -139,3 +139,14 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 #add_subdirectory(code/client)
 add_subdirectory(code/server)
 
+file(COPY
+    ${CMAKE_SOURCE_DIR}/bin/media
+    ${CMAKE_SOURCE_DIR}/bin/world
+
+    ${CMAKE_SOURCE_DIR}/bin/gdb-client
+    ${CMAKE_SOURCE_DIR}/bin/plugins.cfg
+    ${CMAKE_SOURCE_DIR}/bin/resources.cfg
+    ${CMAKE_SOURCE_DIR}/bin/server.cfg
+    ${CMAKE_SOURCE_DIR}/bin/settings.cfg
+    DESTINATION ${CMAKE_BINARY_DIR}/bin
+)
