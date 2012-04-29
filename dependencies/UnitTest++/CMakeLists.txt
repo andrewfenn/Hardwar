@@ -44,7 +44,7 @@ else()
 endif()
 
 set(UnitTest_LIBRARY_NAME UnitTest)
-set(LIBRARY_OUTPUT_PATH  ../../lib)
+set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 
 source_group("UnitTest" FILES ${UnitTest_source} ${UnitTest_extras_source})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)

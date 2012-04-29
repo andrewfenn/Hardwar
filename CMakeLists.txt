@@ -136,8 +136,11 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OgreMax")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 
+
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
 #add_subdirectory(code/client)
-add_subdirectory(code/server)
+#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/server")
+#add_subdirectory(code/server)
 
 file(COPY
     ${CMAKE_SOURCE_DIR}/bin/media
