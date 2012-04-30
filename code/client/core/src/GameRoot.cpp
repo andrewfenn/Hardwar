@@ -37,21 +37,22 @@ GameRoot::GameRoot()
 
 GameRoot::~GameRoot()
 {
-   Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
-   mRoot->getAutoCreatedWindow()->removeAllViewports();
+    Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
 
+/*
    if (mGameMgr)
    {
       OGRE_DELETE mGameMgr;
       mGameMgr = 0;
    }
-   
-   if(mRoot)
-   {
-      mRoot->shutdown();
-      OGRE_DELETE mRoot;
-      mRoot = 0;
-   }
+  */
+    if(mRoot)
+    {
+        mRoot->getAutoCreatedWindow()->removeAllViewports();
+        mRoot->shutdown();
+        OGRE_DELETE mRoot;
+        mRoot = 0;
+    }
 }
 
 bool GameRoot::loadPlugin(const Ogre::String dir)
@@ -120,7 +121,7 @@ bool GameRoot::isLocked()
    return false;
 }
 
-void GameRoot::setLocked(bool locked)
+void GameRoot::setLocked(const bool& locked)
 {
    /* FIXME: Add Windows and OSX implementation */
    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
@@ -158,13 +159,13 @@ bool GameRoot::loadPlugins()
 
       if(dwDirectXVersion < 0x00090000)
          return false;
-         
+
       if (!this->loadPlugin("RenderSystem_Direct3D9"))
       {
          if (!this->loadPlugin("RenderSystem_GL"))
             return false;
       }
-      
+
       if (!this->loadPlugin("Plugin_OctreeSceneManager"))
          return false;
 
@@ -185,23 +186,23 @@ bool GameRoot::loadPlugins()
 
          if (!this->loadPlugin("/usr/lib/OGRE/Plugin_CgProgramManager"))
             error = true;
-            
+
          loaded = true;
       }
-      
+
       if ((!loaded || error) && opendir("/usr/local/lib/OGRE") != 0)
       {
          error = false;
-         
+
          if (!this->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL"))
             error = true;
 
          if (!this->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager"))
             error = true;
-         
+
          if (!this->loadPlugin("/usr/local/lib/OGRE/Plugin_CgProgramManager"))
             error = true;
-            
+
          loaded = true;
       }
 
@@ -232,8 +233,8 @@ void GameRoot::init()
       return;
 
    this->configureGame();
-   mGameMgr = OGRE_NEW GameManager(mRoot);
-   mGameMgr->start();
+ //  mGameMgr = OGRE_NEW GameManager(mRoot);
+ //  mGameMgr->start();
    this->setLocked(false);
 }
 
@@ -259,18 +260,18 @@ bool GameRoot::configureGame()
 
 void GameRoot::windowResized(Ogre::RenderWindow *rw)
 {
-   mGameMgr->windowChangedSize(rw);
+ //  mGameMgr->windowChangedSize(rw);
 }
 
 bool GameRoot::windowClosing(Ogre::RenderWindow *rw)
 {
-   mGameMgr->shutdown();
+  // mGameMgr->shutdown();
    return true;
 }
 
 void GameRoot::windowFocusChange(Ogre::RenderWindow *rw)
 {
-   mGameMgr->windowChangedFocus(rw);
+  // mGameMgr->windowChangedFocus(rw);
 }
 } /* namespace Client */
 

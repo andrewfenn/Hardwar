@@ -8,8 +8,10 @@ SET(HardwarClient_MINOR_VERSION ${HARDWAR_MINOR_VERSION})
 SET(HardwarClient_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
 
 # searches for all .cpp and .h files
-FILE(GLOB_RECURSE folder_source ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-SOURCE_GROUP("Client" FILES ${folder_source})
+
+add_subdirectory("core/")
+
+source_group("Client" FILES ${client_source})
 
 set(shared_source
     ${CMAKE_SOURCE_DIR}/code/shared/src/md5.cpp
@@ -30,11 +32,11 @@ include_directories(
 )
 
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
-include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
-include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
-include_directories(SYSTEM ${MYGUI_INCLUDE_DIRS})
 include_directories(SYSTEM ${OGRE_Terrain_INCLUDE_DIR})
 include_directories(SYSTEM ${OGRE_Paging_INCLUDE_DIR})
+include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
+include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
+include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 if (MSVC)
@@ -50,7 +52,7 @@ endif ()
 
 link_libraries(Enet SQLite OgreMax)
 
-add_executable(client ${exe} ${folder_source} ${shared_source})
+add_executable(client ${exe} ${client_source} ${shared_source})
 
 add_dependencies(client SQLite)
 add_dependencies(client Enet)
@@ -65,7 +67,7 @@ set_target_properties(client PROPERTIES SOLUTION_FOLDER "Hardwar Client")
 target_link_libraries(client
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${OIS_LIBRARIES}
-    ${MYGUI_LIBRARIES}
+    ${CEGUI_LIBRARIES}
     ${Boost_LIBRARIES}
     )
 

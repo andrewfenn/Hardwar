@@ -114,7 +114,7 @@ if(UNIX)
 endif(UNIX)
 
 find_package(OIS REQUIRED)
-find_package(MYGUI REQUIRED)
+find_package(CEGUI REQUIRED)
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(HARDWAR_LIBPATH  "${CMAKE_CURRENT_SOURCE_DIR}/lib")
@@ -138,7 +138,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
-#add_subdirectory(code/client)
+add_subdirectory(code/client)
 #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/server")
 #add_subdirectory(code/server)
 

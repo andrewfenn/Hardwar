@@ -1,7 +1,7 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2010  Andrew Fenn
-    
+    Copyright © 2010-2012  Andrew Fenn
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -20,36 +20,38 @@
 
 #include <Ogre.h>
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-   #include <dirent.h>
+    #include <dirent.h>
 #endif
-#include "GameManager.h"
+//#include "GameManager.h"
 
 namespace Client
 {
 
 class GameRoot : public Ogre::WindowEventListener
 {
-   public:
-      GameRoot();
-      ~GameRoot();
-      void init();
+    public:
+        GameRoot();
+       ~GameRoot();
+        void init();
+        /** Check if the game is already running.
+        @return bool true if not running, false if another process has already started. */
+        bool isLocked();
+        /** Sets a file somewhere platform dependent that notifys other instances of the game
+        that it is running. */
+        void setLocked(const bool& locked);
+        /* event window listeners */
+        void windowResized(Ogre::RenderWindow *rw);
+        bool windowClosing(Ogre::RenderWindow *rw);
+        void windowFocusChange(Ogre::RenderWindow *rw);
+    private:
+        Ogre::Root           *mRoot;
+        Ogre::RenderWindow   *mRenderWindow;
+        //GameManager          *mGameMgr;
 
-      /* event window listeners */
-      void windowResized(Ogre::RenderWindow *rw);
-      bool windowClosing(Ogre::RenderWindow *rw);
-      void windowFocusChange(Ogre::RenderWindow *rw);
-   private:
-      Ogre::Root           *mRoot;
-      Ogre::RenderWindow   *mRenderWindow;
-      GameManager          *mGameMgr;
-
-      bool loadPlugin(const Ogre::String);
-      bool loadPlugins();
-      /** Check if the game is already running.
-      @return bool true if not running, false if another process has already started. */
-      bool isLocked();
-      void setLocked(bool locked);
-      bool configureGame();
+        bool loadPlugin(const Ogre::String);
+        bool loadPlugins();
+        bool configureGame();
 };
+
 }
 
