@@ -22,7 +22,6 @@
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
     #include <dirent.h>
 #endif
-//#include "GameManager.h"
 
 namespace Client
 {
@@ -39,6 +38,9 @@ class GameRoot : public Ogre::WindowEventListener
         /** Sets a file somewhere platform dependent that notifys other instances of the game
         that it is running. */
         void setLocked(const bool& locked);
+        /** Attempts to load an Ogre plugin from file. mRoot must be initalised at this point. */
+        bool loadPlugin(const Ogre::String);
+        bool loadPlugins();
         /* event window listeners */
         void windowResized(Ogre::RenderWindow *rw);
         bool windowClosing(Ogre::RenderWindow *rw);
@@ -46,10 +48,7 @@ class GameRoot : public Ogre::WindowEventListener
     private:
         Ogre::Root           *mRoot;
         Ogre::RenderWindow   *mRenderWindow;
-        //GameManager          *mGameMgr;
 
-        bool loadPlugin(const Ogre::String);
-        bool loadPlugins();
         bool configureGame();
 };
 

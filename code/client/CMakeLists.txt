@@ -58,6 +58,8 @@ add_dependencies(client SQLite)
 add_dependencies(client Enet)
 add_dependencies(client OgreMax)
 
+add_custom_command(TARGET client PRE_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/ClientTest)
+
 if (MSVC)
 	target_link_libraries(client ${windows_extras}/gettext/lib/intl.lib)
 endif()
@@ -72,6 +74,9 @@ target_link_libraries(client
     )
 
 if (UNIX)
-#    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings)
+    include(GetC11CompilerFlag)
+    get_c11_flag()
+
+    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings ${c11flag})
 endif()
 

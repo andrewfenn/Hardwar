@@ -20,7 +20,7 @@
 #include "GameRoot.h"
 
 #include <fstream>
-#include <stdio.h>
+#include "OgreException.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
    #include <sys/types.h>
@@ -32,7 +32,7 @@ namespace Client
 
 GameRoot::GameRoot()
 {
-   mRoot = 0;
+   mRoot = nullptr;
 }
 
 GameRoot::~GameRoot()
@@ -57,19 +57,19 @@ GameRoot::~GameRoot()
 
 bool GameRoot::loadPlugin(const Ogre::String dir)
 {
-   if (!mRoot)
-      return false;
+    if (mRoot == nullptr)
+        OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "mRoot not initialised", "GameRoot::loadPlugin");
 
-   try
-   {
-      mRoot->loadPlugin(dir);
-   }
-   catch(Ogre::Exception& e)
-   {
-      Ogre::LogManager::getSingleton().logMessage(Ogre::String("Unable to create D3D9 RenderSystem: ") + e.getFullDescription());
-      return false;
-   }
-   return true;
+    try
+    {
+        mRoot->loadPlugin(dir);
+    }
+    catch(Ogre::Exception& e)
+    {
+        Ogre::LogManager::getSingleton().logMessage(Ogre::String("Unable to load plugin: ") + e.getFullDescription());
+        return false;
+    }
+    return true;
 }
 
 bool GameRoot::isLocked()
