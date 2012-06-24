@@ -38,12 +38,21 @@ class GameManager
         GameManager(Ogre::Root*);
         ~GameManager();
 
+        /** Begins running the game */
+        void run();
         /** Signals to begin shutdown of the game. */
         void shutdown();
+        /** Creates all the sub functionilty of the game such as input, music, gui */
+        void createTasks();
+        /** Destroys all tasks still attached to the TaskList */
+        void removeTasks();
         void windowChangedSize(Ogre::RenderWindow*);
         void windowChangedFocus(Ogre::RenderWindow*);
 
     private:
+        /** Grabs all the resource paths and pre-loads all the content. Since we don't
+        have that much it's not so much of a problem however later on we might need to
+        change this to selectively load just the content required. */
         void preloadResources();
 
         Ogre::Root           *mRoot;
@@ -56,12 +65,12 @@ class GameManager
 
         /** If true will shutdown the game */
         bool                 mShutdown;
-        /** If the game has started rendering */
-        bool                 mStarted;
+        /** If the game has started running tasks or rendering then this will be true. */
+        bool                 mRunning;
         /** List of tasks that require running when performing an update */
         GameTaskList         mTasks;
 
-        /** Delay time in miliseconds calculated from the max fps */
+        /** Maximum delay time in miliseconds calculated from the max fps */
         unsigned short       mDelayTime;
         /** Maximum number of frames per second to allow before sleeping */
         unsigned short       mMaxFPS;
