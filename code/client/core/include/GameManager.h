@@ -32,31 +32,39 @@ namespace Client
     */
 class GameManager
 {
-   public:
-      Ogre::SceneManager   *mSceneMgr;
+    public:
+        Ogre::SceneManager   *mSceneMgr;
 
-      GameManager(Ogre::Root*);
-      ~GameManager();
+        GameManager(Ogre::Root*);
+        ~GameManager();
 
-      void start();
-      void windowChangedSize(Ogre::RenderWindow*);
-      void windowChangedFocus(Ogre::RenderWindow*);
-      void shutdown();
+        /** Signals to begin shutdown of the game. */
+        void shutdown();
+        void windowChangedSize(Ogre::RenderWindow*);
+        void windowChangedFocus(Ogre::RenderWindow*);
 
-   private:
-      void preloadResources();
-      Ogre::Root           *mRoot;
-      Ogre::RenderWindow   *mRenderWindow;
-      Ogre::Camera         *mCamera;
-      Ogre::Viewport       *mViewport;
-      RootGameState        *mRootState;
+    private:
+        void preloadResources();
 
-      bool                 mShutdown;
-      bool                 mStarted;
-      GameTaskList         mTasks;
+        Ogre::Root           *mRoot;
+        Ogre::RenderWindow   *mRenderWindow;
+        Ogre::Camera         *mCamera;
+        Ogre::Viewport       *mViewport;
+        /** The root state that the game is on. New states can be children to this root state.
+        States are used to seperate game functionality such as menus, loading screens, in game, etc. */
+        RootGameState        *mRootState;
 
-      unsigned short       mDelayTime;
-      unsigned short       mMaxFPS;
+        /** If true will shutdown the game */
+        bool                 mShutdown;
+        /** If the game has started rendering */
+        bool                 mStarted;
+        /** List of tasks that require running when performing an update */
+        GameTaskList         mTasks;
+
+        /** Delay time in miliseconds calculated from the max fps */
+        unsigned short       mDelayTime;
+        /** Maximum number of frames per second to allow before sleeping */
+        unsigned short       mMaxFPS;
 };
 }
 

@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "GameManager.h"
+
 #include <Ogre.h>
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
     #include <dirent.h>
@@ -25,7 +27,11 @@
 
 namespace Client
 {
-
+/** The Game Root
+        @remarks
+            The Client::GameRoot class handles the OS specific startup and shutdown of
+        tasks.
+    */
 class GameRoot : public Ogre::WindowEventListener
 {
     public:
@@ -48,7 +54,7 @@ class GameRoot : public Ogre::WindowEventListener
     private:
         Ogre::Root           *mRoot;
         Ogre::RenderWindow   *mRenderWindow;
-
+        GameManager          *mGameMgr;
         bool configureGame();
 };
 

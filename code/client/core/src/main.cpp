@@ -41,8 +41,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
 int main( int argc, char **argv ) {
 #endif
    std::string cmdvar;
-   Client::GameRoot* game = OGRE_NEW Client::GameRoot();
+   Client::GameRoot game();
    game->init();
-   OGRE_DELETE game;
    return 0;
 }

@@ -5,6 +5,7 @@ project(ClientTest)
 
 set(ClientTest_source
     ${CMAKE_SOURCE_DIR}/code/client/core/src/GameRoot.cpp
+    ${CMAKE_SOURCE_DIR}/code/client/core/src/GameManager.cpp
     core/TestGameRoot.cpp
 
     core/main.cpp

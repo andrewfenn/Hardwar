@@ -57,8 +57,9 @@ GameRoot::~GameRoot()
 
 bool GameRoot::loadPlugin(const Ogre::String dir)
 {
-    if (mRoot == nullptr)
+    if (mRoot == nullptr) {
         OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "mRoot not initialised", "GameRoot::loadPlugin");
+    }
 
     try
     {
@@ -233,22 +234,17 @@ void GameRoot::init()
       return;
 
    this->configureGame();
- //  mGameMgr = OGRE_NEW GameManager(mRoot);
- //  mGameMgr->start();
+   mGameMgr = OGRE_NEW GameManager(mRoot);
    this->setLocked(false);
 }
 
 bool GameRoot::configureGame()
 {
     /* Load config settings from ogre.cfg */
-    if( !mRoot->restoreConfig())
+    if( !mRoot->restoreConfig() && !mRoot->showConfigDialog() )
     {
-      // If there is no config file, show the configuration dialog
-      if( !mRoot->showConfigDialog())
-      {
-         /* If game can't be configured, throw exception and quit application */
-         throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR, "Error - Couldn't Configure Renderwindow", "Game Error");
-      }
+        /* If game can't be configured, throw exception and quit application */
+        throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR, "Error - Couldn't Configure Renderwindow", "Game Error");
     }
 
     /* Initialise and create a default rendering window */
@@ -260,18 +256,18 @@ bool GameRoot::configureGame()
 
 void GameRoot::windowResized(Ogre::RenderWindow *rw)
 {
- //  mGameMgr->windowChangedSize(rw);
+    mGameMgr->windowChangedSize(rw);
 }
 
 bool GameRoot::windowClosing(Ogre::RenderWindow *rw)
 {
-  // mGameMgr->shutdown();
-   return true;
+    mGameMgr->shutdown();
+    return true;
 }
 
 void GameRoot::windowFocusChange(Ogre::RenderWindow *rw)
 {
-  // mGameMgr->windowChangedFocus(rw);
+    mGameMgr->windowChangedFocus(rw);
 }
 } /* namespace Client */
 
