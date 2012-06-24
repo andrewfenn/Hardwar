@@ -19,3 +19,8 @@ struct GameManagerFixture
 
     GameManager *gameManager;
 };
+
+TEST_FIXTURE(GameManagerFixture, GameManagerUnimplemented)
+{
+    std::cerr << ">> GameManager no unit tests <<" << std::endl;
+}

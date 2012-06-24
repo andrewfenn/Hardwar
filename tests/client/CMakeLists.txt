@@ -8,9 +8,15 @@ set(ClientTest_source
     ${CMAKE_SOURCE_DIR}/code/client/core/src/GameManager.cpp
     ${CMAKE_SOURCE_DIR}/code/client/core/src/RootGameState.cpp
     ${CMAKE_SOURCE_DIR}/code/client/core/src/GameState.cpp
-    ${CMAKE_SOURCE_DIR}/code/client/tasks/src/InputTask.cpp
-    core/TestGameRoot.cpp
 
+    ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
+
+    ${CMAKE_SOURCE_DIR}/code/client/tasks/src/InputTask.cpp
+    ${CMAKE_SOURCE_DIR}/code/client/tasks/src/NetworkTask.cpp
+
+    core/TestGameRoot.cpp
+    core/TestGameManager.cpp
+    core/TestNetworkTask.cpp
     core/main.cpp
 )
 source_group("ClientTest" FILES ${ClientTest_source})
@@ -31,7 +37,7 @@ include_directories(
 )
 
 
-link_libraries(UnitTest)
+link_libraries(UnitTest Enet)
 
 if (WIN32)
    set(exe "WIN32")
