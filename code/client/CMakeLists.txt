@@ -52,6 +52,7 @@ endif ()
 
 link_libraries(Enet SQLite OgreMax)
 
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/)
 add_executable(client ${exe} ${client_source} ${shared_source})
 
 add_dependencies(client SQLite)

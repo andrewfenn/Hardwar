@@ -42,8 +42,7 @@ endif ()
 
 link_libraries(Enet SQLite)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/)
 add_executable(server ${exe} ${folder_source} ${shared_source})
 
 target_link_libraries(server
