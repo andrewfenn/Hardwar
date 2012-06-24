@@ -33,7 +33,7 @@ namespace Hardwar
          const Ogre::Vector3 getPosition();
          const Ogre::Quaternion getRotation();
          const Ogre::String getMeshName();
-         const unsigned int getID();
+         unsigned int getID();
          void setPosition(const Ogre::Vector3);
          void setRotation(const Ogre::Quaternion);
          void setMeshName(const Ogre::String);

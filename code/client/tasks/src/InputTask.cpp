@@ -177,7 +177,7 @@ void InputTask::update()
    }
 }
 
-const bool InputTask::disable(const std::string& instanceName)
+bool InputTask::disable(const std::string& instanceName)
 {
    if (mDisabled.find(instanceName) != mDisabled.end())
    {
@@ -187,7 +187,7 @@ const bool InputTask::disable(const std::string& instanceName)
    return false;
 }
 
-const bool InputTask::enable(const std::string& instanceName)
+bool InputTask::enable(const std::string& instanceName)
 {
    if (mDisabled.find(instanceName) != mDisabled.end())
    {
@@ -219,7 +219,7 @@ void InputTask::enableAll()
    }
 }
 
-const bool InputTask::isEnabled(const std::string& instanceName)
+bool InputTask::isEnabled(const std::string& instanceName)
 {
    if (mDisabled.find(instanceName) == mDisabled.end())
    {

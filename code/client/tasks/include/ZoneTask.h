@@ -45,7 +45,7 @@ class ZoneTask : public GameTask
       /** Clears all currently loaded zones */
       void clear();
       /** Returns the total number of different zones */
-      const int getTotal();
+      int getTotal();
       /** Retrieves a pointer to the current zone that the player is in. */
       Zone* getCurrent();
       void shutdown();

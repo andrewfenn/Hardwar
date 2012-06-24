@@ -56,7 +56,7 @@ protected:
   enum _fadeop {
       FADE_NONE,
       FADE_IN,
-      FADE_OUT,
+      FADE_OUT
   } _fadeop;
 };
 

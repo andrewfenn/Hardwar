@@ -56,7 +56,7 @@ void ZoneTask::clear()
    mZones.clear();
 }
 
-const int ZoneTask::getTotal()
+int ZoneTask::getTotal()
 {
    return mZones.size();
 }

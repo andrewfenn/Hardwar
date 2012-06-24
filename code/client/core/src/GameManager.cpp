@@ -23,10 +23,10 @@
 #include "InputTask.h"
 #include "NetworkTask.h"
 #include "ZoneTask.h"
-#include "GuiTask.h"
+//#include "GuiTask.h"
 
 #include "MenuState.h"
-#include "ConsoleState.h"
+//#include "ConsoleState.h"
 
 namespace Client
 {
@@ -50,14 +50,14 @@ GameManager::GameManager(Ogre::Root* root)
    mTasks.add("Input", OGRE_NEW InputTask);
    mTasks.add("Network", OGRE_NEW NetworkTask);
    mTasks.add("Zone", OGRE_NEW ZoneTask);
-   mTasks.add("Gui", OGRE_NEW GuiTask(mRenderWindow, mSceneMgr));
+   //mTasks.add("Gui", OGRE_NEW GuiTask(mRenderWindow, mSceneMgr));
 
    /* create root state */
    mRootState = OGRE_NEW RootGameState(&mTasks, mRoot, mViewport);
 
    /* attach game modules to root state */
-   mRootState->add(OGRE_NEW ConsoleState);
-   mRootState->add(OGRE_NEW MenuState);
+   //mRootState->add(OGRE_NEW ConsoleState);
+   //mRootState->add(OGRE_NEW MenuState);
    mStarted = true;
 
    /* 
@@ -175,12 +175,6 @@ void GameManager::preloadResources()
    
     /* Initialise resources */
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-}
-
-
-void GameManager::start()
-{
-
 }
 
 void GameManager::shutdown(void)

@@ -39,7 +39,7 @@ void RootGameState::update(unsigned long timeElapsed)
    this->updateAllChildren(timeElapsed);
 }
 
-const bool RootGameState::shouldExit()
+bool RootGameState::shouldExit()
 {
    return mShutdown;
 }

@@ -25,6 +25,11 @@ namespace Client
 
 class GameTaskList;
 
+/** Game Task
+        @remarks
+            The Client::GameTask class is a representation for a piece of functionality
+        that the game needs to run every update. This could be music, networkng or input
+    */
 class GameTask
 {
    public:

@@ -29,7 +29,7 @@ public:
    RootGameState(GameTaskList* gametasks, Ogre::Root* root, Ogre::Viewport* viewport);
    ~RootGameState();
    void update(unsigned long lTimeElapsed);
-   const bool shouldExit();
+   bool shouldExit();
    void shutdown();
 private:
    bool mShutdown;

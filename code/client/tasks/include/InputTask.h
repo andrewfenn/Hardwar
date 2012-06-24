@@ -41,12 +41,12 @@ public:
 
     /** Disables access to an input listener. When set the instance won't recieve
     keypresses, mouse events, etc. */
-    const bool disable(const std::string& instanceName);
+    bool disable(const std::string& instanceName);
     /** Enables access to an input listerner */
-    const bool enable(const std::string& instanceName);
+    bool enable(const std::string& instanceName);
     void disableAll();
     void enableAll();
-    const bool isEnabled(const std::string& instanceName);
+    bool isEnabled(const std::string& instanceName);
 
     void addKeyListener(OIS::KeyListener *keyListener, const std::string& instanceName);
     void addMouseListener(OIS::MouseListener *mouseListener, const std::string& instanceName);

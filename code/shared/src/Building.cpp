@@ -58,7 +58,7 @@ namespace Hardwar
       mRotation = rotation;
    }
 
-   const unsigned int Building::getID()
+   unsigned int Building::getID()
    {
       return mID;
    }
