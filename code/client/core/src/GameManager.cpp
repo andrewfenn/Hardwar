@@ -21,11 +21,11 @@
 
 /* game tasks */
 #include "InputTask.h"
-#include "NetworkTask.h"
-#include "ZoneTask.h"
+//#include "NetworkTask.h"
+//#include "ZoneTask.h"
 //#include "GuiTask.h"
 
-#include "MenuState.h"
+//#include "MenuState.h"
 //#include "ConsoleState.h"
 
 namespace Client
@@ -48,8 +48,8 @@ GameManager::GameManager(Ogre::Root* root)
 
    /* setup system tasks */
    mTasks.add("Input", OGRE_NEW InputTask);
-   mTasks.add("Network", OGRE_NEW NetworkTask);
-   mTasks.add("Zone", OGRE_NEW ZoneTask);
+   //mTasks.add("Network", OGRE_NEW NetworkTask);
+   //mTasks.add("Zone", OGRE_NEW ZoneTask);
    //mTasks.add("Gui", OGRE_NEW GuiTask(mRenderWindow, mSceneMgr));
 
    /* create root state */
