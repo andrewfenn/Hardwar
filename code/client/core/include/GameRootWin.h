@@ -1,6 +1,6 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2010  Andrew Fenn
+    Copyright © 2012  Andrew Fenn
 
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,30 +18,16 @@
 
 #pragma once
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-    #include "GameRootLinux.h"
-#elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    #include "GameRootWindows.h"
-#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-    // TODO: Add OSX implementation
-#endif
-
-#include "GameManager.h"
-#include <Ogre.h>
-
 namespace Client
 {
-/** The Game Root
+/** The Game Root Windows
         @remarks
-            The Client::GameRoot class handles the OS specific startup and shutdown of
-        tasks.
+            The Client::GameRootPlatform is a parent class that handles the windows specific implementation
+        of functionality that GameRoot inherits.
     */
-class GameRoot : public Ogre::WindowEventListener, public GameRootPlatform
+class GameRootPlatform
 {
     public:
-        GameRoot();
-       ~GameRoot();
-        void init();
         /** Check if the game is already running.
         @return bool true if not running, false if another process has already started. */
         bool isLocked();
@@ -49,17 +35,7 @@ class GameRoot : public Ogre::WindowEventListener, public GameRootPlatform
         that it is running. */
         void setLocked(const bool& locked);
         /** Attempts to load an Ogre plugin from file. mRoot must be initalised at this point. */
-        bool loadPlugin(const Ogre::String);
         bool loadPlugins();
-        /* event window listeners */
-        void windowResized(Ogre::RenderWindow *rw);
-        bool windowClosing(Ogre::RenderWindow *rw);
-        void windowFocusChange(Ogre::RenderWindow *rw);
-    private:
-        Ogre::Root           *mRoot;
-        Ogre::RenderWindow   *mRenderWindow;
-        GameManager          *mGameMgr;
-        bool configureGame();
 };
 
 }

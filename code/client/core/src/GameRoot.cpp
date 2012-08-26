@@ -39,13 +39,6 @@ GameRoot::~GameRoot()
 {
     Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
 
-/*
-   if (mGameMgr)
-   {
-      OGRE_DELETE mGameMgr;
-      mGameMgr = 0;
-   }
-  */
     if(mRoot)
     {
         mRoot->getAutoCreatedWindow()->removeAllViewports();
