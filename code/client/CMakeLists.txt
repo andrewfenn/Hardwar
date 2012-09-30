@@ -7,10 +7,7 @@ SET(HardwarClient_MAJOR_VERSION ${HARDWAR_MAJOR_VERSION})
 SET(HardwarClient_MINOR_VERSION ${HARDWAR_MINOR_VERSION})
 SET(HardwarClient_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
 
-# searches for all .cpp and .h files
-
 add_subdirectory("core/")
-
 source_group("Client" FILES ${client_source})
 
 set(shared_source
@@ -59,7 +56,7 @@ add_dependencies(client SQLite)
 add_dependencies(client Enet)
 add_dependencies(client OgreMax)
 
-add_custom_command(TARGET client PRE_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/ClientTest)
+add_custom_command(TARGET client PRE_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/clientTest)
 
 if (MSVC)
 	target_link_libraries(client ${windows_extras}/gettext/lib/intl.lib)
