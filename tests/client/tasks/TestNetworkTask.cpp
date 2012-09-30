@@ -10,7 +10,7 @@ struct NetworkTaskFixture
     NetworkTaskFixture()
     {
     }
-    
+
     ~NetworkTaskFixture()
     {
     }

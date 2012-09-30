@@ -4,18 +4,15 @@ cmake_policy(SET CMP0003 NEW)
 project(clientTest)
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/core/" "${CMAKE_CURRENT_BINARY_DIR}/client/core/")
+add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/tasks/" "${CMAKE_CURRENT_BINARY_DIR}/client/tasks/")
 
 set(clientTest_source
     ${client_source}
-
     ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
-    ${CMAKE_SOURCE_DIR}/code/client/tasks/src/InputTask.cpp
-    ${CMAKE_SOURCE_DIR}/code/client/tasks/src/NetworkTask.cpp
-
     core/TestGameRoot.cpp
     core/TestGameManager.cpp
-    core/TestNetworkTask.cpp
-    core/main.cpp
+    tasks/TestNetworkTask.cpp
+    main.cpp
 )
 
 source_group("clientTest" FILES ${clientTest_source})
