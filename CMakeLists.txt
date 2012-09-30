@@ -3,14 +3,17 @@ project(HARDWAR)
 cmake_policy(SET CMP0003 NEW)
 
 # project version
-SET( HARDWAR_MAJOR_VERSION 0 )
-SET( HARDWAR_MINOR_VERSION 1 )
-SET( HARDWAR_PATCH_LEVEL 0 )
+set( HARDWAR_MAJOR_VERSION 0 )
+set( HARDWAR_MINOR_VERSION 1 )
+set( HARDWAR_PATCH_LEVEL 0 )
 
-SET( CMAKE_MODULE_PATH   "${CMAKE_MODULE_PATH}"
-                         "${HARDWAR_SOURCE_DIR}/cmake/modules"
-                         "${HARDWAR_SOURCE_DIR}/cmake/scripts"
- )
+set( CMAKE_MODULE_PATH
+    "${CMAKE_MODULE_PATH}"
+    "${HARDWAR_SOURCE_DIR}/cmake/modules"
+    "${HARDWAR_SOURCE_DIR}/cmake/scripts"
+)
+
+include(SourceFiles)
 
 message(STATUS "Building Hardwar version ${HARDWAR_VERSION_STRING}")
 set(abi_version ${HARDWAR_VERSION_STRING})

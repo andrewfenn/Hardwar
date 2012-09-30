@@ -1,16 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0003 NEW)
 
-project(ClientTest)
+project(clientTest)
 
-set(ClientTest_source
-    ${CMAKE_SOURCE_DIR}/code/client/core/src/GameRoot.cpp
-    ${CMAKE_SOURCE_DIR}/code/client/core/src/GameManager.cpp
-    ${CMAKE_SOURCE_DIR}/code/client/core/src/RootGameState.cpp
-    ${CMAKE_SOURCE_DIR}/code/client/core/src/GameState.cpp
+add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/core/" "${CMAKE_CURRENT_BINARY_DIR}/client/core/")
+
+set(clientTest_source
+    ${client_source}
 
     ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
-
     ${CMAKE_SOURCE_DIR}/code/client/tasks/src/InputTask.cpp
     ${CMAKE_SOURCE_DIR}/code/client/tasks/src/NetworkTask.cpp
 
@@ -19,7 +17,8 @@ set(ClientTest_source
     core/TestNetworkTask.cpp
     core/main.cpp
 )
-source_group("ClientTest" FILES ${ClientTest_source})
+
+source_group("clientTest" FILES ${clientTest_source})
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/dependencies/UnitTest++/src")
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
@@ -36,7 +35,6 @@ include_directories(
    ${CMAKE_SOURCE_DIR}/code/shared/include
 )
 
-
 link_libraries(UnitTest Enet)
 
 if (WIN32)
@@ -44,16 +42,16 @@ if (WIN32)
 endif ()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/tests/)
-add_executable(ClientTest ${exe} ${ClientTest_source})
+add_executable(clientTest ${exe} ${clientTest_source})
 
-add_dependencies(ClientTest UnitTest)
-add_dependencies(ClientTest Enet)
+add_dependencies(clientTest UnitTest)
+add_dependencies(clientTest Enet)
 
-target_link_libraries(ClientTest
+target_link_libraries(clientTest
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${Boost_LIBRARIES}
     ${OIS_LIBRARIES}
-    )
+)
 
 if(UNIX)
     include(GetC11CompilerFlag)
@@ -61,6 +59,6 @@ if(UNIX)
     add_definitions(-Wall -pedantic -Wextra -Wwrite-strings ${c11flag})
 endif()
 
-set_target_properties(ClientTest PROPERTIES SOLUTION_FOLDER UnitTests)
+set_target_properties(clientTest PROPERTIES SOLUTION_FOLDER UnitTests)
 
-add_custom_command(TARGET ClientTest POST_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/ClientTest)
+add_custom_command(TARGET clientTest POST_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/clientTest)
