@@ -8,6 +8,7 @@ SET(HardwarClient_MINOR_VERSION ${HARDWAR_MINOR_VERSION})
 SET(HardwarClient_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
 
 add_subdirectory("core/")
+add_subdirectory("tasks/")
 source_group("Client" FILES ${client_source})
 
 set(shared_source
