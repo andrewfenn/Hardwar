@@ -16,7 +16,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GameRoot.h"
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+    #include "GameRootLinux.h"
+#elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+    #include "GameRootWindows.h"
+#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+    // TODO: Add OSX implementation
+#endif
+
 #include <Ogre.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -40,8 +47,16 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
 #else
 int main( int argc, char **argv ) {
 #endif
-   std::string cmdvar;
-   Client::GameRoot game();
-   game->init();
-   return 0;
+    std::string cmdvar;
+
+    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+        Client::GameRootLinux game();
+    #elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        Client::GameRootWindows game();
+    #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+        Client::GameRootOSX game();
+    #endif
+
+    game->init();
+return 0;
 }

@@ -21,19 +21,21 @@
 namespace Client
 {
 
-bool GameRootPlatform::isLocked()
+bool GameRootWindows::isLocked()
 {
-    return false;
+    std::cerr << "STUB: GameRootWindows::isLocked" << std::endl;
+    return true;
 }
 
-void GameRootPlatform::setLocked(const bool& locked)
+void GameRootWindows::setLocked(const bool& locked)
 {
-
+    std::cerr << "STUB: GameRootWindows::setLocked" << std::endl;
+    return true;
 }
 
-bool GameRootPlatform::loadPlugins()
+bool GameRootWindows::loadPlugins()
 {
-    HRESULT hr; 
+    HRESULT hr;
     DWORD dwDirectXVersion = 0; 
     TCHAR strDirectXVersion[10]; 
 

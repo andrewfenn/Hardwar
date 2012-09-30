@@ -18,7 +18,10 @@
 
 #pragma once
 
+#include "GameRoot.h"
+
 #include <dirent.h>
+#include "Ogre.h"
 
 namespace Client
 {
@@ -27,7 +30,7 @@ namespace Client
             The Client::GameRootPlatform is a parent class that handles the linux specific implementation
         of functionality that GameRoot inherits.
     */
-class GameRootPlatform
+class GameRootLinux: public GameRoot
 {
     public:
         /** Check if the game is already running.

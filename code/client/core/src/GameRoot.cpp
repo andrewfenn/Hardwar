@@ -22,11 +22,6 @@
 #include <fstream>
 #include "OgreException.h"
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-   #include <sys/types.h>
-   #include <unistd.h>
-#endif
-
 namespace Client
 {
 
@@ -66,169 +61,21 @@ bool GameRoot::loadPlugin(const Ogre::String dir)
     return true;
 }
 
-bool GameRoot::isLocked()
-{
-   /* FIXME: Add Windows and OSX implementation */
-   #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-      std::fstream runfile;
-      char* buf;
-      int len, pid;
-      runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
-
-      // No file, game not running
-      if (!runfile.is_open())
-         return false;
-         
-      runfile.seekg (0, std::ios::end);
-      len = runfile.tellg();
-      runfile.seekg (0, std::ios::beg);
-
-      if (len > 20)
-      {
-         // should only store a number         
-         runfile.close();
-         return true;
-      }
-      buf = OGRE_NEW char[len];
-      runfile.read(buf,len);
-      runfile.close();
-
-      pid = atoi(buf);
-
-      OGRE_DELETE buf;
-      buf = 0;
-
-      if (pid < 1)
-         return false;
-
-      Ogre::String proc = "/proc/"+Ogre::StringConverter::toString(pid)+"/status";
-      runfile.open(proc.c_str(), std::fstream::in);
-
-      // No file, game not running
-      if (!runfile.is_open())
-         return false;
-         
-      runfile.close();
-      return true;
-   #endif
-
-   return false;
-}
-
-void GameRoot::setLocked(const bool& locked)
-{
-   /* FIXME: Add Windows and OSX implementation */
-   #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-      std::fstream runfile;
-      std::string buf;
-
-      remove("/var/lock/hardwar");
-      if (locked)
-      {
-         buf = Ogre::String(Ogre::StringConverter::toString(getpid()));
-         runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
-         runfile.write(buf.c_str(),buf.size());
-         runfile.close();
-      }
-   #endif
-}
-
-bool GameRoot::loadPlugins()
-{
-   mRoot = OGRE_NEW Ogre::Root("", "game.cfg", "./logs/ogre.log");
-
-   #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-      HRESULT hr; 
-      DWORD dwDirectXVersion = 0; 
-      TCHAR strDirectXVersion[10]; 
-
-      hr = GetDXVersion( &dwDirectXVersion, strDirectXVersion, 10 ); 
-
-      if(!SUCCEEDED(hr))
-         return false;
-
-      ostringstream dxinfoStream; 
-      dxinfoStream << "DirectX version: " << strDirectXVersion; 
-      LogManager::getSingleton().logMessage(dxinfoStream.str()); 
-
-      if(dwDirectXVersion < 0x00090000)
-         return false;
-
-      if (!this->loadPlugin("RenderSystem_Direct3D9"))
-      {
-         if (!this->loadPlugin("RenderSystem_GL"))
-            return false;
-      }
-
-      if (!this->loadPlugin("Plugin_OctreeSceneManager"))
-         return false;
-
-      if (!this->loadPlugin("Plugin_CgProgramManager"))
-         return false;
-   #endif
-
-   #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-      bool error = false;
-      bool loaded = false;
-      if (opendir("/usr/lib/OGRE") != 0)
-      {
-         if (!this->loadPlugin("/usr/lib/OGRE/RenderSystem_GL"))
-            error = true;
-
-         if (!this->loadPlugin("/usr/lib/OGRE/Plugin_OctreeSceneManager"))
-            error = true;
-
-         if (!this->loadPlugin("/usr/lib/OGRE/Plugin_CgProgramManager"))
-            error = true;
-
-         loaded = true;
-      }
-
-      if ((!loaded || error) && opendir("/usr/local/lib/OGRE") != 0)
-      {
-         error = false;
-
-         if (!this->loadPlugin("/usr/local/lib/OGRE/RenderSystem_GL"))
-            error = true;
-
-         if (!this->loadPlugin("/usr/local/lib/OGRE/Plugin_OctreeSceneManager"))
-            error = true;
-
-         if (!this->loadPlugin("/usr/local/lib/OGRE/Plugin_CgProgramManager"))
-            error = true;
-
-         loaded = true;
-      }
-
-      if (!loaded || error)
-      {
-         if (!this->loadPlugin("RenderSystem_GL"))
-            return false;
-
-         if (!this->loadPlugin("Plugin_OctreeSceneManager"))
-            return false;
-
-         if (!this->loadPlugin("Plugin_CgProgramManager"))
-            return false;
-      }
-   #endif
-
-   return true;
-}
-
 void GameRoot::init()
 {
-   if (this->isLocked())
-      return;
+    if (this->isLocked())
+        return;
 
-   this->setLocked(true);
+    this->setLocked(true);
 
-   if (!this->loadPlugins())
-      return;
+    mRoot = OGRE_NEW Ogre::Root("", "game.cfg", "./logs/ogre.log");
 
-   this->configureGame();
-   mGameMgr = OGRE_NEW GameManager(mRoot);
-   this->setLocked(false);
+    if (!this->loadPlugins())
+        return;
+
+    this->configureGame();
+    mGameMgr = OGRE_NEW GameManager(mRoot);
+    this->setLocked(false);
 }
 
 bool GameRoot::configureGame()

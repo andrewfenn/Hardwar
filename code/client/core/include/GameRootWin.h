@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "GameRoot.h"
+
 namespace Client
 {
 /** The Game Root Windows
@@ -25,7 +27,7 @@ namespace Client
             The Client::GameRootPlatform is a parent class that handles the windows specific implementation
         of functionality that GameRoot inherits.
     */
-class GameRootPlatform
+class GameRootWindows : public GameRoot
 {
     public:
         /** Check if the game is already running.

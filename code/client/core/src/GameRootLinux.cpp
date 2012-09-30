@@ -17,59 +17,59 @@
 */
 
 #include "GameRootLinux.h"
+
+#include <fstream>
 #include <sys/types.h>
 #include <unistd.h>
 
 namespace Client
 {
 
-bool GameRootPlatform::isLocked()
+bool GameRootLinux::isLocked()
 {
-      std::fstream runfile;
-      char* buf;
-      int len, pid;
-      runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
+    std::fstream runfile;
+    char* buf;
+    int len, pid;
+    runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
 
-      // No file, game not running
-      if (!runfile.is_open())
-         return false;
-         
-      runfile.seekg (0, std::ios::end);
-      len = runfile.tellg();
-      runfile.seekg (0, std::ios::beg);
+    // No file, game not running
+    if (!runfile.is_open())
+        return false;
 
-      if (len > 20)
-      {
-         // should only store a number         
-         runfile.close();
-         return true;
-      }
-      buf = OGRE_NEW char[len];
-      runfile.read(buf,len);
-      runfile.close();
+    runfile.seekg (0, std::ios::end);
+    len = runfile.tellg();
+    runfile.seekg (0, std::ios::beg);
 
-      pid = atoi(buf);
+    if (len > 20)
+    {
+        // should only store a number         
+        runfile.close();
+        return true;
+    }
+    buf = OGRE_NEW char[len];
+    runfile.read(buf,len);
+    runfile.close();
 
-      OGRE_DELETE buf;
-      buf = 0;
+    pid = atoi(buf);
 
-      if (pid < 1)
-         return false;
+    OGRE_DELETE buf;
+    buf = 0;
 
-      Ogre::String proc = "/proc/"+Ogre::StringConverter::toString(pid)+"/status";
-      runfile.open(proc.c_str(), std::fstream::in);
+    if (pid < 1)
+        return false;
 
-      // No file, game not running
-      if (!runfile.is_open())
-         return false;
-         
-      runfile.close();
-      return true;
+    Ogre::String proc = "/proc/"+Ogre::StringConverter::toString(pid)+"/status";
+    runfile.open(proc.c_str(), std::fstream::in);
 
-   return false;
+    // No file, game not running
+    if (!runfile.is_open())
+        return false;
+
+    runfile.close();
+    return true;
 }
 
-void GameRootPlatform::setLocked(const bool& locked)
+void GameRootLinux::setLocked(const bool& locked)
 {
       std::fstream runfile;
       std::string buf;
@@ -84,7 +84,7 @@ void GameRootPlatform::setLocked(const bool& locked)
       }
 }
 
-bool GameRootPlatform::loadPlugins()
+bool GameRootLinux::loadPlugins()
 {
     bool error = false;
     bool loaded = false;
