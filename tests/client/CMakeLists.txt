@@ -5,6 +5,7 @@ project(clientTest)
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/core/" "${CMAKE_CURRENT_BINARY_DIR}/client/core/")
 add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/tasks/" "${CMAKE_CURRENT_BINARY_DIR}/client/tasks/")
+add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/states/" "${CMAKE_CURRENT_BINARY_DIR}/client/states/")
 
 set(clientTest_source
     ${client_source}

@@ -136,9 +136,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OgreMax")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
-
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
 add_subdirectory(code/client)

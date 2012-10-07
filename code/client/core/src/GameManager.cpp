@@ -25,7 +25,7 @@
 //#include "ZoneTask.h"
 //#include "GuiTask.h"
 
-//#include "MenuState.h"
+#include "MenuState.h"
 //#include "ConsoleState.h"
 
 namespace Client
@@ -51,7 +51,7 @@ GameManager::GameManager(Ogre::Root* root)
 
     /* attach game modules to root state */
     //mRootState->add(OGRE_NEW ConsoleState);
-    //mRootState->add(OGRE_NEW MenuState);
+    mRootState->add(OGRE_NEW MenuState);
 
     mMaxFPS = 60;
     mDelayTime = ceil( (float) 1000 / mMaxFPS );

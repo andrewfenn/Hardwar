@@ -9,6 +9,7 @@ SET(HardwarClient_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
 
 add_subdirectory("core/")
 add_subdirectory("tasks/")
+add_subdirectory("states/")
 source_group("Client" FILES ${client_source})
 
 set(shared_source
@@ -48,14 +49,13 @@ if (WIN32)
    set(exe "WIN32")
 endif ()
 
-link_libraries(Enet SQLite OgreMax)
+link_libraries(Enet SQLite)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/)
 add_executable(client ${exe} ${client_source} ${shared_source})
 
 add_dependencies(client SQLite)
 add_dependencies(client Enet)
-add_dependencies(client OgreMax)
 
 add_custom_command(TARGET client PRE_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/clientTest)
 
