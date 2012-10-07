@@ -12,6 +12,7 @@ set(clientTest_source
     core/TestGameRoot.cpp
     core/TestGameManager.cpp
     core/TestGameState.cpp
+    core/TestGameTask.cpp
     tasks/TestNetworkTask.cpp
     main.cpp
 )

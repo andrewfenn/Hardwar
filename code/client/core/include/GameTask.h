@@ -32,84 +32,99 @@ class GameTaskList;
     */
 class GameTask
 {
-   public:
-       virtual void init() = 0;
-       virtual void shutdown() = 0;
-       virtual void update() = 0;
+    public:
 
-       virtual void changeSize(Ogre::RenderWindow*) { }
-       virtual void changeFocus(Ogre::RenderWindow*) { }
+        GameTask()
+        {
+            mTaskList = nullptr;
+        }
 
-       void setTaskList(GameTaskList* gametasks)
-       {
-         mTaskList = gametasks;
-       }
-   protected:
-      GameTaskList* mTaskList;
+        virtual void init() = 0;
+        virtual void shutdown() = 0;
+        virtual void update() = 0;
+
+        virtual void changeSize(Ogre::RenderWindow*) { }
+        virtual void changeFocus(Ogre::RenderWindow*) { }
+
+        void setTaskList(GameTaskList* gametasks)
+        {
+            mTaskList = gametasks;
+        }
+
+        GameTaskList* getTaskList()
+        {
+            return mTaskList;
+        }
+    protected:
+        GameTaskList* mTaskList;
 };
 
 typedef std::map<Ogre::String, GameTask*> TaskList;
 class GameTaskList
 {
-   public:
-      void* add(const Ogre::String& name, GameTask* task)
-      {
-         if (mList.find(name) != mList.end())
-         {
-            OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
-               "A task with the name " + name + " already exists",
-               "GameTaskList::add" );
-         }
-         mList.insert(TaskList::value_type(name, task));
-         task->setTaskList(this);
-         task->init();
-         return task;
-      }
+    public:
+        void* add(const Ogre::String& name, GameTask* task)
+        {
+            if (mList.find(name) != mList.end())
+            {
+                OGRE_EXCEPT(Ogre::Exception::ERR_DUPLICATE_ITEM,
+                "A task with the name " + name + " already exists",
+                "GameTaskList::add" );
+            }
 
-      void* get(const Ogre::String& name)
-      {
-         TaskList::const_iterator i = mList.find(name);
-         if (i != mList.end())
-         {
-            return i->second;
-         }
-         OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
+            mList.insert(TaskList::value_type(name, task));
+            task->setTaskList(this);
+            task->init();
+            return task;
+        }
+
+        void* get(const Ogre::String& name)
+        {
+            TaskList::const_iterator i = mList.find(name);
+            if (i != mList.end())
+            {
+               return i->second;
+            }
+
+            OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND,
             "Cannot find Task with name " + name,
             "GameTaskList::get");
-      }
+        }
 
-      bool has(const Ogre::String& name)
-      {
-         return (mList.find(name) != mList.end());
-      }
+        bool has(const Ogre::String& name)
+        {
+            return (mList.find(name) != mList.end());
+        }
 
-      void remove(const Ogre::String& name)
-      {
-         TaskList::iterator i = mList.find(name);
-         if (i != mList.end())
-         {
-            i->second->shutdown();
-            OGRE_DELETE i->second;
-            mList.erase(i);
-         }
-      }
+        bool remove(const Ogre::String& name)
+        {
+            TaskList::iterator i = mList.find(name);
+            if (i != mList.end())
+            {
+                i->second->shutdown();
+                OGRE_DELETE i->second;
+                mList.erase(i);
+                return true;
+            }
+            return false;
+        }
 
-      void removeAll()
-      {
-         for(TaskList::iterator i = mList.begin(); i != mList.end(); i++)
-         {
-            i->second->shutdown();
-            OGRE_DELETE i->second;
-         }
-         mList.clear();
-      }
+        void removeAll()
+        {
+            for(TaskList::iterator i = mList.begin(); i != mList.end(); i++)
+            {
+                i->second->shutdown();
+                OGRE_DELETE i->second;
+            }
+            mList.clear();
+        }
 
-      TaskList* list()
-      {
-         return &mList;
-      }
-   private:
-      TaskList mList;
+        TaskList* list()
+        {
+            return &mList;
+        }
+    private:
+        TaskList mList;
 };
 
 }
