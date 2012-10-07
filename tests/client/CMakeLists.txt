@@ -11,6 +11,7 @@ set(clientTest_source
     ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
     core/TestGameRoot.cpp
     core/TestGameManager.cpp
+    core/TestGameState.cpp
     tasks/TestNetworkTask.cpp
     main.cpp
 )
