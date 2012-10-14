@@ -50,14 +50,16 @@ int main( int argc, char **argv ) {
     std::string cmdvar;
 
     #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-        Client::GameRootLinux game();
+        Client::GameRootLinux* game = OGRE_NEW Client::GameRootLinux;
     #elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        Client::GameRootWindows game();
+        Client::GameRootWindows* game = OGRE_NEW Client::GameRootWindows;
     #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        Client::GameRootOSX game();
+        Client::GameRootOSX* game = OGRE_NEW Client::GameRootOSX;
     #endif
 
-    game.init();
+    game->init();
+
+    OGRE_DELETE game;
 
     return 0;
 }

@@ -20,9 +20,6 @@
 
 #include "GameRoot.h"
 
-#include <dirent.h>
-#include "Ogre.h"
-
 namespace Client
 {
 /** The Game Root Linux

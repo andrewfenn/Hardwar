@@ -18,6 +18,9 @@
 
 #include "GameRootLinux.h"
 
+#include "Ogre.h"
+
+#include <dirent.h>
 #include <fstream>
 #include <sys/types.h>
 #include <unistd.h>
