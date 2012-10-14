@@ -1,7 +1,7 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2008-2010  Andrew Fenn
-    
+    Copyright © 2008-2012  Andrew Fenn
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,7 +19,6 @@
 #pragma once
 
 #include <OgreRoot.h>
-#include <MyGUI.h>
 #include <OIS.h>
 
 #include "GameState.h"
@@ -46,7 +45,6 @@ class PlayState : public GameState, OIS::KeyListener, OIS::MouseListener
       Ogre::RenderWindow      *mWindow;
 
       OIS::Keyboard           *mInputDevice;
-      MyGUI::Gui              *mGUI;
 
       Ogre::SceneNode         *mWorldNode;
       Ogre::SceneNode         *mWaterNode;

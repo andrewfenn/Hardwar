@@ -11,7 +11,7 @@
 # Once done, this will define
 #
 #  OIS_FOUND - system has OIS
-#  OIS_INCLUDE_DIRS - the OIS include directories 
+#  OIS_INCLUDE_DIRS - the OIS include directories
 #  OIS_LIBRARIES - link these to use OIS
 
 include(FindPkgMacros)
@@ -22,7 +22,7 @@ getenv_path(OIS_HOME)
 getenv_path(OGRE_BYATIS)
 
 # construct search paths
-set(OIS_PREFIX_PATH ${OIS_HOME} ${ENV_OIS_HOME} 
+set(OIS_PREFIX_PATH ${OIS_HOME} ${ENV_OIS_HOME}
   ${OGRE_BYATIS}/sdk ${ENV_OGRE_BYATIS}/sdk/include ${ENV_OGRE_BYATIS}/sdk/lib ${ENV_OGRE_BYATIS})
 create_search_paths(OIS)
 # redo search if prefix path changed

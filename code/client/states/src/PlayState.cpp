@@ -1,7 +1,7 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2008-2010  Andrew Fenn
-    
+    Copyright © 2008-2012  Andrew Fenn
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -32,7 +32,7 @@ void PlayState::enter()
 
    mOverlayMgr   = Ogre::OverlayManager::getSingletonPtr();
    mWindow       = mRoot->getAutoCreatedWindow();
-   mGUI          = MyGUI::Gui::getInstancePtr();
+//   mGUI          = MyGUI::Gui::getInstancePtr();
 
    mSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 

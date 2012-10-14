@@ -6,6 +6,7 @@ project(clientTest)
 add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/core/" "${CMAKE_CURRENT_BINARY_DIR}/client/core/")
 add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/tasks/" "${CMAKE_CURRENT_BINARY_DIR}/client/tasks/")
 add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/states/" "${CMAKE_CURRENT_BINARY_DIR}/client/states/")
+add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/helpers/" "${CMAKE_CURRENT_BINARY_DIR}/client/helpers/")
 
 set(clientTest_source
     ${client_source}
@@ -22,6 +23,7 @@ source_group("clientTest" FILES ${clientTest_source})
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/dependencies/UnitTest++/src")
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
+include_directories(SYSTEM ${CEGUI_INCLUDE_DIR})
 include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
 include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
 
@@ -49,6 +51,7 @@ add_dependencies(clientTest Enet)
 
 target_link_libraries(clientTest
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
+    ${CEGUI_LIBRARIES}
     ${Boost_LIBRARIES}
     ${OIS_LIBRARIES}
 )

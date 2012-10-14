@@ -46,7 +46,7 @@ class GameRoot : public Ogre::WindowEventListener
         virtual void setLocked(const bool& locked) = 0;
         virtual bool loadPlugins() = 0;
 
-    private:
+    protected:
         Ogre::Root           *mRoot;
         Ogre::RenderWindow   *mRenderWindow;
         GameManager          *mGameMgr;

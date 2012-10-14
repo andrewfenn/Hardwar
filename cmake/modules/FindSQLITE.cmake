@@ -40,7 +40,7 @@ elseif (WIN32)
 		${CMAKE_SOURCE_DIR}/dependencies
 	)
 
-	FIND_LIBRARY(SQLITE_LIBRARY 
+	FIND_LIBRARY(SQLITE_LIBRARY
 		NAMES SQLite.lib
 		HINTS
 		PATH_SUFFIXES lib64 lib libs64 libs libs/Win32 libs/Win64 lib/Debug lib/Release

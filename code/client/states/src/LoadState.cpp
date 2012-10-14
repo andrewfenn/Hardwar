@@ -1,7 +1,7 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2008-2010  Andrew Fenn
-    
+    Copyright © 2008-2012  Andrew Fenn
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -37,9 +37,9 @@ void LoadState::enter()
    GuiTask* gui = (GuiTask*) mTasklist->get("Gui");
    gui->resource()->setVisiblePointer(false);
    /* Get MyGUI loading layout */
-   mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
+//   mLayout = MyGUI::LayoutManager::getInstance().load("loading.layout");
 
-   mStatusText = gui->resource()->findWidget<MyGUI::StaticText>("status");
+//   mStatusText = gui->resource()->findWidget<MyGUI::StaticText>("status");
 
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->addKeyListener(this, this->getName());
@@ -61,7 +61,7 @@ LoadState::~LoadState()
    InputTask* input = (InputTask*) mTasklist->get("Input");
    input->removeKeyListener(this->getName());
    input->removeMouseListener(this->getName());
-   MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
+ //  MyGUI::LayoutManager::getInstance().unloadLayout(mLayout);
 }
 
 void LoadState::update( unsigned long timeElapsed )
@@ -79,8 +79,8 @@ void LoadState::update( unsigned long timeElapsed )
 
          if (mNetwork->getRetryAttempts() > 0)
          {
-            mStatusText->setCaption(MyGUI::UString(gettext("Retrying"))+MyGUI::UString(" (")+
-                            MyGUI::UString(Ogre::StringConverter::toString(mNetwork->getRetryAttempts()))+MyGUI::UString(")"));
+/*            mStatusText->setCaption(MyGUI::UString(gettext("Retrying"))+MyGUI::UString(" (")+
+                            MyGUI::UString(Ogre::StringConverter::toString(mNetwork->getRetryAttempts()))+MyGUI::UString(")"));*/
          }
       break;
       case status_listening:
@@ -135,7 +135,7 @@ void LoadState::killLoadbar()
 {
 
    /* TODO: make this a popup window? */
-   mStatusText->setCaption(Ogre::String(gettext("Failed")));
+//   mStatusText->setCaption(Ogre::String(gettext("Failed")));
 }
 
 bool LoadState::keyPressed(const OIS::KeyEvent &e)

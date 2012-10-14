@@ -1,7 +1,7 @@
 /* 
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2009-2010  Andrew Fenn
-    
+    Copyright © 2009-2012  Andrew Fenn
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <MyGUI.h>
+#include <CEGUI.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 #include "GameState.h"
@@ -54,7 +54,7 @@ private:
 
     NetworkTask* mNetwork;
 
-    MyGUI::VectorWidgetPtr mLayout;
+//    MyGUI::VectorWidgetPtr mLayout;
 
     void updateLoadbar();
     void killLoadbar();
@@ -63,7 +63,7 @@ private:
     unsigned short mGUIcount; /* used for GUI animation */
     bool mReverse; /* use for GUI animation */
     unsigned long mGUICounter; /* keeps track of time between animation updates */
-    MyGUI::StaticTextPtr mStatusText;
+//    MyGUI::StaticTextPtr mStatusText;
     bool mDownloads;
 };
 }

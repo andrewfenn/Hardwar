@@ -10,6 +10,10 @@ SET(HardwarClient_PATCH_VERSION ${HARDWAR_PATCH_VERSION})
 add_subdirectory("core/")
 add_subdirectory("tasks/")
 add_subdirectory("states/")
+add_subdirectory("helpers/")
+
+set(client_source ${client_source} core/src/main.cpp)
+
 source_group("Client" FILES ${client_source})
 
 set(shared_source
@@ -35,7 +39,7 @@ include_directories(SYSTEM ${OGRE_Terrain_INCLUDE_DIR})
 include_directories(SYSTEM ${OGRE_Paging_INCLUDE_DIR})
 include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
 include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
-include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
+include_directories(SYSTEM ${CEGUI_INCLUDE_DIR})
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 if (MSVC)
