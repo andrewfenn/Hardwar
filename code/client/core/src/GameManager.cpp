@@ -59,9 +59,6 @@ GameManager::GameManager(Ogre::Root* root)
 
 GameManager::~GameManager()
 {
-    if (!mRunning)
-        return;
-
     /* It's important that the below code remains here rather then in the
     shutdown function so that we know that the object isn't accessing the
     resources while we're trying to destroy them. */
@@ -193,7 +190,7 @@ void GameManager::preloadResources()
 
 void GameManager::shutdown(void)
 {
-   mShutdown = true;
+    mShutdown = true;
 }
 
 } /* namespace Client */
