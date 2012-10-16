@@ -49,10 +49,11 @@ GameManager::GameManager(Ogre::Root* root)
     /* create root state */
     mRootState = OGRE_NEW RootGameState(&mTasks, mRoot, mViewport);
 
+    this->createTasks();
+
     /* attach game modules to root state */
     //mRootState->add(OGRE_NEW ConsoleState);
     mRootState->add(OGRE_NEW MenuState);
-
     mMaxFPS = 60;
     mDelayTime = ceil( (float) 1000 / mMaxFPS );
 }

@@ -73,8 +73,14 @@ void GameRoot::init()
     if (!this->loadPlugins())
         return;
 
-    this->configureGame();
+    if (!this->configureGame())
+        return;
+
+    if (!mRoot->isInitialised())
+        return;
+
     mGameMgr = OGRE_NEW GameManager(mRoot);
+    mGameMgr->run();
     this->setLocked(false);
 }
 
@@ -84,7 +90,8 @@ bool GameRoot::configureGame()
     if( !mRoot->restoreConfig() && !mRoot->showConfigDialog() )
     {
         /* If game can't be configured, throw exception and quit application */
-        throw Ogre::Exception( Ogre::Exception::ERR_INTERNAL_ERROR, "Error - Couldn't Configure Renderwindow", "Game Error");
+        std::cerr << "Game can not be configured" << std::endl;
+        return false;
     }
 
     /* Initialise and create a default rendering window */
