@@ -23,7 +23,7 @@
 #include "InputTask.h"
 #include "NetworkTask.h"
 //#include "ZoneTask.h"
-//#include "GuiTask.h"
+#include "GuiTask.h"
 
 #include "MenuState.h"
 //#include "ConsoleState.h"
@@ -84,7 +84,7 @@ void GameManager::createTasks()
    mTasks.add("Input", OGRE_NEW InputTask);
    mTasks.add("Network", OGRE_NEW NetworkTask);
    //mTasks.add("Zone", OGRE_NEW ZoneTask);
-   //mTasks.add("Gui", OGRE_NEW GuiTask(mRenderWindow, mSceneMgr));
+   mTasks.add("Gui", OGRE_NEW GuiTask(mRenderWindow, mSceneMgr));
 }
 
 void GameManager::removeTasks()

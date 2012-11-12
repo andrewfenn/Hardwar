@@ -192,9 +192,9 @@ bool MenuState::keyReleased(const OIS::KeyEvent &e)
 
 bool MenuState::mouseMoved(const OIS::MouseEvent &e)
 {
-//   ((GuiTask*) mTasklist->get("Gui"))->mGUI->injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
-
     const OIS::MouseState &mouseState = e.state;
+    ((GuiTask*) mTasklist->get("Gui"))->injectInput(mouseState);
+
     mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
     mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
 

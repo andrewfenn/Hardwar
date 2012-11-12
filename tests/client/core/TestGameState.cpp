@@ -62,6 +62,7 @@ TEST_FIXTURE(GameStateFixture, GameStateSetParentReturnsErrorWithNullPointers)
     CHECK_THROW(testState.setParent(parentTestState, taskList, root, nullptr), Ogre::Exception);
     CHECK_THROW(testState.setParent(parentTestState, taskList, nullptr, viewport), Ogre::Exception);
     CHECK_THROW(testState.setParent(parentTestState, nullptr, root, viewport), Ogre::Exception);
-    CHECK_THROW(testState.setParent(nullptr, taskList, root, viewport), Ogre::Exception);*/
+    CHECK_THROW(testState.setParent(nullptr, taskList, root, viewport), Ogre::Exception);
+//*/
 }
 

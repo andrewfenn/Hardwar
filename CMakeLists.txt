@@ -24,14 +24,7 @@ set(CMAKE_DEBUG_POSTFIX "_d" CACHE STRING "Debug Postfitx for libraries")
 endif(WIN32)
 
 if(MSVC80 OR MSVC90 OR MSVC10)
-        # Option is to enable the /MP switch for Visual Studio 2005 or later
-        option(OGITOR_MSVC_ENABLE_MP
-                "Set to ON to build Ogitor with the /MP option (Visual Studio 2005 and above)." ON)
-        mark_as_advanced(OGITOR_MSVC_ENABLE_MP)
-        if(OGITOR_MSVC_ENABLE_MP)
-                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-        endif(OGITOR_MSVC_ENABLE_MP)
-        message(STATUS "Setting Visual Studio 2005+ option /MP to ${HARDWAR_MSVC_ENABLE_MP}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
         add_definitions(-D_SCL_SECURE_NO_WARNINGS)
         add_definitions(-D_CRT_SECURE_NO_WARNINGS)
         add_definitions(-DNOMINMAX)
@@ -114,11 +107,11 @@ endif(NOT OGRE_BUILD_PLATFORM_IPHONE)
 
 if(UNIX)
     get_filename_component(OGRE_PLUGIN_DIR_LINUX ${OGRE_Plugin_OctreeSceneManager_LIBRARY_REL} PATH)
-    set (OGRE_PLUGIN_DIR_LINUX ${OGRE_PLUGIN_DIR_LINUX} CACHE STRING "Ogre plugin dir (release)")
+    set(OGRE_PLUGIN_DIR_LINUX ${OGRE_PLUGIN_DIR_LINUX} CACHE STRING "Ogre plugin dir (release)")
 endif(UNIX)
 
 find_package(OIS REQUIRED)
-find_package(CEGUI REQUIRED)
+find_package(CEGUI REQUIRED COMPONENTS OGRE)
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(HARDWAR_LIBPATH  "${CMAKE_CURRENT_SOURCE_DIR}/lib")

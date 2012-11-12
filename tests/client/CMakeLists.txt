@@ -51,7 +51,7 @@ add_dependencies(clientTest Enet)
 
 target_link_libraries(clientTest
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
-    ${CEGUI_LIBRARIES}
+    ${CEGUI_LIBRARY}
     ${Boost_LIBRARIES}
     ${OIS_LIBRARIES}
 )

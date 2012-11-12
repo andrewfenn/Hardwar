@@ -1,144 +1,148 @@
-# Find CEGUI includes and library
+# Locate CEGUI (Made for CEGUI 7.5)
 #
 # This module defines
-#  CEGUI_INCLUDE_DIR
-#  CEGUI_LIBRARY, the library to link against to use CEGUI.
-#  CEGUILUA_LIBRARY, the library to link against to use the CEGUI script module.
-#  CEGUI_TOLUA_LIBRARY, the library to link against to use Tolua++.
-#  CEGUI_FOUND, If false, do not try to use CEGUI
-#  CEGUI_VERSION, the version as string "x.y.z"
+# CEGUI_FOUND, if false, do not try to link to CEGUI
+# CEGUI_LIBRARY, where to find the librarys
+# CEGUI_INCLUDE_DIR, where to find the headers
 #
-# Input:
-#  ENV{CEGUIDIR}, CEGUI path, optional
+# $CEGUIDIR is an environment variable that would
+# correspond to the ./configure --prefix=$CEGUIDIR
 #
-# Created by Matt Williams to find OGRE libraries
-# Copyright © 2007, Matt Williams
+# There are several COMPONENTS that can be included:
+# NULL, OPENGL, DIRECT3D9, DIRECT3D10, DIRECT3D11, DIRECTFB, OGRE, IRRLICHT
+# Selecting no render as COMPONENT will create a error massage!
 #
-# Modified by Nicolas Schlumberger to find CEGUI libraries
-# and make it run on the Tardis-Infrastucture of the ETH Zurich
-# Copyright 2007, Nicolas Schlumberger
-#
-# Redistribution and use is allowed according to the terms of the BSD license.
-#
-# Several changes and additions by Fabian 'x3n' Landau
-# Lots of simplifications by Adrian Friedli and Reto Grieder
-# Version checking and CEGUILua finding by Reto Grieder
-#                 > www.orxonox.net <
-INCLUDE(CompareVersionStrings)
-INCLUDE(DetermineVersion)
-INCLUDE(FindPackageHandleAdvancedArgs)
-INCLUDE(HandleLibraryTypes)
-# Find CEGUI headers
-FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
-  PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES include include/CEGUI
+# 2011-07-21 Created by Frederik vom Hofe using the findSFML.cmake versions from David Guthrie with code from Robert Osfield.
+
+set(CEGUI_FOUND "YES")
+set(CEGUI_LIBRARY "")
+set(CEGUI_INCLUDE_DIR "")
+
+set( CEGUIDIR $ENV{CEGUIDIR} )
+if ((WIN32 OR WIN64) AND NOT(CYGWIN))
+   # Convert backslashes to slashes
+   string(REGEX REPLACE "\\\\" "/" CEGUIDIR "${CEGUIDIR}")
+endif ()
+
+#To always have the right case sensitive name we use this list and a helper macro:
+set(RENDER_NAME
+   Null
+   OpenGL
+   Direct3D9
+   Direct3D10
+   Direct3D11
+   DirectFB
+   Ogre
+   Irrlicht
 )
-# Inspect CEGUIVersion.h for the version number
-DETERMINE_VERSION(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
-# Find CEGUI library
-FIND_LIBRARY(CEGUI_LIBRARY_OPTIMIZED
-  NAMES CEGUIBase CEGUI
-  PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin
+
+macro(HELPER_GET_CASE_FROM_LIST SEARCHSTR LOOKUPLIST RESULTSTR)
+   set(${RESULTSTR} ${SEARCHSTR}) #default return value if nothing is found
+   foreach(LOOP_S IN LISTS ${LOOKUPLIST})
+      string(TOLOWER ${LOOP_S} LOOP_S_LOWER)
+      string(TOLOWER ${SEARCHSTR} LOOP_SEARCHSTR_LOWER)
+      string(COMPARE EQUAL ${LOOP_S_LOWER} ${LOOP_SEARCHSTR_LOWER} LOOP_STR_COMPARE)
+      if (LOOP_STR_COMPARE)
+         set(${RESULTSTR} ${LOOP_S})
+      endif ()
+   endforeach()
+endmacro()
+
+set( CEGUI_INCLUDE_SEARCH_DIR
+   ${CEGUIDIR}/include
+   ${CEGUIDIR}/cegui/include
+   ~/Library/Frameworks
+   /Library/Frameworks
+   /usr/local/include
+   /usr/include
+   /sw/include # Fink
+   /opt/local/include # DarwinPorts
+   /opt/csw/include # Blastwave
+   /opt/include
+   /usr/freeware/include
 )
-FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
-  NAMES
-    CEGUIBased CEGUIBase_d CEGUIBaseD CEGUIBase_D
-    CEGUId CEGUI_d CEGUID CEGUI_D
-  PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin
+
+#helper
+macro(FIND_PATH_HELPER FILENAME DIR SUFFIX)
+   find_path(${FILENAME}_DIR ${FILENAME} PATHS ${${DIR}} PATH_SUFFIXES ${SUFFIX})
+   if (NOT ${FILENAME}_DIR)
+      message(STATUS "Could not locate ${FILENAME}")
+      set(CEGUI_FOUND "NO")
+   else()
+      message(STATUS "${FILENAME} : ${${FILENAME}_DIR}")
+      list(APPEND CEGUI_INCLUDE_DIR ${${FILENAME}_DIR})
+   endif()
+endmacro()
+
+FIND_PATH_HELPER(CEGUI.h CEGUI_INCLUDE_SEARCH_DIR CEGUI)
+
+if ("${CEGUI_FIND_COMPONENTS}" STREQUAL "")
+   message("ERROR: No CEGUI renderer selected. \n\nSelect a renderer by including it's name in the component list:\n\ne.g. Find_Package(CEGUI REQUIRED COMPONENTS OPENGL)\n\nCEGUI renderers:")
+   FOREACH(LOOP_S IN LISTS RENDER_NAME)
+      message("${LOOP_S}")
+   ENDFOREACH()
+   message("\n")
+   message(SEND_ERROR "Select at last one renderer!" )
+endif()
+
+foreach(COMPONENT ${CEGUI_FIND_COMPONENTS})
+   HELPER_GET_CASE_FROM_LIST( ${COMPONENT} RENDER_NAME COMPONENT_CASE)
+   FIND_PATH_HELPER( "CEGUI${COMPONENT_CASE}Renderer.h" "CEGUI_INCLUDE_SEARCH_DIR" "CEGUI/RendererModules/${COMPONENT_CASE}/;RendererModules/${COMPONENT_CASE}/" )
+endforeach(COMPONENT)
+
+if (APPLE)
+   FIND_PATH(CEGUI_FRAMEWORK_DIR CEGUI.h
+     PATHS
+       ~/Library/Frameworks/CEGUI.framework/Headers
+       /Library/Frameworks/CEGUI.framework/Headers
+       ${DELTA3D_EXT_DIR}/Frameworks/CEGUI.framework/Headers
 )
-# Find CEGUILua headers
-FIND_PATH(CEGUILUA_INCLUDE_DIR CEGUILua.h
-  PATHS
-    $ENV{CEGUIDIR}
-    $ENV{CEGUILUADIR}
-    ${CEGUI_INCLUDE_DIR}/ScriptingModules/LuaScriptModule
-  PATH_SUFFIXES include include/CEGUI
+endif (APPLE)
+
+if (CEGUI_FRAMEWORK_DIR)
+   LIST(APPEND CEGUI_INCLUDE_DIR ${CEGUI_FRAMEWORK_DIR})
+else()
+   LIST(APPEND CEGUI_INCLUDE_DIR ${CEGUI_FRAMEWORK_DIR}/CEGUI)
+endif()
+
+set( CEGUI_LIBRARY_SEARCH_DIR
+   ${CEGUIDIR}/lib
+        ${CEGUIDIR}
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/lib
+        /usr/lib
+        /sw/lib
+        /opt/local/lib
+        /opt/csw/lib
+        /opt/lib
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;CEGUI_ROOT]/lib
+        /usr/freeware/lib64
 )
-# Find CEGUILua libraries
-FIND_LIBRARY(CEGUILUA_LIBRARY_OPTIMIZED
-  NAMES CEGUILua CEGUILuaScriptModule
-  PATHS $ENV{CEGUIDIR} $ENV{CEGUILUADIR}
-  PATH_SUFFIXES lib bin
-)
-FIND_LIBRARY(CEGUILUA_LIBRARY_DEBUG
-  NAMES CEGUILuad CEGUILua_d CEGUILuaScriptModuled CEGUILuaScriptModule_d
-  PATHS $ENV{CEGUIDIR} $ENV{CEGUILUADIR}
-  PATH_SUFFIXES lib bin
-)
-# Find CEGUI Tolua++ include file
-# We only need to add this path since we use tolua++ like a normal
-# dependency but it is shipped with CEGUILua.
-FIND_PATH(CEGUI_TOLUA_INCLUDE_DIR tolua++.h
-  PATHS
-    ${CEGUILUA_INCLUDE_DIR}
-    # For newer CEGUI versions >= 0.7
-    ${CEGUILUA_INCLUDE_DIR}/support/tolua++
-    # For Mac OS X, tolua++ is a separate framework in the dependency package
-    ${DEP_FRAMEWORK_DIR}
-  NO_DEFAULT_PATH # Don't attempt to find tolua++ installed on the system
-)
-# Find CEGUI Tolua++ libraries
-FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_OPTIMIZED
-  NAMES CEGUItoluapp tolua++ ceguitolua++ tolua++5.1
-  PATHS $ENV{CEGUIDIR} ${CEGUITOLUADIR}
-  PATH_SUFFIXES lib bin
-)
-FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_DEBUG
-  NAMES CEGUItoluappd CEGUItoluapp_d tolua++d tolua++_d
-  PATHS $ENV{CEGUIDIR} ${CEGUITOLUADIR}
-  PATH_SUFFIXES lib bin
-)
-# Newer versions of CEGUI have the renderer for OGRE shipped with them
-COMPARE_VERSION_STRINGS("${CEGUI_VERSION}" "0.7" _version_compare TRUE)
-IF(_version_compare GREATER -1)
-  # Find CEGUI OGRE Renderer headers
-  FIND_PATH(CEGUI_OGRE_RENDERER_INCLUDE_DIR CEGUIOgreRenderer.h
-    PATHS
-      $ENV{CEGUIDIR}
-      $ENV{CEGUIOGRERENDERERDIR}
-      ${CEGUI_INCLUDE_DIR}/RendererModules/Ogre
-    PATH_SUFFIXES include include/CEGUI
-  )
-  # Find CEGUI OGRE Renderer libraries
-  FIND_LIBRARY(CEGUI_OGRE_RENDERER_LIBRARY_OPTIMIZED
-    NAMES CEGUIOgreRenderer
-    PATHS $ENV{CEGUIDIR} $ENV{CEGUIOGRERENDERERDIR}
-    PATH_SUFFIXES lib bin
-  )
-  FIND_LIBRARY(CEGUI_OGRE_RENDERER_LIBRARY_DEBUG
-    NAMES CEGUIOgreRendererd CEGUIOgreRenderer_d
-    PATHS $ENV{CEGUIDIR} $ENV{CEGUIOGRERENDERERDIR}
-    PATH_SUFFIXES lib bin
-  )
-  SET(CEGUI_OGRE_RENDERER_REQUIRED_VARIABLES
-    CEGUI_OGRE_RENDERER_INCLUDE_DIR
-    CEGUI_OGRE_RENDERER_LIBRARY_OPTIMIZED
-  )
-ELSE()
-  SET(CEGUI_OLD_VERSION TRUE)
-  SET(CEGUI_OGRE_RENDERER_BUILD_REQUIRED TRUE)
-ENDIF()
-# Handle the REQUIRED argument and set CEGUI_FOUND
-# Also checks the version requirements if given
-FIND_PACKAGE_HANDLE_ADVANCED_ARGS(CEGUI DEFAULT_MSG "${CEGUI_VERSION}"
-  CEGUI_INCLUDE_DIR
-  CEGUI_LIBRARY_OPTIMIZED
-  ${CEGUI_OGRE_RENDERER_REQUIRED_VARIABLES}
-)
-# Collect optimized and debug libraries
-HANDLE_LIBRARY_TYPES(CEGUI)
-HANDLE_LIBRARY_TYPES(CEGUILUA)
-HANDLE_LIBRARY_TYPES(CEGUI_TOLUA)
-IF(NOT CEGUI_OGRE_RENDERER_BUILD_REQUIRED)
-  HANDLE_LIBRARY_TYPES(CEGUI_OGRE_RENDERER)
-ENDIF()
-MARK_AS_ADVANCED(
-  CEGUI_INCLUDE_DIR
-  CEGUI_LIBRARY_OPTIMIZED
-  CEGUI_LIBRARY_DEBUG
-  CEGUI_OGRE_RENDERER_INCLUDE_DIR
-  CEGUI_OGRE_RENDERER_LIBRARY_OPTIMIZED
-  CEGUI_OGRE_RENDERER_LIBRARY_DEBUG
-)
+
+#helper
+macro(FIND_LIBRARY_HELPER FILENAME DIR)
+   find_library(${FILENAME}_DIR NAMES ${FILENAME} PATHS ${${DIR}})
+   if (NOT ${FILENAME}_DIR)
+      message("Could not located ${FILENAME}")
+      set(CEGUI_FOUND "NO")
+   else()
+      message("${FILENAME} : ${${FILENAME}_DIR}")
+      list(APPEND CEGUI_LIBRARY ${${FILENAME}_DIR})
+   endif()
+endmacro()
+
+FIND_LIBRARY_HELPER( CEGUIBase CEGUI_LIBRARY_SEARCH_DIR )
+
+foreach(COMPONENT ${CEGUI_FIND_COMPONENTS})
+   HELPER_GET_CASE_FROM_LIST( ${COMPONENT} RENDER_NAME COMPONENT_CASE)
+   message(STATUS "Looking for lib: CEGUI${COMPONENT_CASE}Renderer")
+   FIND_LIBRARY_HELPER( CEGUI${COMPONENT_CASE}Renderer "CEGUI_LIBRARY_SEARCH_DIR" CEGUI)
+endforeach(COMPONENT)
+
+if (NOT CEGUI_FOUND)
+   message(SEND_ERROR "Error(s) during CEGUI detection!")
+endif()
+
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(CEGUI DEFAULT_MSG CEGUI_LIBRARY CEGUI_INCLUDE_DIR)

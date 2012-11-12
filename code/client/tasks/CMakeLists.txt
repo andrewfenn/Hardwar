@@ -1,6 +1,7 @@
 
 set(task_source
     "src/InputTask.cpp"
+    "src/GuiTask.cpp"
     "src/NetworkTask.cpp"
 )
 

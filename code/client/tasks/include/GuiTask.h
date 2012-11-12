@@ -18,7 +18,9 @@
 
 #pragma once
 
+#include <OIS.h>
 #include <CEGUI.h>
+#include <CEGUIOgreRenderer.h>
 
 #include "GameTask.h"
 
@@ -27,15 +29,17 @@ namespace Client
 
 class GuiTask : public GameTask
 {
-   public:
-       GuiTask(Ogre::RenderWindow*, Ogre::SceneManager*);
-       void init();
-       void shutdown();
-       void update();
-//       MyGUI::Gui* resource();
-   private:
-/*       MyGUI::Gui *mGUI;
-       MyGUI::OgrePlatform  *mPlatform;*/
+    public:
+        GuiTask(Ogre::RenderWindow*, Ogre::SceneManager*);
+        void init();
+        void shutdown();
+        void update();
+
+        void injectInput(const OIS::MouseState mouseState);
+
+    private:
+        CEGUI::System *mSystem;
+        CEGUI::OgreRenderer *mRenderer;
 };
 
 }

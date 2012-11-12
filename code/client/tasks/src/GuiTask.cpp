@@ -24,40 +24,28 @@ namespace Client
 /** Custom init to pipe the ogre data into the gui system */
 GuiTask::GuiTask(Ogre::RenderWindow* rw, Ogre::SceneManager* sm)
 {
-   mPlatform = OGRE_NEW MyGUI::OgrePlatform();
-   mPlatform->initialise(rw, sm, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "");
-   mGUI = OGRE_NEW MyGUI::Gui();
-   mGUI->initialise("core.xml", "./logs/mygui.log");
-   mGUI->setVisiblePointer(false);
+    mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+    mSystem = CEGUI::System::getSingletonPtr();
 }
 
 void GuiTask::init()
 {
 }
 
-MyGUI::Gui* GuiTask::resource()
-{
-   return mGUI;
-}
-
 void GuiTask::shutdown()
 {
-   /* Delete MyGUI */
-   mGUI->destroyAllChildWidget();
-   mGUI->shutdown();
 
-   mPlatform->shutdown();
-
-   OGRE_DELETE mGUI;
-   mGUI = 0;
-   
-   OGRE_DELETE mPlatform;
-   mPlatform = 0;
 }
 
 void GuiTask::update()
 {
 
+}
+
+void GuiTask::injectInput(const OIS::MouseState mouseState)
+{
+    mSystem->injectMouseMove(mouseState.X.rel, mouseState.Y.rel);
+    mSystem->injectMouseWheelChange(mouseState.Z.rel);
 }
 
 }

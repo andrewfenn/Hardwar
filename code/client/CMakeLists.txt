@@ -68,11 +68,10 @@ if (MSVC)
 endif()
 
 set_target_properties(client PROPERTIES SOLUTION_FOLDER "Hardwar Client")
-
 target_link_libraries(client
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${OIS_LIBRARIES}
-    ${CEGUI_LIBRARIES}
+    ${CEGUI_LIBRARY}
     ${Boost_LIBRARIES}
     )
 
