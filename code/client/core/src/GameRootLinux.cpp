@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GameRoot.h"
+#include "GameRootLinux.h"
 
 #include "Ogre.h"
 
@@ -37,12 +37,12 @@ Ogre::UTFString GameRootLinux::getHomeDirectory()
         struct passwd *pw = getpwuid(getuid());
         homeDir = Ogre::UTFString(pw->pw_dir);
     }
-    return homeDir;
+    return homeDir + Ogre::UTFString("/.hardwar");
 }
 
 bool GameRootLinux::isLocked()
 {
-    Ogre::UTFString homeDir = this->getHomeDirectory() + Ogre::UTFString("/.hardwar");
+    Ogre::UTFString homeDir = this->getHomeDirectory();
 
     // check if the folder exists otherwise create it
     if (opendir(homeDir.asUTF8_c_str()) == nullptr)
@@ -99,7 +99,7 @@ bool GameRootLinux::isLocked()
 
 void GameRootLinux::setLocked(const bool& locked)
 {
-    Ogre::UTFString homeDir = this->getHomeDirectory() + Ogre::UTFString("/.hardwar/pid");
+    Ogre::UTFString homeDir = this->getHomeDirectory() + Ogre::UTFString("/pid");
     std::fstream runfile;
     std::string buf;
 

@@ -54,7 +54,6 @@ class GameRoot : public Ogre::WindowEventListener
         GameManager          *mGameMgr;
         bool configureGame();
 };
-
 }
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX

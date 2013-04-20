@@ -22,7 +22,6 @@
 
 namespace Client
 {
-    class GameRoot;
     /** The Game Root Windows
         @remarks
             The Client::GameRootPlatform is a parent class that handles the windows specific
@@ -42,4 +41,6 @@ namespace Client
             /** Gets the location of the user's home directory */
             Ogre::UTFString getHomeDirectory();
     };
+
+    class GameRootSystem : public GameRootWindows {};
 }

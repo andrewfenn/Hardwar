@@ -22,7 +22,6 @@
 
 namespace Client
 {
-    class GameRoot;
     /** The Game Root Linux
             @remarks
                 The Client::GameRootPlatform is a parent class that handles the linux specific
@@ -42,5 +41,7 @@ namespace Client
             /** Gets the location of the user's home directory */
             Ogre::UTFString getHomeDirectory();
     };
+
+    class GameRootSystem : public GameRootLinux {};
 }
 

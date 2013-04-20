@@ -13,14 +13,6 @@ class TestTask: public GameTask
         void shutdown() {}
 };
 
-/*
-      void* add(const Ogre::String& name, GameTask* task)
-      void* get(const Ogre::String& name)
-      bool has(const Ogre::String& name)
-      void remove(const Ogre::String& name)
-      void removeAll()
-*/
-
 TEST(GameTaskAddToTaskListReturnsTask)
 {
     UNITTEST_TIME_CONSTRAINT(1);

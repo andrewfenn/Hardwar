@@ -24,10 +24,9 @@
 
 namespace Client
 {
-
 GameRoot::GameRoot()
 {
-   mRoot = nullptr;
+    mRoot = nullptr;
 }
 
 GameRoot::~GameRoot()
@@ -65,10 +64,11 @@ void GameRoot::init()
 {
     Ogre::LogManager* log = OGRE_NEW Ogre::LogManager();
     auto logDir = this->getHomeDirectory() + Ogre::UTFString("/client.log");
+    auto confDir = this->getHomeDirectory() + Ogre::UTFString("/client.cfg");
     log->createLog(logDir, true, false);
     log->setLogDetail(Ogre::LL_BOREME);
 
-    mRoot = OGRE_NEW Ogre::Root("", "game.cfg", "");
+    mRoot = OGRE_NEW Ogre::Root("", confDir, "");
 
     if (!this->loadPlugins())
         return;

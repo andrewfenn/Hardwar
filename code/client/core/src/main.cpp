@@ -42,23 +42,16 @@ int main( int argc, char **argv ) {
 #endif
     std::string cmdvar;
 
-    #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-        Client::GameRootLinux* game = OGRE_NEW Client::GameRootLinux;
-    #elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        Client::GameRootWindows* game = OGRE_NEW Client::GameRootWindows;
-    #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        Client::GameRootOSX* game = OGRE_NEW Client::GameRootOSX;
-    #endif
+    Client::GameRootSystem game;
 
-    if (game->isLocked())
+    if (game.isLocked())
         return -1;
 
-    game->setLocked(true);
-    game->init();
-    game->run();
+    game.setLocked(true);
+    game.init();
+    game.run();
 
-    game->setLocked(false);
-    OGRE_DELETE game;
+    game.setLocked(false);
 
     return 0;
 }
