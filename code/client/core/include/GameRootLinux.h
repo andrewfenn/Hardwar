@@ -22,23 +22,25 @@
 
 namespace Client
 {
-/** The Game Root Linux
-        @remarks
-            The Client::GameRootPlatform is a parent class that handles the linux specific implementation
-        of functionality that GameRoot inherits.
-    */
-class GameRootLinux: public GameRoot
-{
-    public:
-        /** Check if the game is already running.
-        @return bool true if not running, false if another process has already started. */
-        bool isLocked();
-        /** Sets a file somewhere platform dependent that notifys other instances of the game
-        that it is running. */
-        void setLocked(const bool& locked);
-        /** Attempts to load an Ogre plugin from file. mRoot must be initalised at this point. */
-        bool loadPlugins();
-};
-
+    class GameRoot;
+    /** The Game Root Linux
+            @remarks
+                The Client::GameRootPlatform is a parent class that handles the linux specific
+            implementation of functionality that GameRoot inherits.
+        */
+    class GameRootLinux: public GameRoot
+    {
+        public:
+            /** Check if the game is already running.
+            @return bool true if not running, false if another process has already started. */
+            bool isLocked();
+            /** Sets a file somewhere platform dependent that notifys other instances of the game
+            that it is running. */
+            void setLocked(const bool& locked);
+            /** Attempts to load an Ogre plugin from file. mRoot must be initalised at this point. */
+            bool loadPlugins();
+            /** Gets the location of the user's home directory */
+            Ogre::UTFString getHomeDirectory();
+    };
 }
 

@@ -16,24 +16,49 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GameRootLinux.h"
+#include "GameRoot.h"
 
 #include "Ogre.h"
 
 #include <dirent.h>
 #include <fstream>
+#include <pwd.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 namespace Client
 {
+Ogre::UTFString GameRootLinux::getHomeDirectory()
+{
+    Ogre::UTFString homeDir;
+    homeDir = Ogre::UTFString(getenv("HOME"));
+    if (homeDir.empty())
+    {
+        struct passwd *pw = getpwuid(getuid());
+        homeDir = Ogre::UTFString(pw->pw_dir);
+    }
+    return homeDir;
+}
 
 bool GameRootLinux::isLocked()
 {
+    Ogre::UTFString homeDir = this->getHomeDirectory() + Ogre::UTFString("/.hardwar");
+
+    // check if the folder exists otherwise create it
+    if (opendir(homeDir.asUTF8_c_str()) == nullptr)
+    {
+        if (mkdir(homeDir.asUTF8_c_str(), S_IRWXU|S_IRGRP|S_IXGRP) != 0)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Can not create folder in home directory", "GameRootLinux::isLocked");
+        }
+    }
+
+    homeDir = homeDir+Ogre::UTFString("/pid");
+
     std::fstream runfile;
     char* buf;
     int len, pid;
-    runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
+    runfile.open(homeDir.asUTF8_c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 
     // No file, game not running
     if (!runfile.is_open())
@@ -74,24 +99,25 @@ bool GameRootLinux::isLocked()
 
 void GameRootLinux::setLocked(const bool& locked)
 {
-      std::fstream runfile;
-      std::string buf;
+    Ogre::UTFString homeDir = this->getHomeDirectory() + Ogre::UTFString("/.hardwar/pid");
+    std::fstream runfile;
+    std::string buf;
 
-      remove("/var/lock/hardwar");
-      if (locked)
-      {
-         buf = Ogre::String(Ogre::StringConverter::toString(getpid()));
-         runfile.open("/var/lock/hardwar", std::fstream::in | std::fstream::out | std::fstream::app);
-         runfile.write(buf.c_str(),buf.size());
-         runfile.close();
-      }
+    remove(homeDir.asUTF8_c_str());
+    if (locked)
+    {
+        buf = Ogre::String(Ogre::StringConverter::toString(getpid()));
+        runfile.open(homeDir.asUTF8_c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+        runfile.write(buf.c_str(),buf.size());
+        runfile.close();
+    }
 }
 
 bool GameRootLinux::loadPlugins()
 {
     bool error = false;
     bool loaded = false;
-    if (opendir("/usr/lib/OGRE") != 0)
+    if (opendir("/usr/lib/OGRE") != nullptr)
     {
         if (!this->loadPlugin("/usr/lib/OGRE/RenderSystem_GL"))
             error = true;
@@ -105,7 +131,7 @@ bool GameRootLinux::loadPlugins()
         loaded = true;
     }
 
-    if ((!loaded || error) && opendir("/usr/local/lib/OGRE") != 0)
+    if ((!loaded || error) && opendir("/usr/local/lib/OGRE") != nullptr)
     {
         error = false;
 

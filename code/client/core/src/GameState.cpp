@@ -38,12 +38,12 @@ GameState::~GameState()
 void GameState::setParent(GameState* parent, GameTaskList* gametasks, 
                                      Ogre::Root* root, Ogre::Viewport* viewport)
 {
-   mParent   = parent;
-   mTasklist = gametasks;
-   mRoot     = root;
-   mSceneMgr = root->getSceneManager("GameSceneMgr");
-   mCamera   = mSceneMgr->getCamera("GameCamera");
-   mViewport = viewport;
+    mParent   = parent;
+    mTasklist = gametasks;
+    mRoot     = root;
+    mSceneMgr = root->getSceneManager("GameSceneMgr");
+    mCamera   = mSceneMgr->getCamera("GameCamera");
+    mViewport = viewport;
 }
 
 void GameState::shutdown()

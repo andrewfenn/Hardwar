@@ -63,16 +63,19 @@ bool GameRoot::loadPlugin(const Ogre::String dir)
 
 void GameRoot::init()
 {
-    if (this->isLocked())
-        return;
+    Ogre::LogManager* log = OGRE_NEW Ogre::LogManager();
+    auto logDir = this->getHomeDirectory() + Ogre::UTFString("/client.log");
+    log->createLog(logDir, true, false);
+    log->setLogDetail(Ogre::LL_BOREME);
 
-    this->setLocked(true);
-
-    mRoot = OGRE_NEW Ogre::Root("", "game.cfg", "./logs/ogre.log");
+    mRoot = OGRE_NEW Ogre::Root("", "game.cfg", "");
 
     if (!this->loadPlugins())
         return;
+}
 
+void GameRoot::run()
+{
     if (!this->configureGame())
         return;
 
@@ -81,7 +84,6 @@ void GameRoot::init()
 
     mGameMgr = OGRE_NEW GameManager(mRoot);
     mGameMgr->run();
-    this->setLocked(false);
 }
 
 bool GameRoot::configureGame()

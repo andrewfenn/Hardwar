@@ -34,6 +34,7 @@ class GameRoot : public Ogre::WindowEventListener
         GameRoot();
        ~GameRoot();
         void init();
+        void run();
 
         /** Attempts to load an Ogre plugin from file. mRoot must be initalised at this point. */
         bool loadPlugin(const Ogre::String);
@@ -45,6 +46,7 @@ class GameRoot : public Ogre::WindowEventListener
         virtual bool isLocked() = 0;
         virtual void setLocked(const bool& locked) = 0;
         virtual bool loadPlugins() = 0;
+        virtual Ogre::UTFString getHomeDirectory() = 0;
 
     protected:
         Ogre::Root           *mRoot;
@@ -55,3 +57,10 @@ class GameRoot : public Ogre::WindowEventListener
 
 }
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+    #include "GameRootLinux.h"
+#elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+    #include "GameRootWindows.h"
+#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+    #include "GameRootOSX.h"
+#endif

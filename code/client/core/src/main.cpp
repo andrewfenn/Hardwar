@@ -16,14 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-    #include "GameRootLinux.h"
-#elif OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    #include "GameRootWindows.h"
-#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-    #include "GameRootOSX.h"
-#endif
-
+#include "GameRoot.h"
 #include <Ogre.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -57,8 +50,14 @@ int main( int argc, char **argv ) {
         Client::GameRootOSX* game = OGRE_NEW Client::GameRootOSX;
     #endif
 
-    game->init();
+    if (game->isLocked())
+        return -1;
 
+    game->setLocked(true);
+    game->init();
+    game->run();
+
+    game->setLocked(false);
     OGRE_DELETE game;
 
     return 0;
