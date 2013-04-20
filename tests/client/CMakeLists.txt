@@ -22,6 +22,7 @@ set(clientTest_source
 source_group("clientTest" FILES ${clientTest_source})
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/dependencies/UnitTest++/src")
+include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/dependencies/amop/include")
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
 include_directories(SYSTEM ${CEGUI_INCLUDE_DIR})
 include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
