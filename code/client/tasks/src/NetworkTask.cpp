@@ -19,7 +19,6 @@
 #include "NetworkTask.h"
 
 #include <stdio.h>
-#include <boost/bind.hpp>
 #include <libintl.h>
 
 #include "Building.h"
@@ -97,7 +96,7 @@ void NetworkTask::startThread()
    if (!mRunThread)
    {
       /* create a new thread */
-      mThread = boost::thread(boost::bind(&NetworkTask::threadLoopConnect, this));
+      mThread = std::thread(&NetworkTask::threadLoopConnect, this);
    }
 }
 
@@ -231,13 +230,13 @@ void NetworkTask::threadLoopGame()
 
 void NetworkTask::addMessage(const ENetEvent lEvent)
 {
-   boost::mutex::scoped_lock lMutex(mMessageMutex);
+   std::lock_guard<std::mutex> lock(mMessageMutex);
    mMessages.insert(std::pair<enet_uint8,ENetEvent>(lEvent.channelID, lEvent));
 }
 
 Message NetworkTask::getMessages(void)
 {
-   boost::mutex::scoped_lock lMutex(mMessageMutex);
+   std::lock_guard<std::mutex> lock(mMessageMutex);
    Message lMessages = mMessages;
    mMessages.clear();
    return lMessages;

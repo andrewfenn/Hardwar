@@ -19,8 +19,13 @@
 #pragma once
 
 #include <OIS.h>
-#include <CEGUI.h>
-#include <CEGUIOgreRenderer.h>
+#include <Ogre.h>
+#include <Rocket/Core.h>
+#include <Rocket/Controls.h>
+#include <Rocket/Debugger.h>
+
+#include "rocket/RenderInterfaceOgre3D.h"
+#include "rocket/SystemInterfaceOgre3D.h"
 
 #include "GameTask.h"
 
@@ -38,8 +43,9 @@ class GuiTask : public GameTask
         void injectInput(const OIS::MouseState mouseState);
 
     private:
-        CEGUI::System *mSystem;
-        CEGUI::OgreRenderer *mRenderer;
+        Rocket::Core::Context* context;
+        SystemInterfaceOgre3D* ogreSystem;
+        RenderInterfaceOgre3D* ogreRenderer;
 };
 
 }

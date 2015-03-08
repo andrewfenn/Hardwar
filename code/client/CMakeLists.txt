@@ -39,7 +39,6 @@ include_directories(SYSTEM ${OGRE_Terrain_INCLUDE_DIR})
 include_directories(SYSTEM ${OGRE_Paging_INCLUDE_DIR})
 include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
 include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
-include_directories(SYSTEM ${CEGUI_INCLUDE_DIR})
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 if (MSVC)
@@ -60,6 +59,9 @@ add_executable(client ${exe} ${client_source} ${shared_source})
 
 add_dependencies(client SQLite)
 add_dependencies(client Enet)
+add_dependencies(client RocketCore)
+add_dependencies(client RocketControls)
+add_dependencies(client RocketDebugger)
 
 add_custom_command(TARGET client PRE_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/clientTest)
 
@@ -71,14 +73,14 @@ set_target_properties(client PROPERTIES SOLUTION_FOLDER "Hardwar Client")
 target_link_libraries(client
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${OIS_LIBRARIES}
-    ${CEGUI_LIBRARY}
     ${Boost_LIBRARIES}
-    )
+    RocketCore RocketControls RocketDebugger
+)
 
 if (UNIX)
     include(GetC11CompilerFlag)
     get_c11_flag()
 
-    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings ${c11flag})
+    add_definitions(-g -o2 -Wall -pedantic -Wextra -Wwrite-strings ${c11flag})
 endif()
 

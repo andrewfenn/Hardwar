@@ -16,8 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <CEGUI.h>
-
 #include "MenuState.h"
 //#include "LoadState.h"
 #include "InputTask.h"

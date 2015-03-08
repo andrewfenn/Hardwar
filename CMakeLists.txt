@@ -11,7 +11,6 @@ set( CMAKE_MODULE_PATH
     "${CMAKE_MODULE_PATH}"
     "${HARDWAR_SOURCE_DIR}/cmake/modules"
     "${HARDWAR_SOURCE_DIR}/cmake/scripts"
-    "${HARDWAR_SOURCE_DIR}/cmake/scripts/cegui_tools"
 )
 
 include(SourceFiles)
@@ -84,7 +83,7 @@ if (NOT OGRE_BUILD_PLATFORM_IPHONE)
         # Statically linking boost to a dynamic Ogre build doesn't work on Linux 64bit
         set(Boost_USE_STATIC_LIBS ${OGRE_STATIC})
     endif ()
-    set(Boost_ADDITIONAL_VERSIONS "1.38.0" "1.38" "1.39.0" "1.39" "1.40.0" "1.40" "1.44.0" "1.44" "1.45" "1.46" "1.47" "1.48" "1.49" "1.49.0" "1.50" "1.50.0")
+    set(Boost_ADDITIONAL_VERSIONS "1.38.0" "1.38" "1.39.0" "1.39" "1.40.0" "1.40" "1.44.0" "1.44" "1.45" "1.46" "1.47" "1.48" "1.49" "1.49.0" "1.50" "1.50.0" "1.55" "1.55.0")
     # Components that need linking (NB does not include header-only components like bind)
     set(OGRE_BOOST_COMPONENTS thread filesystem system)
     find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
@@ -111,7 +110,6 @@ if(UNIX)
 endif(UNIX)
 
 find_package(OIS REQUIRED)
-find_package(CEGUI REQUIRED COMPONENTS OGRE)
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(HARDWAR_LIBPATH  "${CMAKE_CURRENT_SOURCE_DIR}/lib")
@@ -122,6 +120,7 @@ set(DEPENDENCIES_INCLUDES
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OgreMax"
+    "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket/Include"
 )
 
 set(DEPENDENCIES_LIBPATH "${CMAKE_CURRENT_SOURCE_DIR}/lib")
@@ -132,6 +131,8 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/amop")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket")
+
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
 add_subdirectory(code/client)

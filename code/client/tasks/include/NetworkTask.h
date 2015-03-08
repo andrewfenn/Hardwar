@@ -18,12 +18,13 @@
 
 #pragma once
 
-#include <boost/thread.hpp>
 #include "enet/enet.h"
-#include <string>
-
 #include "DataPacket.h"
 #include "GameTask.h"
+
+#include <thread>
+#include <mutex>
+#include <string>
 
 namespace Client
 {
@@ -97,7 +98,7 @@ class NetworkTask : public GameTask
 
       Message::iterator mitEvent;
       Message mMessages;
-      mutable boost::mutex mMessageMutex;
+      std::mutex mMessageMutex;
       void addMessage(const ENetEvent);
       Message getMessages(void);
 
@@ -107,7 +108,7 @@ class NetworkTask : public GameTask
       void threadLoopMessages(void);
       void threadLoopGame(void);
 
-      boost::thread mThread;
+      std::thread mThread;
       bool mRunThread;
 };
 

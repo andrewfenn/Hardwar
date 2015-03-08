@@ -49,12 +49,16 @@ add_executable(clientTest ${exe} ${clientTest_source})
 
 add_dependencies(clientTest UnitTest)
 add_dependencies(clientTest Enet)
+add_dependencies(clientTest RocketCore)
+add_dependencies(clientTest RocketControls)
+add_dependencies(clientTest RocketDebugger)
 
 target_link_libraries(clientTest
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${CEGUI_LIBRARY}
     ${Boost_LIBRARIES}
     ${OIS_LIBRARIES}
+    RocketCore RocketControls RocketDebugger
 )
 
 if(UNIX)

@@ -39,6 +39,8 @@ class GameTask
             mTaskList = nullptr;
         }
 
+        virtual ~GameTask() { };
+
         virtual void init() = 0;
         virtual void shutdown() = 0;
         virtual void update() = 0;

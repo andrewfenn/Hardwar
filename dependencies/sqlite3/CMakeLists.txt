@@ -34,4 +34,4 @@ if(UNIX)
 ENDIF(UNIX)
 
 set_target_properties(SQLite PROPERTIES SOLUTION_FOLDER Dependencies)
-
+target_link_libraries(SQLite dl)

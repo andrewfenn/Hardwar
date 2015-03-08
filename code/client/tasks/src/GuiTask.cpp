@@ -24,17 +24,59 @@ namespace Client
 /** Custom init to pipe the ogre data into the gui system */
 GuiTask::GuiTask(Ogre::RenderWindow* rw, Ogre::SceneManager* sm)
 {
-    mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-    mSystem = CEGUI::System::getSingletonPtr();
+    ogreSystem = new SystemInterfaceOgre3D();
+    Rocket::Core::SetSystemInterface(ogreSystem);
+
+    Rocket::Core::Initialise();
+    Rocket::Controls::Initialise();
+
+    ogreRenderer = new RenderInterfaceOgre3D(rw->getWidth(), rw->getHeight());
+    Rocket::Core::SetRenderInterface(ogreRenderer);
+
+
+/*
+    // Load the fonts from the path to the sample directory.
+    Rocket::Core::FontDatabase::LoadFontFace(sample_path + "../../assets/Delicious-Roman.otf");
+    Rocket::Core::FontDatabase::LoadFontFace(sample_path + "../../assets/Delicious-Bold.otf");
+    Rocket::Core::FontDatabase::LoadFontFace(sample_path + "../../assets/Delicious-Italic.otf");
+    Rocket::Core::FontDatabase::LoadFontFace(sample_path + "../../assets/Delicious-BoldItalic.otf");
+*/
+    context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(rw->getWidth(), rw->getHeight()));
+    Rocket::Debugger::Initialise(context);
+
+/*
+    // Load the mouse cursor and release the caller's reference.
+    Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor(sample_path + "../../assets/cursor.rml");
+    if (cursor)
+        cursor->RemoveReference();
+
+    Rocket::Core::ElementDocument* document = context->LoadDocument(sample_path + "../../assets/demo.rml");
+    if (document)
+    {
+        document->Show();
+        document->RemoveReference();
+    }
+*/
+    // Add the application as a listener to Ogre's render queue so we can render during the overlay.
+    sm->addRenderQueueListener((Ogre::RenderQueueListener*)this);
 }
 
 void GuiTask::init()
 {
+ 
 }
 
 void GuiTask::shutdown()
 {
+    // Shutdown Rocket.
+    context->RemoveReference();
+    Rocket::Core::Shutdown();
 
+    delete ogreSystem;
+    ogreSystem = nullptr;
+
+    delete ogreRenderer;
+    ogreRenderer = nullptr;
 }
 
 void GuiTask::update()
@@ -44,8 +86,8 @@ void GuiTask::update()
 
 void GuiTask::injectInput(const OIS::MouseState mouseState)
 {
-    mSystem->injectMouseMove(mouseState.X.rel, mouseState.Y.rel);
-    mSystem->injectMouseWheelChange(mouseState.Z.rel);
+    /*mSystem->injectMouseMove(mouseState.X.rel, mouseState.Y.rel);
+    mSystem->injectMouseWheelChange(mouseState.Z.rel);*/
 }
 
 }
