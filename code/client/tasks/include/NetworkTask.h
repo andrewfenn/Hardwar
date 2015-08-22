@@ -1,7 +1,7 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2008-2012  Andrew Fenn
-    
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -30,7 +30,7 @@ namespace Client
 {
 /** Network Manager
         @remarks
-            The Client::Network class manages a thread which deals with 
+            The Client::Network class manages a thread which deals with
             connecting and dealing with data sent from the server.
     */
 typedef std::multimap<enet_uint8,ENetEvent> Message;
@@ -38,11 +38,10 @@ typedef std::multimap<enet_uint8,ENetEvent> Message;
 class NetworkTask : public GameTask
 {
    public:
-      ~NetworkTask();
       NetworkTask();
 
       void init() { }
-      void shutdown() {}
+      void shutdown();
       void update() {}
       void changeSize(Ogre::RenderWindow*) {}
       void changeFocus(Ogre::RenderWindow*) {}
@@ -68,7 +67,7 @@ class NetworkTask : public GameTask
          @param data
                 The data being sent
          @param channel
-                An Enet specific variable. Which channel the data is being sent 
+                An Enet specific variable. Which channel the data is being sent
                 on.
          @param priority
                 An Enet specific variable.

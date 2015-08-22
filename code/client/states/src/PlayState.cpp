@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2008-2012  Andrew Fenn
 
@@ -55,7 +55,7 @@ void PlayState::enter()
 	light->setType( Ogre::Light::LT_DIRECTIONAL );
 	light->setDiffuseColour( Ogre::ColourValue( .82, .81, .7 ) );
 	light->setSpecularColour( Ogre::ColourValue( .82, .81, .7 ) );
-	light->setDirection( Ogre::Vector3( 0, -1, 1 ) ); 
+	light->setDirection( Ogre::Vector3( 0, -1, 1 ) );
 
    Ogre::SceneNode* lScene = (Ogre::SceneNode*) mSceneMgr->getRootSceneNode()->getChild("exteriorworld");
    lScene->setVisible(true);
@@ -91,7 +91,7 @@ void PlayState::update(unsigned long timeElapsed)
      translateVector.x += scale*timeElapsed;
 
    mCamera->yaw(mMouseRotX);
-   mCamera->pitch(mMouseRotY);    
+   mCamera->pitch(mMouseRotY);
    translateVector = mCamera->getOrientation() * translateVector;
    mCamera->setPosition(mCamera->getPosition()+translateVector);
 
@@ -111,7 +111,7 @@ bool PlayState::keyPressed(const OIS::KeyEvent &e)
 
    if (e.key == OIS::KC_D)
       mKeydownRight = 1;
-         
+
    return true;
 }
 
@@ -147,12 +147,12 @@ bool PlayState::mouseMoved(const OIS::MouseEvent &e)
    return true;
 }
 
-bool PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+bool PlayState::mousePressed(const OIS::MouseEvent& /*e*/, OIS::MouseButtonID /*id*/)
 {
    return true;
 }
 
-bool PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+bool PlayState::mouseReleased(const OIS::MouseEvent& /*e*/, OIS::MouseButtonID /*id*/)
 {
    return true;
 }

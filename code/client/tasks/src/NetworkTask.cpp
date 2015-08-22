@@ -1,7 +1,7 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2008-2010  Andrew Fenn
-    
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -42,11 +42,10 @@ NetworkTask::NetworkTask()
    mConAttempts = 0;
 }
 
-NetworkTask::~NetworkTask()
+void NetworkTask::shutdown()
 {
    stopThread();
 }
-
 
 bool NetworkTask::setPort(const int port)
 {
@@ -263,7 +262,7 @@ bool NetworkTask::connect(unsigned int port, std::string ip)
                            14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */
                                 );
 
-                    
+
    if (mNetHost == 0)
    {
       fprintf (stderr, gettext("An error occurred while trying to create an ENet NetworkTask host.\n"));

@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2010 - 2012  Andrew Fenn
 
@@ -34,7 +34,7 @@ class MenuState : public GameState, OIS::KeyListener, OIS::MouseListener, Helper
 {
 public:
     MenuState();
-    ~MenuState();
+    virtual ~MenuState();
     void enter();
     void update(const unsigned long timeElapsed);
     bool keyPressed(const OIS::KeyEvent &e);
@@ -48,9 +48,9 @@ private:
    Helper::Fader* mFade;
    bool mStarted;
    long mCount;
-   
+
    Ogre::Degree            mMouseRotX, mMouseRotY;
-   int                     mKeydownUp, mKeydownDown, 
+   int                     mKeydownUp, mKeydownDown,
                         mKeydownRight, mKeydownLeft;
 };
 }

@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2010-2012  Andrew Fenn
 
@@ -199,12 +199,12 @@ bool MenuState::mouseMoved(const OIS::MouseEvent &e)
     return true;
 }
 
-bool MenuState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ 
+bool MenuState::mousePressed(const OIS::MouseEvent& /*e*/, OIS::MouseButtonID /*id*/)
+{
     return true;
 }
 
-bool MenuState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{ 
+bool MenuState::mouseReleased(const OIS::MouseEvent& /*e*/, OIS::MouseButtonID /*id*/)
+{
     return true;
 }

@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2010-2012  Andrew Fenn
 
@@ -32,7 +32,7 @@
 namespace Client
 {
 
-class GuiTask : public GameTask
+class GuiTask : public GameTask, public Ogre::RenderQueueListener
 {
     public:
         GuiTask(Ogre::RenderWindow*, Ogre::SceneManager*);
@@ -40,9 +40,20 @@ class GuiTask : public GameTask
         void shutdown();
         void update();
 
+        /// Called from Ogre before a queue group is rendered.
+        virtual void renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation);
+        /// Called from Ogre after a queue group is rendered.
+        virtual void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation);
         void injectInput(const OIS::MouseState mouseState);
 
     private:
+        // Configures Ogre's rendering system for rendering Rocket.
+        void ConfigureRenderSystem();
+        // Builds an OpenGL-style orthographic projection matrix.
+        void BuildProjectionMatrix(Ogre::Matrix4& matrix);
+
+
+        Ogre::RenderWindow*    mWindow;
         Rocket::Core::Context* context;
         SystemInterfaceOgre3D* ogreSystem;
         RenderInterfaceOgre3D* ogreRenderer;
