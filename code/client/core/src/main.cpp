@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2008-2012  Andrew Fenn
 
@@ -38,7 +38,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
     // obtain command-line arguments in argv[] style array
     argv = GetArgvCommandLine(&argc);
 #else
-int main( int argc, char **argv ) {
+int main( int /*argc*/, char** /*argv*/ ) {
 #endif
     std::string cmdvar;
 

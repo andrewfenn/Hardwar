@@ -1,7 +1,7 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2010-2011  Andrew Fenn
-    
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -103,20 +103,20 @@ bool GameRoot::configureGame()
     return true;
 }
 
-void GameRoot::windowResized(Ogre::RenderWindow *rw)
+void GameRoot::windowResized(Ogre::RenderWindow* rw)
 {
     mGameMgr->windowChangedSize(rw);
 }
 
-bool GameRoot::windowClosing(Ogre::RenderWindow *rw)
+bool GameRoot::windowClosing(Ogre::RenderWindow* /*rw*/)
 {
     mGameMgr->shutdown();
     return true;
 }
 
-void GameRoot::windowFocusChange(Ogre::RenderWindow *rw)
+void GameRoot::windowFocusChange(Ogre::RenderWindow* rw)
 {
     mGameMgr->windowChangedFocus(rw);
 }
-} /* namespace Client */
 
+} /* namespace Client */
