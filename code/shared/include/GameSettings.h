@@ -1,7 +1,7 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2008-2010  Andrew Fenn
-    
+    Copyright © 2008-2015  Andrew Fenn
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -20,8 +20,10 @@
 #define __HW_GAMESETTINGS_H_
 
 #include <map>
+#include <memory>
+#include <Ogre.h>
+#include <config-parser-argv.h>
 
-#include "Ogre.h"
 
 
 /** The GameSettings class
@@ -45,16 +47,25 @@ class GameSettings
              The value to be stored
       */
       void setOption(const Ogre::UTFString, Ogre::UTFString);
-      /** Retrieves a value stored in mGameSettings 
+      /** Retrieves a value stored in mGameSettings
       @remarks
              If there is no value found then an empty Ogre::String is returned.
       @param name
              The name of the value trying to be retrieved
       */
       Ogre::UTFString getOption(const Ogre::UTFString);
+      /** Parses the argc / argv command line options to allow the
+      game to set configuration options
+      @param argc
+            The argc from main function
+      @param argv
+            The argv from main function
+      */
+      bool parseArgv(int argc, const char** argv);
    private:
       typedef std::map<Ogre::UTFString,Ogre::UTFString> Option;
       Option mOptions;
+      ConfigParserArgv *mParser;
 
       static GameSettings *mGameSettings;
       GameSettings(void);

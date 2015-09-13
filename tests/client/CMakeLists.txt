@@ -11,6 +11,7 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/helpers/" "${CMAKE_CURRENT_BIN
 set(clientTest_source
     ${client_source}
     ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
+    ${CMAKE_SOURCE_DIR}/code/shared/src/GameSettings.cpp
     core/TestGameRoot.cpp
     core/TestGameManager.cpp
     core/TestGameState.cpp
@@ -47,6 +48,7 @@ endif ()
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/tests/)
 add_executable(clientTest ${exe} ${clientTest_source})
 
+add_dependencies(clientTest yaarg)
 add_dependencies(clientTest UnitTest)
 add_dependencies(clientTest Enet)
 add_dependencies(clientTest RocketCore)
@@ -59,6 +61,7 @@ target_link_libraries(clientTest
     ${Boost_LIBRARIES}
     ${OIS_LIBRARIES}
     RocketCore RocketControls RocketDebugger
+    yaarg
 )
 
 if(UNIX)

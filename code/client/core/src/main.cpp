@@ -1,6 +1,6 @@
 /*
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2008-2012  Andrew Fenn
+    Copyright © 2008-2015  Andrew Fenn
 
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 */
 
 #include "GameRoot.h"
+
 #include <Ogre.h>
+#include "GameSettings.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 char **GetArgvCommandLine(int *argc)
@@ -38,14 +40,16 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
     // obtain command-line arguments in argv[] style array
     argv = GetArgvCommandLine(&argc);
 #else
-int main( int /*argc*/, char** /*argv*/ ) {
+int main( int argc, char** argv ) {
 #endif
-    std::string cmdvar;
+    GameSettings* settings = GameSettings::getSingletonPtr();
+    if (!settings->parseArgv(argc, const_cast<const char**>(argv))) {
+        return 1;
+    }
 
     Client::GameRootSystem game;
-
     if (game.isLocked())
-        return -1;
+        return 2;
 
     game.setLocked(true);
     game.init();

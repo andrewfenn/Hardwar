@@ -1,0 +1,332 @@
+What is libyaarg?
+=================
+
+YAARG stands for Yet Another Argv parsing library. That's right,
+this is just a library to read flags from the command line.
+
+I wrote it after years of using getopt or other libraries, mostly
+to meet the needs of a few programs I'm working on.
+
+
+Where do I find it?
+===================
+
+libyaarg is currently hosted on github. You can find it here:
+
+   site: http://github.com/ccontavalli/libyaarg
+
+If you have issues with libyaarg, you should file bugs here:
+
+   http://github.com/ccontavalli/libyaarg/issues
+
+There currently is no mailing list, but don't be shy, email
+me if you have problems: <ccontavalli at inscatolati.net>.
+
+
+Why should I use libyaarg?
+==========================
+
+Meh, don't use it if you don't want to, but here's a few principles that
+drove libyaarg design:
+
+  o  simple to use
+  o  simple to modify
+  o  self contained, little to no dependenies
+  o  designed to support modular programming
+
+But I gues this is no surprise. Find me a library whose design principles
+have been "hard to use", "hard to modify", and with "lots of dependencies",
+and I'll be happy to pay you a beer the first time I meet you in person.
+
+So, here's what this all means to me:
+
+  o  If I use a library, it has to save me time. Common use cases should
+     not require too much boilerplate, and should be trivial to understand
+     and use even without fully understanding how the library works.
+
+  o  I don't like libraries for which I can't easily and quickly
+     understand the code. If I need to fix a bug, I need to be able
+     to do so quickly. If I want an extra feature, it has to be
+     easy to add. Often, the efforts to make a library easy to use
+     turn to fancy constructs and magic C++ features, with the purpose
+     of adding syntactic sugar or expanding the flexibility of the
+     code. Over elegance of the constructs being used, cleanness of
+     the OO model, and fancy constructs, I prefer simpler constructs
+     that even if less flexible, allow anyone to easily understand and
+     fix the code.
+
+When I talk about "modular programming", I refer to the fact that much
+(most?) code written today is modular in design. OO programming has sold
+inheritance to the masses, and it's not uncommon to have software that,
+for example:
+
+   o  Receive different flags or parameters depending on which other
+      parameters were specified on the command line (eg, "ip addr show").
+
+   o  Use multiple instances of classes that need parameters that the user
+      should be able to override or change from the command line.
+
+   o  Have different pieces of code that need to parse the command line
+      in different ways, or at different stages.
+
+I have always found getopt() and various other flags parsing libraries
+hard to use in practice as they use globals, don't allow to perform
+parsing in multiple stages, require too much code even for simple use
+cases, ... libyaarg: 
+
+   o  Does not use global variables for parsing at all.
+   o  Allows to parse arbitrary vectors for flags.
+   o  Keeps the options and the parsing confined to each class
+      using it.
+
+   [...]
+
+
+Installation
+============
+
+At time of writing, libyaarg is not really meant for installation.
+Just copy the files in your project, and use them. It's self contained,
+it just requires a relatively recent compiler like gcc. It has not
+been tested on other compilers, though. If you find issues, let me
+know, and I'll be happy to fix them (see below).
+
+You are free to include the code of this library in your project
+as long as you follow the terms of the BSD LICENSE included.
+
+Note that the BSD LICENSE allows you to sell, modify, or otherwise
+distribute derived work both as a binary and as source code, without
+need of disclosing the source of your derived work. The only thing
+you have to do is retain the copyright notice on top of the source
+files, and if you distribute it in binary form, provide a copy
+in the documentation.
+
+But just follow the terms of that license, and you'll be grand.
+
+There is a Makefile included, which is mostly provided as an
+example. If you run:
+
+$ make
+
+on your linux system with gcc, you'll get a .so file for libyaarg,
+eg, a dynamic library that you can then link with the -lyaarg flag.
+You can also use 'make static', to get a static .a library out
+instead.
+
+Again, this is just provided as an example, we might provide a
+configure and something fancier in the future.
+
+
+How do I use it?
+================
+
+Don't be shy, the .h files are reasonably well documented.
+Peek there if you need to know something more, open issues on
+the github tracker, or send me emails.
+
+In any case, here's a small example that might help you getting
+started.
+
+Let's say you just wrote a program that lives mostly in a class
+called 'Discover'. This programs takes a few flags:
+
+   --interface, or -i, to specify a network interface.
+   --file, or -r, to specify a file to read.
+   --method, or -m, which can have value "libpcap", or "raw".
+
+Now, let's look at the class definition in the .h file:
+
+| // This header file provides definitions for all the flags you
+| // can receive. .cc / .h file taking options/flags, should only
+| // include this header file.
+| # include "config-parser-options.h"
+| 
+| class Discover {
+|  public:
+|   Discover(ConfigParser* parser);
+| 
+|   [...]
+| 
+|  private:
+|   StringOption interface_;
+|   StringOption file_;
+|   OneOfOption method_;
+| }
+
+Now, let's look at the .cc file (well, it could also live in the .h,
+that's up to your coding style):
+
+| # include "header-file-edited-in-the-snippet-above.h"
+| 
+| Discover::Discover(ConfigParser* parser)
+|       // interface is a string option (as per .h file), if not specified
+|       // on the command line, it defaults to value "wlan0".
+|       // The other parameters are a description of the flag, specifying
+|       // that you can supply it with --interface or -i.
+|     : interface_(parser, Option::Default, "interface", "i", "wlan0",
+| 		 "Specifies the interface to use"),
+| 
+|       // Same as above, nothing new.
+|       file_(parser, Option::Default, "file", "r",
+| 	    "Specifies the file to read packets from."),
+| 
+|       // method_ is a OneOf flag. The user must specify --method=libpcap or
+|       // --method=raw, or no --method (as it's not marked as mandatory, via
+|       // the Option::... argument). The 0 below is the default value,
+|       // corresponds to the first element in the list of allowed values.
+|       // Eg, 0 -> default is libpcap, 1 -> default is raw.
+|       method_(parser, Option::Default, "method", "m",
+| 	      {"libpcap", "raw"}, 0, 
+| 	      "How to get packets from the interface.") {
+| 
+|   // All my fancy code goes here.
+| 
+| }
+
+
+Now, here's an example of you to use the flags in your code:
+
+| void Discover::Start() {
+|   Sniffer* sniffer = NULL;
+|   const string* interface = NULL;
+| 
+|   // Did the user specify a value via --file or -r?
+|   // flag_.HasBeenSet() will return true if flag has been specified,
+|   // false otherwise.
+|   if (file_.HasBeenSet()) {
+| 
+|     // Read the value of --method. As indicated above,
+|     // 0 corresponds to libpcap, 1 corresponds to raw.
+|     // The method .Get() returns an integer.
+|     if (method_.Get() == 0)
+|       sniffer = new PcapFileSniffer();
+|     else
+|       sniffer = new RawPcapFileSniffer();
+| 
+|     // And read the name of the file. In this case, .Get()
+|     // returns a const string.
+|     interface = &file_.Get();
+|   } else {
+|     // Nothing new here and below.
+|     if (method_.Get() == 0)
+|       sniffer = new PcapDeviceSniffer();
+|     else
+|       sniffer = new LinuxInterfaceSniffer();
+| 
+|     interface = &interface_.Get();
+|   }
+| 
+|   [...]
+| }
+
+Finally, here's what your main will look like:
+
+| // In the main, you should include config-parser-argv. Note that
+| // libyaarg is structured such as it would be simple to support
+| // parsing .ini files or to provide other mechanisms (even combine
+| // them) to read options. Code has not been implemented yet, but
+| // the idea is that code parsing flags should include the .h
+| // corresponding to the parser being used. .cc / .h files receiving
+| // parsed options, should just include "config-parser-options.h".
+| #include "config-parser-argv.h"
+| 
+| int main(int argc, const char** argv) {
+|   // Create an argv parser. The two arguments are:
+|   //   - some flags, that can control the behavior of the parser.
+|   //     examples: by usin gConfigParser::RequiresOptions, parsing
+|   //     will fail unless at least one option was specified, ...
+|   //     See config-parser.h, class CommandHolder, Flags enum,
+|   //     for documentation about which flags are available.
+|   //   - the description of the tool. What does this program do?
+|   //     displayed when the user provides --help.
+|   ConfigParserArgv parser(
+|       ConfigParser::Default, "THIS IS THE DESCRIPTION OF THE TOOL");
+| 
+|   // This will tell the argv parser to accept some standard options,
+|   // like --help, or --dump-configs (to show the value of flags parsed
+|   // so far). You don't have to do this, infact you can just register
+|   // an 'HelpOption help(&parser, Option::Default, "doh", "g");' to
+|   // have the behavior of --help with --doh or -g, if you so desire.
+|   StandardOptions options(&parser);
+|   
+|   // This tells the parser about all the options Discover cares about.
+|   // Note that this has to happen before we start parsing.
+|   Discover discover(&parser); 
+| 
+|   // Now, let's rock: actually parse the command line. You can call
+|   // this multiple times, with different vectors. It's up to you.
+|   // Or don't call it at all, and enjoy a larger binary for the sake
+|   // of shipping libyaarg in your products.
+|   parser.Parse(argc, argv);
+| 
+|   // Is there anything the library needs to tell the user? not errors,
+|   // just friendly messages that could go to stdout or logs?
+|   if (parser.HasMessages())
+|     // Send them to stdout, using cout. You can use whichever stream
+|     // you like here (how surprising, uh?). You can also use something
+|     // like GetMessages(&mystring), to get the messages in a string.
+|     parser.PrintMessages(&cout);
+| 
+|   // Same as above. Are there errors? those should go to stderr.
+|   if (parser.HasErrors())
+|     // Those should go to stderr. You can always use GetErrors() instead.
+|     parser.PrintErrors(&cerr);
+| 
+|   // Should we exit the program now? think about --help, the answer
+|   // is probably yes. Or think about a fatal error in parsing the flags.
+|   if (parser.ShouldExit()) {
+|     int exitstatus;
+|     // Meh, do we exit happily or angrily? what do we tell the OS?
+|     if (parser.HasErrors())
+|       exitstatus = 1;
+|     else
+|       exitstatus = 0;
+| 
+|     exit(exitstatus);
+|   }
+| }
+
+Now, let's see what happens:
+
+| $ ./discover --help
+| THIS IS THE DESCRIPTION OF THE TOOL
+|     --dump-configs Dumps all the options that have been provided to this binary.
+| -r, --file         Specifies the file to read packets from. (string)
+|     --help         Shows this help screen.
+| -i, --interface    Specifies the interface to sniff packets from. (string)
+| -m, --method       How to get packets from the interface. ("libpcap" or "raw")
+| 
+| $ ./discover --dump-configs
+| --dump-configs
+| --file=
+| --help
+| --interface=wlan0
+| --method=libpcap
+| [.. software keeps running ..]
+| 
+| $ ./discover -m raw --dump-configs
+| --dump-configs
+| --file=
+| --help
+| --interface=wlan0
+| --method=raw
+| [.. note the difference in --method ..]
+
+
+Known Issues
+============
+
+The code isn't really complete. It's usuable, I use it on a few projects,
+but there's a lot of FIXME and TODOs. I will fix them as time goes on.
+
+
+Hacking
+=======
+
+Please do hack the library as you wish. Please send me
+emails / issues / whatever if you find it useful.
+If you modified the library to make it more useful to you,
+it will be likely more useful to others. Send me patches,
+tell me where to find your code, fork and push, but let
+me know, and I'll be happy to integrate your code in the
+main line. My email is: <ccontavalli at inscatolati.net>

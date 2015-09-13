@@ -68,7 +68,7 @@ if(APPLE)
     add_definitions(${CMAKE_THREAD_LIBS_INIT})
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}-Wl ${CMAKE_THREAD_LIBS_INIT}")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}-Wl ${CMAKE_THREAD_LIBS_INIT}")
-    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}-Wl 
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}-Wl
 ${CMAKE_THREAD_LIBS_INIT}")
 endif(APPLE)
 
@@ -115,6 +115,7 @@ set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(HARDWAR_LIBPATH  "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
 set(DEPENDENCIES_INCLUDES
+    "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libyaarg/"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib"
@@ -125,12 +126,13 @@ set(DEPENDENCIES_INCLUDES
 
 set(DEPENDENCIES_LIBPATH "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libyaarg")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/amop")
+#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/amop")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket")
 
 

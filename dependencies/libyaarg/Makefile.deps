@@ -1,0 +1,25 @@
+config-parser-argv.o: config-parser-argv.cc \
+	config-parser-argv.h \
+	config-parser.h \
+	base.h \
+	utils.h \
+	config-parser-options.h
+config-parser-options.o: config-parser-options.cc \
+	config-parser-options.h \
+	config-parser.h \
+	base.h \
+	utils.h
+config-parser.o: config-parser.cc \
+	config-parser.h \
+	base.h \
+	utils.h
+Makefile.deps: \
+	config-parser-argv.h \
+	config-parser.h \
+	base.h \
+	utils.h \
+	config-parser-options.h \
+	config-parser-argv.cc \
+	config-parser-options.cc \
+	config-parser.cc \
+	Makefile

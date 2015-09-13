@@ -52,13 +52,14 @@ if (WIN32)
    set(exe "WIN32")
 endif ()
 
-link_libraries(Enet SQLite)
+link_libraries(Enet SQLite yaarg)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/)
 add_executable(client ${exe} ${client_source} ${shared_source})
 
 add_dependencies(client SQLite)
 add_dependencies(client Enet)
+add_dependencies(client yaarg)
 add_dependencies(client RocketCore)
 add_dependencies(client RocketControls)
 add_dependencies(client RocketDebugger)
