@@ -75,6 +75,8 @@ target_link_libraries(client
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${OIS_LIBRARIES}
     ${Boost_LIBRARIES}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
     RocketCore RocketControls RocketDebugger
 )
 

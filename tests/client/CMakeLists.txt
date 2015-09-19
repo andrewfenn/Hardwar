@@ -59,6 +59,8 @@ target_link_libraries(clientTest
     ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
     ${CEGUI_LIBRARY}
     ${Boost_LIBRARIES}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
     ${OIS_LIBRARIES}
     RocketCore RocketControls RocketDebugger
     yaarg

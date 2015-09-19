@@ -135,9 +135,12 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/amop")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket")
 
-
+# client unit tests
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
+
+# client
 add_subdirectory(code/client)
+
 #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/server")
 #add_subdirectory(code/server)
 

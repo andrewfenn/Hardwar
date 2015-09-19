@@ -17,52 +17,66 @@
 */
 
 #include "GameSettings.h"
+#include <boost/filesystem.hpp>
+
+using namespace boost;
 
 GameSettings* GameSettings::mGameSettings;
 
 GameSettings::GameSettings(void)
 {
     mParser = new ConfigParserArgv(ConfigParser::Default, "Hardwar\nCopyright (C) 2006-2015 Andrew Fenn\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\nFor bug reporting instructions, please see:\n<https://github.com/andrewfenn/Hardwar/issues>.\nFor help, type \"--help\".");
-    StandardOptions options(mParser);
 }
 
 GameSettings::~GameSettings(void)
 {
-
+    delete mParser;
 }
 
-bool GameSettings::parseArgv(int argc, const char** argv)
+bool GameSettings::parseArgv(const int argc, const char** argv)
 {
+    StandardOptions options(mParser);
     /* Define command line settings before parsing */
     StringOption configSetting(mParser, StringOption::Option::Default, "config", "c", "settings.cfg", "Specifies the configuration file to use");
+    bool shouldContinue = true;
 
     mParser->Parse(argc, argv);
-
-    bool shouldExit = false;
     if (mParser->HasMessages()) {
-        mParser->PrintMessages(&cout);
-        shouldExit = true;
+        mParser->PrintMessages(&std::cout);
+        shouldContinue = false;
     }
 
     if (mParser->HasErrors())
-        mParser->PrintErrors(&cerr);
+        mParser->PrintErrors(&std::cerr);
 
-    if (mParser->ShouldExit() || shouldExit)
+    if (mParser->ShouldExit() || !shouldContinue)
     {
         return false;
     }
 
     Ogre::UTFString configFile = configSetting.Get();
-    setOption("ConfigFile", configSetting.Get());
+    if (!filesystem::exists(configSetting.Get()))
+    {
+        std::cerr << "Error: Config file does not exist '" << configFile << "'" << std::endl;
+        return false;
+    }
 
+    setOption("ConfigFile", configSetting.Get());
     Ogre::ConfigFile lconfig;
     lconfig.load(getOption("ConfigFile"));
 
+    filesystem::path mediaPath = lconfig.getSetting("GameContentDir", "Game", "");
+    if (!filesystem::exists(mediaPath))
+    {
+        std::cerr << "Error: Media path does not exist '" << mediaPath << "'" << std::endl;
+        return false;
+    }
+    setOption("DirectoryMedia", filesystem::canonical(mediaPath).c_str());
+
     setOption("NetworkRetryLimit", lconfig.getSetting("RetryLimit", "Network", "5"));
     setOption("NetworkTimeout", lconfig.getSetting("Timeout", "Network", "5"));
-    setOption("DirectoryMedia", lconfig.getSetting("GameContentDir", "Game", ""));
 
-    return false;
+    return true;
 }
 
 void GameSettings::setOption(const Ogre::UTFString lName, Ogre::UTFString lValue)

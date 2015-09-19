@@ -35,7 +35,7 @@
 class GameSettings
 {
    public:
-      ~GameSettings(void);
+      virtual ~GameSettings(void);
       static GameSettings* getSingletonPtr(void);
       /** Creates or changes a value stored in mGameSettings .
       @remarks

@@ -40,10 +40,10 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, int) {
     // obtain command-line arguments in argv[] style array
     argv = GetArgvCommandLine(&argc);
 #else
-int main( int argc, char** argv ) {
+int main( int argc, const char** argv ) {
 #endif
     GameSettings* settings = GameSettings::getSingletonPtr();
-    if (!settings->parseArgv(argc, const_cast<const char**>(argv))) {
+    if (!settings->parseArgv(argc, argv)) {
         return 1;
     }
 

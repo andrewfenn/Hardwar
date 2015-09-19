@@ -17,6 +17,7 @@
 */
 
 #include "GuiTask.h"
+#include "GameSettings.h"
 
 namespace Client
 {
@@ -33,30 +34,28 @@ GuiTask::GuiTask(Ogre::RenderWindow* rw, Ogre::SceneManager* sm)
     Rocket::Core::Initialise();
     Rocket::Controls::Initialise();
 
-//    Ogre::ResourceGroupManager::getSingleton().createResourceGroup("Rocket");
-//    Ogre::ResourceGroupManager::getSingleton().addResourceLocation("./media/menu", "FileSystem", "Rocket");
+    GameSettings* settings = GameSettings::getSingletonPtr();
+    Ogre::String mediaDir = settings->getOption("DirectoryMedia");
 
     Ogre::ResourceGroupManager::getSingleton().createResourceGroup("Rocket");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation("/home/andrew/programming/hardwar/build/bin/media/menu", "FileSystem", "Rocket");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaDir, "FileSystem", "Rocket");
 
 
     // Load the fonts from the path to the sample directory.
-    Rocket::Core::FontDatabase::LoadFontFace("./media/menu/Delicious-Roman.otf");
-    Rocket::Core::FontDatabase::LoadFontFace("./media/menu/Delicious-Bold.otf");
-    Rocket::Core::FontDatabase::LoadFontFace("./media/menu/Delicious-Italic.otf");
-    Rocket::Core::FontDatabase::LoadFontFace("./media/menu/Delicious-BoldItalic.otf");
+    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-Roman.otf").c_str());
+    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-Bold.otf").c_str());
+    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-Italic.otf").c_str());
+    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-BoldItalic.otf").c_str());
 
     context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(rw->getWidth(), rw->getHeight()));
     Rocket::Debugger::Initialise(context);
 
     // Load the mouse cursor and release the caller's reference.
-    //Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor("./media/menu/cursor.rml");
-    Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor("/home/andrew/programming/hardwar/build/bin/media/menu/cursor.rml");
+    Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor((mediaDir+"/menu/cursor.rml").c_str());
     if (cursor)
         cursor->RemoveReference();
 
-    //Rocket::Core::ElementDocument* document = context->LoadDocument("./media/menu/demo.rml");
-    Rocket::Core::ElementDocument* document = context->LoadDocument("/home/andrew/programming/hardwar/build/bin/media/menu/demo.rml");
+    Rocket::Core::ElementDocument* document = context->LoadDocument((mediaDir+"/menu/demo.rml").c_str());
     if (document)
     {
         document->Show();
