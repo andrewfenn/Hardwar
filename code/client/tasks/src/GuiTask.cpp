@@ -25,11 +25,11 @@ namespace Client
 /** Custom init to pipe the ogre data into the gui system */
 GuiTask::GuiTask(Ogre::RenderWindow* rw, Ogre::SceneManager* sm)
 {
-    ogreRenderer = new RenderInterfaceOgre3D(rw->getWidth(), rw->getHeight());
-    Rocket::Core::SetRenderInterface(ogreRenderer);
+    mOgreRenderer = new RenderInterfaceOgre3D(rw->getWidth(), rw->getHeight());
+    Rocket::Core::SetRenderInterface(mOgreRenderer);
 
-    ogreSystem = new SystemInterfaceOgre3D();
-    Rocket::Core::SetSystemInterface(ogreSystem);
+    mOgreSystem = new SystemInterfaceOgre3D();
+    Rocket::Core::SetSystemInterface(mOgreSystem);
 
     Rocket::Core::Initialise();
     Rocket::Controls::Initialise();
@@ -40,34 +40,20 @@ GuiTask::GuiTask(Ogre::RenderWindow* rw, Ogre::SceneManager* sm)
     Ogre::ResourceGroupManager::getSingleton().createResourceGroup("Rocket");
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(mediaDir, "FileSystem", "Rocket");
 
-
-    // Load the fonts from the path to the sample directory.
-    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-Roman.otf").c_str());
-    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-Bold.otf").c_str());
-    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-Italic.otf").c_str());
-    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/Delicious-BoldItalic.otf").c_str());
-
-    context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(rw->getWidth(), rw->getHeight()));
-    Rocket::Debugger::Initialise(context);
-
-    // Load the mouse cursor and release the caller's reference.
-    Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor((mediaDir+"/menu/cursor.rml").c_str());
-    if (cursor)
-        cursor->RemoveReference();
-
-    Rocket::Core::ElementDocument* document = context->LoadDocument((mediaDir+"/menu/demo.rml").c_str());
-    if (document)
-    {
-        document->Show();
-        document->RemoveReference();
-    }
+    mContext = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(rw->getWidth(), rw->getHeight()));
+    Rocket::Debugger::Initialise(mContext);
+    Rocket::Debugger::SetVisible(true);
 
     mWindow = rw;
 
     // Add the application as a listener to Ogre's render queue so we can render during the overlay.
     sm->addRenderQueueListener((Ogre::RenderQueueListener*)this);
 
-    //Ogre::Root::getSingleton().addFrameListener(this);
+}
+
+Rocket::Core::Context* GuiTask::getRocket()
+{
+    return mContext;
 }
 
 // Called from Ogre before a queue group is rendered.
@@ -75,10 +61,10 @@ void GuiTask::renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& /
 {
     if (queueGroupId == Ogre::RENDER_QUEUE_OVERLAY && Ogre::Root::getSingleton().getRenderSystem()->_getViewport()->getOverlaysEnabled())
     {
-        context->Update();
+        mContext->Update();
 
         ConfigureRenderSystem();
-        context->Render();
+        mContext->Render();
     }
 }
 
@@ -91,71 +77,71 @@ void GuiTask::renderQueueEnded(Ogre::uint8 /*queueGroupId*/, const Ogre::String&
 // Configures Ogre's rendering system for rendering Rocket.
 void GuiTask::ConfigureRenderSystem()
 {
-    Ogre::RenderSystem* render_system = Ogre::Root::getSingleton().getRenderSystem();
+    Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
 
     // Set up the projection and view matrices.
-    Ogre::Matrix4 projection_matrix;
-    BuildProjectionMatrix(projection_matrix);
-    render_system->_setProjectionMatrix(projection_matrix);
-    render_system->_setViewMatrix(Ogre::Matrix4::IDENTITY);
+    Ogre::Matrix4 projectionMatrix;
+    BuildProjectionMatrix(projectionMatrix);
+    renderSystem->_setProjectionMatrix(projectionMatrix);
+    renderSystem->_setViewMatrix(Ogre::Matrix4::IDENTITY);
 
     // Disable lighting, as all of Rocket's geometry is unlit.
-    render_system->setLightingEnabled(false);
+    renderSystem->setLightingEnabled(false);
     // Disable depth-buffering; all of the geometry is already depth-sorted.
-    render_system->_setDepthBufferParams(false, false);
+    renderSystem->_setDepthBufferParams(false, false);
     // Rocket generates anti-clockwise geometry, so enable clockwise-culling.
-    render_system->_setCullingMode(Ogre::CULL_CLOCKWISE);
+    renderSystem->_setCullingMode(Ogre::CULL_CLOCKWISE);
     // Disable fogging.
-    render_system->_setFog(Ogre::FOG_NONE);
+    renderSystem->_setFog(Ogre::FOG_NONE);
     // Enable writing to all four channels.
-    render_system->_setColourBufferWriteEnabled(true, true, true, true);
+    renderSystem->_setColourBufferWriteEnabled(true, true, true, true);
     // Unbind any vertex or fragment programs bound previously by the application.
-    render_system->unbindGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM);
-    render_system->unbindGpuProgram(Ogre::GPT_VERTEX_PROGRAM);
+    renderSystem->unbindGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM);
+    renderSystem->unbindGpuProgram(Ogre::GPT_VERTEX_PROGRAM);
 
     // Set texture settings to clamp along both axes.
     Ogre::TextureUnitState::UVWAddressingMode addressing_mode;
     addressing_mode.u = Ogre::TextureUnitState::TAM_CLAMP;
     addressing_mode.v = Ogre::TextureUnitState::TAM_CLAMP;
     addressing_mode.w = Ogre::TextureUnitState::TAM_CLAMP;
-    render_system->_setTextureAddressingMode(0, addressing_mode);
+    renderSystem->_setTextureAddressingMode(0, addressing_mode);
 
     // Set the texture coordinates for unit 0 to be read from unit 0.
-    render_system->_setTextureCoordSet(0, 0);
+    renderSystem->_setTextureCoordSet(0, 0);
     // Disable texture coordinate calculation.
-    render_system->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
+    renderSystem->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
     // Enable linear filtering; images should be rendering 1 texel == 1 pixel, so point filtering could be used
     // except in the case of scaling tiled decorators.
-    render_system->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT);
+    renderSystem->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT);
     // Disable texture coordinate transforms.
-    render_system->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);
+    renderSystem->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);
     // Reject pixels with an alpha of 0.
-    render_system->_setAlphaRejectSettings(Ogre::CMPF_GREATER, 0, false);
+    renderSystem->_setAlphaRejectSettings(Ogre::CMPF_GREATER, 0, false);
     // Disable all texture units but the first.
-    render_system->_disableTextureUnitsFrom(1);
+    renderSystem->_disableTextureUnitsFrom(1);
 
     // Enable simple alpha blending.
-    render_system->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+    renderSystem->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 
     // Disable depth bias.
-    render_system->_setDepthBias(0, 0);
+    renderSystem->_setDepthBias(0, 0);
 }
 
 // Builds an OpenGL-style orthographic projection matrix.
-void GuiTask::BuildProjectionMatrix(Ogre::Matrix4& projection_matrix)
+void GuiTask::BuildProjectionMatrix(Ogre::Matrix4& projectionMatrix)
 {
     float z_near = -1;
     float z_far = 1;
 
-    projection_matrix = Ogre::Matrix4::ZERO;
+    projectionMatrix = Ogre::Matrix4::ZERO;
 
     // Set up matrices.
-    projection_matrix[0][0] = 2.0f / mWindow->getWidth();
-    projection_matrix[0][3]= -1.0000000f;
-    projection_matrix[1][1]= -2.0f / mWindow->getHeight();
-    projection_matrix[1][3]= 1.0000000f;
-    projection_matrix[2][2]= -2.0f / (z_far - z_near);
-    projection_matrix[3][3]= 1.0000000f;
+    projectionMatrix[0][0] = 2.0f / mWindow->getWidth();
+    projectionMatrix[0][3]= -1.0000000f;
+    projectionMatrix[1][1]= -2.0f / mWindow->getHeight();
+    projectionMatrix[1][3]= 1.0000000f;
+    projectionMatrix[2][2]= -2.0f / (z_far - z_near);
+    projectionMatrix[3][3]= 1.0000000f;
 }
 
 void GuiTask::init()
@@ -166,14 +152,14 @@ void GuiTask::init()
 void GuiTask::shutdown()
 {
     // Shutdown Rocket.
-    context->RemoveReference();
+    mContext->RemoveReference();
     Rocket::Core::Shutdown();
 
-    delete ogreSystem;
-    ogreSystem = nullptr;
+    delete mOgreSystem;
+    mOgreSystem = nullptr;
 
-    delete ogreRenderer;
-    ogreRenderer = nullptr;
+    delete mOgreRenderer;
+    mOgreRenderer = nullptr;
 }
 
 void GuiTask::update()
@@ -181,10 +167,26 @@ void GuiTask::update()
 
 }
 
-void GuiTask::injectInput(const OIS::MouseState /*mouseState*/)
+void GuiTask::mouseMoved(const OIS::MouseState mouseState)
 {
-    /*mSystem->injectMouseMove(mouseState.X.rel, mouseState.Y.rel);
-    mSystem->injectMouseWheelChange(mouseState.Z.rel);*/
+    int key_modifier_state = 0;
+
+    mContext->ProcessMouseMove(mouseState.X.abs, mouseState.Y.abs, key_modifier_state);
+    if (mouseState.Z.rel != 0) {
+        mContext->ProcessMouseWheel(mouseState.Z.rel / -120, key_modifier_state);
+    }
+}
+
+void GuiTask::mousePressed(const OIS::MouseState mouseState, OIS::MouseButtonID id)
+{
+    int key_modifier_state = 0;
+    mContext->ProcessMouseButtonDown((int) id, key_modifier_state);
+}
+
+void GuiTask::mouseReleased(const OIS::MouseState mouseState, OIS::MouseButtonID id)
+{
+    int key_modifier_state = 0;
+    mContext->ProcessMouseButtonUp((int) id, key_modifier_state);
 }
 
 }

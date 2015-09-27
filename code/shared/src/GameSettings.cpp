@@ -31,6 +31,7 @@ GameSettings::GameSettings(void)
 GameSettings::~GameSettings(void)
 {
     delete mParser;
+    mParser = nullptr;
 }
 
 bool GameSettings::parseArgv(const int argc, const char** argv)

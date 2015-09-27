@@ -20,6 +20,7 @@
 //#include "LoadState.h"
 #include "InputTask.h"
 #include "GuiTask.h"
+#include "GameSettings.h"
 
 using namespace Client;
 
@@ -99,6 +100,37 @@ void MenuState::enter()
     mCamera->setNearClipDistance( 0.2f );
 
     mCount = 0;
+
+    loadUI();
+}
+
+void MenuState::loadUI()
+{
+    auto rocket = ((GuiTask*) mTasklist->get("Gui"))->getRocket();
+    GameSettings* settings = GameSettings::getSingletonPtr();
+    Ogre::String mediaDir = settings->getOption("DirectoryMedia");
+
+    // Load the fonts from the path to the sample directory.
+    Rocket::Core::FontDatabase::LoadFontFace((mediaDir+"/menu/html/Ubuntu.ttf").c_str(),
+                                         "Ubuntu",
+                                         Rocket::Core::Font::STYLE_NORMAL,
+                                         Rocket::Core::Font::WEIGHT_BOLD);
+
+//    rocket->UnloadAllDocuments();
+    Rocket::Core::Factory::ClearStyleSheetCache();
+
+    Rocket::Core::ElementDocument* cursor = rocket->LoadMouseCursor((mediaDir+"/menu/html/cursor.rml").c_str());
+    if (cursor)
+        cursor->RemoveReference();
+
+    rocket->ShowMouseCursor(true);
+
+    Rocket::Core::ElementDocument* document = rocket->LoadDocument((mediaDir+"/menu/html/menu.rml").c_str());
+    if (document)
+    {
+        document->Show();
+        document->RemoveReference();
+    }
 }
 
 void MenuState::update(const unsigned long timeElapsed )
@@ -185,13 +217,16 @@ bool MenuState::keyReleased(const OIS::KeyEvent &e)
     if (e.key == OIS::KC_D)
         mKeydownRight = 0;
 
+    if (e.key == OIS::KC_F5)
+        loadUI();
+
     return true;
 }
 
 bool MenuState::mouseMoved(const OIS::MouseEvent &e)
 {
     const OIS::MouseState &mouseState = e.state;
-    ((GuiTask*) mTasklist->get("Gui"))->injectInput(mouseState);
+    ((GuiTask*) mTasklist->get("Gui"))->mouseMoved(mouseState);
 
     mMouseRotX = Ogre::Degree(-mouseState.X.rel * 0.13);
     mMouseRotY = Ogre::Degree(-mouseState.Y.rel * 0.13);
@@ -199,12 +234,16 @@ bool MenuState::mouseMoved(const OIS::MouseEvent &e)
     return true;
 }
 
-bool MenuState::mousePressed(const OIS::MouseEvent& /*e*/, OIS::MouseButtonID /*id*/)
+bool MenuState::mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
+    const OIS::MouseState &mouseState = e.state;
+    ((GuiTask*) mTasklist->get("Gui"))->mousePressed(mouseState, id);
     return true;
 }
 
-bool MenuState::mouseReleased(const OIS::MouseEvent& /*e*/, OIS::MouseButtonID /*id*/)
+bool MenuState::mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
+    const OIS::MouseState &mouseState = e.state;
+    ((GuiTask*) mTasklist->get("Gui"))->mouseReleased(mouseState, id);
     return true;
 }

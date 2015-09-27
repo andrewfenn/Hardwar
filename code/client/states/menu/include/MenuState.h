@@ -52,6 +52,8 @@ private:
    Ogre::Degree            mMouseRotX, mMouseRotY;
    int                     mKeydownUp, mKeydownDown,
                         mKeydownRight, mKeydownLeft;
+
+   void loadUI();
 };
 }
 

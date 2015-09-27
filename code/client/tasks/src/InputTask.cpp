@@ -1,7 +1,7 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
     Copyright © 2008-2010  Andrew Fenn
-    
+
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -76,7 +76,7 @@ void InputTask::init()
    if( !mInputSystem )
    {
       /* Setup basic variables */
-      OIS::ParamList paramList;    
+      OIS::ParamList paramList;
       size_t windowHnd = 0;
       std::ostringstream windowHndStr;
       unsigned long timeout = 0;
@@ -115,7 +115,7 @@ void InputTask::init()
          mKeyboard = static_cast<OIS::Keyboard*>(mInputSystem->createInputObject(OIS::OISKeyboard, true));
          mKeyboard->setEventCallback(this);
       }
-	
+
       /* If possible create a buffered mouse */
       #if OIS_VERSION_MINOR >= 2
       if (mInputSystem->getNumberOfDevices(OIS::OISMouse) > 0)
@@ -229,7 +229,7 @@ bool InputTask::isEnabled(const std::string& instanceName)
    return mDisabled[instanceName] == 0;
 }
 
-void InputTask::addKeyListener(OIS::KeyListener *keyListener, 
+void InputTask::addKeyListener(OIS::KeyListener *keyListener,
                                                 const std::string& instanceName)
 {
    if(mKeyboard)
