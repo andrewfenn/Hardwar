@@ -21,7 +21,7 @@ find_package(OIS REQUIRED)
 
 set(DEPENDENCIES_LIBPATH "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/deps/freetype")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 
 set(OGRE_STATIC TRUE)
@@ -31,18 +31,18 @@ set(OGRE_BUILD_TOOLS FALSE)
 set(OGRE_UNITY_BUILD TRUE)
 set(TINYXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 set(TINYXML_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/lib")
-set(FREETYPE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/deps/freetype/include")
-set(FREETYPE_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/deps/freetype/")
+set(FREETYPE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
+set(FREETYPE_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/")
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/deps/ogre")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre")
 
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(HARDWAR_LIBPATH  "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
 set(DEPENDENCIES_INCLUDES
-    "${CMAKE_CURRENT_SOURCE_DIR}/deps/ogre/include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/deps/ogre/OgreMain/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre/OgreMain/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libyaarg/"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3"
