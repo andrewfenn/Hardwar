@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
-cmake_policy(SET CMP0003 NEW)
 
 project(HardwarClient)
 
@@ -55,7 +54,7 @@ endif ()
 link_libraries(Enet SQLite yaarg)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/)
-add_executable(client ${exe} ${client_source} ${shared_source})
+add_executable(client EXCLUDE_FROM_ALL ${exe} ${client_source} ${shared_source})
 
 add_dependencies(client SQLite)
 add_dependencies(client Enet)
@@ -81,9 +80,6 @@ target_link_libraries(client
 )
 
 if (UNIX)
-    include(GetC11CompilerFlag)
-    get_c11_flag()
-
-    add_definitions(-g -o2 -Wall -pedantic -Wextra -Wwrite-strings ${c11flag})
+    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings -std=c++11)
 endif()
 

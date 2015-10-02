@@ -7,29 +7,17 @@ The game is currently is pre-alpha state. There is currently no game to play.
 
 If you are interested in helping develop the game then please see below for build instructions.
 
-## Build prerequisites
-
-Hardwar requires the following libraries be pre-installed.
-
-* Ogre3D - 1.8.0
-* OIS - 1.2
-* CMake
-* The Boost libraries
-* CEGUI
-
 ## Building
 
 The building instructions should be similar regardless of if you're on windows, osx or linux.
 
 ###Linux
 
-    mkdir hardwar (git clone here)
-    mkdir build && cd ./build
-    cmake ../hardwar
+    sudo apt-get install libfreetype6-dev nvidia-cg-toolkit libfreeimage-dev \
+    zlib1g-dev libzzip-dev libois-dev libcppunit-dev doxygen libxt-dev libxaw7-dev \
+    libxxf86vm-dev libxrandr-dev libglu-dev libboost-date-time-dev libboost-thread-dev
+
+    bower install
+    cmake -H. -B./hard.build
+    cd ./hard.build
     make
-
-###Windows and OSX
-
-Copy the same steps as above, create your git repo and use cmake to generate either visual studio project files or xcode files for your platform.
-
-You should then only have to open the xcode or visual studio file and compile. If that doesn't work please file bugs or pull requests.

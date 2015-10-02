@@ -46,7 +46,7 @@ if (WIN32)
 endif ()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/tests/)
-add_executable(clientTest ${exe} ${clientTest_source})
+add_executable(clientTest EXCLUDE_FROM_ALL ${exe} ${clientTest_source})
 
 add_dependencies(clientTest yaarg)
 add_dependencies(clientTest UnitTest)
@@ -67,9 +67,7 @@ target_link_libraries(clientTest
 )
 
 if(UNIX)
-    include(GetC11CompilerFlag)
-    get_c11_flag()
-    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings ${c11flag})
+    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings -std=c++11)
 endif()
 
 set_target_properties(clientTest PROPERTIES SOLUTION_FOLDER UnitTests)
