@@ -34,7 +34,9 @@ find_package(OIS REQUIRED)
 #set(DEPENDENCIES_LIBPATH "${HARDWAR_LIBPATH}")
 #set(LIBRARY_OUTPUT_PATH "${HARDWAR_LIBPATH}")
 
-add_definitions(-w)
+# Surpress Warnings from dependencies
+set(ORIGINAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
 set(FREETYPE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
 set(FREETYPE_LIBRARIES "${DEPENDENCIES_LIBPATH}")
@@ -89,6 +91,8 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket")
 
 # Turn off messages from external librarie's cmake scripts
 set(CMAKE_DISABLE_MESSAGE FALSE)
+
+set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS}")
 
 # client unit tests
 #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
