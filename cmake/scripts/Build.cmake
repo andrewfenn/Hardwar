@@ -14,3 +14,16 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     endif()
 endif ()
 message(STATUS "Build type set to: ${CMAKE_BUILD_TYPE}")
+
+function(message)
+    list(GET ARGV 0 MessageType)
+    if(NOT CMAKE_DISABLE_MESSAGE)
+        if(MessageType STREQUAL FATAL_ERROR OR
+         MessageType STREQUAL SEND_ERROR OR
+         MessageType STREQUAL WARNING OR
+         MessageType STREQUAL AUTHOR_WARNING)
+        list(REMOVE_AT ARGV 0)
+        _message(${MessageType} "${ARGV}")
+        endif()
+    endif()
+endfunction()

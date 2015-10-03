@@ -12,12 +12,12 @@ set(clientTest_source
     ${client_source}
     ${CMAKE_SOURCE_DIR}/code/shared/src/Building.cpp
     ${CMAKE_SOURCE_DIR}/code/shared/src/GameSettings.cpp
-    core/TestGameRoot.cpp
-    core/TestGameManager.cpp
-    core/TestGameState.cpp
-    core/TestGameTask.cpp
-    tasks/TestNetworkTask.cpp
-    main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/TestGameRoot.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/TestGameManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/TestGameState.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/TestGameTask.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tasks/TestNetworkTask.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
 
 source_group("clientTest" FILES ${clientTest_source})
@@ -46,7 +46,7 @@ if (WIN32)
 endif ()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/tests/)
-add_executable(clientTest EXCLUDE_FROM_ALL ${exe} ${clientTest_source})
+add_executable(clientTest ${exe} ${clientTest_source})
 
 add_dependencies(clientTest yaarg)
 add_dependencies(clientTest UnitTest)

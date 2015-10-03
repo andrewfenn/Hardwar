@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
-
 project(HardwarClient)
 
 SET(HardwarClient_MAJOR_VERSION ${HARDWAR_MAJOR_VERSION})
@@ -12,7 +11,6 @@ add_subdirectory("states/")
 add_subdirectory("helpers/")
 
 set(client_source ${client_source} core/src/main.cpp)
-
 source_group("Client" FILES ${client_source})
 
 set(shared_source
@@ -54,7 +52,7 @@ endif ()
 link_libraries(Enet SQLite yaarg)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/)
-add_executable(client EXCLUDE_FROM_ALL ${exe} ${client_source} ${shared_source})
+add_executable(client ${exe} ${client_source} ${shared_source})
 
 add_dependencies(client SQLite)
 add_dependencies(client Enet)
