@@ -1,6 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
-cmake_policy(SET CMP0003 NEW)
-
 project(clientTest)
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/code/client/core/" "${CMAKE_CURRENT_BINARY_DIR}/client/core/")
@@ -56,8 +54,7 @@ add_dependencies(clientTest RocketControls)
 add_dependencies(clientTest RocketDebugger)
 
 target_link_libraries(clientTest
-    ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
-    ${CEGUI_LIBRARY}
+    ${OGRE_LIBRARIES}
     ${Boost_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
@@ -66,9 +63,7 @@ target_link_libraries(clientTest
     yaarg
 )
 
-if(UNIX)
-    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings -std=c++11)
-endif()
+set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -Wall -pthread -pedantic -Wextra -Wwrite-strings -std=c++14")
 
 set_target_properties(clientTest PROPERTIES SOLUTION_FOLDER UnitTests)
 

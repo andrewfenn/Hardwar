@@ -69,7 +69,7 @@ endif()
 
 set_target_properties(client PROPERTIES SOLUTION_FOLDER "Hardwar Client")
 target_link_libraries(client
-    ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARY} ${OGRE_Paging_LIBRARY}
+    ${OGRE_LIBRARIES}
     ${OIS_LIBRARIES}
     ${Boost_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
@@ -77,7 +77,4 @@ target_link_libraries(client
     RocketCore RocketControls RocketDebugger
 )
 
-if (UNIX)
-    add_definitions(-Wall -pedantic -Wextra -Wwrite-strings -std=c++11)
-endif()
-
+set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wwrite-strings -std=c++11")

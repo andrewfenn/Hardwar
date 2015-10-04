@@ -9,11 +9,11 @@ set(HARDWAR_VERSION_STRING "${HARDWAR_MAJOR_VERSION}.${HARDWAR_MINOR_VERSION}.${
 message(STATUS "Building Hardwar version ${HARDWAR_VERSION_STRING}")
 set(abi_version ${HARDWAR_VERSION_STRING})
 
-set(CMAKE_DISABLE_MESSAGE TRUE)
-
 set(HARDWAR_LIBPATH  "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
+set(DEPENDENCIES_LIBPATH "${HARDWAR_LIBPATH}")
+set(LIBRARY_OUTPUT_PATH "${HARDWAR_LIBPATH}")
 
 set( CMAKE_MODULE_PATH
     "${CMAKE_MODULE_PATH}"
@@ -22,6 +22,8 @@ set( CMAKE_MODULE_PATH
 )
 
 include(Build)
+set(CMAKE_DISABLE_MESSAGE FALSE)
+
 include(SourceFiles)
 include(Windows)
 include(OSX)
@@ -29,12 +31,10 @@ include(OSX)
 find_package(Boost COMPONENTS thread filesystem system)
 set(Boost_USE_STATIC_LIBS TRUE)
 
+
 find_package(OIS REQUIRED)
 
-#set(DEPENDENCIES_LIBPATH "${HARDWAR_LIBPATH}")
-#set(LIBRARY_OUTPUT_PATH "${HARDWAR_LIBPATH}")
-
-# Surpress Warnings from dependencies
+# Surpress compiler warnings from dependencies
 set(ORIGINAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
@@ -46,24 +46,17 @@ set(TINYXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 set(TINYXML_LIBRARIES "${DEPENDENCIES_LIBPATH}")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 
-set(OGRE_STATIC FALSE)
-set(OGRE_USE_BOOST TRUE)
-set(OGRE_BUILD_TEST FALSE)
-set(OGRE_BUILD_SAMPLES FALSE)
-set(OGRE_BUILD_TOOLS FALSE)
-set(OGRE_UNITY_BUILD TRUE)
+set(OGRE_STATIC FALSE CACHE BOOL NULL FORCE)
+set(OGRE_USE_BOOST TRUE CACHE BOOL NULL FORCE)
+set(OGRE_BUILD_TEST FALSE CACHE BOOL NULL FORCE)
+set(OGRE_BUILD_SAMPLES FALSE CACHE BOOL NULL FORCE)
+set(OGRE_BUILD_TOOLS FALSE CACHE BOOL NULL FORCE)
+set(OGRE_UNITY_BUILD TRUE CACHE BOOL NULL FORCE)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre")
-set_target_properties(OgreMain
-                      RenderSystem_GL
-                      Plugin_OctreeSceneManager
-                      Plugin_BSPSceneManager
-                      Plugin_CgProgramManager
-                      Plugin_ParticleFX
-                      Plugin_PCZSceneManager
-                      OgrePaging
-                      OgreTerrain
-                      OgreRTShaderSystem
-    PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
+set(OGRE_LIBRARIES OgreMain RenderSystem_GL Plugin_OctreeSceneManager Plugin_BSPSceneManager Plugin_CgProgramManager Plugin_ParticleFX Plugin_PCZSceneManager OgrePaging OgreTerrain OgreRTShaderSystem)
+
+
+set_target_properties(${OGRE_LIBRARIES} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(DEPENDENCIES_INCLUDES
@@ -86,16 +79,17 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/amop")
 
-set(BUILD_PYTHON_BINDINGS FALSE)
+set(BUILD_PYTHON_BINDINGS FALSE CACHE BOOL NULL FORCE)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket")
 
 # Turn off messages from external librarie's cmake scripts
 set(CMAKE_DISABLE_MESSAGE FALSE)
 
+# Re-enable compiler warnings for hardwar code
 set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS}")
 
 # client unit tests
-#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/tests/client")
 
 # client
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/code/client")
