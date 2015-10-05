@@ -11,12 +11,14 @@ If you are interested in helping develop the game then please see below for buil
 
 The building instructions should be similar regardless of if you're on windows, osx or linux.
 
-###Linux
+For library dependency management I use bower which requires node-js and npm to be installed. After you have these installed you should be able to download the code and run "bower install" to get all the dependencies needed to build the game.
+
+###Ubuntu
 
     sudo apt-get install libfreetype6-dev nvidia-cg-toolkit libfreeimage-dev \
     zlib1g-dev libzzip-dev libois-dev libcppunit-dev doxygen libxt-dev libxaw7-dev \
     libxxf86vm-dev libxrandr-dev libglu-dev libboost-date-time-dev libboost-thread-dev \
-    git npm nodejs-legacy cmake
+    libboost-filesystem-dev git npm nodejs-legacy cmake
 
     sudo npm install -g bower
     bower install
