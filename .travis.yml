@@ -24,9 +24,6 @@ addons:
             - libboost-date-time-dev
             - libboost-thread-dev
             - libboost-filesystem-dev
-            - git
-            - npm
-            - nodejs-legacy
             - cmake
 cache:
     directories:
@@ -34,8 +31,9 @@ cache:
         - dependencies
 
 before_script:
-    - ./node_modules/bower/bin/bower install
-    - cmake -H. -B./hard.build
+    - travis_wait npm install bower
+    - travis_wait ./node_modules/bower/bin/bower install
+    - travis_wait cmake -H. -B./hard.build
     - cd ./hard.build
 
 script: make
