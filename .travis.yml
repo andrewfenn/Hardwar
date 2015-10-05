@@ -31,12 +31,12 @@ cache:
         - dependencies
 
 before_script:
-    - travis_wait npm install bower
-    - travis_wait ./node_modules/bower/bin/bower install
+    - travis_retry npm install bower
+    - travis_retry ./node_modules/bower/bin/bower install
     - travis_wait cmake -H. -B./hard.build
     - cd ./hard.build
 
-script: make
+script: travis_wait make
 
 notifications:
     email: false

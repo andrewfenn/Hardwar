@@ -22,7 +22,7 @@ set( CMAKE_MODULE_PATH
 )
 
 include(Build)
-set(CMAKE_DISABLE_MESSAGE FALSE)
+set(CMAKE_DISABLE_MESSAGE TRUE)
 
 include(SourceFiles)
 include(Windows)
