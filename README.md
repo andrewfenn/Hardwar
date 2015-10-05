@@ -15,8 +15,10 @@ The building instructions should be similar regardless of if you're on windows, 
 
     sudo apt-get install libfreetype6-dev nvidia-cg-toolkit libfreeimage-dev \
     zlib1g-dev libzzip-dev libois-dev libcppunit-dev doxygen libxt-dev libxaw7-dev \
-    libxxf86vm-dev libxrandr-dev libglu-dev libboost-date-time-dev libboost-thread-dev
+    libxxf86vm-dev libxrandr-dev libglu-dev libboost-date-time-dev libboost-thread-dev \
+    git npm nodejs-legacy cmake
 
+    sudo npm install -g bower
     bower install
     cmake -H. -B./hard.build
     cd ./hard.build

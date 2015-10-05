@@ -80,7 +80,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
 #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/amop")
 
 set(BUILD_PYTHON_BINDINGS FALSE CACHE BOOL NULL FORCE)
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libRocket/Build")
 
 # Turn off messages from external librarie's cmake scripts
 set(CMAKE_DISABLE_MESSAGE FALSE)
