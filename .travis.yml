@@ -1,0 +1,29 @@
+language: cpp
+sudo:     required
+
+compiler:
+    - gcc
+    - clang
+
+install:
+    - travis_wait sudo apt-get update -qq
+    - travis_wait sudo apt-get install -qq apt-get install libfreetype6-dev nvidia-cg-toolkit libfreeimage-dev zlib1g-dev libzzip-dev libois-dev libcppunit-dev doxygen libxt-dev libxaw7-dev libxxf86vm-dev libxrandr-dev libglu-dev libboost-date-time-dev libboost-thread-dev libboost-filesystem-dev git npm nodejs-legacy cmake
+    - travis_wait sudo npm install -g bower
+
+before_script:
+    - bower install
+    - cmake -H. -B./hard.build
+    - cd ./hard.build
+
+script: make
+
+notifications:
+    email: false
+    irc:
+        channels:
+            - "chat.freenode.net#hardwar"
+        template:
+            - "\x02%{repository}\x0f#\x0312%{build_number}\x0f (\x0307%{branch}\x0f - \x02%{commit}\x0f : \x0303%{author}\x0f): \x02%{message}\x0f"
+            - "Build details : \x0302%{build_url}\x0f"
+        on_success: change
+        on_failure: always
