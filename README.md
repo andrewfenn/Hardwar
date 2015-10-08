@@ -27,3 +27,17 @@ For library dependency management I use bower which requires node-js and npm to 
     cmake -H. -B./hard.build
     cd ./hard.build
     make
+
+###OSX
+
+    Download/Install XCode from AppStore
+    Open XCode and agree to the license agreement
+    Download/Install XCode Command Line Tools: https://developer.apple.com/downloads/?name=for%20Xcode
+    Download/Install brew: http://brew.sh/
+    Download/Install nvidia-cg-toolkit: https://developer.nvidia.com/cg-toolkit-download
+    brew install git cmake node pkgconfig boost
+    git clone https://github.com/andrewfenn/Hardwar.git
+    cd ./Hardwar
+    sudo npm install -g bower
+    bower install
+    cmake -H. -B./hard.build

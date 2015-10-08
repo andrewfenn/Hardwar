@@ -19,6 +19,7 @@ set( CMAKE_MODULE_PATH
     "${CMAKE_MODULE_PATH}"
     "${HARDWAR_SOURCE_DIR}/cmake/modules"
     "${HARDWAR_SOURCE_DIR}/cmake/scripts"
+    "${HARDWAR_SOURCE_DIR}/dependencies/ogre/CMake/Packages/"
 )
 
 include(Build)
