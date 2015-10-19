@@ -25,6 +25,7 @@ addons:
             - libboost-thread-dev
             - libboost-filesystem-dev
             - cmake
+            - g++-4.8
 cache:
     directories:
         - node_modules
@@ -36,7 +37,9 @@ before_script:
     - travis_wait cmake -H. -B./hard.build
     - cd ./hard.build
 
-script: travis_wait make
+script:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+    - travis_wait make
 
 notifications:
     email: false
