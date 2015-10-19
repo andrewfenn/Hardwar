@@ -1,4 +1,4 @@
-sudo: required
+sudo: false
 dist: trusty
 
 compiler:
@@ -32,7 +32,7 @@ cache:
 
 before_script:
     - travis_retry npm install bower
-    - travis_retry ./node_modules/bower/bin/bower install
+    - travis_retry ./node_modules/bower/bin/bower install --config.interactive=false
     - travis_wait cmake -H. -B./hard.build
     - cd ./hard.build
 

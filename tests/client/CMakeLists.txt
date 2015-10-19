@@ -63,7 +63,7 @@ target_link_libraries(clientTest
     yaarg
 )
 
-set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -Wall -pthread -pedantic -Wextra -Wwrite-strings -std=c++14")
+set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -Wall -pthread -pedantic -Wextra -Wwrite-strings -std=c++11")
 
 set_target_properties(clientTest PROPERTIES SOLUTION_FOLDER UnitTests)
 
