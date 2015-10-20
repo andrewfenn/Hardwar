@@ -1,6 +1,6 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2012  Andrew Fenn
+    Copyright © 2012 - 2015 Andrew Fenn
 
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 namespace Client
 {
+
 Ogre::UTFString GameRootLinux::getHomeDirectory()
 {
     Ogre::UTFString homeDir;
@@ -42,23 +43,13 @@ Ogre::UTFString GameRootLinux::getHomeDirectory()
 
 bool GameRootLinux::isLocked()
 {
-    Ogre::UTFString homeDir = this->getHomeDirectory();
+    createHomeDir();
 
-    // check if the folder exists otherwise create it
-    if (opendir(homeDir.asUTF8_c_str()) == nullptr)
-    {
-        if (mkdir(homeDir.asUTF8_c_str(), S_IRWXU|S_IRGRP|S_IXGRP) != 0)
-        {
-            OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Can not create folder in home directory", "GameRootLinux::isLocked");
-        }
-    }
-
-    homeDir = homeDir+Ogre::UTFString("/pid");
-
+    Ogre::UTFString pidFile = this->getHomeDirectory()+Ogre::UTFString("/pid");
     std::fstream runfile;
     char* buf;
     int len, pid;
-    runfile.open(homeDir.asUTF8_c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+    runfile.open(pidFile.asUTF8_c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 
     // No file, game not running
     if (!runfile.is_open())
@@ -70,7 +61,7 @@ bool GameRootLinux::isLocked()
 
     if (len > 20)
     {
-        // should only store a number         
+        // should only store a number
         runfile.close();
         return true;
     }
@@ -99,17 +90,33 @@ bool GameRootLinux::isLocked()
 
 void GameRootLinux::setLocked(const bool& locked)
 {
-    Ogre::UTFString homeDir = this->getHomeDirectory() + Ogre::UTFString("/pid");
+    createHomeDir();
+
+    Ogre::UTFString pidFile = this->getHomeDirectory() + Ogre::UTFString("/pid");
     std::fstream runfile;
     std::string buf;
 
-    remove(homeDir.asUTF8_c_str());
+    remove(pidFile.asUTF8_c_str());
     if (locked)
     {
         buf = Ogre::String(Ogre::StringConverter::toString(getpid()));
-        runfile.open(homeDir.asUTF8_c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+        runfile.open(pidFile.asUTF8_c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
         runfile.write(buf.c_str(),buf.size());
         runfile.close();
+    }
+}
+
+void GameRootLinux::createHomeDir()
+{
+    Ogre::UTFString homeDir = this->getHomeDirectory();
+
+    // check if the folder exists otherwise create it
+    if (opendir(homeDir.asUTF8_c_str()) == nullptr)
+    {
+        if (mkdir(homeDir.asUTF8_c_str(), S_IRWXU|S_IRGRP|S_IXGRP) != 0)
+        {
+            OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Can not create folder in home directory", "GameRootLinux::isLocked");
+        }
     }
 }
 

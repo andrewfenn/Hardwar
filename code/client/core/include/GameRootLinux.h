@@ -1,6 +1,6 @@
-/* 
+/*
     This file is part of Hardwar - A remake of the classic flight sim shooter
-    Copyright © 2012  Andrew Fenn
+    Copyright © 2012 - 2015  Andrew Fenn
 
     Hardwar is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ namespace Client
             bool loadPlugins();
             /** Gets the location of the user's home directory */
             Ogre::UTFString getHomeDirectory();
+        private:
+            void createHomeDir();
     };
 
     class GameRootSystem : public GameRootLinux {};

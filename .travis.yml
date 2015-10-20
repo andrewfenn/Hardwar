@@ -1,5 +1,5 @@
-language: cpp
-sudo: false
+sudo: required
+dist: trusty
 
 compiler:
     - gcc
@@ -25,6 +25,7 @@ addons:
             - libboost-thread-dev
             - libboost-filesystem-dev
             - cmake
+            - g++-4.8
 cache:
     directories:
         - node_modules
@@ -32,11 +33,13 @@ cache:
 
 before_script:
     - travis_retry npm install bower
-    - travis_retry ./node_modules/bower/bin/bower install
+    - travis_retry ./node_modules/bower/bin/bower install --config.interactive=false
     - travis_wait cmake -H. -B./hard.build
     - cd ./hard.build
 
-script: travis_wait make
+script:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+    - travis_wait make
 
 notifications:
     email: false
