@@ -20,7 +20,7 @@ set(clientTest_source
 
 source_group("clientTest" FILES ${clientTest_source})
 
-include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/dependencies/UnitTest++/src")
+include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/dependencies/unittest/UnitTest++")
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/dependencies/amop/include")
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
 include_directories(SYSTEM ${CEGUI_INCLUDE_DIR})
@@ -37,7 +37,7 @@ include_directories(
    ${CMAKE_SOURCE_DIR}/code/shared/include
 )
 
-link_libraries(UnitTest Enet)
+link_libraries(UnitTest++ Enet)
 
 if (WIN32)
    set(exe "WIN32")
@@ -52,6 +52,7 @@ add_dependencies(clientTest Enet)
 add_dependencies(clientTest RocketCore)
 add_dependencies(clientTest RocketControls)
 add_dependencies(clientTest RocketDebugger)
+add_dependencies(clientTest OIS)
 
 target_link_libraries(clientTest
     ${OGRE_LIBRARIES}

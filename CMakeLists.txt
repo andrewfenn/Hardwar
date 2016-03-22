@@ -40,10 +40,14 @@ if(APPLE)
     include(OSX)
 endif()
 
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC ON)
+set(Boost_USE_MULTITHREAD ON)
+set(BOOST_INCLUDEDIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/*/")
 find_package(Boost REQUIRED COMPONENTS thread filesystem system)
-#find_package(OIS REQUIRED)
+
 set(OIS_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ois/includes")
-set(OIS_LIBRARIES "ois")
+set(OIS_LIBRARIES "OIS")
 set(OIS_BUILD_DEMOS False)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ois")
 
