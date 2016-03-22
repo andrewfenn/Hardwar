@@ -9,7 +9,6 @@ addons:
     apt:
         packages:
             - libfreetype6-dev
-            - nvidia-cg-toolkit
             - libfreeimage-dev
             - zlib1g-dev
             - libzzip-dev
@@ -25,7 +24,7 @@ addons:
             - libboost-thread-dev
             - libboost-filesystem-dev
             - cmake
-            - g++-4.8
+            - g++
 cache:
     directories:
         - node_modules
