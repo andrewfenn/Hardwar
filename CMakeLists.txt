@@ -45,13 +45,15 @@ find_package(Boost REQUIRED COMPONENTS thread filesystem system)
 
 # Surpress compiler warnings from dependencies
 set(ORIGINAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -fPIC")
 
 set(FREETYPE_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
 set(FREETYPE_FT2BUILD_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
 set(FREETYPE_LIBRARIES "freetype")
 set(FREETYPE_FOUND True)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype")
+
+set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -w")
 
 set(TINYXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 set(TINYXML_LIBRARIES "${DEPENDENCIES_LIBPATH}")

@@ -31,6 +31,7 @@
 
 # include "config-parser.h"
 # include <vector>
+# include <sstream>
 
 class CallbackCommand : public Command {
  public:
