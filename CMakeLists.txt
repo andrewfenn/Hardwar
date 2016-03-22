@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
-project(HARDWAR)
+cmake_policy(SET CMP0003 NEW)
+
+project(HARDWAR CXX)
 
 set( HARDWAR_MAJOR_VERSION 0 )
 set( HARDWAR_MINOR_VERSION 1 )
@@ -12,8 +14,14 @@ set(abi_version ${HARDWAR_VERSION_STRING})
 set(HARDWAR_LIBPATH  "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
-set(DEPENDENCIES_LIBPATH "${HARDWAR_LIBPATH}")
+#set(DEPENDENCIES_LIBPATH "${HARDWAR_LIBPATH}")
 set(LIBRARY_OUTPUT_PATH "${HARDWAR_LIBPATH}")
+
+#set(CMAKE_MACOSX_RPATH "${CMAKE_MACOSX_RPATH};${HARDWAR_LIBPATH}")
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH "${HARDWAR_LIBPATH}")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
 set( CMAKE_MODULE_PATH
     "${CMAKE_MODULE_PATH}"
@@ -27,21 +35,22 @@ set(CMAKE_DISABLE_MESSAGE TRUE)
 
 include(SourceFiles)
 include(Windows)
-include(OSX)
 
-find_package(Boost COMPONENTS thread filesystem system)
-set(Boost_USE_STATIC_LIBS TRUE)
+if(APPLE)
+    include(OSX)
+endif()
 
-
-find_package(OIS REQUIRED)
+find_package(Boost REQUIRED COMPONENTS thread filesystem system)
+#find_package(OIS REQUIRED)
 
 # Surpress compiler warnings from dependencies
 set(ORIGINAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
-set(FREETYPE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
+set(FREETYPE_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
 set(FREETYPE_FT2BUILD_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
-set(FREETYPE_LIBRARIES "${DEPENDENCIES_LIBPATH}")
+set(FREETYPE_LIBRARIES "freetype")
+set(FREETYPE_FOUND True)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype")
 
 set(TINYXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
@@ -54,10 +63,10 @@ set(OGRE_BUILD_TEST FALSE CACHE BOOL NULL FORCE)
 set(OGRE_BUILD_SAMPLES FALSE CACHE BOOL NULL FORCE)
 set(OGRE_BUILD_TOOLS FALSE CACHE BOOL NULL FORCE)
 set(OGRE_UNITY_BUILD TRUE CACHE BOOL NULL FORCE)
+set(OGRE_CONFIG_ENABLE_ZIP TRUE CACHE BOOL NULL FORCE)
+set(OGRE_BUILD_PLUGIN_CG FALSE CACHE BOOL NULL FORCE)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre")
 set(OGRE_LIBRARIES OgreMain RenderSystem_GL Plugin_OctreeSceneManager Plugin_BSPSceneManager Plugin_ParticleFX Plugin_PCZSceneManager OgrePaging OgreTerrain OgreRTShaderSystem)
-
-
 set_target_properties(${OGRE_LIBRARIES} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
@@ -78,7 +87,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/poshlib")
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/UnitTest++")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/unittest")
 #add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/amop")
 
 set(BUILD_PYTHON_BINDINGS FALSE CACHE BOOL NULL FORCE)

@@ -3,6 +3,8 @@ cmake_policy(SET CMP0003 NEW)
 
 project(SQLITE)
 
+remove_definitions(-x objective-c++)
+
 set(SQLITE_MAJOR_VERSION 3)
 set(SQLITE_MINOR_VERSION 7)
 set(SQLITE_PATCH_VERSION 11)
@@ -29,9 +31,11 @@ if(UNIX)
 		SOVERSION ${SQLITE_SOVERSION}
 	)
 
-    set(CMAKE_CXX_FLAGS -fPIC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 ENDIF(UNIX)
 
 set_target_properties(SQLite PROPERTIES SOLUTION_FOLDER Dependencies)
 target_link_libraries(SQLite dl)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")

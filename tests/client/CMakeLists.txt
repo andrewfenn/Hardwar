@@ -47,7 +47,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/tests/)
 add_executable(clientTest ${exe} ${clientTest_source})
 
 add_dependencies(clientTest yaarg)
-add_dependencies(clientTest UnitTest)
+add_dependencies(clientTest UnitTest++)
 add_dependencies(clientTest Enet)
 add_dependencies(clientTest RocketCore)
 add_dependencies(clientTest RocketControls)

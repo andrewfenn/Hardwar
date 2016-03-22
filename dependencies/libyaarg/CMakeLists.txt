@@ -34,6 +34,6 @@ set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/lib)
 if (WINDOWS)
 else () # unix
      set_source_files_properties(${yaarg_source} PROPERTIES COMPILE_FLAGS "")
-     set(CMAKE_CXX_FLAGS "-Wall -O3 -pedantic -Wformat-nonliteral -Wextra -Wstrict-overflow=5 -Wfloat-equal -Wconversion -Wlogical-op -fstack-protector-all -Wno-unused-parameter -fno-exceptions -std=c++98")
+     set(CMAKE_CXX_FLAGS "-Wall -O3 -pedantic -Wformat-nonliteral -Wextra -Wstrict-overflow=5 -Wfloat-equal -Wconversion -Wlogical-op -fstack-protector-all -Wno-unused-parameter -fno-exceptions -std=c++0x")
 endif ()
 

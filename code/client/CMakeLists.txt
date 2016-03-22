@@ -31,12 +31,12 @@ include_directories(
    ${CMAKE_SOURCE_DIR}/code/shared/include
 )
 
+include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
 include_directories(SYSTEM ${OGRE_Terrain_INCLUDE_DIR})
 include_directories(SYSTEM ${OGRE_Paging_INCLUDE_DIR})
 include_directories(SYSTEM ${DEPENDENCIES_INCLUDES})
 include_directories(SYSTEM ${OIS_INCLUDE_DIRS})
-include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 if (MSVC)
    MESSAGE(STATUS "Using GetText in dependencies")

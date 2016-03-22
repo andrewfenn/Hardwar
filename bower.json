@@ -5,6 +5,8 @@
         "ogre": "https://bitbucket.org/sinbad/ogre/get/v1-8.zip",
         "freetype": "git://git.sv.gnu.org/freetype/freetype2.git#VER-2-6",
         "libRocket": "https://github.com/libRocket/libRocket.git",
-        "ois": "https://github.com/wgois/OIS.git#v1-3"
+        "ois": "https://github.com/andrewfenn/OIS.git#cmake",
+	"unittest": "https://github.com/unittest-cpp/unittest-cpp.git#v1.6.0",
+	"boost_thread": "https://github.com/boostorg/thread.git#boost-1.60.0"
     }
 }
