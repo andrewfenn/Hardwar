@@ -35,7 +35,8 @@ For library dependency management I use bower which requires node-js and npm to 
     Download/Install XCode Command Line Tools: https://developer.apple.com/downloads/?name=for%20Xcode
     Download/Install brew: http://brew.sh/
     Download/Install nvidia-cg-toolkit: https://developer.nvidia.com/cg-toolkit-download
-    brew install git cmake node pkgconfig boost libzzip
+    brew install git cmake node pkgconfig boost libzzip gettext
+    sudo brew link gettext --force
     git clone https://github.com/andrewfenn/Hardwar.git
     cd ./Hardwar
     sudo npm install -g bower

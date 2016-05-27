@@ -53,19 +53,18 @@ add_dependencies(clientTest RocketCore)
 add_dependencies(clientTest RocketControls)
 add_dependencies(clientTest RocketDebugger)
 add_dependencies(clientTest OIS)
+add_dependencies(clientTest ${OGRE_LIBRARIES})
 
 target_link_libraries(clientTest
     ${OGRE_LIBRARIES}
+    ${OIS_LIBRARIES}
     ${Boost_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
-    ${OIS_LIBRARIES}
     RocketCore RocketControls RocketDebugger
     yaarg
 )
 
 set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -Wall -pthread -pedantic -Wextra -Wwrite-strings -std=c++11")
-
 set_target_properties(clientTest PROPERTIES SOLUTION_FOLDER UnitTests)
-
 add_custom_command(TARGET clientTest POST_BUILD COMMAND ${CMAKE_BINARY_DIR}/bin/tests/clientTest)

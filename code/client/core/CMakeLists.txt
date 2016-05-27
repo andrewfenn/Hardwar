@@ -1,7 +1,13 @@
 
-if (UNIX)
+if (LINUX)
     set(core_source
         "src/GameRootLinux.cpp"
+    )
+endif()
+
+if (APPLE)
+    set(core_source
+        "src/GameRootOSX.cpp"
     )
 endif()
 

@@ -30,3 +30,4 @@ bin/server
 ipch
 hard.build
 dependencies
+.DS_Store

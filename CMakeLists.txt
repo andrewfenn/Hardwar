@@ -84,8 +84,9 @@ set(OGRE_UNITY_BUILD TRUE CACHE BOOL NULL FORCE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre")
 set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -w")
-set(OGRE_LIBRARIES OgreMain RenderSystem_GL Plugin_OctreeSceneManager Plugin_BSPSceneManager Plugin_ParticleFX Plugin_PCZSceneManager OgrePaging OgreTerrain OgreRTShaderSystem)
-set_target_properties(${OGRE_LIBRARIES} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
+set(OGRE_LIBRARIES OgreMain RenderSystem_GL Plugin_OctreeZone OgreProperty Plugin_OctreeSceneManager Plugin_BSPSceneManager Plugin_ParticleFX Plugin_PCZSceneManager OgrePaging OgreTerrain OgreRTShaderSystem)
+set_target_properties(${OGRE_LIBRARIES} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}" ARCHIVE_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
+
 
 set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(DEPENDENCIES_INCLUDES
