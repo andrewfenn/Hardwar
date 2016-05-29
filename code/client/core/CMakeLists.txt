@@ -1,5 +1,5 @@
 
-if (LINUX)
+if(LINUX)
     set(core_source
         "src/GameRootLinux.cpp"
     )

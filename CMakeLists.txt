@@ -35,10 +35,8 @@ set(CMAKE_DISABLE_MESSAGE TRUE)
 
 include(SourceFiles)
 include(Windows)
-
-if(APPLE)
-    include(OSX)
-endif()
+include(OSX)
+include(Linux)
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC ON)
@@ -52,8 +50,8 @@ set(OIS_BUILD_DEMOS False)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ois")
 
 # Surpress compiler warnings from dependencies
-set(ORIGINAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+set(ORIGINAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -fPIC")
 
 set(FREETYPE_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
 set(FREETYPE_FT2BUILD_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype/include")
@@ -61,6 +59,7 @@ set(FREETYPE_LIBRARIES "freetype")
 set(FREETYPE_FOUND True)
 set(BUILD_SHARED_LIBS False)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/freetype")
+set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -w")
 
 set(TINYXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/TinyXML")
 set(TINYXML_LIBRARIES "${DEPENDENCIES_LIBPATH}")
@@ -81,10 +80,10 @@ set(OGRE_INSTALL_DOCS FALSE CACHE BOOL NULL FORCE)
 set(OGRE_INSTALL_SAMPLES_SOURCE FALSE CACHE BOOL NULL FORCE)
 set(OGRE_UNITY_BUILD TRUE CACHE BOOL NULL FORCE)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre")
 set(CMAKE_CXX_FLAGS "${ORIGINAL_CMAKE_CXX_FLAGS} -w")
-set(OGRE_LIBRARIES OgreMain RenderSystem_GL Plugin_OctreeZone OgreProperty Plugin_OctreeSceneManager Plugin_BSPSceneManager Plugin_ParticleFX Plugin_PCZSceneManager OgrePaging OgreTerrain OgreRTShaderSystem)
+set(OGRE_LIBRARIES OgreMain RenderSystem_GL Plugin_OctreeZone Plugin_OctreeSceneManager Plugin_PCZSceneManager OgrePaging OgreTerrain OgreRTShaderSystem)
 set_target_properties(${OGRE_LIBRARIES} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}" ARCHIVE_OUTPUT_DIRECTORY "${HARDWAR_LIBPATH}")
 
 
@@ -92,6 +91,7 @@ set(HARDWAR_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/code/client/include")
 set(DEPENDENCIES_INCLUDES
     "${CMAKE_CURRENT_BINARY_DIR}/dependencies/ogre/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre/OgreMain/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ogre/RenderSystems/GL/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/libyaarg/"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/enet/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/sqlite3"

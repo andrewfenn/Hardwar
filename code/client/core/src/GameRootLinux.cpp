@@ -124,7 +124,7 @@ bool GameRootLinux::loadPlugins()
 {
     bool error = false;
     bool loaded = false;
-    if (opendir("/usr/lib/OGRE") != nullptr)
+/*    if (opendir("/usr/lib/OGRE") != nullptr)
     {
         if (!this->loadPlugin("/usr/lib/OGRE/RenderSystem_GL"))
             error = true;
@@ -165,6 +165,7 @@ bool GameRootLinux::loadPlugins()
         if (!this->loadPlugin("Plugin_CgProgramManager"))
             return false;
     }
+*/
 
     return true;
 }

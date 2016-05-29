@@ -1,0 +1,5 @@
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    set(LINUX True)
+else()
+    set(LINUX False)
+endif()

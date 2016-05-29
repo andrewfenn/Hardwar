@@ -53,7 +53,6 @@ add_dependencies(clientTest RocketCore)
 add_dependencies(clientTest RocketControls)
 add_dependencies(clientTest RocketDebugger)
 add_dependencies(clientTest OIS)
-add_dependencies(clientTest ${OGRE_LIBRARIES})
 
 target_link_libraries(clientTest
     ${OGRE_LIBRARIES}

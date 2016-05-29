@@ -20,6 +20,8 @@
 #include "GameRoot.h"
 
 #include <fstream>
+#include <OgreGLPlugin.h>
+
 #include "OgreException.h"
 
 namespace Client
@@ -68,10 +70,17 @@ void GameRoot::init()
     log->createLog(logDir, true, false);
     log->setLogDetail(Ogre::LL_BOREME);
 
-    mRoot = OGRE_NEW Ogre::Root("", confDir, "");
+    mRoot = new Ogre::Root("", confDir, "");
+    mRoot->installPlugin(new Ogre::GLPlugin());
 
-    if (!this->loadPlugins())
+    const Ogre::RenderSystemList& lRenderSystemList = mRoot->getAvailableRenderers();
+    if( lRenderSystemList.size() == 0 )
+    {
+        std::cout << "Sorry, no rendersystem was found." << std::endl;
         return;
+    }
+    Ogre::RenderSystem *lRenderSystem = lRenderSystemList[0];
+    mRoot->setRenderSystem(lRenderSystem);
 }
 
 void GameRoot::run()
@@ -88,13 +97,15 @@ void GameRoot::run()
 
 bool GameRoot::configureGame()
 {
-    /* Load config settings from ogre.cfg */
+    /*
+    // Load config settings from ogre.cfg
     if( !mRoot->restoreConfig() && !mRoot->showConfigDialog() )
     {
-        /* If game can't be configured, throw exception and quit application */
+        // If game can't be configured, throw exception and quit application
         std::cerr << "Game can not be configured" << std::endl;
         return false;
     }
+*/
 
     /* Initialise and create a default rendering window */
     mRenderWindow = mRoot->initialise( true, "Hardwar" );
