@@ -1,5 +1,6 @@
-sudo: required
-dist: trusty
+os:
+  - linux
+  - osx
 
 compiler:
     - gcc
@@ -31,6 +32,8 @@ cache:
         - dependencies
 
 before_script:
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install git cmake node pkgconfig boost libzzip gettext; fi
     - travis_retry npm install bower
     - travis_retry ./node_modules/bower/bin/bower install --config.interactive=false
     - travis_wait cmake -H. -B./hard.build
